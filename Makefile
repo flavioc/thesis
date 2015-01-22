@@ -7,10 +7,11 @@ thesis.pdf: thesis.tex	\
 		implementation.tex \
 		language.tex \
 		experiments.tex \
-		proofs.tex \
+		logic_foundations.tex \
 		refs.bib \
 		thread.tex \
 		applications.tex \
+		conclusions.tex \
 		appendix.tex \
 		statement.tex \
 		related_work.tex \
