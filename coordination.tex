@@ -23,6 +23,10 @@ program results will not be exact, they follow important statistical properties 
 Examples of such programs are PageRank~\cite{Lubachevsky:1986:CAA:4904.4801} and
 Loopy Belief Propagation~\cite{Gonzalez+al:aistats09paraml}.
 
+\section{Rationale}
+
+% introduce pagerank example.
+
 \section{Scheduling Facts}
 
 We can use action facts to change the order in which nodes are evaluated by adding
@@ -68,6 +72,8 @@ We also provide a few global coordination statements:
    \item[\texttt{priority @static.}] The \texttt{static} priority tells the runtime system that the partition of nodes among workers is to be used until the end of program. 
    %\item[\texttt{priority @cluster TYPE.}] Define what type of graph clustering to use. \texttt{TYPE} can be either \texttt{static}, \texttt{bfs} or \texttt{random}.
 \end{description}
+
+\section{Partitioning Facts}
 
 \section{Programs}
 

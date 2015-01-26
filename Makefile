@@ -15,6 +15,7 @@ thesis.pdf: thesis.tex	\
 		appendix.tex \
 		statement.tex \
 		related_work.tex \
+		program_proofs.tex \
 		abstract.tex \
 		execution_trace1.pdf execution_trace2.pdf execution_trace3.pdf execution_trace4.pdf
 	pdflatex thesis.tex
