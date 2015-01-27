@@ -302,16 +302,96 @@ Fig.~\ref{fig:exec_trace}~(d).
         \caption{A possible execution trace for the visit program.}\label{fig:exec_trace}
 \end{figure}
 
-Note that every node is now \texttt{visited}. It is easy to prove that if the
-graph is connected, then all the nodes will be \texttt{visited}, regardless the
-order in which we apply the rules. XXX Put proof here.
+\subsubsection{Correctness of graph visit}
 
-\subsubsection{Correctness and termination of graph visit}
+It is possible to prove that if a graph is connected, then all the nodes will be
+become \texttt{visited}, regardless of the order in which we apply the rules.
+First, we define what is a visit graph:
 
+\begin{definition}[Visit Graph]
+A visit graph is an ordered pair $G = (N, E)$ comprising a set $N$ of nodes together
+with a set $E$ of edges. Set $E$ contains pairs $(A, B)$ that correspond to
+facts \texttt{\bang edge(A, B)}. For every pair $(A, B) \in E$ there is also a
+pair $(B, A) \in E$, representing an undirected edge.
+\end{definition}
+
+To prove the correctness property of the program, we first define the main
+\emph{invariant} of the program:
+
+\begin{invariant}[Node state]
+A node is either \texttt{visited} or \texttt{unvisited}
+\end{invariant}
+\begin{proof}
+Using the axioms we know all nodes start as \texttt{unvisited}.
+
+Rule 1 changes a node from \texttt{unvisited} to \texttt{visited}, while rule 2
+keeps the node \texttt{visited}, proving the invariant.
+\end{proof}
+
+With this invariant, it is now possible to classify nodes of the graph $G$
+according to their state:
+
+\begin{definition}[Node sets] \texttt{visited} nodes are contained in set $V$,
+while \texttt{unvisited} nodes are in set $U$. From the node state invariant, we
+know that $V \cup U = N$ and $V \cap U = \emptyset$.
+\end{definition}
+
+We can now prove an important lemma about sets $V$ and $U$:
+
+\begin{invariant}[Visited set]
+Visited set $V$ always increases or stays the same size. The inverse is true for
+set $U$.
+\end{invariant}
+\begin{proof}
+Initially, $V = \emptyset$ and $U = N$.
+
+By rule 1, $V$ increases by 1 while $U$ decreases by 1. With rule 2, set
+membership remains unchanged.
+\end{proof}
+
+In turn, since set membership changes from $U$ to $V$, we now prove the
+following:
+
+\begin{lemma}[Edge visits]
+The program generates at most one \texttt{visit} per directed edge.
+\end{lemma}
+\begin{proof}
+From the visited set invariant, we know that once nodes become members of set $V$,
+they no longer return to set $U$, therefore rule 1 applies once per
+node. This rule generates a \texttt{visit} fact per edge.
+\end{proof}
+
+In order to prove that all the nodes in the graph are visited, we need to make
+sure that the graph is connected.
+
+\begin{definition}[Connected graph]
+A connected graph is a graph where every pair of nodes has a path between them.
+\end{definition}
+
+Finally, we prove that all nodes will become \texttt{visited}.
+
+\begin{theorem}[Graph visit correctness]
+If graph $G$ is connected, set $V$ will eventually include all nodes in $N$,
+while $U = \emptyset$.
+\end{theorem}
+\begin{proof}
+Proof by induction.
+
+\begin{itemize}
+   \item Base case: axiom \texttt{visit(@1)} adds node \texttt{@1} to $V$. By
+   the Edge visits lemma, a \texttt{visit} fact is generate for all edges of
+   \texttt{@1}.
+   \item Inductive case: assume a set $V'$ and a set $U'$ that contains the
+   \texttt{visited} and \texttt{unvisited} nodes, respectively. Since the graph
+   is connected, there must be a node $a \in V'$ that is connected to a node $b
+   \in U'$. Using the Edge visits lemma, a \texttt{visit(b)} fact is generated,
+   swapping $b$ from $U'$ to $V'$.
+\end{itemize}
+
+Eventually, set $V$ will include all nodes in $N$.
+\end{proof}
 
 \section{LM Syntax}
-
-\renewcommand{\arraystretch}{1.5}
 
 \begin{table}[h]
 \centering
@@ -320,8 +400,10 @@ order in which we apply the rules. XXX Put proof here.
   List Of Rules & $\Sigma$ & $::=$ & $\cdot \; | \; \Sigma, R$\\
   Database & $D$ & $::=$ & $\Gamma; \Delta$ \\
   Rule & $R$ & $::=$ & $BE \lolli HE \; | \; \forall_{x}. R \; | \; \selector{S}{y}{BE}{HE}$ \\
-  Body Expression & $BE$ & $::=$ & $L \; | \; P \; | \; C \; | \; BE, BE \; | \; \exists_{x}. BE \; | \; 1$\\
-  Head Expression & $HE$ & $::=$ & $L \; | \; P \; | \; HE, HE \; | \; EE \; | \; CE \; | \; AE \; | \; 1$\\
+  Body Expression & $BE$ & $::=$ & $L \; | \; P \; | \; C \; | \; BE, BE \; | \;
+\exists_{x}. BE \; | \; \one$\\
+  Head Expression & $HE$ & $::=$ & $L \; | \; P \; | \; HE, HE \; | \; EE \; |
+  \; CE \; | \; AE \; | \; \one$\\
   
   Linear Fact & $L$ & $::=$ & $l(\hat{x})$\\
   Persistent Fact & $P$ & $::=$ & $\bang p(\hat{x})$\\
@@ -336,15 +418,13 @@ order in which we apply the rules. XXX Put proof here.
 \mathtt{sum} \; | \; \mathtt{count} \; | \; \mathtt{collect}$ \\
   
   Sub-Body & $SB$ & $::=$ & $L \; | \; P \; | \; SB, SB \; | \; \exists_{x}. SB$\\
-  Sub-Head & $SH$ & $::=$ & $L \; | \; P \; | \; SH, SH \; | \; 1$\\
+  Sub-Head & $SH$ & $::=$ & $L \; | \; P \; | \; SH, SH \; | \; \one$\\
   
   Known Linear Facts & $\Delta$ & $::=$ & $\cdot \; | \; \Delta, l(\hat{t})$ \\
   Known Persistent Facts & $\Gamma$ & $::=$ & $\cdot \; | \; \Gamma, \bang p(\hat{t})$ \\
 \end{tabular}
 \caption{Abstract syntax of LM.}\label{tbl:ast}
 \end{table}
-
-\renewcommand{\arraystretch}{1.0}
 
 Table~\ref{tbl:ast} shows the abstract syntax for rules in LM.  A LM program
 $Prog$ consists of a list of derivation rules $\Sigma$ and a database $D$.  Each
@@ -368,6 +448,38 @@ templates} which are uninstantiated facts and will derive new facts. The head
 can also have \emph{exists expressions} ($EE$), \emph{comprehensions} ($CE$)
 and \emph{aggregates} ($AE$). All those expressions may use all the variables
 instantiated in the body.
+
+\subsubsection{Graph visit using abstract syntax}
+
+In order to show how programs are represented using the abstract syntax
+presented in Table~\ref{tbl:ast}, we present the 2 rules in the graph visit
+program shown in Fig.~\ref{code:visit}:
+
+\nopagebreak
+
+\begin{align}
+\forall_A. \mathtt{visit}(A), \; \mathtt{unvisited}(A) \lolli & \;
+\mathtt{visited}(A), \; \{ B; \; \bang \mathtt{edge}(A, B); \;
+\mathtt{visit}(B)\}\\
+\forall_A. \mathtt{visit}(A), \; \mathtt{visited}(A) \lolli & \;
+\mathtt{visited}(A)
+\end{align}
+
+Finally, axioms are represented using an empty body:
+
+\nopagebreak
+
+\begin{align}
+\one \lolli & \bang \mathtt{edge}(@1, @2) \\
+\one \lolli & \bang \mathtt{edge}(@2, @3) \\
+\one \lolli & \bang \mathtt{edge}(@1, @4) \\
+\one \lolli & \bang \mathtt{edge}(@2, @4) \\
+\one \lolli & \bang \mathtt{unvisited}(@1)  \\
+\one \lolli & \bang \mathtt{unvisited}(@2) \\
+\one \lolli & \bang \mathtt{unvisited}(@3) \\
+\one \lolli & \bang \mathtt{unvisited}(@4) \\
+\one \lolli & \bang \mathtt{visit}(@1)
+\end{align}
 
 \subsection{Predicates and Facts}
 
@@ -469,7 +581,7 @@ As said before, the first argument of every predicate must be typed as a
 only use facts from the same node in order to avoid concurrency issues.
 However, the facts in the head may refer to other nodes, as long as those nodes
 are instantiated in the body of the rule.  We drew some inspiration from the
-Linda system~\cite{1663305} mentioned early on, where the tuple space contains
+Linda system~\cite{linda} mentioned early on, where the tuple space contains
 the data and is used by the processors to communicate and do computation.  This
 differs from imperative languages, since in those languages data and computation
 are two separate entities.

@@ -41,12 +41,17 @@
 %pdfborder=0 0 0,  %removes outlines around hyper links in online display
 ]{hyperref}
 \graphicspath{{./figures/}{./benchmarks/data/}{./benchmarks/}}
-\input{fp-macros}
+\input{macros}
 
 % Approximately 1" margins, more space on binding side
 %\usepackage[letterpaper,twoside,vscale=.8,hscale=.75,nomarginpar]{geometry}
 %for general printing (not binding)
 \usepackage[letterpaper,twoside,vscale=.8,hscale=.75,nomarginpar,hmarginratio=1:1]{geometry}
+\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{invariant}{Invariant}
 
 % Provides a draft mark at the top of the document. 
 \draftstamp{\today}{}

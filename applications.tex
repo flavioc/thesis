@@ -43,6 +43,84 @@ visit(A, P), fail(A) -o fail(A).
 \end{figure}
 \normalsize
 
+\section{Quick-Sort}
+
+The quick-sort algorithm is a divide and conquer sorting algorithm that works by splitting
+a list of items into two sublists and then recursively sorting the two sublists.
+To split the list, we pick a pivot element and put the items that are smaller than the pivot
+into the first sublist and items greater than the pivot into the second list.
+
+The quick-sort algorithm is interesting because it does not map immediately to the graph-based
+model of LM. Our approach considers that the program starts with a single node where
+the initial list is located. Then we split the list as usual and create two nodes
+that will recursively sort the sublists. Interestingly, this will create a tree
+that will look similar to a call tree in a functional language.
+
+Fig.~\ref{code:quicksort} presents the code for the quick-sort algorithm in LM.
+For each sublist to sort, we start with a \texttt{down} fact that must be (eventually)
+transformed into an \texttt{up} fact, where the sublist in the \texttt{up} fact is sorted.
+In line 11 we start with the initial list at node \texttt{@0}. Lines 13-16 will immediately
+sort the list when the number of items is very small. Otherwise, we apply the rule in line 17.
+\texttt{buildpivot} will first split the list using the pivot \texttt{X} using rules in
+lines 23-26. When there is nothing more to split, we apply the rule in lines 19-21
+that uses an exist construct to create nodes \texttt{B} and \texttt{C}. The sublists
+are then sent to these nodes using \texttt{down} facts. Note, however, that we also
+derive \texttt{back} facts, that will be used to send the sorted list back using the rule
+in line 40.
+
+When the sublists are finally sorted, we get two \texttt{sorted} facts that will match
+against \texttt{waitpivot} in the rule located in lines 28-31. The sorted sublists
+are appended and then an \texttt{up} fact is finally derived (line 37).
+
+\begin{figure}[h!]
+\small\begin{Verbatim}[numbers=left]
+type route back(node, node).
+type linear down(node, list int).
+type linear up(node, list int).
+type linear sorted(node, node, list int).
+type linear buildpivot(node, list int, int, list int, list int).
+type linear waitpivot(node, node, node, int).
+type linear append(node, list int, list int).
+type linear reverse(node, list int, list int, list int).
+type linear reverse2(node, list int, list int).
+
+down(@0, tosort).
+
+down(A, []) -o up(A, []).
+down(A, [X]) -o up(A, [X]).
+down(A, [X, Y]), X < Y -o up(A, [X, Y]).
+down(A, [X, Y]), X >= Y -o up(A, [Y, X]).
+down(A, [X | L]) -o buildpivot(A, L, X, [], []).
+
+buildpivot(A, [], X, Smaller, Greater)
+   -o exists B, C. (back(B, A), down(B, Smaller),
+            back(C, A), down(C, Greater), waitpivot(A, B, C, X)).
+
+buildpivot(A, [Y | L], X, Smaller, Greater), Y <= X
+   -o buildpivot(A, L, X, [Y | Smaller], Greater).
+buildpivot(A, [Y | L], X, Smaller, Greater), Y > X
+   -o buildpivot(A, L, X, Smaller, [Y | Greater]).
+   
+waitpivot(A, NodeSmaller, NodeGreater, Pivot),
+sorted(A, NodeSmaller, Smaller),
+sorted(A, NodeGreater, Greater)
+   -o append(A, Smaller, [Pivot | Greater]).
+
+append(A, L1, L2) -o reverse(A, L1, L2, []).
+
+reverse(A, [], L2, L3) -o reverse2(A, L3, L2).
+reverse(A, [X | L], L2, L3) -o reverse(A, L, L2, [X | L3]).
+reverse2(A, [], Result) -o up(A, Result).
+reverse2(A, [X | L1], L2) -o reverse2(A, L1, [X | L2]).
+
+up(A, L), back(A, B) -o sorted(B, A, L).
+\end{Verbatim}
+  \caption{Quick-Sort program.}
+  \label{code:quicksort}
+\end{figure}
+\normalsize
+
+
 \section{PageRank}
 
 PageRank~\cite{Page:2001:MNR} is a well known graph algorithm that is used to compute the relative relevance of web pages.
@@ -203,88 +281,96 @@ A <> B
 \normalsize
 \end{comment}
 
-\section{Quick-Sort}
-
-The quick-sort algorithm is a divide and conquer sorting algorithm that works by splitting
-a list of items into two sublists and then recursively sorting the two sublists.
-To split the list, we pick a pivot element and put the items that are smaller than the pivot
-into the first sublist and items greater than the pivot into the second list.
-
-The quick-sort algorithm is interesting because it does not map immediately to the graph-based
-model of LM. Our approach considers that the program starts with a single node where
-the initial list is located. Then we split the list as usual and create two nodes
-that will recursively sort the sublists. Interestingly, this will create a tree
-that will look similar to a call tree in a functional language.
-
-Fig.~\ref{code:quicksort} presents the code for the quick-sort algorithm in LM.
-For each sublist to sort, we start with a \texttt{down} fact that must be (eventually)
-transformed into an \texttt{up} fact, where the sublist in the \texttt{up} fact is sorted.
-In line 11 we start with the initial list at node \texttt{@0}. Lines 13-16 will immediately
-sort the list when the number of items is very small. Otherwise, we apply the rule in line 17.
-\texttt{buildpivot} will first split the list using the pivot \texttt{X} using rules in
-lines 23-26. When there is nothing more to split, we apply the rule in lines 19-21
-that uses an exist construct to create nodes \texttt{B} and \texttt{C}. The sublists
-are then sent to these nodes using \texttt{down} facts. Note, however, that we also
-derive \texttt{back} facts, that will be used to send the sorted list back using the rule
-in line 40.
-
-When the sublists are finally sorted, we get two \texttt{sorted} facts that will match
-against \texttt{waitpivot} in the rule located in lines 28-31. The sorted sublists
-are appended and then an \texttt{up} fact is finally derived (line 37).
-
-\begin{figure}[h!]
-\small\begin{Verbatim}[numbers=left]
-type route back(node, node).
-type linear down(node, list int).
-type linear up(node, list int).
-type linear sorted(node, node, list int).
-type linear buildpivot(node, list int, int, list int, list int).
-type linear waitpivot(node, node, node, int).
-type linear append(node, list int, list int).
-type linear reverse(node, list int, list int, list int).
-type linear reverse2(node, list int, list int).
-
-down(@0, tosort).
-
-down(A, []) -o up(A, []).
-down(A, [X]) -o up(A, [X]).
-down(A, [X, Y]), X < Y -o up(A, [X, Y]).
-down(A, [X, Y]), X >= Y -o up(A, [Y, X]).
-down(A, [X | L]) -o buildpivot(A, L, X, [], []).
-
-buildpivot(A, [], X, Smaller, Greater)
-   -o exists B, C. (back(B, A), down(B, Smaller),
-            back(C, A), down(C, Greater), waitpivot(A, B, C, X)).
-
-buildpivot(A, [Y | L], X, Smaller, Greater), Y <= X
-   -o buildpivot(A, L, X, [Y | Smaller], Greater).
-buildpivot(A, [Y | L], X, Smaller, Greater), Y > X
-   -o buildpivot(A, L, X, Smaller, [Y | Greater]).
-   
-waitpivot(A, NodeSmaller, NodeGreater, Pivot),
-sorted(A, NodeSmaller, Smaller),
-sorted(A, NodeGreater, Greater)
-   -o append(A, Smaller, [Pivot | Greater]).
-
-append(A, L1, L2) -o reverse(A, L1, L2, []).
-
-reverse(A, [], L2, L3) -o reverse2(A, L3, L2).
-reverse(A, [X | L], L2, L3) -o reverse(A, L, L2, [X | L3]).
-reverse2(A, [], Result) -o up(A, Result).
-reverse2(A, [X | L1], L2) -o reverse2(A, L1, [X | L2]).
-
-up(A, L), back(A, B) -o sorted(B, A, L).
-\end{Verbatim}
-  \caption{Quick-Sort program.}
-  \label{code:quicksort}
-\end{figure}
-\normalsize
-
-
-\section{MiniMax}
 
 \section{Heat Transfer}
 
 \section{Belief Propagation}
 
 \section{Belief Propagation with Splashes}
+
+Loopy Belief Propagation~\cite{Murphy99loopybelief} (LBP) is an approximate inference algorithm
+used in graphical models with cycles. In its essence, LBP is a sum-product message passing algorithm
+where nodes exchange messages with their immediate neighbors and apply some computations to the messages
+received.
+
+LBP is an algorithm that maps very well to the graph based model of LM. In its original form, we need to compute
+the belief of all nodes for several iterations and also synchronize after each iteration.
+However, it is still possible to apply
+some optimizations in order to take advantage of the fact that LBP will converge even when using
+an asynchronous approach. So, instead of computing the belief iteratively,
+we first keep track of all messages sent/received (and overwrite them when we receive a new one)
+and recompute the belief when we want, instead of synchronizing between nodes.
+This way, we can prioritize the computation of beliefs when
+a node's belief value changes significantly. When that happens, we set the priority of its
+neighbors so that they can recompute their beliefs.
+
+The asynchronous approach proves to be a nice improvement over the synchronous version. Still, it
+is possible to do even better. Gonzalez et al~\cite{Gonzalez+al:aistats09paraml} developed an optimal
+algorithm to compute this algorithm by first building a tree and then updating the beliefs of each node twice, first from the leaves to the root and then from the root to the leaves. The root of this tree
+is the node with the highest priority (based on belief) while the other nodes in the tree
+must have a non-zero priority. Note that the priorities are updated whenever a neighbor updates
+their belief. These splash trees are built iteratively until we reach convergence.
+
+The code in Fig.~\ref{code:sbp} presents the coordination code of the Belief Propagation problem.
+Please note that we just appended the code in Fig.~\ref{code:sbp} to a working but
+unoptimized version of the algorithm.
+In the coordination code we have three sections:
+\begin{description}
+   \item[Tree building]: Each node has a \texttt{waiting} fact that is used to start the tree building process. When the highest priority is picked we create a token that will navigate through the tree. Note that in the rule located in lines 11-18 we check if the priority of the new node to add to the tree is positive and that both nodes are in the same worker. We want the tree to be kept in the same worker.
+   \item[First phase]: In the third rule (lines 8-9), when we reach a certain number of nodes in the tree, we generate \texttt{first-phase} in order to update the beliefs of all nodes in tree starting from the leaves and ending at the root. As we update the nodes, we generate \texttt{update} to update the belief values (line 29).
+   \item[Second phase]: In the second phase we go from the root to the leaves and update the beliefs a second time (line 39).
+\end{description}
+
+When we have several workers, every worker will generate their own trees by taking into account the highest priority node in their own queues.
+
+\begin{figure}[h!]
+\small\begin{Verbatim}[numbers=left,commandchars=*\{\}]
+// TREE BUILDING
+// continue tree
+waiting(A), token(A, All, Next) -o token(A, All, Next).
+// start tree
+waiting(A), *underline{@priority(A, A, P)}, P > 0.0
+   -o token(A, [A], [A]).
+// end tree building
+token(A, All, Next), length(All) > maxnodes
+   -o first-phase(A, All, reverse(All)).
+// expand tree
+token(A, All, [A | Next])
+   -o [collect => L | Side | !edge(A, L, Side),
+         0 = count(All, L),
+         0 = count(Next, L),
+         *underline{priority(A, L, P)}, P > 0.0,
+         *underline{cpu-id(A, L, Id1)},
+         *underline{cpu-id(A, A, Id2)}, Id1 = Id2 |
+         send-token(A, All, Next ++ L)].
+
+send-token(A, All, [])
+   -o first-phase(A, All, reverse(All)).
+send-token(A, All, [B | Next])
+   -o *underline{schedule-next(B)},
+      token(B, All ++ [B], [B | Next]).
+
+// FIRST PHASE
+first-phase(A, [A], [A]) -o second-phase(A, [], A).
+first-phase(A, [A, B | Next], [A])
+   -o update(A), *underline{schedule-next(B)},
+      second-phase(B, [B | Next], A).
+first-phase(A, All, [A, B | Next])
+   -o update(A), *underline{schedule-next(B)},
+      first-phase(B, All, [B | Next]).
+
+// SECOND PHASE
+second-phase(A, [], _)
+   -o *underline{set-priority(A, 0.0)}, waiting(A), update(A).
+second-phase(A, [A], Back)
+   -o update(A), waiting(Back),
+      waiting(A), *underline{set-priority(A, 0.0)}.
+second-phase(A, [A, B | Next], Back)
+   -o update(A), waiting(Back), *underline{schedule-next(B)},
+      second-phase(B, [B | Next], A).
+\end{Verbatim}
+  \caption{Coordination code for the Splash Belief Propagation program.}
+  \label{code:sbp}
+\end{figure}
+\normalsize
+
