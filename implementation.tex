@@ -142,12 +142,18 @@ e(0) -o f.
 c -o e(1).
 \end{Verbatim}
 
-To apply the rules, we take the least significant rule from the bitmap, which is the candidate rule with the higher priority, and then run it. In our example, we need to execute the second rule \texttt{a -o c}, since we have facts \texttt{a} and \texttt{e(0)}.
-Because the derivation is successful, we derive \texttt{c} and consume \texttt{a}. In Fig.~\ref{fig:rule_engine}~(b) we
-activate the \texttt{c} predicate in the \emph{Predicates Bitmap} since it was derived and then activate the first and second rules
-in \emph{Dropped Bitmap} since such rules are no longer applicable (\texttt{a} is gone). To update the \emph{Rule Queue},
-we remove the bits marked in \emph{Dropped Bitmap} and add the active rules marked in \emph{Active Bitmap} that are affected
-by predicates in \emph{Predicates Map}. The engine has now scheduled the fourth and fifth rules to be run.
+To apply the rules, we take the least significant rule from the bitmap, which is
+the candidate rule with the higher priority, and then run it. In our example, we
+need to execute the second rule \texttt{a -o c}, since we have facts \texttt{a}
+and \texttt{e(0)}.  Because the derivation is successful, we derive \texttt{c}
+and consume \texttt{a}. In Fig.~\ref{fig:rule_engine}~(b) we activate the
+\texttt{c} predicate in the \emph{Predicates Bitmap} since it was derived and
+then activate the first and second rules in \emph{Dropped Bitmap} since such
+rules are no longer applicable (\texttt{a} is gone). To update the \emph{Rule
+   Queue}, we remove the bits marked in \emph{Dropped Bitmap} and add the active
+   rules marked in \emph{Active Bitmap} that are affected by predicates in
+   \emph{Predicates Map}. The engine has now scheduled the fourth and fifth
+   rules to be run.
 
 \begin{figure*}[h]
    \centering
@@ -163,13 +169,15 @@ by predicates in \emph{Predicates Map}. The engine has now scheduled the fourth 
    \label{fig:rule_engine}
 \end{figure*}
 
-We do a small optimization to reduce the number of derivations of persistent facts. We
-divide the program rules into two sets: \emph{persistent rules} and \emph{non persistent rules}.
-Persistent rules are rules where only persistent facts are involved. We compile such rules
-incrementally, that is, we attempt to fire all rules where a persistent fact is used. This is called
-the \emph{pipelined semi-naive} evaluation and it originated in the P2 system~\cite{Loo-condie-garofalakis-p2}.
-This evaluation method avoids excessing re-derivations of the same fact. The order of derivation does not matter for those rules, since
-only persistent facts are used.
+We do a small optimization to reduce the number of derivations of persistent
+facts. We divide the program rules into two sets: \emph{persistent rules} and
+\emph{non persistent rules}.  Persistent rules are rules where only persistent
+facts are involved. We compile such rules incrementally, that is, we attempt to
+fire all rules where a persistent fact is used. This is called the
+\emph{pipelined semi-naive} evaluation and it originated in the P2
+system~\cite{Loo-condie-garofalakis-p2}.  This evaluation method avoids
+excessing re-derivations of the same fact. The order of derivation does not
+matter for those rules, since only persistent facts are used.
 
 \section{Coordination}
 
@@ -178,45 +186,6 @@ they are consumed and the corresponding action performed immediately.
 It is important to note that whenever a node sends a coordination action fact to a node in another thread,
 the fact is ignored, due to the costs of sending
 coordination data between threads. We intend to design an efficient mechanism to solve this problem.
-
-\section{Other Implementations}
-
-We also have preliminary implementations of LM that run on other distributed systems.
-We have a version of LM that runs on traditional clusters and employs MPI~\cite{gabriel04-open-mpi} for communication
-and distribution. Additionally, we have a version that runs on Blinky Blocks~\cite{Kirby-chi11}, a physical distributed system
-made of cubes that communicate with each other and can be re-arranged manually by the user.
-
-All these other systems use the same virtual machine core to rule rules and maintain the database. However, they are significantly different
-when it comes to data partitioning, communication and parallelism.
-
-\subsection{MPI Implementation}
-
-The current MPI implementation is based on the multicore implementation with a few important distinctions. First, since there is no shared
-memory between MPI processes residing at different machines, the global database is stored separately such that each process contains a subset
-of the underlying graph model.
-
-Communication is more costly since facts must be serialized at the source machine and then deserialized
-at the target machine in order to be processed. To increase throughput, facts are buffered and sent only when their size is close to the size of the MPI buffer.
-The send operation is done asynchronously to allow the source process to continue its computation while communication happens in the background.
-After a while, once we confirm that the facts have been received and the processes become idle, the Dijkstra-Safra's~\cite{safras87} algorithm
-is used in order to detect program termination.
-
-In our preliminary version, the node partitioning is static and there is no work stealing once the initial nodes are assigned to processes since
-moving a node to another machine may be too prohibitive if the node database is too big.
- 
-\subsection{Blinky Blocks Implementation}
-
-The Blinky Blocks~\cite{Kirby-chi11} is a physical distributed system. It has thus very different requirements and restrictions when compared to the multicore
-or the MPI versions. As each blinky block is an independent processing unit, it is naturally mapped to a single node and communication is restricted
-to the immediate neighbors that can be attached to the six faces of the cube.
-
-Each blinky block can sense and actuate on the outside world. For instance, the blinky block can sense a tap and then immediately instantiate
-a new sensing fact that will be used in the program's rules. In terms of actuators, the blocks can emit light using the builtin LED's.
-This allows the running program to interactively present its results in real-time.
-
-We also have a simulated version of the Blinky Blocks system which is implemented as a simulator that displays the physical system and
-communicates with a LM virtual machine that runs the blocks. In exchange, the virtual machine provides all the actions that must be performed
-on the simulator.
 
 \section{Summary}
 

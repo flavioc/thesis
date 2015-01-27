@@ -27,6 +27,42 @@ Loopy Belief Propagation~\cite{Gonzalez+al:aistats09paraml}.
 
 % introduce pagerank example.
 
+\section{Types of Facts}
+
+Beyond the distinction between linear and persistent facts, LM further classifies facts
+into 4 categories: \emph{computation} facts, \emph{structural} facts, \emph{sensing} facts
+and \emph{action} facts. Predicates are also classified accordingly.
+
+Computation facts are regular facts used to represent the program state. In the initial
+example in Fig.~\ref{code:visit}, \texttt{visit/1}, \texttt{visited/1} and \texttt{unvisited/1}
+are all computation facts.
+
+Structural facts describe information about the connections between the nodes in the graph.
+In the example of Fig.~\ref{code:visit}, \texttt{edge/2} facts are structural since the
+corresponding \texttt{edge/2} predicate is
+marked as a \texttt{route} predicate. Note that structural facts can also be seen as
+computation facts since they are heavily used in the program algorithm.
+
+Sensing facts are facts about the current state of the runtime system, such as the placement
+of nodes in the CPU and scheduling information. In the original Meld, sensing facts
+were used to get information about the outside world, like temperature, touch data,
+neighborhood status, etc.
+
+Action facts are linear facts which are consumed when the corresponding action is performed.
+In the original Meld, they were used to make the robots perform actions in the outside world.
+For LM we use them to change information about the program state
+in the user interface. For example, when we want to change the color of nodes or the label
+of edges, we just derive a new action fact and the action is performed in the interface.
+A more important use of action facts is to change the order in which nodes
+are evaluated in the runtime system. It is possible to give hints to the virtual
+machine in order to prioritize the computation of some nodes.
+
+With sensing facts and action facts, we can write \emph{meta-rules} that will sense the
+state of the runtime system and then apply decisions in order to improve execution speed.
+In some situations, this set of rules can be added to the program without any modifications
+to the original rules.
+
+
 \section{Scheduling Facts}
 
 We can use action facts to change the order in which nodes are evaluated by adding

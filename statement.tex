@@ -7,7 +7,7 @@ programmer to control parallel scheduling and placement of data to further
 improve the program run time and scalability.  Since LM is based on solid
 logical foundations, we argue that we can also prove interesting properties of
 programs, including correctness and termination. We will prove our thesis
-through five major components:
+through five major contributions:
 
 \begin{itemize}
    
@@ -20,25 +20,24 @@ through five major components:
    our knowledge, LM is the first linear logic based language implementation
    that attempts to solve real world problems.
 
+   % need to talk about thread facts here.
+
    \item Coordination
    
    LM offers execution control to the programmer through the use of coordination
-   directives to make the program faster and more scalable. These coordination
-   directives change how the runtime system schedules computation and can be
-   written with the same facilities used to write standard program code.  We are
-   using the concept of \emph{action facts} to coordinate the execution of
+   facts to make the program faster and more scalable. These coordination
+   facts change how the runtime system schedules computation and partitions data
+   and is semantically equivalent to standard computation facts.
+   We used the concept of \emph{action facts} and \emph{sensing facts} o coordinate the execution of
    programs.  We can increase the priority of certain nodes during runtime
    according to the state of the computation and to the state of the runtime in
    order to make better scheduling decisions so that programs can run faster.
-   We intend to add more coordination directives and action facts and also write
-   more programs that can take advantage of coordination.
    
    \item Provability
    
-   Since LM is a logic programming language, we want to leverage the logical
-   foundations of the language to show how to prove properties of a few
-   programs. We are mostly interested in proving correctness and termination.
-   We also want to show that coordination directives do not change those
+   Since LM is a logic programming language, we leveraged the logical
+   foundations of the language to show how to prove correctness and termination of a few
+   programs. We also show that coordination facts do not change those
    correctness proofs of programs but only improve run time, scalability or
    memory usage.
 
@@ -55,12 +54,12 @@ through five major components:
 
    \item Experimental Results
 
-   We have implemented a new compiler and a virtual machine prototype from
+   We have implemented a compiler and a virtual machine prototype from
    scratch that executes on multicore machines.  We have implemented programs
    such as belief propagation, belief propagation with residual splash,
    PageRank, graph coloring, N queens, shortest path, diameter estimation,
    MapReduce, game of life, quick-sort, neural network training, among others.
-   Our preliminary results show that our particular implementation provides
-   good scalability with at least 16 threads.
+   Our experimental results show that our particular implementation provides
+   good scalability with at least 24 cores.
    
 \end{itemize}
