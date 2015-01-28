@@ -1,42 +1,163 @@
-\newcommand{\mz}{\m{match} \;}
-\newcommand{\tab}[0]{\;\;\;\;}
-\newcommand{\dz}{\m{derive} \;}
-\newcommand{\comp}[0]{\m{comp} \;}
-\newcommand{\az}{\m{apply} \;}
-\newcommand{\doz}{\m{run} \;}
-\newcommand{\seqnocut}[3]{#1 ; #2 \Rightarrow #3}
-\newcommand{\defeq}{\buildrel\triangle\over =}
-\newcommand{\compr}[1]{\m{def} \; #1}
-
-\newcommand{\mo}{\m{match}_1 \;}
-\newcommand{\cont}{\m{cont} \;}
-\newcommand{\contc}{\m{contc} \;}
-\newcommand{\done}{\m{derive}_1 \;}
-\newcommand{\doo}{\m{run}_1 \;}
-\newcommand{\mc}[0]{\m{match}_c \; }
-\newcommand{\dall}[0]{\m{fix} \; }
-\newcommand{\strans}[0]{\m{strans} \;}
-\newcommand{\dc}{\m{derive}_c \;}
-\newcommand{\ao}{\m{apply}_1 \;}
-
-This chapter provides a brief overview of the proof theoretic basis behind \lang and the dynamic semantics
-of the language. First, we will present the subset of linear logic from which \lang is built on. Second, we present the high level dynamic semantics (how rules are evaluated) followed by the low level dynamics, a close representation of how to virtual machine runs. Finally, we give an overview of the soundness proof of the low level semantics.
+This chapter provides an overview of the proof theoretic basis behind LM
+and the dynamic semantics of the language. First, we will present the subset of
+linear logic from which LM is built on. Second, we present the high level
+dynamic semantics - how rules are evaluated and node communication - followed by
+the low level dynamics, a close representation of how the virtual machine runs.
+Finally, we prove that the low level dynamic semantics are sound in relation to
+the high level dynamic semantics.
 
 \section{Linear Logic}
 
-\lang differs greatly from other Datalog-like languages due to the use of linear logic~\cite{Girard95logic:its}. Traditional forward-chaining logic programming languages make only use of classical logic, in which derived facts are true forever. Many ad-hoc extensions~\cite{Liu98extendingdatalog,Ludascher95alogical} have been devised in the past to support state updates in Datalog, but most are extra-logical which makes it harder to reason about programs.
-\lang uses linear logic as its foundation, therefore state updates are completely natural to the language.
+Logic, as \emph{classically} understood, treats true propositions as \emph{persistent
+truth}. When a persistent proposition is needed to prove other propositions, it can
+be reused as many times as we wish because it is true indefinetly. This is
+also true in the \emph{constructive} or \emph{intuitionistic} school of logic.
+Linear logic developed by Girard~\cite{Girard95logic:its}
+extends \emph{persistent logic} with linear propositions which can be understood
+as ephemeral resources that can be used only once to prove other propositions.
+Naturally, linear logic is well suited for modelling computing systems that deal
+with state, of which LM is one of them.  Traditional forward-chaining logic
+programming languages like Datalog only use persistent logic, however many
+ad-hoc extensions~\cite{Liu98extendingdatalog,Ludascher95alogical} have been
+devised in to support state updates, but most are extra-logical which makes it
+harder to reason about programs. LM uses linear logic as its foundation,
+therefore state updates are natural to the language.
+
+In linear logic, truth is treated as a resource that is consumed once used. For
+instance, in the graph visit program in Fig.~\ref{code:visit}, the
+\texttt{unvisited(A)} and \texttt{visit(A)} linear facts are consumed in order
+to prove \texttt{visit(A)} and the comprehension. If those facts were
+persistent, then the rule would make no sense, because the node would be
+\texttt{visited} and \texttt{unvisited} at the same time!
+
+\subsection{Sequent calculus}
+
+We know specify and describe the fragment of the sequent calculus used for the
+LM language.  In this thesis, we follow the intuitionistic approach to logic and
+use the sequent calculus to describe logics.
+
+\[
+\infer[\otimes R]
+{\Psi ; \seqx{\Gamma}{\Delta, \Delta'}{A \otimes B}}
+{\Psi ; \seqx{\Gamma}{\Delta}{A} & \seqx{\Gamma}{\Delta}{B}}
+\tab
+\infer[\otimes L]
+{\Psi ;\seqx{\Gamma}{\Delta, A \otimes B}{C}}
+{\Psi ; \seqx{\Gamma}{\Delta, A, B}{C}}
+\]
+
+\[
+\infer[\lolli R]
+{\Psi ; \seqx{\Gamma}{\Delta}{A \lolli B}}
+{\Psi ; \seqx{\Gamma}{\Delta, A}{B}}
+\tab
+\infer[\lolli L]
+{\seqx{\Gamma}{\Delta, \Delta', A \lolli B}{C}}
+{\Psi ; \seqx{\Gamma}{\Delta}{A} &
+   \Psi ; \seqx{\Gamma}{\Delta', B}{C}}
+\]
+
+
+\[
+\infer[\bang R]
+{\Psi ; \seqx{\Gamma}{\cdot}{\bang A}}
+{\Psi ; \seqx{\Gamma}{\cdot}{A}}
+\tab
+\infer[\bang L]
+{\Psi ; \seqx{\Gamma}{\Delta, \bang A}{C}}
+{\Psi ; \seqx{\Gamma, A}{\Delta}{C}}
+\tab
+\infer[\m{copy}]
+{\Psi ; \seqx{\Gamma, A}{\Delta}{C}}
+{\Psi ; \seqx{\Gamma, A}{\Delta, A}{C}}
+\]
+
+\[
+\infer[\one R]
+{\Psi ; \seqx{\Gamma}{\cdot}{\one}}
+{}
+\tab
+\infer[\one L]
+{\Psi ; \seqx{\Gamma}{\Delta, \one}{C}}
+{\Psi ; \seqx{\Gamma}{\Delta}{C}}
+\]
+
+\[
+\infer[\forall R]
+{\Psi ; \seqx{\Gamma}{\Delta}{\forall n:\tau. A}}
+{\Psi, m:\tau ; \seqx{\Gamma}{\Delta}{A\{m/n\}}}
+\tab
+\infer[\forall L]
+{\Psi ; \seqx{\Gamma}{\Delta, \forall n:\tau. A}{C}}
+{\Psi \vdash M : \tau & \Psi ; \seqx{\Gamma}{\Delta, A\{M/n\}}{C}}
+\]
+
+\[
+\infer[\exists R]
+{\Psi ; \seqx{\Gamma}{\Delta}{\exists n: \tau. A}}
+{\Psi \vdash M : \tau &
+   \Psi ; \seqx{\Gamma}{\Delta}{A \{M/n\}}}
+\tab
+\infer[\exists L]
+{\Psi ; \seqx{\Gamma}{\Delta, \exists n:\tau. A}{C}}
+{\Psi, m:\tau ; \seqx{\Gamma}{\Delta, A\{m/n\}}{C}}
+\]
+
+\[
+\infer[\with R]
+{\Psi ; \seqx{\Gamma}{\Delta}{A \with B}}
+{\Psi ; \seqx{\Gamma}{\Delta}{A} & \seqx{\Gamma}{\Delta}{B}}
+\tab
+\infer[\with L_1]
+{\Psi ; \seqx{\Gamma}{\Delta, A \with B}{C}}
+{\Psi ; \seqx{\Gamma}{\Delta, A}{C}}
+\tab
+\infer[\with L_2]
+{\Psi ; \seqx{\Gamma}{\Delta, B \with B}{C}}
+{\Psi ; \seqx{\Gamma}{\Delta, B}{C}}
+\]
+
+\[
+\infer[\m{def} \; R]
+{\Psi ; \seqx{\Gamma}{\Delta}{\compr{A'}}}
+{\Psi ; \seqx{\Gamma}{\Delta}{B\theta} &
+ A \defeq B & A' \doteq A\theta}
+\tab
+\infer[\m{def} \; L]
+{\Psi ; \seqx{\Gamma}{\Delta, \compr{A'}}{C}}
+{
+   \Psi ; \seqx{\Gamma}{\Delta, B\theta}{C} & A \defeq B & A' \doteq A\theta
+}
+\]
+
+Linear logic is a \emph{substructural
+logic} because it lacks the weakening and contraction rules:
+
+\[
+\infer[weakening]
+{\Psi ; \seqx{\Gamma}{\Delta, A}{C}}
+{\Psi ; \seqx{\Gamma}{\Delta}{C}}
+\tab
+\infer[contraction]
+{\Psi ; \seqx{\Gamma}{\Delta, A, A}{C}}
+{\Psi ; \seqx{\Gamma}{\Delta, A}{C}}
+\]
+
 
 We use a small subset of the original linear logic proof system along with an extension for definitions to improve
-the expressiveness of the language. We summarize the connectives used in Table~\ref{table:linear}
-and how they are related to the \lang syntax.
+the expressiveness of the language.
+
+\subsection{From the sequent calculus to LM}
+
+We summarize the connectives used in Table~\ref{table:linear}
+and how they are related to the LM syntax.
 
 \begin{table*}
    \begin{center}
 \resizebox{16cm}{!}{
     \begin{tabular}{ | l | l || l | l | l |}
     \hline
-    Connective                   & Description                                      & \lang Syntax                                  & \lang Place     & \lang Example                                  \\ \hline \hline
+    Connective                   & Description                                      & LM Syntax                                  & LM Place     & LM Example                                  \\ \hline \hline
     $\emph{fact}(\hat{x})$       & Linear facts.                                    & $fact(\hat{x})$                               & Body or Head    & \texttt{path(A, P)}                            \\ \hline
     $\bang \emph{fact}(\hat{x})$ & Persistent facts.                                & $\bang fact(\hat{x})$                         & Body or Head    & \texttt{$\bang$edge(X, Y, W)}                  \\ \hline
     $1$                          & Represents rules with an empty head.             & $1$                                           & Head            & \texttt{1}                                     \\ \hline
@@ -50,12 +171,12 @@ and how they are related to the \lang syntax.
     \end{tabular}
 }
 \end{center}
-\caption{Connectives from Linear Logic used in \lang.}
+\caption{Connectives from Linear Logic used in LM.}
 \label{table:linear}
 \end{table*}
 
 The sequent calculus for our linear logic fragment is shown in Fig.~\ref{linear_logic}.
-The sequent has the form $\Psi ; \seqnocut{\Gamma}{\Delta}{C}$, where $\Psi$ is the typed
+The sequent has the form $\Psi ; \seqx{\Gamma}{\Delta}{C}$, where $\Psi$ is the typed
 term context used in the quantifiers, $\Gamma$ is the multi-set of persistent terms, $\Delta$
 is the multi-set of linear terms and $C$ is the term we want to prove.
 
@@ -87,105 +208,9 @@ Aggregates work identically, but they need an extra argument to accumulate the a
 
 The aggregate is initiated as $\compr{C} \; 0$.
 
-\begin{figure}[ht]
-\[
-\infer[\one R]
-{\Psi ; \seqnocut{\Gamma}{\cdot}{\one}}
-{}
-\tab
-\infer[\one L]
-{\Psi ; \seqnocut{\Gamma}{\Delta, \one}{C}}
-{\Psi ; \seqnocut{\Gamma}{\Delta}{C}}
-\]
-
-\[
-\infer[\with R]
-{\Psi ; \seqnocut{\Gamma}{\Delta}{A \with B}}
-{\Psi ; \seqnocut{\Gamma}{\Delta}{A} & \seqnocut{\Gamma}{\Delta}{B}}
-\tab
-\infer[\with L_1]
-{\Psi ; \seqnocut{\Gamma}{\Delta, A \with B}{C}}
-{\Psi ; \seqnocut{\Gamma}{\Delta, A}{C}}
-\tab
-\infer[\with L_2]
-{\Psi ; \seqnocut{\Gamma}{\Delta, B \with B}{C}}
-{\Psi ; \seqnocut{\Gamma}{\Delta, B}{C}}
-\]
-
-\[
-\infer[\otimes R]
-{\Psi ; \seqnocut{\Gamma}{\Delta, \Delta'}{A \otimes B}}
-{\Psi ; \seqnocut{\Gamma}{\Delta}{A} & \seqnocut{\Gamma}{\Delta}{B}}
-\tab
-\infer[\otimes L]
-{\Psi ;\seqnocut{\Gamma}{\Delta, A \otimes B}{C}}
-{\Psi ; \seqnocut{\Gamma}{\Delta, A, B}{C}}
-\]
-
-\[
-\infer[\lolli R]
-{\Psi ; \seqnocut{\Gamma}{\Delta}{A \lolli B}}
-{\Psi ; \seqnocut{\Gamma}{\Delta, A}{B}}
-\tab
-\infer[\lolli L]
-{\seqnocut{\Gamma}{\Delta, \Delta', A \lolli B}{C}}
-{\Psi ; \seqnocut{\Gamma}{\Delta}{A} &
-   \Psi ; \seqnocut{\Gamma}{\Delta', B}{C}}
-\]
-
-\[
-\infer[\forall R]
-{\Psi ; \seqnocut{\Gamma}{\Delta}{\forall n:\tau. A}}
-{\Psi, m:\tau ; \seqnocut{\Gamma}{\Delta}{A\{m/n\}}}
-\tab
-\infer[\forall L]
-{\Psi ; \seqnocut{\Gamma}{\Delta, \forall n:\tau. A}{C}}
-{\Psi \vdash M : \tau & \Psi ; \seqnocut{\Gamma}{\Delta, A\{M/n\}}{C}}
-\]
-
-\[
-\infer[\exists R]
-{\Psi ; \seqnocut{\Gamma}{\Delta}{\exists n: \tau. A}}
-{\Psi \vdash M : \tau &
-   \Psi ; \seqnocut{\Gamma}{\Delta}{A \{M/n\}}}
-\tab
-\infer[\exists L]
-{\Psi ; \seqnocut{\Gamma}{\Delta, \exists n:\tau. A}{C}}
-{\Psi, m:\tau ; \seqnocut{\Gamma}{\Delta, A\{m/n\}}{C}}
-\]
-
-\[
-\infer[\bang R]
-{\Psi ; \seqnocut{\Gamma}{\cdot}{\bang A}}
-{\Psi ; \seqnocut{\Gamma}{\cdot}{A}}
-\tab
-\infer[\bang L]
-{\Psi ; \seqnocut{\Gamma}{\Delta, \bang A}{C}}
-{\Psi ; \seqnocut{\Gamma, A}{\Delta}{C}}
-\tab
-\infer[\m{copy}]
-{\Psi ; \seqnocut{\Gamma, A}{\Delta}{C}}
-{\Psi ; \seqnocut{\Gamma, A}{\Delta, A}{C}}
-\]
-
-\[
-\infer[\m{def} \; R]
-{\Psi ; \seqnocut{\Gamma}{\Delta}{\compr{A'}}}
-{\Psi ; \seqnocut{\Gamma}{\Delta}{B\theta} &
- A \defeq B & A' \doteq A\theta}
-\tab
-\infer[\m{def} \; L]
-{\Psi ; \seqnocut{\Gamma}{\Delta, \compr{A'}}{C}}
-{
-   \Psi ; \seqnocut{\Gamma}{\Delta, B\theta}{C} & A \defeq B & A' \doteq A\theta
-}
-\]
-\caption{Linear logic fragment used in \lang.}\label{linear_logic}
-\end{figure}
-
 \section{High Level Dynamic Semantics}
 
-In this section, we are going to present the high level dynamic semantics of \lang. The semantics
+In this section, we are going to present the high level dynamic semantics of LM. The semantics
 formalize the mechanism of matching rules and deriving new facts. The high level semantics
 present a simplified overview of the dynamics of the language that are closer to the formalism
 of linear logic present in Fig.~\ref{linear_logic} than the implementation principles of our
@@ -370,7 +395,7 @@ we grab the top frame and select the next fact candidate to complete the matchin
 If all candidates are exhausted, we pop the current frame and try the next one.
 
 By using this matching mechanism, we can determine which facts need to be used to match a rule.
-The virtual machine implemented for \lang works pretty much in the same way, by iterating over
+The virtual machine implemented for LM works pretty much in the same way, by iterating over
 the available facts at each choice point and then committing to the rule if the matching process
 succeeds.
 
@@ -479,8 +504,8 @@ and $\dz \lolli$ rules to fold and unfold the comprehension term. The theorem fo
 
 \section{Summary}
 
-In this chapter we presented the proof theoretic foundations of \lang.
-First, we introduced the linear logic fragment that supports \lang. We then presented the
+In this chapter we presented the proof theoretic foundations of LM.
+First, we introduced the linear logic fragment that supports LM. We then presented the
 high level dynamic semantics that was created by interpreting the linear logic fragment using
 focusing and chaining. Next, we designed
 a formal system called the low level dynamic semantics that mimics the execution of rules in

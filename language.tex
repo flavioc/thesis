@@ -9,17 +9,18 @@ uses linear facts, they are consumed and thus deleted from the database.  The
 program stops when we reach \emph{quiescence}, that is, when we can no longer
 apply any derivation rules.
 
-The database of facts is a graph data structure where each node contains a
-fraction of the database.  Derivation rules are allowed only to manipulate
-facts belonging to the same node. This restriction allows multiple nodes of the graph
-to perform independent rule derivations at the node level, thus introducing
-concurrency in the program. Communication between nodes arises when a derivation
-rule derives a fact that is in another node.
+LM departs from Datalog by making the database of facts a graph data structure
+where each node contains a fraction of the database. Derivation rules are then
+restricted so that they are only allowed to manipulate facts belonging to the
+same node. This restriction allows multiple nodes of the graph to perform
+independent rule derivations at the node level, thus introducing concurrency in
+the program. Communication between nodes arises when a derivation rule derives a
+fact that is in another node.
 
 \section{A taste of LM}
 
-In order to introduce LM, we are going to present and dicuss three basic LM
-programs.
+In order to understand how LM programs are written, we now present and discuss
+three basic LM programs.
 
 \subsection{First example: key/value dictionary}
 
@@ -75,10 +76,10 @@ the first argument of every predicate must be typed as \texttt{node} because the
 first argument indicates where the node lives in the graph. Predicates
 \texttt{left/2} and \texttt{right/2} are persistent while \texttt{value/3} and
 \texttt{replace/3} are linear. Persistent predicates are preceded with a
-\texttt{!} symbol in LM rules for improved readability. Linear predicate \texttt{value/3} assigns a
-key/value pair to a node that can be updated later. The \texttt{replace/3}
-linear predicate represents an update operation where the key in the second
-argument will be updated to the value in the third argument.
+\texttt{!} symbol in LM rules for improved readability. Linear predicate
+\texttt{value/3} assigns a key/value pair to a node that can be updated later.
+The \texttt{replace/3} linear predicate represents an update operation where the
+key in the second argument will be updated to the value in the third argument.
 
 The algorithm uses three rules for the three possible cases of updating a key's
 value: the first rule (lines 6-8) performs the update by removing
@@ -570,7 +571,7 @@ facts and a rule:
 By applying the rule, we consume \texttt{count-prices(@1)} and derive the
 aggregate which consumes all the \texttt{price(@1, P)} facts.  These are summed
 and \texttt{total(@1,~12)} is derived. LM provides several aggregate operations,
-including the \texttt{min} (mininum value), \texttt{max} (maximum value),
+including the \texttt{min} (minimum value), \texttt{max} (maximum value),
 \texttt{sum} (add all numbers), \texttt{count} (count combinations) and
 \texttt{collect} (collect items into a list).
 
@@ -586,18 +587,20 @@ the data and is used by the processors to communicate and do computation.  This
 differs from imperative languages, since in those languages data and computation
 are two separate entities.
 
-The execution is performed at the node level and can happen
-non-deterministically (i.e., any node can be picked to run). This means that the
-programmer cannot expect that facts coming from other nodes will be considered
-as a whole or partially since the process is non-deterministic.  Under these
-restrictions, computation can then be parallelized by processing many nodes
-concurrently.
+The execution is performed at the node level and happens non-deterministically
+(i.e., any node can be picked to run). This means that the programmer cannot
+expect that facts coming from different nodes will be considered as a whole or
+partially since the process is non-deterministic. The operational semantics
+promises that rule derivations are performed atomically, therefore if a rule
+sends many facts to a node then the target node will receive them all at once.
+Under these restrictions, computation can then be parallelized by processing
+many nodes concurrently.
 
 Each rule in LM has a defined priority that is inferred from its position in the
 source file.  Rules at the beginning of the file have higher priority. At the
 node level, we consider all the new facts that have been not consider before to
-create a priority queue of \emph{candidate rules}.  The queue of candidate rules is then
-applied (by priority) and updated as new facts are derived or consumed.
+create a priority queue of \emph{candidate rules}.  The queue of candidate rules
+is then applied (by priority) and updated as new facts are derived or consumed.
 Section~\ref{sec:core_engine} gives details in how our implementation manages
 the set of candidate rules.
 
@@ -605,6 +608,7 @@ the set of candidate rules.
 
 In this chapter we gave an overview of the LM language, including its syntax and
 operational semantics.  We also explained how to write programs using all the
-facilities provided by LM, including linear facts and comprehensions. Since LM
-uses implicit parallelism, programs can be run in parallel in multicore
-architectures without any modification.
+facilities provided by LM, including linear facts and comprehensions. We also
+explained how to informally prove a graph visit program.
+The implicit parallelism of LM arising from database partitioning and rule
+restriction allows programs to be run in a concurrent fashion.
