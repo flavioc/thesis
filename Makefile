@@ -16,7 +16,8 @@ thesis.pdf: thesis.tex	\
 		statement.tex \
 		related_work.tex \
 		program_proofs.tex \
-		abstract.tex
+		abstract.tex \
+		macros.tex
 	pdflatex thesis.tex
 	pdflatex thesis.tex
 	bibtex thesis

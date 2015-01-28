@@ -39,8 +39,15 @@
 \newcommand{\doz}{\m{run} \;}
 \newcommand{\seqnocut}[3]{#1 ; #2 \Rightarrow #3}
 \newcommand{\defeq}{\buildrel\triangle\over =}
-\newcommand{\seqx}[3]{#1 ; #2 \implies #3}
+\newcommand{\seqx}[3]{#1 ; #2 \vdash #3}
 \newcommand{\compr}[1]{\m{def} \; #1}
+\newcommand{\itersname}[0]{def}
+\newcommand{\iters}[2]{\m{def}_{#1} \; #2}
+\newcommand{\iter}[3]{\m{def}_{#1}^{#2} \; #3}
+\newcommand{\iterop}[2]{\mathtt{op} \; \widehat{#1} \; \widehat{#2}}
+\newcommand{\iterunfold}[6]{\forall_{\widehat{#3}}. (#5 \widehat{x} \lolli #6
+         \otimes \iter{#1}{#2}{(\iterop{#3}{#4})})}
+\newcommand{\iterunfoldz}[2]{(\lambda_{\widehat{x}}. #1)\widehat{#2}}
 
 \newcommand{\mo}{\m{match}_1 \;}
 \newcommand{\cont}{\m{cont} \;}
