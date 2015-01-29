@@ -1,0 +1,664 @@
+We now describe the logic called \fragment used as a basis for LM. \fragment is
+based on a fragment of linear logic plus an extension. Note that in this thesis
+we follow the intuitionistic approach and use the sequent calculus~\cite{gen35}
+to specify \fragment. Our initial sequent is written as $\Psi;
+\seqx{\Gamma}{\Delta}{C}$ and can be read as "assuming persistent resources
+$\Psi$ and linear resources $\Delta$ then $C$ is true".  More specifically,
+$\Psi$ is the typing context, $\Gamma$ is a multi-set of persistent resources,
+$\Delta$ is a multi-set of linear resources while $C$ is the proposition we want
+to prove.
+
+We first have the \emph{simultaneous conjunction} $A \otimes B$ that packages
+linear resources together. In the right rule, $A \otimes B$ is true if both $A$
+and $B$ are true, and, in the left rule, it is possible to split $A \otimes B$
+apart.
+
+\[
+\infer[\otimes R]
+{\Psi ; \seqx{\Gamma}{\Delta, \Delta'}{A \otimes B}}
+{\Psi ; \seqx{\Gamma}{\Delta}{A} & \seqx{\Gamma}{\Delta}{B}}
+\tab
+\infer[\otimes L]
+{\Psi ;\seqx{\Gamma}{\Delta, A \otimes B}{C}}
+{\Psi ; \seqx{\Gamma}{\Delta, A, B}{C}}
+\]
+
+To express inference, we introduce the \emph{linear implication} connective
+written as $A \lolli B$. For the right rule, we prove $A \lolli B$ by assuming
+$A$ and then proving $B$, while in the left rule, we obtain $B$ by using some
+linear resources to prove $A$.
+
+\[
+\infer[\lolli R]
+{\Psi ; \seqx{\Gamma}{\Delta}{A \lolli B}}
+{\Psi ; \seqx{\Gamma}{\Delta, A}{B}}
+\tab
+\infer[\lolli L]
+{\seqx{\Gamma}{\Delta, \Delta', A \lolli B}{C}}
+{\Psi ; \seqx{\Gamma}{\Delta}{A} &
+   \Psi ; \seqx{\Gamma}{\Delta', B}{C}}
+\]
+
+Next, we introduce persistent resources written as $\bang A$. For the right
+rule, we prove $\bang A$ by proving it without any linear resources. Likewise,
+to use a persistent resource, we simply drop the $
+\bang$. There is also a $\m{copy}$ rule that moves persistent resources from
+$\Gamma$ to $\Delta$. Remember that $\Gamma$ contains persistent resources.
+
+\[
+\infer[\bang R]
+{\Psi ; \seqx{\Gamma}{\cdot}{\bang A}}
+{\Psi ; \seqx{\Gamma}{\cdot}{A}}
+\tab
+\infer[\bang L]
+{\Psi ; \seqx{\Gamma}{\Delta, \bang A}{C}}
+{\Psi ; \seqx{\Gamma, A}{\Delta}{C}}
+\tab
+\infer[\m{copy}]
+{\Psi ; \seqx{\Gamma, A}{\Delta}{C}}
+{\Psi ; \seqx{\Gamma, A}{\Delta, A}{C}}
+\]
+
+Another useful connective is the \emph{multiplicative unit} of the $\otimes$
+connective. It is written as $\one$ and is best understood as something that
+does not need any resource to be proven.
+
+\[
+\infer[\one R]
+{\Psi ; \seqx{\Gamma}{\cdot}{\one}}
+{}
+\tab
+\infer[\one L]
+{\Psi ; \seqx{\Gamma}{\Delta, \one}{C}}
+{\Psi ; \seqx{\Gamma}{\Delta}{C}}
+\]
+
+Next, we introduce the \emph{quantification} connectives, namely \emph{universal
+quantification} $\forall_{n:\tau}. A$ and \emph{existencial quantification}
+$\exists_{n:\tau}. A$. These connectives use the typing context $\Psi$ because
+they can introduce and read terms from the context. The right and left duals of
+those two connectives are dual.
+
+\[
+\infer[\forall R]
+{\Psi ; \seqx{\Gamma}{\Delta}{\forall_{n:\tau}. A}}
+{\Psi, m:\tau ; \seqx{\Gamma}{\Delta}{A\{m/n\}}}
+\tab
+\infer[\forall L]
+{\Psi ; \seqx{\Gamma}{\Delta, \forall_{n:\tau}. A}{C}}
+{\Psi \vdash M : \tau & \Psi ; \seqx{\Gamma}{\Delta, A\{M/n\}}{C}}
+\]
+
+\[
+\infer[\exists R]
+{\Psi ; \seqx{\Gamma}{\Delta}{\exists_{n: \tau}. A}}
+{\Psi \vdash M : \tau &
+   \Psi ; \seqx{\Gamma}{\Delta}{A \{M/n\}}}
+\tab
+\infer[\exists L]
+{\Psi ; \seqx{\Gamma}{\Delta, \exists_{n:\tau}. A}{C}}
+{\Psi, m:\tau ; \seqx{\Gamma}{\Delta, A\{m/n\}}{C}}
+\]
+
+We now depart from standard linear logic and introduce \emph{iterative
+definitions}. Iterative definitions are used to describe comprehensions and
+aggregates. This connective is a definition that can be unfolded recursively
+for an arbitrary number of times and is inspired in the Baelde's work on
+least and greatest fixed points in linear
+logic~\cite{Baelde:2012:LGF:2071368.2071370}. Baelde's system goes beyond
+simple recursive definitions and allows proofs using induction and
+co-induction in linear logic.
+
+Iterative definitions are written as $\iters{name}{\widehat{V}}$, where $name$
+is the identifier of the definition.
+\[
+\infer[\itersname^* R]
+{\Psi ; \seqx{\Gamma}{\Delta}{\iters{name}{\widehat{V}}}}
+{\Psi ; \seqx{\Gamma}{\Delta}{\iter{name}{N}{\widehat{V}}}}
+\tab
+\infer[\itersname^* L]
+{\Psi ; \seqx{\Gamma}{\Delta, \iters{name}{\widehat{V}}}{C}}
+{\Psi ; \seqx{\Gamma}{\Delta, \iter{name}{N}{\widehat{V}}}{C}}
+\]
+
+A definition $name$ has the following definition:
+
+\begin{align}
+\iter{name}{0}{\widehat{V}} & \defeq \iterunfoldz{C}{V} \\
+\iter{name}{N}{\widehat{V}} & \defeq \iterunfold{name}{N-1}{x}{V}{A}
+\end{align}
+
+Where $\widehat{V}$ is a list of arguments and $\mathtt{op}$ is some function
+that merges its arguments. Terms $A$ and $C$ are not allowed to have other
+iterative definitions.
+
+Each $\iter{name}{N}{\widehat{V}}$ has left and right rules for the case when $N
+> 0$.
+
+\[
+\infer[\itersname^N R]
+{\Psi ; \seqx{\Gamma}{\Delta}{\iter{name}{N}{\widehat{V}}}}
+{\Psi ; \seqx{\Gamma}{\Delta}{\forall_{\widehat{x}}. (A \widehat{x} \lolli B
+      \otimes \iter{name}{N-1}{(\iterop{x}{V})}})}
+\]
+\[
+\infer[\itersname^N L]
+{\Psi ; \seqx{\Gamma}{\Delta, \iter{name}{N}{\widehat{V}}}{C}}
+{\Psi ; \seqx{\Gamma}{\Delta, \forall_{\widehat{x}}. (A \widehat{x} \lolli B
+      \otimes \iter{name}{N-1}{(\iterop{x}{V})})}{C}}
+\]
+
+Otherwise, if $N = 0$, then the iteration stops:
+
+\[
+\infer[\itersname^0 R]
+{\Psi ; \seqx{\Gamma}{\Delta}{\iter{name}{0}{\widehat{V}}}}
+{\Psi ; \seqx{\Gamma}{\Delta}{(\lambda_{\widehat{x}}. A)\widehat{V}}}
+\tab
+\infer[\itersname^0 L]
+{\Psi ; \seqx{\Gamma}{\Delta, \iter{name}{0}{\widehat{V}}}{C}}
+{\Psi ; \seqx{\Gamma}{\Delta, (\lambda_{\widehat{x}}. A)\widehat{V}}{C}}
+\]
+
+Finally, we complete the linear logic system with the \emph{cut rules} and the
+\emph{identity rule}:
+
+\[
+\infer[cut_A]
+{\Psi ; \seqx{\Gamma}{\Delta, \Delta'}{C}}
+{\Psi ; \seqx{\Gamma}{\Delta}{A} & \Psi ; \seqx{\Gamma}{\Delta', A}{C}}
+\tab
+\infer[cut\bang_A]
+{\Psi ; \seqx{\Gamma}{\Delta}{C}}
+{\Psi ; \seqx{\Gamma}{\cdot}{A} & \Psi ; \seqx{\Gamma, A}{\Delta}{C}}
+\]
+
+\[
+\infer[id_A]
+{\Psi ; \seqx{\Gamma}{A}{A}}
+{}
+\]
+
+\subsection{Cut Reduction}
+
+In order to use the previous linear logic system, we prove that it is
+\emph{consistent}. In order to prove such thing, we first define a new sequent
+$\Psi ; \seqnocut{\Gamma}{\Delta}{C}$ that includes all the previous rules
+except the cut rules. Our system is consistent if we can prove anything that
+uses the cut rules with only the connectives of the system.
+
+\begin{theorem}[Cut elimination]
+If $\Psi ; \seqx{\Gamma}{\Delta}{A}$ then $\Psi ; \seqnocut{\Gamma}{\Delta}{A}$.
+\end{theorem}
+\begin{proof}
+Induction on the structure of the assumption. All cases are trivial except for
+the cut rules, where we use the admissibility of cut.
+\end{proof}
+
+\begin{theorem}[Admissibility of cut]
+If $\Psi ; \seqnocut{\Gamma}{\Delta}{A}$ and $\Psi ; \seqnocut{\Gamma}{\Delta',
+   A}{C}$ then $\Psi ; \seqnocut{\Gamma}{\Delta, \Delta'}{C}$.
+\end{theorem}
+\begin{proof}
+By a nested induction, first on the structure of $A$ and on the structures of
+the first or the second assumption. We have to prove 3 main cases:
+
+\begin{itemize}
+   \item Identity cases: when both assumptions use the identity rule.
+   \item Principal cases: when the formula $A$ is introduced by both left and
+   right rules of the same connective.
+   \item Commutative cases: when one of the two assumptions is fixed and the
+   other is variable (depending on the rule applied). We appeal to the induction
+   hypothesis because we the variable assumption gets smaller while the other
+   stays the same.
+\end{itemize}
+
+We show those cases for the iterative definition only.
+
+\paragraph{Iterative definition identity}
+
+\[
+\infer[\itersname^* L]
+{\Psi ; \seqnocut{\Gamma}{\iters{name}{\widehat{V}}}{\iters{name}{\widehat{V}}}}
+{
+   \infer[\itersname^* R]
+   {\Psi ;
+      \seqnocut{\Gamma}{\iter{name}{N}{\widehat{V}}}{\iters{name}{\widehat{V}}}}
+   {
+      \infer[id]
+      {\Psi ;
+      \seqnocut{\Gamma}{\iter{name}{N}{\widehat{V}}}{\iter{name}{N}{\widehat{V}}}}
+      {}
+   }
+}
+\]
+
+\[
+\infer[\itersname^N L]
+{\Psi ;
+   \seqnocut{\Gamma}{\iter{name}{N}{\widehat{V}}}{\iter{name}{N}{\widehat{V}}}}
+{
+   \infer[\itersname^N R]
+   {\Psi ; \seqnocut{\Gamma}{\iterunfold{name}{N-1}{x}{V}{A}}{\iter{name}{N}{\widehat{V}}}}
+   {
+      \infer[id]
+      {
+      \Psi ; \seqnocut{\Gamma}{\iterunfold{name}{N-1}{x}{V}{A}}{\iterunfold{name}{N-1}{x}{V}{A}}}
+      {}
+   }
+}
+\]
+
+\[
+\infer[\itersname^0 L]
+{\Psi ;
+   \seqnocut{\Gamma}{\iter{name}{0}{\widehat{V}}}{\iter{name}{0}{\widehat{V}}}}
+{
+   \infer[\itersname^0 R]
+   {
+      \Psi; \seqnocut{\Gamma}{\iterunfoldz{C}{V}}{\iter{name}{0}{\widehat{V}}}
+   }
+   {
+      \infer[id]
+      {
+         \Psi ; \seqnocut{\Gamma}{\iterunfoldz{C}{V}}{\iterunfoldz{C}{V}}
+      }
+      {}
+   }
+}
+\]
+
+\paragraph{Iterative definition principal case}
+
+\begin{description}
+\item[$\iters{name}{\widehat{V}}$]
+
+Given an inference that uses the left and right rules of the iterative
+definition $\iters{name}{\widehat{V}}$:
+
+\[
+\infer[cut_{\iters{name}{\widehat{V}}}]
+{
+   \Psi ; \seqnocut{\Gamma}{\Delta, \Delta'}{C}
+}
+{
+   \infer[\itersname^* R]
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta}{\iters{name}{\widehat{V}}}
+   }
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta}{\iter{name}{N}{\widehat{V}}}
+   }
+   &
+   \infer[\itersname^* L]
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta', \iters{name}{\widehat{V}}}{C}
+   }
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta', \iter{name}{N}{\widehat{V}}}{C}
+   }
+}
+\]
+
+We can apply a cut to the smaller formulas and get the same result:
+
+\[
+\infer[cut_{\iter{name}{N}{\widehat{V}}}]
+{
+   \Psi ; \seqnocut{\Gamma}{\Delta, \Delta'}{C}
+}
+{
+   \Psi ; \seqnocut{\Gamma}{\Delta}{\iter{name}{N}{\widehat{V}}}
+   &
+   \Psi ; \seqnocut{\Gamma}{\Delta', \iter{name}{N}{\widehat{V}}}{C}
+}
+\]
+
+\item[$\iter{name}{N}{\widehat{V}}$]
+
+The same process can be applied to the $\iter{name}{N}{\widehat{V}}$ connective:
+
+{\scriptsize
+\[
+\infer[cut_{\iter{name}{N}{\widehat{V}}}]
+{
+   \Psi ; \seqnocut{\Gamma}{\Delta, \Delta'}{C}
+}
+{
+   \infer[\itersname^N R]
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta}{\iter{name}{N}{\widehat{V}}}
+   }
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta}{\iterunfold{name}{N-1}{x}{V}{A}}
+   }
+   &
+   \infer[\itersname^N L]
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta', \iter{name}{N}{\widehat{V}}}{C}
+   }
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta', \iterunfold{name}{N-1}{x}{V}{A}}{C}
+   }
+}
+\]
+\[
+\Rightarrow
+\]
+\[
+\infer[cut_{\iterunfold{name}{N-1}{x}{V}{A}}]
+{
+   \Psi ; \seqnocut{\Gamma}{\Delta, \Delta'}{C}
+}
+{
+   \Psi ; \seqnocut{\Gamma}{\Delta}{\iterunfold{name}{N-1}{x}{V}{A}}
+   &
+   \Psi ; \seqnocut{\Gamma}{\Delta', \iterunfold{name}{N-1}{x}{V}{A}}
+}
+\]
+}
+
+\item[$\iter{name}{0}{\widehat{V}}$]
+
+Finally, we only need to prove the $\iter{name}{0}{\widehat{V}}$ connective:
+
+\[
+\infer[cut_{\iter{name}{0}{\widehat{V}}}]
+{
+   \Psi ; \seqnocut{\Gamma}{\Delta, \Delta'}{C}
+}
+{
+   \infer[\itersname^0 R]
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta}{\iter{name}{0}{\widehat{V}}}
+   }
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta}{\iterunfoldz{A}{V}}
+   }
+   &
+   \infer[\itersname^N L]
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta', \iter{name}{0}{\widehat{V}}}{C}
+   }
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta', \iterunfoldz{A}{V}}{C}
+   }
+}
+\]
+\[
+\Rightarrow
+\]
+\[
+\infer[cut_{\iterunfoldz{A}{V}}]
+{
+   \Psi ; \seqnocut{\Gamma}{\Delta, \Delta'}{C}
+}
+{
+   \Psi ; \seqnocut{\Gamma}{\Delta}{\iterunfoldz{A}{V}}
+   &
+   \Psi ; \seqnocut{\Gamma}{\Delta', \iterunfoldz{A}{V}}{C}
+}
+\]
+\end{description}
+
+\paragraph{Iterative definition commutative cases}
+
+For the commutative cases, we use the left or right rule to one of the
+assumptions and fix the other assumption and then we apply the cut using smaller
+formulas.
+
+\begin{description}
+   \item[$\itersname^* R$]
+
+\[
+\infer[cut_A]
+{
+   \Psi ; \seqnocut{\Gamma}{\Delta, \Delta'}{\iters{name}{\widehat{V}}}
+}
+{
+   \Psi ; \seqnocut{\Gamma}{\Delta}{A}
+   &
+   \infer[\itersname^* R]
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta', A}{\iters{name}{\widehat{V}}}
+   }
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta', A}{\iter{name}{N}{\widehat{V}}}
+   }
+}
+\]
+\[
+\Rightarrow
+\]
+\[
+\infer[\itersname^* R]
+{
+   \Psi ; \seqnocut{\Gamma}{\Delta, \Delta'}{\iters{name}{\widehat{V}}}
+}
+{
+   \infer[cut_A]
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta, \Delta'}{\iter{name}{N}{\widehat{V}}}
+   }
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta}{A}
+      &
+      \Psi ; \seqnocut{\Gamma}{\Delta', A}{\iter{name}{N}{\widehat{V}}}
+   }
+}
+\]
+
+   \item[$\itersname^* L$]
+
+\[
+\infer[cut_A]
+{
+   \Psi ; \seqnocut{\Gamma}{\Delta, \Delta', \iters{name}{\widehat{V}}}{C}
+}
+{
+   \infer[\itersname^* L]
+   {
+      \Psi; \seqnocut{\Gamma}{\Delta, \iters{name}{\widehat{V}}}{A}
+   }
+   {
+      \Psi; \seqnocut{\Gamma}{\Delta, \iter{name}{N}{\widehat{V}}}{A}
+   }
+   &
+   \Psi; \seqnocut{\Gamma}{\Delta', A}{C}
+}
+\]
+
+\nopagebreak
+\[
+\Rightarrow
+\]
+\nopagebreak
+\[
+\infer[\itersname^* L]
+{
+   \Psi; \seqnocut{\Gamma}{\Delta, \Delta', \iters{name}{\widehat{V}}}{C}
+}
+{
+   \infer[cut_A]
+   {
+      \Psi; \seqnocut{\Gamma}{\Delta, \Delta', \iter{name}{N}{\widehat{V}}}{C}
+   }
+   {
+      \Psi; \seqnocut{\Gamma}{\Delta, \iter{name}{N}{\widehat{V}}}{A}
+      &
+      \Psi; \seqnocut{\Gamma}{\Delta', A}{C}
+   }
+}
+\]
+
+   \item[$\itersname^N R$]
+
+\[
+\infer[cut_A]
+{
+   \Psi ; \seqnocut{\Gamma}{\Delta, \Delta'}{\iter{name}{N}{\widehat{V}}}
+}
+{
+   \Psi ; \seqnocut{\Gamma}{\Delta}{A}
+   &
+   \infer[\itersname^N R]
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta', A}{\iter{name}{N}{\widehat{V}}}
+   }
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta', A}{\iterunfold{name}{N-1}{x}{V}{B}}
+   }
+}
+\]
+\[
+\Rightarrow
+\]
+\[
+\infer[\itersname^N R]
+{
+   \Psi ; \seqnocut{\Gamma}{\Delta, \Delta'}{\iter{name}{N}{\widehat{V}}}
+}
+{
+   \infer[cut_A]
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta,
+         \Delta'}{\iterunfold{name}{N-1}{x}{V}{B}}
+   }
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta}{A}
+      &
+      \Psi ; \seqnocut{\Gamma}{\Delta', A}{\iterunfold{name}{N-1}{x}{V}{B}}
+   }
+}
+\]
+
+
+   \item[$\itersname^N L$]
+
+\[
+\infer[cut_A]
+{
+   \Psi ; \seqnocut{\Gamma}{\Delta, \Delta', \iter{name}{N}{\widehat{V}}}{C}
+}
+{
+   \infer[\itersname^N L]
+   {
+      \Psi; \seqnocut{\Gamma}{\Delta, \iter{name}{N}{\widehat{V}}}{A}
+   }
+   {
+      \Psi; \seqnocut{\Gamma}{\Delta, \iterunfold{name}{N-1}{x}{V}{B}}{A}
+   }
+   &
+   \Psi; \seqnocut{\Gamma}{\Delta', A}{C}
+}
+\]
+\nopagebreak
+\[
+\Rightarrow
+\]
+\nopagebreak
+\[
+\infer[\itersname^N L]
+{
+   \Psi; \seqnocut{\Gamma}{\Delta, \Delta', \iter{name}{N}{\widehat{V}}}{C}
+}
+{
+   \infer[cut_A]
+   {
+      \Psi; \seqnocut{\Gamma}{\Delta, \Delta',
+         \iterunfold{name}{N-1}{x}{V}{B}}{C}
+   }
+   {
+      \Psi; \seqnocut{\Gamma}{\Delta,
+         \iterunfold{name}{N-1}{x}{V}{B}}{A}
+      &
+      \Psi; \seqnocut{\Gamma}{\Delta', A}{C}
+   }
+}
+\]
+
+\item[$\itersname^0 R$]
+
+\[
+\infer[cut_A]
+{
+   \Psi ; \seqnocut{\Gamma}{\Delta, \Delta'}{\iter{name}{0}{\widehat{V}}}
+}
+{
+   \Psi ; \seqnocut{\Gamma}{\Delta}{A}
+   &
+   \infer[\itersname^0 R]
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta', A}{\iter{name}{0}{\widehat{V}}}
+   }
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta', A}{\iterunfoldz{C}{V}}
+   }
+}
+\]
+\[
+\Rightarrow
+\]
+\[
+\infer[\itersname^0 R]
+{
+   \Psi ; \seqnocut{\Gamma}{\Delta, \Delta'}{\iter{name}{0}{\widehat{V}}}
+}
+{
+   \infer[cut_A]
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta,
+         \Delta'}{\iter{name}{0}{\widehat{V}}}
+   }
+   {
+      \Psi ; \seqnocut{\Gamma}{\Delta}{A}
+      &
+      \Psi ; \seqnocut{\Gamma}{\Delta', A}{\iterunfoldz{C}{V}}
+   }
+}
+\]
+
+\item[$\itersname^0 L$]
+
+\[
+\infer[cut_A]
+{
+   \Psi ; \seqnocut{\Gamma}{\Delta, \Delta', \iter{name}{0}{\widehat{V}}}{C}
+}
+{
+   \infer[\itersname^0 L]
+   {
+      \Psi; \seqnocut{\Gamma}{\Delta, \iter{name}{0}{\widehat{V}}}{A}
+   }
+   {
+      \Psi; \seqnocut{\Gamma}{\Delta, \iterunfoldz{B}{V}}{A}
+   }
+   &
+   \Psi; \seqnocut{\Gamma}{\Delta', A}{C}
+}
+\]
+\[
+\Rightarrow
+\]
+\[
+\infer[\itersname^0 L]
+{
+   \Psi ; \seqnocut{\Gamma}{\Delta, \Delta', \iter{name}{0}{\widehat{V}}}{C}
+}
+{
+   \infer[cut_A]
+   {
+      \Psi; \seqnocut{\Gamma}{\Delta, \Delta', \iterunfoldz{B}{V}}{C}
+   }
+   {
+      \Psi; \seqnocut{\Gamma}{\Delta, \iterunfoldz{B}{V}}{A}
+      &
+      \Psi; \seqnocut{\Gamma}{\Delta', A}{C}
+   }
+}
+\]
+
+\end{description}
+
+\end{proof}
+

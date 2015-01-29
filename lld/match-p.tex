@@ -1,0 +1,28 @@
+{\small
+\[
+\infer[\mo p~\m{first}]
+{\mo \Gamma ; \Delta, p_1, \Delta'' ; \Xi; p, \Omega; H; \cdot; R \rightarrow \Xi'; \Delta'; \Gamma'}
+{p_1, \Delta'' \prec p & \mo \Gamma ; \Delta, \Delta''; \Xi, p_1; \Omega; H; (\Delta, p_1; \Delta''; p; \Omega; \Xi; \cdot; \cdot); R \rightarrow \Xi'; \Delta'; \Gamma'}
+\]
+}
+
+{\footnotesize
+\[
+\infer[\mo p~\m{on}~q]
+{\mo \Gamma ; \Delta, p_1, \Delta'' ; \Xi; p, \Omega; H; C_1, C; R \rightarrow \Xi'; \Delta'; \Gamma'}
+{p_1, \Delta'' \prec p & \begin{split} C_1 &= (\Delta_{old}; \Delta'_{old}; q; \Omega_{old}; \Xi_{old}; \Lambda; \Upsilon) \\ \mo &\Gamma ; \Delta, \Delta''; \Xi, p_1; \Omega; H; (\Delta, p_1; \Delta''; p; \Omega; \Xi; q, \Lambda; \Upsilon), C_1, C; R \rightarrow \Xi'; \Delta'; \Gamma'\end{split}}
+\]
+
+
+\[
+\infer[\mo p~\m{on}~\bang q]
+{\mo \Gamma ; \Delta, p_1, \Delta'' ; \Xi; p, \Omega; H; C_1, C; R \rightarrow \Xi'; \Delta'; \Gamma'}
+{p_1, \Delta'' \prec p & \begin{split}C_1 &= [\Gamma_{old}; \Delta_{old}; \bang q; \Omega_{old}; \Xi_{old}; \Lambda; \Upsilon] \\ \mo &\Gamma ; \Delta, \Delta''; \Xi, p_1; \Omega; H; (\Delta, p_1; \Delta''; p; \Omega; \Xi; \Lambda; q, \Upsilon), C_1, C; R \rightarrow \Xi'; \Delta'; \Gamma' \end{split}}
+\]
+}
+
+\[
+\infer[\mo p~\m{fail}]
+{\mo \Gamma ; \Delta; \Xi; p, \Omega; H; C; R \rightarrow \Xi'; \Delta'; \Gamma'}
+{\Delta \npreceq p & \cont C ; H; R; \Gamma \rightarrow \Xi'; \Delta'; \Gamma'}
+\]

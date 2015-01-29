@@ -1,0 +1,20 @@
+\[
+\infer[\mz \one]
+{\mz \Gamma; \cdot \rightarrow \one}
+{}
+\]
+\[
+\infer[\mz p]
+{\mz \Gamma; p \rightarrow p}
+{}
+\tab
+\infer[\mz \bang p]
+{\mz \Gamma, p; \cdot \rightarrow \bang p}
+{}
+\]
+
+\[
+\infer[\mz \otimes]
+{\mz \Gamma; \Delta_1, \Delta_2 \rightarrow A \otimes B}
+{\mz \Gamma; \Delta_1 \rightarrow A & \mz \Gamma; \Delta_2 \rightarrow B}
+\]

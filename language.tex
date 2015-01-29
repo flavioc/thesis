@@ -411,8 +411,8 @@ Eventually, set $V$ will include all nodes in $N$.
   Constraint & $C$ & $::=$ & $c(\hat{x})$ \\
   Selector Operation & $S$ & $::=$ & $\mathtt{min} \; | \; \mathtt{max} \; | \; \mathtt{random}$\\
   
-  Exists Expression & $EE$ & $::=$ & $\exists_{\widehat{x}}. SH$ \\
-  Comprehension & $CE$ & $::=$ & $\comprehension{\widehat{X}}{SB}{SH}$ \\
+  Exists Expression & $EE$ & $::=$ & $\existsc{\widehat{x}}{SH}$ \\
+  Comprehension & $CE$ & $::=$ & $\comprehension{\widehat{x}}{SB}{SH}$ \\
 
   Aggregate & $AE$ & $::=$ & $\aggregate{A}{y}{\widehat{x}}{SB}{SH_1}{SH_2}$ \\
   Aggregate Operation & $A$ & $::=$ & $\mathtt{min} \; | \; \mathtt{max} \; | \;
@@ -450,7 +450,7 @@ can also have \emph{exists expressions} ($EE$), \emph{comprehensions} ($CE$)
 and \emph{aggregates} ($AE$). All those expressions may use all the variables
 instantiated in the body.
 
-\subsubsection{Graph visit using abstract syntax}
+\subsubsection{Graph visit using abstract syntax}\label{visit:ast}
 
 In order to show how programs are represented using the abstract syntax
 presented in Table~\ref{tbl:ast}, we present the 2 rules in the graph visit

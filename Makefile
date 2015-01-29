@@ -17,7 +17,14 @@ thesis.pdf: thesis.tex	\
 		related_work.tex \
 		program_proofs.tex \
 		abstract.tex \
-		macros.tex
+		macros.tex \
+		appendix/hld.tex \
+		appendix/fragment.tex \
+		appendix/lld.tex \
+		lld/comprehensions.tex \
+		lld/aggregates.tex \
+		lld/soundness.tex \
+		lld.tex hld.tex sequent_calculus.tex
 	pdflatex thesis.tex
 	pdflatex thesis.tex
 	bibtex thesis

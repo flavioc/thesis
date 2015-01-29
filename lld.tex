@@ -1,0 +1,328 @@
+The Low Level Dynamic~(LLD) semantics removes all the non-deterministic choices
+in the previous dynamics and makes them deterministic. The new semantics will do
+the following:
+
+\begin{itemize}
+
+   \item Match rules by priority order;
+
+   \item Determine the set of linear facts needed to match either the body of
+   the rule or the body of comprehensions without guessing;
+
+   \item Apply as many comprehensions as the database allows.
+
+   \item Apply as many aggregates as the database allows.
+
+\end{itemize}
+
+The complete set of inference rules for the semantics are presented in
+Appendix~\ref{sec:lld}.
+
+HLD had many different proof trees for a given triplet $\Gamma; \Delta; \Phi$
+because HLD allows choices to be made during the inference rules. For instance,
+in HLD any rule could be selected to be executed. In LLD there is only
+one proof tree for a given $\Gamma; \Delta; \Phi$ since there is no
+guessing involved. LLD semantics present a complete step by step
+mechanism that is needed to correctly evaluate an LM program. For
+instance, when LLD tries to apply a rule, it will check if there is
+enough facts in the database and backtrack until a rule can be applied.
+
+\begin{theorem}[Proof uniqueness]
+In LLD, there is only one possible proof for a given $\Gamma; \Delta; \Phi$.
+\end{theorem}
+\begin{proof}
+
+Inference rules of every judgment in LLD are disjunct, therefore only one
+inference rule can be applied at any given point in the proof.
+
+\end{proof}
+
+LLD shares exactly the same inputs and outputs as HLD. The first difference
+between the two systems starts when picking a rule to derive.  Instead of
+guessing, LLD treats the list of rules as a stack and picks the first rule $R$
+to execute (the rule with the highest priority). The remaining rules are stored
+as a \emph{continuation}. If $R$ cannot be matched because there is not enough
+facts in the database, we backtrack and use the rule continuation to pick the
+next rule and so on, until one rule can be successfully applied.
+
+\subsection{Continuation Frames}
+
+The most interesting aspects introduced by LLD are the \emph{continuation frame}
+and the \emph{continuation stack}. A continuation frame acts as a choice point
+that is created during rule matching whenever we try to match a fact expression
+against the database.  The frame considers all the facts relevant to the
+expression given the current variable bindings and predicate, that may or not
+fail during the remaining matching process.
+
+The frame contains enough state to resume the matching process at the time of
+its creation, therefore we can easily backtrack to the choice point and select
+the next candidate fact from the database (judgment $\contlld$ or $\contclld$).
+We keep the continuation frames in a continuation stack for backtracking
+purposes. If a given fact fails, we update the top frame to try the next
+candidate fact. If all candidates are exhausted, we pop the top frame and
+continue with the next available frame.
+
+By using this match mechanism, we determine which facts need to be used to match
+a rule.  Our LM implementation works like LLD, by iterating over the available
+facts at each choice point and then committing to the rule if the matching
+process succeeds. However, while the implementation only attempts to match rules
+with a very high change of success, LLD is more na\"{i}ve in this aspect because
+it tries all rules in order.
+
+\subsection{Structure of continuation frames}
+
+We have two continuation frame types, depending on the type of the candidate
+facts.
+
+\subsubsection{Persistent continuation frame}
+
+A \emph{persistent frame} has the form $[\Gamma'; \Delta; \Xi; \bang p; \Omega;
+\Lambda; \Upsilon]$, where:
+
+\begin{enumerate}
+
+   \item[$\Gamma'$] remaining candidate facts;
+
+   \item[$\Delta$] remaining multi-set of linear facts;
+
+   \item[$\Xi$] multi-set of linear facts we have consumed to reach this point;
+
+   \item[$\bang p$] current fact expression that originated this choice point;
+
+   \item[$\Omega$] ordered list of remaining terms needed to match past this
+   choice point;
+
+   \item[$\Lambda$] multi-set of linear fact expressions that we have matched to
+   reach this choice point. All the linear facts that match these terms are
+   located in $\Xi$;
+
+   \item[$\Upsilon$] multi-set of persistent fact expressions that we matched up
+   to this point.
+
+\end{enumerate}
+
+\subsubsection{Linear continuation frame}
+
+A \emph{linear frame} has the form $(\Delta; \Delta'; \Xi; p; \Omega; \Lambda;
+\Upsilon)$, where:
+
+\begin{enumerate}
+
+   \item[$\Delta$] multi-set of linear facts that are not of type $p$ plus all
+   the other $p$'s we have already tried, including the current $p$;
+
+   \item[$\Delta'$] all the other $p$'s we haven't tried yet. It is a multi-set
+   of linear facts;
+
+   \item[$\Xi$] multi-set of linear facts we have consumed to reach this point;
+
+   \item[$p$] current fact expression that originated this choice point;
+
+   \item[$\Omega$] ordered list of remaining terms needed to match past this
+   choice point;
+
+   \item[$\Lambda$] multi-set of linear fact expressions that we have matched to
+   reach this choice point. All the linear facts that match these terms are
+   located in $\Xi$;
+
+   \item[$\Upsilon$] multi-set of persistent fact expressions that we matched up
+   to this point.
+
+\end{enumerate}
+
+\subsection{Step}
+
+The starting inference rule of LLD is identical to the rule described
+in~\ref{sec:step_hld} for HLD:
+
+\input{lld/step}
+
+\subsection{Application}
+
+When starting a step, we pick the first rule $R_1$ and create a rule
+continuation with the form $(\Phi, \Delta)$, where $\Phi$ is the stack of
+remaining rules and $\Delta$ is the starting linear context. Context $\Gamma$
+does not need to be saved because its facts are persistent.
+
+\input{lld/application}
+
+\subsection{Match}\label{sec:lld_body_match}
+
+The matchig judgment for LLD differs greatly from the same judgment in HLD. In
+LLD, matching uses the continuation stack to try different combinations of facts
+until a match is achieved. The matching judgment uses the form $\mo \Gamma;
+\Delta; \Xi; \Omega; H; C; R \rightarrow \Xi'; \Delta'; \Gamma'$ where:
+
+\begin{enumerate}
+
+   \item[$\Delta$] multi-set of linear facts still available to complete the
+   matching process;
+
+   \item[$\Xi$] multi-set of linear facts consumed up to this point;
+
+   \item[$\Omega$] ordered list of deconstructed head terms to match;
+
+   \item[$H$] head of the rule;
+
+   \item[$C$] ordered list of frames representing the continuation stack;
+
+   \item[$R$] rule continuation to be used if the current rule fails;
+
+   \item[$\Xi'$] multi-set of consumed linear facts after applying the rule;
+
+   \item[$\Delta'$] multi-set of derived linear facts after applying the rule;
+
+   \item[$\Gamma'$] multi-set of derived persistent facts after applying the
+   rule.
+
+\end{enumerate}
+
+Matching will attempt to use facts from $\Delta$ and $\Gamma$ to match the terms
+of the body of the rule represented as $\Omega$. During this process
+continuation frames are pushed into $C$.  If the matching process fails, we use
+the continuation stack through the $\cont$judgment.
+
+\subsubsection{Linear fact expression}
+
+The first 4 inference rules are used when the head of $\Omega$ is a linear fact
+expression $p$: (1) the continuation stack is empty; (2) the continuation is not
+empty and a linear continuation frame is at the top; (3) the continuation stack
+is not empty and a persistent continuation frame is at the top; and (4) we
+cannot find any linear fact in the database that matches $p$. Note that in the
+first 3 rules, we find $p_1$ and $\Delta''$ as facts from the database that
+match $p$'s the hidden and partially initialized arguments.  Context $\Delta''$
+is stored in the second argument of the new continuation frame but passes along
+with $\Delta$ since they have not been consumed yet (just $p_1$).
+
+Note that the proposition $p_1, \Delta'' \prec p$ indicates that facts
+$\Delta'', p_1$ satisfy the constraints of $p$ while $\Delta \npreceq p$
+indicates that no fact in $\Delta$ satisfies $p$.
+
+\input{lld/match-p}
+
+\subsubsection{Persistent fact expressions}
+
+The next 4 inference rules are used when the head of $\Omega$ contains a
+persistent fact expression $\bang p$. They are identical to the previous 4 rules
+but they deal with the persistent context $\Gamma$.
+
+\input{lld/match-bang-p}
+
+\subsubsection{Other expressions}
+
+Finally, we have the inference rule $\mo \otimes$ that deconstructs body terms
+with $\otimes$ and the $\mo \m{end}$ rule that terminates the matching process
+and initiates the derivation of head terms because $\Omega$ is empty.
+
+\input{lld/match-other}
+
+\subsection{Continuation}\label{sec:lld_match_cont}
+
+If the matching process fails, we pick the top continuation frame from the stack
+$C$ and restore the matching process using another candidate fact. The judgment
+\mbox{$\cont C; H; R; \Gamma \rightarrow \Xi'; \Delta'; \Gamma'$} specifies the
+backtracking process where the meaning of each argument is as follows:
+
+\begin{enumerate}
+   \item[$C$] continuation stack;
+   \item[$H$] head of the current rule being executed;
+
+   \item[$R$] next available rules if the current rule does not match.
+
+\end{enumerate}
+
+\subsubsection{Linear continuation frames}
+
+The next two inference rules handle linear continuation frames on the top of the
+continuation stack. The first rule selects the next candidate fact $p_1$ from the
+second argument of the linear frame and updates the frame. Otherwise, if we have
+no more candidate facts, we pop the continuation frame and use $\cont$again with
+the remaining continuation stack.
+
+\input{lld/cont-p}
+
+\subsubsection{Persistent continuation frames}
+
+We also have the same two kinds of inference rules for persistent continuation
+frames.
+
+\input{lld/cont-bang-p}
+
+\subsubsection{Empty continuation stack}
+
+Finally, if the continuation stack is empty, we simply force execution to try
+the next inference rule in $\Phi$.
+
+\input{lld/cont-empty}
+
+\subsection{Derivation}
+
+Once the list of terms $\Omega$ in the $\mo$judgment is exhausted (rule $\mo
+\m{end}$), we derive the head of rule.  The derivation judgment is
+specified as $\done \Gamma; \Delta; \Xi; \Gamma_1; \Delta_1; \Omega \rightarrow
+\Xi'; \Delta'; \Gamma'$, where:
+
+\begin{enumerate}
+
+   \item[$\Delta$] multi-set of linear facts we started with minus the linear
+   facts consumed $\Xi$ during the matching of the body of the rule;
+
+   \item[$\Xi$] multi-set of linear facts consumed during the matching of the
+   body of the rule;
+
+   \item[$\Gamma_1$] set of persistent facts derived up to this point in the
+   derivation;
+
+   \item[$\Delta_1$] multi-set of linear facts derived up to this point in the
+   derivation;
+
+   \item[$\Omega$] remaining terms to derive as an ordered list. We start with
+   $B$ if the original rule is $A \lolli B$.
+
+\end{enumerate}
+
+\subsubsection{Fact templates}
+
+When deriving either $p$ or $\bang p$ we have the following two inference rules:
+
+\input{lld/der-p}
+
+\subsubsection{Deconstruct head}
+
+The following two inference rules deconstruct the head list $\Omega$ from terms
+created using either $1$ or $\otimes$.
+
+\input{lld/der-other}
+
+\subsubsection{Comprehensions}
+
+The inference rule $\done \m{comp}$ deals with comprehensions. We use the same
+term \mbox{$\compsz{A}{B}$} for comprehensions as before.  Judgment $\mc$initiates the
+matching process of the body $A$ of the comprehension (explained in the next
+section).
+
+\input{lld/der-comp}
+
+\subsubsection{Aggregates}
+
+The inference rule $\done \m{agg}$ deals with aggregates. We use the same term
+\mbox{$\aggsz{A}{B}{C}$} for aggregates as before. Judgment $\ma$initiates the
+matching process of the body $A$ of the aggregate (explained in the next
+section).
+
+\input{lld/der-agg}
+
+\subsubsection{Successful rule}
+
+Finally, if the ordered list $\Omega$ is exhausted, then the whole execution
+process is done.  Note how the output arguments match the input arguments of the
+$\done$judgment.
+
+\input{lld/der-done}
+
+\subsection{Comprehensions}
+\input{lld/comprehensions}
+
+\subsection{Aggregates}
+\input{lld/aggregates}
+

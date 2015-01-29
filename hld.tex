@@ -1,0 +1,132 @@
+
+In this section, we present the high level dynamic~(HLD) semantics of LM.  HLD
+formalizes the mechanism of matching rules and deriving new facts.  HLD
+semantics present a simplified overview of the dynamics of the language that are
+closer to \fragment (Section~\ref{sec:fragment}) presented before.  than the
+implementation principles of our virtual machine. The low level dynamic~(LLD)
+semantics are much closer to a real implementation and represents the
+operational semantics of the language.
+
+Note that both HLD and LLD do not model the use of variable bindings when
+matching facts from the database. The formalization of bindings tends to
+complicate the formal system and it is not necessary for a good understanding of
+the system. Instead, we assume that all facts of type $\emph{fact}(\hat{x})$ do
+not have the argument $\hat{x}$.
+
+Starting from \fragment presented earlier, we consider $\Gamma$ and $\Delta$ the database
+of our program. $\Gamma$ contains the database of persistent facts while $\Delta$ the database of linear
+facts. We assume that the rules of the program are persistent linear implications of the form
+$\bang (A \lolli B)$ that can be used several times. However, we do not put the rules in the $\Gamma$
+context but in a separate context $\Phi$.
+
+The main idea of the dynamic semantics is to ignore the right side of the
+sequent calculus and use \emph{chaining} and \emph{inversion} on the $\Delta$
+and $\Gamma$ contexts so that we only have atomic facts (e.g., the database of
+facts).  To apply rules we use
+\emph{focusing}~\cite{Andreoli92logicprogramming} on one of the derivation rules
+in $\Phi$. Note that in the focusing process we assume that all the atoms
+(facts) are positive thus the chaining proceeds in a \emph{forward chaining}
+fashion.
+
+\subsection{Step}\label{sec:step_hld}
+
+Operationally, LM proceeds in \emph{steps}. A step happens at some node $i$ and
+proceeds by picking one rule to apply, matching the body of the rule against the
+database, removing all those facts from the database and then deriving all the
+constructs in the head of the rule. We assume the existence of $n$ nodes in the
+program and that $\Delta$ and $\Gamma$ are split into $\Delta_1, ..., \Delta_n$
+and $\Gamma_1, ..., \Gamma_n$ respectively. After each step, the database of
+each fact is updated accordingly.
+
+Steps are defined as $\stepz \Gamma; \Delta; \Phi \Longrightarrow \Gamma';
+\Delta'$, where $\Gamma'$ and $\Delta'$ is the new database. The step rule is as
+follows:
+
+\input{hld/step}
+
+\subsection{Application}
+
+A step is performed through $\doz \Gamma; \Delta; \Phi \rightarrow \Xi';
+\Delta'; \Gamma'$.  $\Gamma$, $\Delta$ and $\Phi$ have the meaning explained
+before, while $\Xi'$, $\Delta'$ and $\Gamma'$ are output multi-sets from
+applying one of the rules in $\Phi$. $\Xi'$ is the set of consumed linear
+resources, $\Delta'$ is the set of derived linear facts and $\Gamma'$ is the set
+of derived persistent facts. Note that for HLD semantics there is no concept of
+rule priority, therefore a rule is picked non-deterministically.
+
+The judgment $\az \Gamma ; \Delta ; A \lolli B \rightarrow \Xi'; \Delta';
+\Gamma'$ will attempt to apply the derivation rule $A \lolli B$. To do this, it
+splits the $\Delta$ context into $\Delta_1$ and $\Delta_2$, namely the set of
+linear resources consumed to match the body of the rule ($\Delta_1$) and the
+remaining linear facts ($\Delta_2$).  Again, the set of resources needed to
+match the body of the rule is guessed. LLD semantics will deterministically
+calculate $\Delta_1$.
+
+\input{hld/application}
+
+\subsection{Match}
+
+The $\mz \Gamma ; \Delta \rightarrow C$ judgment uses the right ($R$) rules of
+\fragment in order to match (prove) the body $C$ using $\Gamma$
+and $\Delta$. We must consume all the linear facts in the multi-set $\Delta$
+when matching $C$. The context $\Gamma$ may be used to match persistent terms in
+$C$ but such facts are never consumed since they are persistent.
+
+\input{hld/match}
+
+\subsection{Derivation}
+
+After successfully matching the body of the rule, we next derive the head of the
+rule. The derivation judgment has the form $\dz \Gamma ; \Delta ; \Xi ; \Gamma_1
+; \Delta_1 ; \Omega \rightarrow \Xi'; \Delta'; \Gamma'$ with the following
+meaning:
+
+\begin{enumerate}
+
+   \item[$\Gamma$] the multi-set of persistent resources in the database;
+
+   \item[$\Delta$] the multi-set of linear resources in the database not yet
+   consumed;
+
+   \item[$\Xi$] the multi-set of linear resources that have been consumed while
+   matching the body of the rule, matching comprehensions or aggregates;
+
+   \item[$\Gamma_1$] the multi-set of persistent facts that have been derived
+   using the current rule;
+
+   \item[$\Delta_1$] the multi-set of linear facts that have been derived using
+   the current rule;
+
+   \item[$\Omega$] an ordered list contain the terms of the head of rule that
+   still need to be derived. We start with the head of the rule $B$ that is
+   continuously deconstructed to derive all the facts of the rule;
+
+   \item[$\Xi'$] the consumed linear facts to apply this rule;
+
+   \item[$\Delta'$] the derived linear facts;
+
+   \item[$\Gamma'$] the derived persistent facts.
+
+\end{enumerate}
+
+The following derivation rules are a direct translation from \fragment:
+
+\input{hld/derivation}
+
+We did not include the aggregates here because they are similar to comprehensions.
+The starting rule for deriving comprehensions is $\dz comp^*$. It
+deterministically picks a number $N$ that then can be unfolded $N$ times to get
+$A \lolli B$. The HLD semantics do not take into account the contents of the
+database to determine how many times a comprehension should be applied.
+
+\input{hld/derivation-comp}
+
+These rules mirror the rules for the iterative definition in \fragment.  Rules
+for aggregates are similar:
+
+\input{hld/derivation-agg}
+
+Finally, because the comprehensions and aggregates create implications $A \lolli
+B$, we add a final derivation rule $\dz \lolli$:
+
+\input{hld/derivation-other}

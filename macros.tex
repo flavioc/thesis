@@ -12,6 +12,7 @@
 \newcommand{\seq}{\vdash}
 \newcommand{\semi}{\mathrel{;}}
 \newcommand{\lequiv}{\mathrel{\dashv\vdash}}
+\newcommand{\tab}[0]{\;\;\;\;}
 
 % symbols of linear logic
 \newcommand{\lolli}{\multimap}
@@ -31,32 +32,59 @@
 
 \newcommand{\taba}{\;\;\;}
 
-\newcommand{\mz}{\m{match} \;}
-\newcommand{\tab}[0]{\;\;\;\;}
-\newcommand{\dz}{\m{derive} \;}
-\newcommand{\comp}[0]{\m{comp} \;}
-\newcommand{\az}{\m{apply} \;}
-\newcommand{\doz}{\m{run} \;}
+% AST
+\newcommand{\existsc}[2]{\m{exists}_{#1}. #2}
+
+% sequent calculus
 \newcommand{\seqnocut}[3]{#1 ; #2 \Rightarrow #3}
 \newcommand{\defeq}{\buildrel\triangle\over =}
-\newcommand{\seqx}[3]{#1 ; #2 \vdash #3}
+\newcommand{\seqx}[3]{#1 ; #2 \seq #3}
 \newcommand{\compr}[1]{\m{def} \; #1}
 \newcommand{\itersname}[0]{def}
-\newcommand{\iters}[2]{\m{def}_{#1} \; #2}
+\newcommand{\iters}[2]{\m{def}_{#1}^{*} \; #2}
+\newcommand{\itersz}[1]{\m{def}_{#1}^{*}}
 \newcommand{\iter}[3]{\m{def}_{#1}^{#2} \; #3}
+\newcommand{\iterz}[2]{\m{def}_{#1}^{#2} \;}
 \newcommand{\iterop}[2]{\mathtt{op} \; \widehat{#1} \; \widehat{#2}}
-\newcommand{\iterunfold}[6]{\forall_{\widehat{#3}}. (#5 \widehat{x} \lolli #6
-         \otimes \iter{#1}{#2}{(\iterop{#3}{#4})})}
+\newcommand{\iterunfold}[5]{\forall_{\widehat{#3}}. (#5 \widehat{x} \otimes \iter{#1}{#2}{(\iterop{#3}{#4})})}
 \newcommand{\iterunfoldz}[2]{(\lambda_{\widehat{x}}. #1)\widehat{#2}}
+\newcommand{\fragment}{$LL^{1..+}$}
 
-\newcommand{\mo}{\m{match}_1 \;}
-\newcommand{\cont}{\m{cont} \;}
-\newcommand{\contc}{\m{contc} \;}
-\newcommand{\done}{\m{derive}_1 \;}
-\newcommand{\doo}{\m{run}_1 \;}
-\newcommand{\mc}[0]{\m{match}_c \; }
-\newcommand{\dall}[0]{\m{fix} \; }
-\newcommand{\strans}[0]{\m{strans} \;}
-\newcommand{\dc}{\m{derive}_c \;}
-\newcommand{\ao}{\m{apply}_1 \;}
+% HLD
+\newcommand{\stepz}{\m{step}_{HLD} \;}
+\newcommand{\mz}{\m{mat}_{HLD} \;}
+\newcommand{\dz}{\m{der}_{HLD} \;}
+\newcommand{\comp}[3]{\itersz{comp} #2 \; #3}
+\newcommand{\compz}[3]{\iter{comp}{#1}{[#2 \lolli #3]}}
+\newcommand{\compsz}[2]{\iters{comp}{[#1 \lolli #2]}}
+\newcommand{\compunfold}[3]{(#2 \lolli #3) \otimes \compz{#1}{#2}{#3}}
+\newcommand{\compunfoldz}[0]{\one}
+\newcommand{\aggsz}[3]{\iters{agg}{[#1 \lolli #2 ; #3; x]}}
+\newcommand{\aggz}[5]{\iter{agg}{#1}{[#2 \lolli #3 ; #4; #5]}}
+\newcommand{\aggunfold}[5]{\forall_x. ((#2 \lolli #3)x \otimes
+      \aggz{#1}{#2}{#3}{#4}{#5 + x})}
+\newcommand{\aggunfoldz}[2]{(\lambda x. #1) #2}
+\newcommand{\az}{\m{app}_{HLD} \;}
+\newcommand{\doz}{\m{run}_{HLD} \;}
+
+% LLD
+\newcommand{\stepo}{\m{step}_{LLD} \;}
+\newcommand{\mo}{\m{mat}_{LLD} \;}
+\newcommand{\contlld}{\m{cont}_{LLD}}
+\newcommand{\cont}{\contlld \;}
+\newcommand{\contclld}{\m{cont}_{LLDc}}
+\newcommand{\contc}{\contclld \;}
+\newcommand{\done}{\m{der}_{LLD} \;}
+\newcommand{\doo}{\m{run}_{LLD} \;}
+\newcommand{\matchlldc}{\m{mat}_{LLDc}}
+\newcommand{\mc}[0]{\matchlldc \; }
+\newcommand{\fix}[0]{\m{fix}_{LLDc} \; }
+\newcommand{\fixa}[0]{\m{fix}_{LLDa} \; }
+\newcommand{\strans}[0]{\m{update}_{LLD} \;}
+\newcommand{\dc}{\m{der}_{LLDc} \;}
+\newcommand{\ao}{\m{app}_{LLD} \;}
+\newcommand{\matchllda}{\m{mat}_{LLDa}}
+\newcommand{\ma}[0]{\matchllda \;}
+\newcommand{\da}[0]{\m{der}_{LLDa} \;}
+\newcommand{\conta}[0]{\m{cont}_{LLDa} \;}
 

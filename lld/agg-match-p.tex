@@ -1,0 +1,48 @@
+{\scriptsize
+\[
+\infer[\ma p~\m{first}]
+{\ma \Gamma; \Delta, p_1, \Delta''; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \cdot; p, \Omega; \cdot; \cdot; AG; \Omega_N; \Delta_N; T \rightarrow \Xi'; \Delta'; \Gamma'}
+{p_1, \Delta'' \prec p & \ma \Gamma; \Delta, \Delta''; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi, p_1; \Omega; (\Delta, p_1; \Delta''; \cdot; p; \Omega; \cdot; \cdot); \cdot; AG; \Omega_N; \Delta_N; T \rightarrow \Xi'; \Delta'; \Gamma'}
+\]
+}
+{\tiny
+\[
+\infer[\ma p~\m{on}~q]
+{\ma \Gamma; \Delta, p_1, \Delta''; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; p, \Omega; C_1, C; P; AG; \Omega_N; \Delta_N; T \rightarrow \Xi'; \Delta'; \Gamma'}
+{p_1, \Delta'' \prec p & \begin{split}
+                              C_1 &= (\Delta_{old}; \Delta'_{old}; \Xi_{old}; q; \Omega_{old}; \Lambda; \Upsilon) \\
+                              \ma &\Gamma; \Delta, \Delta''; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi, p_1; \Omega; (\Delta, p_1; \Delta''; \Xi; p; \Omega; q, \Lambda; \Upsilon), C_1, C; P; AG; \Omega_N; \Delta_N; T \rightarrow \Xi'; \Delta'; \Gamma'
+                         \end{split}
+}
+\]
+
+\[
+\infer[\ma p~\m{on}~\bang q~C]
+{\ma \Gamma; \Delta, p_1, \Delta''; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; p, \Omega; C_1, C; P; AG; \Omega_N; \Delta_N; T \rightarrow \Xi'; \Delta'; \Gamma'}
+{p_1, \Delta'' \prec p & \begin{split}
+                             C_1 &= [\Gamma_{old}; \Delta_{old}; \Xi_{old}; q;
+                             \Omega_{old}; \Lambda; \Upsilon]\\
+                             \ma &\Gamma; \Delta, \Delta''; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi, p_1; \Omega; (\Delta, p_1; \Delta''; \Xi; p; \Omega; \Lambda; q, \Upsilon), C_1, C; P; AG; \Omega_N; \Delta_N; T \rightarrow \Xi'; \Delta'; \Gamma'
+                         \end{split}
+}
+\]
+\[
+\infer[\ma p~\m{on}~\bang q~P]
+{\ma \Gamma; \Delta, p_1, \Delta''; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \cdot; p, \Omega; \cdot; P_1, P; AG; \Omega_N; \Delta_N; T \rightarrow \Xi'; \Delta'; \Gamma'}
+{p_1, \Delta'' \prec p & \begin{split}
+                                 P_1 &= [\Gamma_{old}; \Delta_N; \cdot; q;
+                                 \Omega_{old}; \cdot; \Upsilon]\\
+                                 \ma &\Gamma; \Delta, \Delta''; \Xi_N; \Gamma_{N1}; \Delta_{N1}; p_1; \Omega; (\Delta, p_1; \Delta''; \cdot; p; \Omega; \cdot; q, \Upsilon); P_1, P; AG; \Omega_N; \Delta_N; T \rightarrow \Xi'; \Delta'; \Gamma'
+                         \end{split}
+}
+\]
+}
+
+{\small
+\[
+\infer[\ma p~\m{fail}]
+{\ma \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; p, \Omega; C; P; AG; \Omega_N; \Delta_N; T \rightarrow \Xi'; \Delta'; \Gamma'}
+{\conta \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; C; P; AG; \Omega_N; T \rightarrow \Xi'; \Delta'; \Gamma'}
+\]
+}
+
