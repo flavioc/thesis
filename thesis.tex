@@ -36,12 +36,18 @@
 \usepackage{floatrow}
 \usepackage{proof-dashed}
 \usepackage{amsthm}
+\usepackage{thmtools}
 \usepackage[numbers,sort]{natbib}
 \usepackage[backref,pageanchor=true,plainpages=false, pdfpagelabels, bookmarks,bookmarksnumbered,
 %pdfborder=0 0 0,  %removes outlines around hyper links in online display
 ]{hyperref}
 \graphicspath{{./figures/}{./benchmarks/data/}{./benchmarks/}}
 \input{macros}
+\makeatletter
+\def\thm@space@setup{%
+  \thm@preskip=15pt \thm@postskip=15pt
+}
+\makeatother
 
 % Approximately 1" margins, more space on binding side
 %\usepackage[letterpaper,twoside,vscale=.8,hscale=.75,nomarginpar]{geometry}
@@ -50,7 +56,8 @@
 \newtheorem{corollary}{Corollary}
 \newtheorem{definition}{Definition}
 \newtheorem{lemma}{Lemma}
-\newtheorem{theorem}{Theorem}
+%\newtheorem{theorem}{Theorem}
+\declaretheorem{theorem}
 \newtheorem{invariant}{Invariant}
 
 % Provides a draft mark at the top of the document. 
@@ -104,6 +111,8 @@ Ricardo Rocha\\\
 \tableofcontents
 \listoffigures
 \listoftables
+\renewcommand{\listtheoremname}{List of Equations}
+\listoftheorems
 
 \mainmatter
 

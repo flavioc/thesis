@@ -34,8 +34,8 @@ Operationally, LM proceeds in \emph{steps}. A step happens at some node $i$ and
 proceeds by picking one rule to apply, matching the body of the rule against the
 database, removing all those facts from the database and then deriving all the
 constructs in the head of the rule. We assume the existence of $n$ nodes in the
-program and that $\Delta$ and $\Gamma$ are split into $\Delta_1, ..., \Delta_n$
-and $\Gamma_1, ..., \Gamma_n$ respectively. After each step, the database of
+program and that $\Delta$ and $\Gamma$ are split into $\Delta_1, \dotsc, \Delta_n$
+and $\Gamma_1, \dotsc, \Gamma_n$ respectively. After each step, the database of
 each fact is updated accordingly.
 
 Steps are defined as $\stepz \Gamma; \Delta; \Phi \Longrightarrow \Gamma';
