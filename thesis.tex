@@ -25,7 +25,7 @@
 \usepackage{times}
 \usepackage{fullpage}
 \usepackage{graphicx}
-
+\usepackage{enumitem}
 \usepackage{amsmath}
 \usepackage{url}
 \usepackage{fancyvrb}
@@ -37,6 +37,8 @@
 \usepackage{proof-dashed}
 \usepackage{amsthm}
 \usepackage{thmtools}
+\usepackage{mathtools}
+\usepackage{etoolbox}
 \usepackage[numbers,sort]{natbib}
 \usepackage[backref,pageanchor=true,plainpages=false, pdfpagelabels, bookmarks,bookmarksnumbered,
 %pdfborder=0 0 0,  %removes outlines around hyper links in online display
@@ -48,6 +50,19 @@
   \thm@preskip=15pt \thm@postskip=15pt
 }
 \makeatother
+\makeatletter
+\newtheoremstyle{indented}
+  {15pt}% space before
+  {0pt}% space after
+  {\parshape 1 0em \linewidth}% body font
+  {0pt}% indent
+  {\bfseries}% header font
+  {.}% punctuation
+   {\newline}% after theorem header
+  {}% header specification (empty for default)
+\makeatother
+
+\theoremstyle{indented}
 
 % Approximately 1" margins, more space on binding side
 %\usepackage[letterpaper,twoside,vscale=.8,hscale=.75,nomarginpar]{geometry}
@@ -59,6 +74,11 @@
 %\newtheorem{theorem}{Theorem}
 \declaretheorem{theorem}
 \newtheorem{invariant}{Invariant}
+\AtBeginEnvironment{theorem}{\parindent0pt}
+\AtBeginEnvironment{lemma}{\parindent0pt}
+\AtBeginEnvironment{definition}{\parindent0pt}
+\AtBeginEnvironment{corollary}{\parindent0pt}
+\AtBeginEnvironment{invariant}{\parindent0pt}
 
 % Provides a draft mark at the top of the document. 
 \draftstamp{\today}{}
@@ -72,8 +92,8 @@
 \title{{\it \huge PhD Thesis}\\
 {\bf Linear Logic and Coordination for Parallel Programming}}
 \author{Fl\'{a}vio Manuel Fernandes Cruz}
-\date{April 2014}
-\Year{2014}
+\date{\today}
+\Year{2015}
 \trnumber{}
 
 \committee{

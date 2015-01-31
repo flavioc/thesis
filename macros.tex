@@ -2,6 +2,9 @@
 \usepackage{amssymb}            % for \multimap (-o)
 \usepackage{stmaryrd}           % for \binampersand (&), \bindnasrepma (\paar)
 
+\newcommand{\secondm}[0]{7pt}
+\newcommand{\thirdm}[0]{14pt}
+
 \newcommand{\texttab}[0]{~~~~}
 
 \newcommand{\m}[1]{\mathsf{#1}}
@@ -50,7 +53,7 @@
 \newcommand{\iterop}[2]{\mathtt{op} \; \widehat{#1} \; \widehat{#2}}
 \newcommand{\iterunfold}[5]{\forall_{\widehat{#3}}. (#5 \widehat{x} \otimes \iter{#1}{#2}{(\iterop{#3}{#4})})}
 \newcommand{\iterunfoldz}[2]{(\lambda_{\widehat{x}}. #1)\widehat{#2}}
-\newcommand{\fragment}{$LL^{1..+}$}
+\newcommand{\fragment}{$LL^{0..+}$}
 
 % HLD
 \newcommand{\stepz}{\m{step}_{HLD} \;}
@@ -93,3 +96,5 @@
 % term equivalence
 \newcommand{\feq}[2]{#1 \equiv #2}
 
+%\newcommand{\outsem}[0]{\Xi'; \Delta'; \Gamma'}
+\newcommand{\outsem}[0]{\mathcal{O}}
