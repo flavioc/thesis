@@ -993,3 +993,51 @@ be applied:
 \noindent This finishes the sub-case for comprehensions.
 
 \end{proof}
+
+\subsection{Wrapping-up}
+
+In order to bring everything together, we need to use the Head derivation
+soundness lemma (Lemma~\ref{thm:head_derivation_soundness}) and the Body match
+soundness lemma (Lemma~\ref{thm:body_match}).  We first prove that if we run one
+step in the LLD semantics then there exists one rule where matching was
+successful. Then, we prove that the application of such rule is sound in
+relation to HLD.
+
+\begin{theorem}[One rule]\label{thm:one_rule}
+If $\doo \Gamma; \Delta; \Phi \rightarrow \outsem$ then
+$\exists_{R \in \Phi}. \doo \Gamma; \Delta; R \rightarrow \outsem$.
+\end{theorem}
+\begin{proof}
+Induction on the size of $\Phi$.
+
+Inverting the assumption twice, we get $\mo \Gamma; \Delta; \cdot; A; B; \cdot;
+(\Phi', \Delta) \rightarrow \outsem$, where $\Phi = A \lolli B, \Phi'$. Applying Lemma~\ref{thm:body_match} (body match soundness), we have two sub-cases:
+
+\begin{itemize}[leftmargin=*]
+   \item Match fails: \\ $\cont \cdot; H; (\Phi', \Delta); \Gamma \rightarrow
+   \outsem$ \hfill (1)\\
+   $\doo \Gamma; \Delta; \Phi' \rightarrow \outsem$ \hfill (2) inversion of (1) \\
+   $\doo \Gamma; \Delta; R' \rightarrow \outsem$ \hfill (3) i.h. on (2) where $R' \in \Phi'$ \\
+   \item Match succeeds: \\
+   $\mo \Gamma; \Delta; \cdot; A; B; \cdot; (\cdot, \Delta) \rightarrow \outsem$ \hfill (1)\\
+   $\ao \Gamma; \Delta; A \lolli B; (\cdot, \Delta) \rightarrow \outsem$ \hfill (2) rule $\ao \m{rule}$ on (1) \\
+   $\doo \Gamma; \Delta; A \lolli B \rightarrow \outsem$ \hfill (3) rule $\doo \m{rule}$ on (2) \\
+\end{itemize}
+\end{proof}
+
+\begin{theorem}[Soundness]\label{thm:soundness}
+If $\doo \Gamma; \Delta; \Phi \rightarrow \outsem$ then $\exists_{R \in \Phi}.
+\az \Gamma ; \Delta ; R \rightarrow \outsem$.
+\end{theorem}
+
+\begin{proof}
+As follows:\\
+$\doo \Gamma; \Delta; \Phi \rightarrow \outsem$ \hfill (1) assumption \\
+$\doo \Gamma; \Delta; R \rightarrow \outsem$ \hfill (2) One rule theorem (\ref{thm:one_rule}) on (1), where $R \in \Phi$ \\
+$\mo \Gamma; \Delta; \cdot; A; B; \cdot; R \rightarrow \outsem$ \hfill (3) inversion of (2) \\
+$\mo \Gamma; \Delta_1; \Delta_2; \cdot; B; C; R \rightarrow \outsem$ \hfill (4) Body match soundness lemma (\ref{thm:body_match}) on (3), where $\Delta = \Delta_1, \Delta_2$ \\
+$\mz \Gamma; \Delta_2 \rightarrow A$ \hfill (5) from same lemma \\
+$\done \Gamma; \Delta_1; \Delta_2; \cdot; \cdot; B \rightarrow \outsem$ \hfill (6) inversion of (4) \\
+$\dz \Gamma; \Delta_1; \Delta_2; \cdot; \cdot; B \rightarrow \outsem$ \hfill (7) Head derivation soundness lemma (\ref{thm:head_derivation_soundness}) on (6) \\
+$\az \Gamma ; \Delta_1, \Delta_2 ; A \lolli B \rightarrow \outsem$ \hfill (8) rule $\az \m{rule}$ on (5) and (7)\\
+\end{proof}
