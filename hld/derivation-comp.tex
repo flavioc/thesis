@@ -1,17 +1,23 @@
 \[
 \infer[\dz \m{comp}^*]
-{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \compsz{A}{B}, \Omega \rightarrow \Xi' ; \Delta' ; \Gamma'}
-{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \compz{N}{A}{B}, \Omega \rightarrow \Xi' ; \Delta' ; \Gamma'}
+{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \compsz{A}{B}, \Omega
+   \rightarrow \outsem}
+{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \compz{N}{A}{B}, \Omega
+   \rightarrow \outsem}
 \]
 
 \[
 \infer[\dz \m{comp}^N]
-{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \compz{N}{A}{B}, \Omega \rightarrow \Xi' ; \Delta' ; \Gamma'}
-{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \compunfold{N-1}{A}{B}, \Omega \rightarrow \Xi' ; \Delta' ; \Gamma'}
+{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \compz{N}{A}{B}, \Omega
+   \rightarrow \outsem}
+{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \compunfold{N-1}{A}{B},
+   \Omega \rightarrow \outsem}
 \]
 
 \[
 \infer[\dz \m{comp}^0]
-{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \compz{0}{A}{B}, \Omega \rightarrow \Xi' ; \Delta' ; \Gamma'}
-{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \compunfoldz, \Omega \rightarrow \Xi' ; \Delta' ; \Gamma'}
+{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \compz{0}{A}{B}, \Omega
+   \rightarrow \outsem}
+{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \compunfoldz, \Omega
+   \rightarrow \outsem}
 \]

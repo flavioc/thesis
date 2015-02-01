@@ -151,7 +151,7 @@ does not need to be saved because its facts are persistent.
 The matchig judgment for LLD differs greatly from the same judgment in HLD. In
 LLD, matching uses the continuation stack to try different combinations of facts
 until a match is achieved. The matching judgment uses the form $\mo \Gamma;
-\Delta; \Xi; \Omega; H; C; R \rightarrow \Xi'; \Delta'; \Gamma'$ where:
+\Delta; \Xi; \Omega; H; \lstack{C}; \lstack{R} \rightarrow \outsem$ where:
 
 \begin{enumerate}
 
@@ -164,23 +164,19 @@ until a match is achieved. The matching judgment uses the form $\mo \Gamma;
 
    \item[$H$] head of the rule;
 
-   \item[$C$] ordered list of frames representing the continuation stack;
+   \item[$\lstack{C}$] ordered list of frames representing the continuation stack;
 
-   \item[$R$] rule continuation to be used if the current rule fails;
+   \item[$\lstack{R}$] rule continuation to be used if the current rule fails;
 
-   \item[$\Xi'$] multi-set of consumed linear facts after applying the rule;
-
-   \item[$\Delta'$] multi-set of derived linear facts after applying the rule;
-
-   \item[$\Gamma'$] multi-set of derived persistent facts after applying the
-   rule.
+   \item[$\outsem$] output contexts containing consumed facts and derived
+   persistent and linear facts.
 
 \end{enumerate}
 
 Matching will attempt to use facts from $\Delta$ and $\Gamma$ to match the terms
 of the body of the rule represented as $\Omega$. During this process
-continuation frames are pushed into $C$.  If the matching process fails, we use
-the continuation stack through the $\cont$judgment.
+continuation frames are pushed into $\lstack{C}$.  If the matching process
+fails, we use the continuation stack through the $\cont$judgment.
 
 \subsubsection{Linear fact expression}
 
@@ -219,15 +215,15 @@ and initiates the derivation of head terms because $\Omega$ is empty.
 \subsection{Continuation}\label{sec:lld_match_cont}
 
 If the matching process fails, we pick the top continuation frame from the stack
-$C$ and restore the matching process using another candidate fact. The judgment
-\mbox{$\cont C; H; R; \Gamma \rightarrow \Xi'; \Delta'; \Gamma'$} specifies the
+$\lstack{C}$ and restore the matching process using another candidate fact. The judgment
+\mbox{$\cont \lstack{C}; H; \lstack{R}; \Gamma \rightarrow \outsem$} specifies the
 backtracking process where the meaning of each argument is as follows:
 
 \begin{enumerate}
-   \item[$C$] continuation stack;
+   \item[$\lstack{C}$] continuation stack;
    \item[$H$] head of the current rule being executed;
 
-   \item[$R$] next available rules if the current rule does not match.
+   \item[$\lstack{R}$] next available rules if the current rule does not match.
 
 \end{enumerate}
 
@@ -260,7 +256,7 @@ the next inference rule in $\Phi$.
 Once the list of terms $\Omega$ in the $\mo$judgment is exhausted (rule $\mo
 \m{end}$), we derive the head of rule.  The derivation judgment is
 specified as $\done \Gamma; \Delta; \Xi; \Gamma_1; \Delta_1; \Omega \rightarrow
-\Xi'; \Delta'; \Gamma'$, where:
+\outsem$, where:
 
 \begin{enumerate}
 
@@ -297,7 +293,7 @@ created using either $1$ or $\otimes$.
 \subsubsection{Comprehensions}
 
 The inference rule $\done \m{comp}$ deals with comprehensions. We use the same
-term \mbox{$\compsz{A}{B}$} for comprehensions as before.  Judgment $\mc$initiates the
+term \mbox{$AB = \compsz{A}{B}$} for comprehensions as before.  Judgment $\mc{AB}$initiates the
 matching process of the body $A$ of the comprehension (explained in the next
 section).
 
@@ -306,9 +302,9 @@ section).
 \subsubsection{Aggregates}
 
 The inference rule $\done \m{agg}$ deals with aggregates. We use the same term
-\mbox{$\aggsz{A}{B}{C}$} for aggregates as before. Judgment $\ma$initiates the
-matching process of the body $A$ of the aggregate (explained in the next
-section).
+\mbox{$\aggsz{A}{B}{C}$} for aggregates as before. Judgment
+$\ma{\aggsz{A}{B}{C}}$initiates the matching process of the body $A$ of the
+aggregate (explained in the next section).
 
 \input{lld/der-agg}
 

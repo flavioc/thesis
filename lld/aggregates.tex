@@ -3,9 +3,9 @@ differences are: (1) aggregates accumulate a list of values for each combination
 and (2) aggregates have a second head to be derived before deriving the
 remaining head terms.
 
-The match judgment $\ma \Gamma; \Delta; \Xi_N; \Gamma_{N1};
-\Delta_{N1}; \Xi; \Omega; C; P; AG; \Omega_N; \Delta_N; T \rightarrow \Xi';
-\Delta'; \Gamma'$ is as follows:
+The match judgment $\ma{AG} \Gamma; \Delta; \Xi_N; \Gamma_{N1};
+\Delta_{N1}; \Xi; \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N; \Sigma \rightarrow
+\outsem$ is as follows:
 
 \begin{enumerate}
 
@@ -26,10 +26,10 @@ The match judgment $\ma \Gamma; \Delta; \Xi_N; \Gamma_{N1};
    \item[$\Omega$] ordered list of terms that need to be matched for the
    comprehension to be applied;
 
-   \item[$C$] continuation stack that contains both linear and persistent
+   \item[$\lstack{C}$] continuation stack that contains both linear and persistent
    frames. The first frame must be linear;
 
-   \item[$P$] initial part of the continuation stack with only persistent
+   \item[$\lstack{P}$] initial part of the continuation stack with only persistent
    frames;
 
    \item[$AG$] aggregate $\aggsz{A}{B}{C}$ that is being matched;
@@ -41,14 +41,14 @@ The match judgment $\ma \Gamma; \Delta; \Xi_N; \Gamma_{N1};
    matching the body of the rule and all the previous aggregates. Note that
    $\Delta, \Xi = \Delta_N$;
 
-   \item[$T$] the list of aggregated values.
+   \item[$\Sigma$] the list of aggregated values.
 
 \end{enumerate}
 
-The judgment $\ma$is similar to $\mc$but it has the extra $T$ argument that
+The judgment $\ma{AG}$is similar to $\mc{AB}$but it has the extra $\Sigma$ argument that
 represents the list of aggregated values. We extend the $\Psi$ context to
 include triplets $x : M : \tau$ (variable, term and type) instead of pairs $M :
-\tau$ in order to be able to retrieve bound variables for all $\ma$judgments.
+\tau$ in order to be able to retrieve bound variables for all $\ma{AG}$judgments.
 Remember that $\Psi$ is used for the quantification connectives in \fragment.
 
 \subsubsection{Linear fact expressions}
@@ -66,7 +66,7 @@ Remember that $\Psi$ is used for the quantification connectives in \fragment.
 \subsubsection{Successful match}
 
 When the aggregate body finally matches, we retrieve the term for variable $x$
-(the aggregate variable) and add it to the list $T$.
+(the aggregate variable) and add it to the list $\Sigma$.
 
 \input{lld/agg-match-end}
 
@@ -75,9 +75,9 @@ When the aggregate body finally matches, we retrieve the term for variable $x$
 After matching a single aggregate, the stack is updated as if it was a
 comprehension: we drop all but the first linear continuation frame and then fix
 the contexts of the remaining stack.  The judgment that updates the stack has
-the form $\fixa \Gamma; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; C; P; AG; \Omega_N;
-\Delta_N; T \rightarrow \Xi'; \Delta'; \Gamma'$ and every argument has the usual
-meaning.
+the form $\fixa{AG} \Gamma; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; \lstack{C};
+\lstack{P}; \Omega_N; \Delta_N; \Sigma \rightarrow \outsem$ and every argument
+has the usual meaning.
 
 \subsubsection{Remove linear continuation frames}
 
@@ -86,14 +86,14 @@ meaning.
 \subsubsection{Aggregate continuation}
 
 If the aggregate match fails, we need to backtrack. The judgment for
-backtracking has the form $\conta \Gamma; \Delta_N; \Xi_N; \Delta_{N1}; C; P;
-AG; \Omega_N; T \rightarrow \Xi'; \Delta'; \Gamma'$.
+backtracking has the form $\conta{AG} \Gamma; \Delta_N; \Xi_N; \Delta_{N1};
+\lstack{C}; \lstack{P}; \Omega_N; \Sigma \rightarrow \outsem$.
 
-\paragraph{Using the C stack}
+\paragraph{Using the $\lstack{C}$ stack}
 
 \input{lld/agg-cont-c}
 
-\paragraph{Using the P stack}
+\paragraph{Using the $\lstack{P}$ stack}
 
 \input{lld/agg-cont-p}
 

@@ -78,20 +78,21 @@
 \newcommand{\contlld}{\m{cont}_{LLD}}
 \newcommand{\cont}{\contlld \;}
 \newcommand{\contclld}{\m{cont}_{LLDc}}
-\newcommand{\contc}{\contclld \;}
+\newcommand{\contc}[1]{\contclld^{#1} \;}
 \newcommand{\done}{\m{der}_{LLD} \;}
 \newcommand{\doo}{\m{run}_{LLD} \;}
 \newcommand{\matchlldc}{\m{mat}_{LLDc}}
-\newcommand{\mc}[0]{\matchlldc \; }
-\newcommand{\fix}[0]{\m{fix}_{LLDc} \; }
-\newcommand{\fixa}[0]{\m{fix}_{LLDa} \; }
+\newcommand{\mc}[1]{\matchlldc^{#1} \; }
+\newcommand{\fix}[1]{\m{fix}_{LLDc}^{#1} \; }
+\newcommand{\fixa}[1]{\m{fix}_{LLDa}^{#1} \; }
 \newcommand{\strans}[0]{\m{update}_{LLD} \;}
-\newcommand{\dc}{\m{der}_{LLDc} \;}
+\newcommand{\dc}[1]{\m{der}_{LLDc}^{#1} \;}
 \newcommand{\ao}{\m{app}_{LLD} \;}
 \newcommand{\matchllda}{\m{mat}_{LLDa}}
-\newcommand{\ma}[0]{\matchllda \;}
-\newcommand{\da}[0]{\m{der}_{LLDa} \;}
-\newcommand{\conta}[0]{\m{cont}_{LLDa} \;}
+\newcommand{\ma}[1]{\matchllda^{#1} \;}
+\newcommand{\da}[1]{\m{der}_{LLDa}^{#1} \;}
+\newcommand{\conta}[1]{\m{cont}_{LLDa}^{#1} \;}
+\newcommand{\lstack}[1]{\mathcal{#1}}
 
 % term equivalence
 \newcommand{\feq}[2]{#1 \equiv #2}

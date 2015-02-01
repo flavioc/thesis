@@ -1,11 +1,15 @@
 \[
 \infer[\cont p~\m{next}]
-{\cont (\Delta; p_1, \Delta''; p, \Omega; \Xi; \Lambda; \Upsilon), C; H; R; \Gamma \rightarrow \Xi'; \Delta'; \Gamma'}
-{\mo \Gamma ; \Delta, \Delta''; \Xi, p_1; \Omega; H; (\Delta, p_1; \Delta''; p, \Omega; H; \Xi; \Lambda; \Upsilon), C; R \rightarrow \Xi'; \Delta'; \Gamma'}
+{\cont (\Delta; p_1, \Delta''; p, \Omega; \Xi; \Lambda; \Upsilon), \lstack{C};
+   H; \lstack{R}; \Gamma \rightarrow \outsem}
+{\mo \Gamma ; \Delta, \Delta''; \Xi, p_1; \Omega; H; (\Delta, p_1; \Delta''; p,
+      \Omega; H; \Xi; \Lambda; \Upsilon), \lstack{C}; \lstack{R} \rightarrow \outsem}
 \]
 
 \[
 \infer[\cont p~\m{no~more}]
-{\cont (\Delta; \cdot; p, \Omega; \Xi; \Lambda; \Upsilon), C; H; R; \Gamma \rightarrow \Xi'; \Delta'; \Gamma'}
-{\cont C; H; R; \Gamma; \Xi'; \Delta'; \Gamma'}
+{\cont (\Delta; \cdot; p, \Omega; \Xi; \Lambda; \Upsilon), \lstack{C}; H;
+   \lstack{R}; \Gamma
+   \rightarrow \outsem}
+{\cont \lstack{C}; H; \lstack{R}; \Gamma \rightarrow \outsem}
 \]

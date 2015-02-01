@@ -21,9 +21,29 @@ thesis.pdf: thesis.tex	\
 		appendix/hld.tex \
 		appendix/fragment.tex \
 		appendix/lld.tex \
+		hld/step.tex \
+		lld/step.tex \
+		lld/match-p.tex \
+		lld/match-bang-p.tex \
+		lld/der-comp.tex \
+		lld/der-agg.tex \
+		lld/comp-fix.tex \
+		lld/comp-match-p.tex \
+		lld/comp-match-bang-p.tex \
+		lld/comp-cont-c.tex \
+		lld/comp-der.tex \
+		lld/comp-der-end.tex \
 		lld/comprehensions.tex \
+		lld/agg-match-p.tex \
+		lld/agg-match-bang-p.tex \
+		lld/agg-cont-end.tex \
+		lld/agg-cont-c.tex \
+		lld/agg-cont-p.tex \
+		lld/agg-fix.tex \
 		lld/aggregates.tex \
 		lld/soundness.tex \
+		lld/comprehensions_soundness.tex \
+		lld/aggregates_soundness.tex \
 		lld.tex hld.tex sequent_calculus.tex
 	pdflatex thesis.tex
 	pdflatex thesis.tex

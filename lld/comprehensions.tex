@@ -1,15 +1,15 @@
 The most intricate part of the derivation process is processing comprehensions
 and aggregates. For both of them, we need to perform as many derivations as the
 database allows, therefore we need to deterministically check the contents of
-the database until no more derivations are possible.
-The matching process is then similar to the process used for
-matching the body of the rule presented in Section~\ref{sec:lld_body_match},
-however we use two continuation stacks, $C$ and $P$. In $P$, we put all
-the initial persistent frames and in $C$ we put the first linear frame
-and then everything else.
+the database until no more derivations are possible.  The matching process is
+then similar to the process used for matching the body of the rule presented in
+Section~\ref{sec:lld_body_match}, however we use two continuation stacks,
+$\lstack{C}$ and $\lstack{P}$. In $\lstack{P}$, we put all the initial
+persistent frames and in $\lstack{C}$ we put the first linear frame and then
+everything else.
 
-In order to reuse the stacks $C$ and $P$, we need to update them by removing all
-the frames in $C$ pushed after the first linear continuation frame.  If we tried
+In order to reuse the stacks $\lstack{C}$ and $\lstack{P}$, we need to update them by removing all
+the frames in $\lstack{C}$ pushed after the first linear continuation frame.  If we tried
 to use those frames, we would assumed that the linear facts used by the other
 frames were still in the database, but that is not true because they have been
 consumed during the first application of the comprehension.  For example, if the
@@ -21,9 +21,9 @@ Moreover, we also need to remove the consumed linear facts from the frames of
 \texttt{b(X)} and $\bang$\texttt{a(X)} in order to make the stack fully
 consistent with the new database. We will see later on how to do that.
 
-The match judgment $\mc \Gamma; \Delta; \Xi_N; \Gamma_{N1};
-\Delta_{N1}; \Xi; \Omega; C; P; AB; \Omega_N; \Delta_N \rightarrow \Xi';
-\Delta'; \Gamma'$ is as follows:
+The match judgment $\mc{AB} \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1};
+\Xi; \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N \rightarrow \outsem$ is
+as follows:
 
 \begin{enumerate}
 
@@ -44,13 +44,11 @@ The match judgment $\mc \Gamma; \Delta; \Xi_N; \Gamma_{N1};
    \item[$\Omega$] ordered list of terms that need to be matched for the
    comprehension to be applied;
 
-   \item[$C$] continuation stack that contains both linear and persistent
-   frames. The first frame must be linear;
+   \item[$\lstack{C}$] continuation stack that contains both linear and
+   persistent frames. The first frame must be linear;
 
-   \item[$P$] initial part of the continuation stack with only persistent
+   \item[$\lstack{P}$] initial part of the continuation stack with only persistent
    frames;
-
-   \item[$AB$] comprehension $\compsz{A}{B}$ that is being matched;
 
    \item[$\Omega_N$] ordered list of remaining terms of the head of the rule to
    be derived;
@@ -85,7 +83,7 @@ the connectives $\otimes$ and $\one$, are shown next.
 \subsubsection{Successful match}
 
 Finally, when there is no more terms to match, we initiate the process of the
-updating the continuation stack with $\fix$ followed by deriving the head of the
+updating the continuation stack with $\fix{AB}$ followed by deriving the head of the
 comprehension.
 
 \input{lld/comp-match-end}
@@ -95,9 +93,9 @@ comprehension.
 As we said before, to update the continuation stacks, we need remove to all the
 frames except the first linear frame and remove the consumed linear facts from
 the remaining frames so that they are still valid for the next application of
-the comprehension.  The judgment that updates the stack has the form $\fix
-\Gamma; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; C; P; AB; \Omega_N; \Delta_N
-\rightarrow \Xi'; \Delta'; \Gamma'$, where:
+the comprehension.  The judgment that updates the stack has the form $\fix{AB}
+\Gamma; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N
+\rightarrow \outsem$, where:
 
 \begin{enumerate}
    \item[$\Xi_N$] multi-set of linear facts used during the matching process of
@@ -108,8 +106,7 @@ the comprehension.  The judgment that updates the stack has the form $\fix
    rule and all the previous comprehensions;
    \item[$\Xi$] multi-set of linear facts consumed by the previous application
    of the comprehension;
-   \item[$C, P$] continuation stacks for the comprehension;
-   \item[$AB$] comprehension $\compsz{A}{B}$ that is being computed;
+   \item[$\lstack{C}, \lstack{P}$] continuation stacks for the comprehension;
    \item[$\Omega_N$] ordered list of remaining terms of the head of the rule to
    be derived;
    \item[$\Delta_N$] multi-set of linear facts that were still available after
@@ -118,8 +115,9 @@ the comprehension.  The judgment that updates the stack has the form $\fix
 
 \subsubsection{Remove linear continuation frames}
 
-To remove all linear continuation frames except the first one, we simply go through all the frames in the stack $C$ with $\fix \m{more}$
-until only one frame remains. This frame is then updated using $\fix \m{end~linear}$ by removing the linear facts $\Xi$ consumed
+To remove all linear continuation frames except the first one, we simply go
+through all the frames in the stack $\lstack{C}$ with $\fix{AB} \m{more}$
+until only one frame remains. This frame is then updated using $\fix{AB} \m{end~linear}$ by removing the linear facts $\Xi$ consumed
 during the last application of the comprehension.
 
 \input{lld/comp-fix}
@@ -128,8 +126,9 @@ during the last application of the comprehension.
 
 Finally, we also need to subtract the consumed facts in $\Xi$ from the second
 argument of every persistent continuation frame.  We have an auxiliary judgment
-$\strans \Xi; P; P'$ where $\Xi$ is the multi-set of consumed linear facts, $P$
-is the persistent continuation stack and $P'$ is the stack $P$ after the update.
+$\strans \Xi; \lstack{P}; \lstack{P'}$ where $\Xi$ is the multi-set of consumed
+linear facts, $\lstack{P}$ is the persistent continuation stack and
+$\lstack{P'}$ is the stack $\lstack{P}$ after the update.
 
 \input{lld/comp-stack}
 
@@ -138,7 +137,7 @@ is the persistent continuation stack and $P'$ is the stack $P$ after the update.
 If the comprehension match fails, we need to backtrack to the previous frame and
 restore the matching process at that point. The judgment used to backtrack is
 similar to the one presented in Section~\ref{sec:lld_match_cont} and has the
-form $\contc \Gamma; \Delta_N; \Xi_N; \Delta_{N1}; C; P; AB; \Omega_N
+form $\contc{AB} \Gamma; \Delta_N; \Xi_N; \Delta_{N1}; \lstack{C}; \lstack{P}; \Omega_N
 \rightarrow \Xi'; \Delta'; \Gamma'$, where:
 
 \begin{enumerate}
@@ -150,28 +149,28 @@ form $\contc \Gamma; \Delta_N; \Xi_N; \Delta_{N1}; C; P; AB; \Omega_N
    and all the previous comprehensions;
    \item[$\Delta_{N1}$] multi-set of linear facts derived by the head of the
    rule and all the previous comprehensions;
-   \item[$C, P$] continuation stacks;
-   \item[$AB$] comprehension $\compsz{A}{B}$ that is executing;
+   \item[$\lstack{C}, \lstack{P}$] continuation stacks;
    \item[$\Omega_N$] ordered list of remaining terms of the head of the rule to
    be derived.
 \end{enumerate}
 
-\paragraph{Using the C stack}
+\paragraph{Using the $\lstack{C}$ stack}
 
-The following 4 inference rules use the $C$ stack, the stack where the first continuation frame is linear, to perform backtracking.
+The following 4 inference rules use the $\lstack{C}$ stack, the stack where the
+first continuation frame is linear, to perform backtracking.
 
 \input{lld/comp-cont-c}
 
-\paragraph{Using the P stack}
+\paragraph{Using the $\lstack{P}$ stack}
 
-The following 2 inference rules use the $P$ stack instead, the stack where all
+The following 2 inference rules use the $\lstack{P}$ stack instead, the stack where all
 continuation frames are persistent.
 
 \input{lld/comp-cont-p}
 
 \paragraph{Comprehension done}
 
-If both the $C$ and $P$ stacks are empty, backtracking is impossible and the
+If both the $\lstack{C}$ and $\lstack{P}$ stacks are empty, backtracking is impossible and the
 comprehension is done. The remaining head terms in $\Omega$ are then derived
 
 \input{lld/comp-cont-end}
@@ -179,8 +178,8 @@ comprehension is done. The remaining head terms in $\Omega$ are then derived
 \subsubsection{Comprehension Derivation}
 
 After updating the continuation stacks, the head of the comprehension is
-derived. The judgment has the form $\dc \Gamma; \Xi; \Gamma_1; \Delta_1; \Omega;
-C; P; AB; \Omega_N; \Delta_N \rightarrow \Xi'; \Delta'; \Gamma'$, where:
+derived. The judgment has the form $\dc{AB} \Gamma; \Xi; \Gamma_1; \Delta_1;
+\Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N \rightarrow \outsem$, where:
 
 \begin{enumerate}
    \item[$\Xi$] multi-set of linear facts consumed both by the body of the rule
@@ -190,8 +189,7 @@ C; P; AB; \Omega_N; \Delta_N \rightarrow \Xi'; \Delta'; \Gamma'$, where:
    \item[$\Delta_1$] multi-set of linear facts derived by the head of the rule,
    previous comprehensions and current derivation;
    \item[$\Omega$] ordered list of terms to derive;
-   \item[$C, P$] new continuation stacks;
-   \item[$AB$] comprehension $\compsz{A}{B}$ that is being executed;
+   \item[$\lstack{C}, \lstack{P}$] new continuation stacks;
    \item[$\Omega_N$] ordered list of remaining terms of the head of the rule to
    be derived;
    \item[$\Delta_N$] multi-set of remaining linear facts that can be used for
@@ -200,7 +198,8 @@ C; P; AB; \Omega_N; \Delta_N \rightarrow \Xi'; \Delta'; \Gamma'$, where:
 
 \input{lld/comp-der}
 
-The last derivation rule is activated whenever $\Omega$ is empty. We use the $\contc$judgment to reuse the continuation stack
+The last derivation rule is activated whenever $\Omega$ is empty. We use the
+$\contc{AB}$judgment to reuse the continuation stack
 and try the next combination for the comprehension.
 
 \input{lld/comp-der-end}

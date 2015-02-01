@@ -1,23 +1,32 @@
 \[
-\infer[\dc p]
-{\dc \Gamma; \Xi; \Gamma_1; \Delta_1; p, \Omega; C; P; AB; \Omega_N; \Delta_N \rightarrow \Xi'; \Delta'; \Gamma'}
-{\dc \Gamma; \Xi; \Gamma_1; \Delta_1, p; \Omega; C; P; AB; \Omega_N; \Delta_N \rightarrow \Xi'; \Delta'; \Gamma'}
+\infer[\dc{AB} p]
+{\dc{AB} \Gamma; \Xi; \Gamma_1; \Delta_1; p, \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N
+   \rightarrow \outsem}
+{\dc{AB} \Gamma; \Xi; \Gamma_1; \Delta_1, p; \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N
+   \rightarrow \outsem}
 \]
 
 \[
-\infer[\dc \bang p]
-{\dc \Gamma; \Xi; \Gamma_1; \Delta_1; \bang p, \Omega; C; P; AB; \Omega_N; \Delta_N \rightarrow \Xi'; \Delta'; \Gamma'}
-{\dc \Gamma; \Xi; \Gamma_1, p; \Delta_1; \Omega; C; P; AB; \Omega_N; \Delta_N \rightarrow \Xi'; \Delta'; \Gamma'}
+\infer[\dc{AB} \bang p]
+{\dc{AB} \Gamma; \Xi; \Gamma_1; \Delta_1; \bang p, \Omega; \lstack{C};
+   \lstack{P}; \Omega_N; \Delta_N
+   \rightarrow \outsem}
+{\dc{AB} \Gamma; \Xi; \Gamma_1, p; \Delta_1; \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N
+   \rightarrow \outsem}
 \]
 
 \[
-\infer[\dc \otimes]
-{\dc \Gamma; \Xi; \Gamma_1; \Delta_1; A \otimes B, \Omega; C; P; AB; \Omega_N; \Delta_N \rightarrow \Xi'; \Delta';\Gamma'}
-{\dc \Gamma; \Xi; \Gamma_1; \Delta_1; A, B, \Omega; C; P; AB; \Omega_N; \Delta_N \rightarrow \Xi'; \Delta';\Gamma'}
+\infer[\dc{AB} \otimes]
+{\dc{AB} \Gamma; \Xi; \Gamma_1; \Delta_1; A \otimes B, \Omega; \lstack{C}; \lstack{P}; \Omega_N;
+   \Delta_N \rightarrow \outsem}
+{\dc{AB} \Gamma; \Xi; \Gamma_1; \Delta_1; A, B, \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N
+   \rightarrow \outsem}
 \]
 
 \[
-\infer[\dc 1]
-{\dc \Gamma; \Xi; \Gamma_1; \Delta_1; 1, \Omega; C; P; AB; \Omega_N; \Delta_N \rightarrow \Xi'; \Delta';\Gamma'}
-{\dc \Gamma; \Xi; \Gamma_1; \Delta_1; \Omega; C; P; AB; \Omega_N; \Delta_N \rightarrow \Xi'; \Delta';\Gamma'}
+\infer[\dc{AB} \one]
+{\dc{AB} \Gamma; \Xi; \Gamma_1; \Delta_1; 1, \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N
+   \rightarrow \outsem}
+{\dc{AB} \Gamma; \Xi; \Gamma_1; \Delta_1; \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N
+   \rightarrow \outsem}
 \]

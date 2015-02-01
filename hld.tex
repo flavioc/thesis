@@ -34,28 +34,29 @@ Operationally, LM proceeds in \emph{steps}. A step happens at some node $i$ and
 proceeds by picking one rule to apply, matching the body of the rule against the
 database, removing all those facts from the database and then deriving all the
 constructs in the head of the rule. We assume the existence of $n$ nodes in the
-program and that $\Delta$ and $\Gamma$ are split into $\Delta_1, \dotsc, \Delta_n$
-and $\Gamma_1, \dotsc, \Gamma_n$ respectively. After each step, the database of
-each fact is updated accordingly.
+program and that $\Gamma$ and $\Delta$ are split into $\Gamma_1, \dotsc,
+\Gamma_n$ and $\Delta_1, \dotsc, \Delta_n$ respectively. After each
+step, the database of each fact is updated accordingly.
 
 Steps are defined as $\stepz \Gamma; \Delta; \Phi \Longrightarrow \Gamma';
-\Delta'$, where $\Gamma'$ and $\Delta'$ is the new database. The step rule is as
-follows:
+\Delta'$, where $\Gamma'$ and $\Delta'$ are the new database contexts. The step
+rule is as follows:
 
 \input{hld/step}
 
 \subsection{Application}
 
 A step is performed through $\doz \Gamma; \Delta; \Phi \rightarrow \Xi';
-\Delta'; \Gamma'$.  $\Gamma$, $\Delta$ and $\Phi$ have the meaning explained
-before, while $\Xi'$, $\Delta'$ and $\Gamma'$ are output multi-sets from
-applying one of the rules in $\Phi$. $\Xi'$ is the set of consumed linear
-resources, $\Delta'$ is the set of derived linear facts and $\Gamma'$ is the set
-of derived persistent facts. Note that for HLD semantics there is no concept of
-rule priority, therefore a rule is picked non-deterministically.
+\Gamma'; \Delta'$.  $\Gamma$, $\Delta$ and $\Phi$ have the meaning explained
+before, while $\Xi'$, $\Gamma'$ and $\Delta'$ are output multi-sets from
+applying one of the rules in $\Phi$ and are usually written as $\outsem$. $\Xi'$ is
+the set of consumed linear resources, $\Gamma'$ is the set of derived persistent
+facts and $\Delta'$ is the set of derived linear facts.  Note that for HLD
+semantics there is no concept of rule priority, therefore a rule is picked
+non-deterministically.
 
-The judgment $\az \Gamma ; \Delta ; A \lolli B \rightarrow \Xi'; \Delta';
-\Gamma'$ will attempt to apply the derivation rule $A \lolli B$. To do this, it
+The judgment $\az \Gamma ; \Delta ; A \lolli B \rightarrow \outsem$
+applies the derivation rule $A \lolli B$. To do this, it
 splits the $\Delta$ context into $\Delta_1$ and $\Delta_2$, namely the set of
 linear resources consumed to match the body of the rule ($\Delta_1$) and the
 remaining linear facts ($\Delta_2$).  Again, the set of resources needed to
@@ -78,7 +79,7 @@ $C$ but such facts are never consumed since they are persistent.
 
 After successfully matching the body of the rule, we next derive the head of the
 rule. The derivation judgment has the form $\dz \Gamma ; \Delta ; \Xi ; \Gamma_1
-; \Delta_1 ; \Omega \rightarrow \Xi'; \Delta'; \Gamma'$ with the following
+; \Delta_1 ; \Omega \rightarrow \outsem$ with the following
 meaning:
 
 \begin{enumerate}
@@ -101,11 +102,8 @@ meaning:
    still need to be derived. We start with the head of the rule $B$ that is
    continuously deconstructed to derive all the facts of the rule;
 
-   \item[$\Xi'$] the consumed linear facts to apply this rule;
-
-   \item[$\Delta'$] the derived linear facts;
-
-   \item[$\Gamma'$] the derived persistent facts.
+   \item[$\outsem$] the output contexts, including consumed facts and derived
+   persistent and linear facts.
 
 \end{enumerate}
 

@@ -1,8 +1,8 @@
 \[
-\infer[\conta \m{end}]
-{\conta \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \cdot; \cdot;
-   \aggsz{A}{B}{C}; \Omega; T \rightarrow \Xi'; \Delta'; \Gamma'}
+\infer[\conta{\aggsz{A}{B}{C}} \m{end}]
+{\conta{\aggsz{A}{B}{C}} \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \cdot; \cdot;
+   \Omega; \Sigma \rightarrow \outsem}
 {\done \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; (\lambda x. C
       x)\sigma,
-   \Omega \rightarrow \Xi'; \Delta'; \Gamma' & \sigma = \sum_i T_i}
+   \Omega \rightarrow \outsem & \sigma = \sum_i (\Sigma_i)}
 \]
