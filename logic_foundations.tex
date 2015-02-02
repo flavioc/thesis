@@ -120,12 +120,11 @@ The iterative definition $\mathtt{agg}$ is defined as follows:
 \input{lld/soundness}
 \section{Summary}
 
-In this chapter we presented the proof theoretic foundations of LM.
-First, we introduced the linear logic fragment that supports LM. We then presented the
-high level dynamic semantics that was created by interpreting the linear logic fragment using
-focusing and chaining. Next, we designed
-a formal system called the low level dynamic semantics that mimics the execution of rules in
-our virtual machine minus small details.
-Finally, we gave a brief overview of the soundness proof of the low level dynamic semantics,
-thus proving that our virtual machine is sound in respect to our high level semantics.
+In this chapter we presented the proof theoretic foundations of LM.  First, we
+introduced \fragment, the linear logic fragment that supports LM. We then
+presented HLD, the high level dynamic semantics that was created by interpreting
+the linear logic fragment using focusing and chaining. Next, we designed LLD,
+the low level dynamic semantics that mimics the execution of rules in our
+virtual machine minus small details.  Finally, we proved that LLD is sound
+in relation to HLD, thus showing a connection from LLD to \fragment.
 
