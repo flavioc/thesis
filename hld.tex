@@ -120,11 +120,13 @@ database to determine how many times a comprehension should be applied.
 \input{hld/derivation-comp}
 
 These rules mirror the rules for the iterative definition in \fragment.  Rules
-for aggregates are similar:
+for aggregates are similar, but they accumulate a value as a list:
 
 \input{hld/derivation-agg}
 
-Finally, because the comprehensions and aggregates create implications $A \lolli
-B$, we add a final derivation rule $\dz \lolli$:
+Finally, because both comprehensions and aggregates create implications $A \lolli
+B$, we add a final derivation rule $\dz \lolli$. The rule $\dz \forall$ is
+needed because aggregates need them to instantiate variables for the aggregated
+value.
 
 \input{hld/derivation-other}

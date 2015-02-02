@@ -2,24 +2,23 @@
 \infer[\dz \m{agg}^*]
 {\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \aggsz{A}{B}{C}, \Omega
    \rightarrow \outsem}
-{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \aggz{N}{A}{B}{C}{0}, \Omega
+{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \aggz{N}{A}{B}{C}{\cdot}, \Omega
    \rightarrow \outsem}
 \]
 
-{\small
 \[
 \infer[\dz \m{agg}^N]
-{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \aggz{N}{A}{B}{C}{V}, \Omega
+{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \aggz{N}{A}{B}{C}{\Sigma}, \Omega
    \rightarrow \outsem}
-{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \aggunfold{N-1}{A}{B}{C}{V},
+{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ;
+   \aggunfold{N-1}{A}{B}{C}{\Sigma},
    \Omega \rightarrow \outsem}
 \]
-}
 
 \[
 \infer[\dz \m{agg}^0]
-{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \aggz{0}{A}{B}{C}{V}, \Omega
+{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \aggz{0}{A}{B}{C}{\Sigma}, \Omega
    \rightarrow \outsem}
-{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \aggunfoldz{C}{V}, \Omega
+{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \aggunfoldz{C}{\Sigma}, \Omega
    \rightarrow \outsem}
 \]

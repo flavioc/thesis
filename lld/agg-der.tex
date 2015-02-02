@@ -1,32 +1,32 @@
 \[
 \infer[\da{AG} p]
-{\da{AG} \Gamma; \Xi; \Gamma_1; \Delta_1; p, \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N;
+{\da{AG} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1; p, \Omega; \lstack{C}; \lstack{P}; \Omega_N;
    \Sigma \rightarrow \outsem}
-{\da{AG} \Gamma; \Xi; \Gamma_1; \Delta_1, p; \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N;
+{\da{AG} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1, p; \Omega; \lstack{C}; \lstack{P}; \Omega_N;
    \Sigma \rightarrow \outsem}
 \]
 
 \[
 \infer[\da{AG} \bang p]
-{\da{AG} \Gamma; \Xi; \Gamma_1; \Delta_1; \bang p, \Omega; \lstack{C};
-   \lstack{P}; \Omega_N; \Delta_N; \Sigma \rightarrow \outsem}
-{\da{AG} \Gamma; \Xi; \Gamma_1, p; \Delta_1; \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N;
+{\da{AG} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1; \bang p, \Omega; \lstack{C};
+   \lstack{P}; \Omega_N; \Sigma \rightarrow \outsem}
+{\da{AG} \Gamma; \Delta_N; \Xi_N; \Gamma_1, p; \Delta_1; \Omega; \lstack{C}; \lstack{P}; \Omega_N;
    \Sigma \rightarrow \outsem}
 \]
 
 \[
 \infer[\da{AG} \otimes]
-{\da{AG} \Gamma; \Xi; \Gamma_1; \Delta_1; A \otimes B, \Omega; \lstack{C}; \lstack{P}; \Omega_N;
-   \Delta_N; \Sigma \rightarrow \outsem}
-{\da{AG} \Gamma; \Xi; \Gamma_1; \Delta_1; A, B, \Omega; \lstack{C}; \lstack{P}; \Omega_N;
-   \Delta_N; \Sigma \rightarrow \outsem}
+{\da{AG} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1; A \otimes B, \Omega; \lstack{C}; \lstack{P}; \Omega_N;
+   \Sigma \rightarrow \outsem}
+{\da{AG} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1; A, B, \Omega; \lstack{C}; \lstack{P}; \Omega_N;
+   \Sigma \rightarrow \outsem}
 \]
 
 \[
 \infer[\da{AG} \m{end}]
-{\da{AG} \Gamma; \Xi; \Gamma_1; \Delta_1; \cdot; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N;
+{\da{AG} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1; \cdot; \lstack{C}; \lstack{P}; \Omega_N;
    \Sigma \rightarrow \outsem}
-{\conta{AG} \Gamma; \Delta_N; \Xi; \Gamma_1; \Delta_1; \lstack{C}; \lstack{P}; \Omega_N; \Sigma
+{\conta{AG} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1; \lstack{C}; \lstack{P}; \Omega_N; \Sigma
    \rightarrow \outsem}
 \]
 

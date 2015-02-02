@@ -26,7 +26,7 @@ well-formed in relation to $T$ then either:
    \begin{itemize}[leftmargin=\secondm]
       \item $\mz \Gamma; \Delta_2 \rightarrow A$
       \item $\mc{AB} \Gamma; \Delta_1; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi,
-         \Delta_2; \cdot; \lstack{C'}, \lstack{C}; \lstack{P}; \Omega_N; \Delta_N
+         \Delta_2; \cdot; \lstack{C'}, \lstack{C}; \lstack{P'}, \lstack{P}; \Omega_N; \Delta_N
          \rightarrow \outsem$ (well-formed in relation to $T$)
    \end{itemize}
 
@@ -83,11 +83,12 @@ Straightforward induction on the size of $\lstack{P}$.
 \end{proof}
 
 \begin{theorem}[From update to derivation]\label{thm:from_update_to_derivation}
-If $\fix{AB} \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; \lstack{C};
-\lstack{P}; \Omega_N; \Delta_N \rightarrow \outsem$ then\\
-\texttab$\dc{AB} \Gamma; \Xi_N, \Xi;
-\Gamma_{N1}; \Delta_{N1}; B; \lstack{C'} ; \lstack{P'}; \Omega_N; (\Delta_N - \Xi) \rightarrow
-\outsem$, where:
+
+Assume a comprehension $AB = \compsz{A}{B}$. \\ A stack update
+$\fix{AB} \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; \lstack{C};
+\lstack{P}; \Omega_N; \Delta_N \rightarrow \outsem$ implies a derivation \texttab$\dc{AB}
+\Gamma; \Delta_N - \Xi; \Xi_N, \Xi; \Gamma_{N1}; \Delta_{N1}; B; \lstack{C'} ;
+\lstack{P'}; \Omega_N \rightarrow \outsem$, where:
 
 \begin{itemize}[leftmargin=*]
    \item If $\lstack{C} = \cdot$ then $\lstack{C'} = \cdot$
@@ -104,8 +105,8 @@ If $\fix{AB} \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; \lstack{C};
 \end{theorem}
 \begin{proof}
 Use induction on the size of the stack $\lstack{C}$ to get the result of
-$\lstack{C'}$ and then
-apply Theorem~\ref{thm:stack_update} to get $\lstack{P'}$.
+$\lstack{C'}$ and then apply Theorem~\ref{thm:stack_update} to get
+$\lstack{P'}$.
 \end{proof}
 
 
@@ -117,14 +118,14 @@ that $\Omega = \cdot$ in $\matchlldc$, so there is nothing left to match.
 If $\mc{AB} \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; \cdot; B;
 \lstack{C}; \lstack{P};
 \Omega_N; \Delta_N \rightarrow \outsem$ then\\
-\texttab$\dc{AB} \Gamma; \Xi_N, \Xi; \Gamma_{N1}; \Delta_{N1}; B; \lstack{C'};
-\lstack{P'}; \Omega_N; (\Delta_N - \Xi) \rightarrow \outsem$ where:
+$\dc{AB} \Gamma; \Delta_N - \Xi; \Xi_N, \Xi; \Gamma_{N1}; \Delta_{N1}; B; \lstack{C'};
+\lstack{P'}; \Omega_N \rightarrow \outsem$ where:
    
 \begin{itemize}[leftmargin=*]
    \item If $\lstack{C} = \cdot$ then $\lstack{C'} = \cdot$
    \item If $\lstack{C} = \lstack{C_1}, (\Delta_a; \Delta_b; \cdot; p; \Omega;
          \cdot; \Upsilon)$ then $\lstack{C'} = (\Delta_a - \Xi; \Delta_b - \Xi; \cdot; p;
-            \Omega; \cdot; \Upsilon)$ then \linebreak $\lstack{C'} = (\Delta_a - \Xi; \Delta_b - \Xi; \cdot; p; \Omega; \cdot; \Upsilon)$
+            \Omega; \cdot; \Upsilon)$
    \item $\lstack{P'}$ is the transformation of stack $\lstack{P}$, where for every frame $f \in
    \lstack{P}$ of the form $[\Gamma'; \Delta_N; \cdot; \bang p; \Omega; \cdot; \Upsilon]$
    will turn into $f' = [\Gamma';\Delta_N-\Xi;\cdot;\bang p;\Omega;\cdot;\Upsilon]$
@@ -144,19 +145,19 @@ continuation stacks to start the comprehension process all over again, but now
 with a non-empty continuation stack.
 
 \begin{theorem}[Comprehension derivation soundness]\label{thm:comprehension_derivation}
-If $\dc{AB} \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Omega_1, \dotsc,
-   \Omega_n; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N \rightarrow \outsem$ then:
+If $\dc{AB} \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Omega_1, \dotsc,
+   \Omega_n; \lstack{C}; \lstack{P}; \Omega_N \rightarrow \outsem$ then:
 
 \begin{itemize}[leftmargin=*]
-   \item $\dc{AB} \Gamma; \Delta; \Xi_N; \Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_n; \Delta_{N1},
-   \Delta_1, \dotsc, \Delta_n; \cdot; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N \rightarrow
+   \item $\dc{AB} \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_n; \Delta_{N1},
+   \Delta_1, \dotsc, \Delta_n; \cdot; \lstack{C}; \lstack{P}; \Omega_N \rightarrow
    \outsem$;
 
-   \item $\forall_{\Omega_x}.($ if $\dz \Gamma; \Delta; \Xi_N;
+   \item $\forall_{\Omega_x}.($ if $\dz \Gamma; \Delta_N; \Xi_N;
    \Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_n; \Delta_{N1}, \Delta_1, \dotsc,
    \Delta_n; \Omega_x \rightarrow \outsem$ then
 
-   $\dz \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Omega_1, \dotsc,
+   $\dz \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Omega_1, \dotsc,
    \Omega_n, \Omega_x \rightarrow \outsem)$.
 
 \end{itemize}
@@ -166,7 +167,8 @@ If $\dc{AB} \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Omega_1, \dotsc,
 Straightforward induction on $\Omega_1, \dotsc, \Omega_n$.
 \end{proof}
 
-The second result of this theorem is the soundness result we need because it will allow us to reconstruct the derivation tree in HLD.
+The second result of this theorem is the soundness result we need because it
+will allow us to reconstruct the derivation tree in HLD.
 
 
 \paragraph{Multiple Comprehension Derivation} We are interested in proving that
@@ -277,12 +279,12 @@ By applying Lemma~\ref{thm:comprehension_body_match} to (1), we get:
       $f' = (\Delta_a, p_1 - \Xi_1; \Delta_b - \Xi_1; \cdot; p; \Omega; \cdot;
             \Upsilon)$ \\
 
-      $\dc{AB} \Gamma; \Xi_N, \Xi_1; \Gamma_{N1}; \Delta_{N1}; B; f';
-      \lstack{P'}; \Omega_N; \Delta, \Xi_2, \dotsc, \Xi_n \rightarrow \outsem$ \\
+      $\dc{AB} \Gamma; \Delta, \Xi_2, \dotsc, \Xi_n; \Xi_N, \Xi_1; \Gamma_{N1}; \Delta_{N1}; B; f';
+      \lstack{P'}; \Omega_N \rightarrow \outsem$ \\
       \dots \hfill (5) using Corollary~\ref{thm:match_to_derivation} on (4) \\
 
-      $\dc{AB} \Gamma; \Xi_N, \Xi_1; \Gamma_{N1}, \Gamma_1; \Delta_{N1}, \Delta_1;
-            \cdot; f'; \lstack{P'}; \Omega_N; \Delta, \Xi_2, \dotsc, \Xi_n \rightarrow \outsem$
+      $\dc{AB} \Gamma; \Delta, \Xi_2, \dotsc, \Xi_n; \Xi_N, \Xi_1; \Gamma_{N1}, \Gamma_1; \Delta_{N1}, \Delta_1;
+            \cdot; f'; \lstack{P'}; \Omega_N \rightarrow \outsem$
       \\ \dots \hfill (6) applying Theorem~\ref{thm:comprehension_derivation} on (5)
 
       $\forall_{\Omega_x}. ($ if $\dz \Gamma; \Delta, \Xi_2, \dotsc, \Xi_n; \Xi_N, \Xi_1;
@@ -300,7 +302,7 @@ By applying Lemma~\ref{thm:comprehension_body_match} to (1), we get:
         For the latter case, we apply mutual induction to get the remaining $n -
         1$ comprehensions.
       
-   \item With backtracking to the linear continuation frame of stack $\lstack{C}$:
+   \item Success with backtracking to the linear continuation frame of stack $\lstack{C}$:
       
       $\mz \Gamma; \Xi_1 \rightarrow A$ \hfill (2) from lemma \\
 
@@ -313,7 +315,7 @@ By applying Lemma~\ref{thm:comprehension_body_match} to (1), we get:
       
       Use the same approach as the case with no backtracking.
       
-   \item With backtracking to a persistent continuation frame of stack
+   \item Success with backtracking to a persistent continuation frame of stack
    $\lstack{P}$:
 
       $\mz \Gamma; \Xi_1 \rightarrow A$ \hfill (2) from lemma \\
@@ -331,7 +333,7 @@ By applying Lemma~\ref{thm:comprehension_body_match} to (1), we get:
 \end{itemize}
 \end{proof}
 
-For this theorem, we derive three important propositions for HLD: (1) the final
+From this theorem, we derive three important propositions for HLD: (1) the final
 derivation proposition; (2) the matching propositions for each comprehension
 application; (2) derivation implications to get from (1) to a derivation
 judgment without any derivations of the comprehension. However, the theorem
@@ -398,13 +400,13 @@ Apply Lemma~\ref{thm:comprehension_body_match} to get two sub-cases:
    $\mz \Gamma; \Xi_1 \rightarrow A$
    \hfill (2) also from Lemma~\ref{thm:comprehension_body_match}
    
-   $\dc{AB} \Gamma; \Xi_N, \Xi_1; \Gamma_{N1}; \Delta_{N1}; B; \lstack{C'};
-\lstack{P'}; \Omega_N; \Delta, \Xi_2, \dotsc, \Xi_n \rightarrow \outsem$
+   $\dc{AB} \Gamma; \Delta, \Xi_2, \dotsc, \Xi_n; \Xi_N, \Xi_1; \Gamma_{N1}; \Delta_{N1}; B; \lstack{C'};
+\lstack{P'}; \Omega_N \rightarrow \outsem$
    
    \dots \hfill (3) applying Corollary~\ref{thm:match_to_derivation} on (1)
    
-   $\dc{AB} \Gamma; \Xi_N, \Xi_1; \Gamma_{N1}, \Gamma_1; \Delta_{N1}, \Delta_1;
-   \cdot; \lstack{C'}; \lstack{P'}; \Omega_N; \Delta, \Xi_2, \dotsc, \Xi_n \rightarrow \outsem$
+   $\dc{AB} \Gamma; \Delta, \Xi_2, \dotsc, \Xi_n; \Xi_N, \Xi_1; \Gamma_{N1}, \Gamma_1; \Delta_{N1}, \Delta_1;
+   \cdot; \lstack{C'}; \lstack{P'}; \Omega_N \rightarrow \outsem$
    
    \dots \hfill (4) using Theorem~\ref{thm:comprehension_derivation} on (3)\\
    
@@ -425,7 +427,7 @@ Apply Lemma~\ref{thm:comprehension_body_match} to get two sub-cases:
 \end{itemize}
 \end{proof}
 
-If the previous lemma, the comprehension is applied for as many times as the
+With the previous lemma the comprehension is applied for as many times as the
 database allows. We now have to map these $n$ applications to HLD by rebuilding
 the proof tree for these $n$ matches and derivations and then using
 $n$ when "guessing" the number of iterative definitions in HLD.

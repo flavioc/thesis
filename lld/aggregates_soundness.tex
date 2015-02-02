@@ -10,97 +10,32 @@ the whole process derives $n$ aggregate applications with $n$ aggregated values.
 Given an aggregate $AG = \aggsz{A}{B}{C}$, consider a triplet $T = A; \Gamma;
 \Delta_{N}$ and a context $\Delta_{N} = \Delta_1, \Delta_2, \Xi$.
 
-If $\ma \Gamma; \Delta_1, \Delta_2; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi;
-\Omega; C; P; AG; \Omega_N; \Delta_N; \Sigma \rightarrow \outsem$ is well-formed in relation to $T$ then either:
+If $\ma{AG} \Gamma; \Delta_1, \Delta_2; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi;
+\Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N; \Sigma \rightarrow \outsem$ is well-formed in relation to $T$ then either:
 
-   \begin{itemize}[leftmargin=*]
-      \item Match fails:
-      \begin{itemize}[leftmargin=\secondm]
-         \item $\done \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Omega_N \rightarrow \outsem$
-      \end{itemize}
-      
-      \item Match succeeds with no backtracking to frames of stack $C$ or $P$
-      ($C \neq \cdot$):
-
-      \begin{itemize}[leftmargin=\secondm]
-         \item $\mz \Gamma; \Delta_2 \rightarrow A$
-         \item $\mc \Gamma; \Delta_1; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi,
-            \Delta_2; \cdot; C', C; P; AB; \Omega_N; \Delta_N
-            \rightarrow \outsem$ (well-formed in relation to
-                  $T$)
-      \end{itemize}
-
-      \item Match succeeds with no backtracking to frames of stack $P$ ($C =
-            \cdot$):
-      \begin{itemize}[leftmargin=\secondm]
-         \item $\mz \Gamma; \Delta_2 \rightarrow A$
-         \item $\mc \Gamma; \Delta_1; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi,
-            \Delta_2; \cdot; C'; P', P; AB; \Omega_N; \Delta_N
-            \rightarrow \outsem$ (well-formed in relation to
-                  $T$)
-      \end{itemize}
-
-      \item Match succeeds with backtracking to a linear continuation frame in
-      stack $C$ ($C \neq \cdot$):
-
-      \begin{itemize}[leftmargin=\secondm]
-         \item $\mz \Gamma; \Xi_1, \dotsc, \Xi_m, p_2, \Xi_c$
-         \item $\exists_{f \in C}. f = (\Delta_a; \Delta_{b_1}, p_2,
-               \Delta_{b_2}; p; \Xi_1, \dotsc, \Xi_m; \Omega_1, \dotsc,
-               \Omega_k; \Lambda_1, \dotsc, \Lambda_m; \Upsilon_1, \dotsc,
-               \Upsilon_n)$
-         \item $C = C', f, C''$
-         \item $f$ turns into $f' = (\Delta_a, \Delta_{b_1}, p_2;
-               \Delta_{b_2}; p; \Xi_1, \dotsc, \Xi_m;
-               \Omega_1, \dotsc, \Omega_k; \Lambda_1, \dotsc, \Lambda_m;
-               \Upsilon_1, \dotsc, \Upsilon_n)$
-         \item $\mc \Gamma; \Delta_c; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi_1,
-            \dotsc, \Xi_m, p_2, \Xi_c; \cdot; C''', f', C''; P;
-            AB; \Omega_N; \Delta_N \rightarrow \outsem$ (well-formed in relation to $T$)
-         \item $\Delta_c = (\Delta_1, \Delta_2, \Xi) - (\Xi_1, \dotsc, \Xi_m,
-               p_2, \Xi_c)$
-      \end{itemize}
-
-      \item Match succeeds with backtracking to a persistent continuation frame
-      in stack $C$ ($C \neq \cdot$):
-      \begin{itemize}[leftmargin=\secondm]
-         \item $\mz \Gamma; \Delta_{c_2}, \Xi_1, \dotsc, \Xi_m \rightarrow A$
-         \item $\exists_{f \in C}. f = [\Gamma_1, p_2, \Gamma_2; \Delta_{c_1},
-            \Delta_{c_2}; \Xi_1, \dotsc, \Xi_m; \bang p; \Omega_1, \dotsc, \Omega_k;
-            \Lambda_1, \dotsc, \Lambda_m; \Upsilon_1, \dotsc, \Upsilon_n]$
-         \item $C = C', f, C''$
-         \item $f$ turns into $f' = [\Gamma_2; \Delta_{c_1}, \Delta_{c_2};
-            \Xi_1, \dotsc, \Xi_m; \bang p; \Omega_1, \dotsc, \Omega_k; \Lambda_1,
-            \dotsc, \Lambda_m; \Upsilon_1, \dotsc, \Upsilon_n]$
-         \item $\mc \Gamma; \Delta_{c_1}; \Xi_N; \Gamma_{N1}; \Delta_{N1};
-            \Delta_{c_2}, \Xi_1, \dotsc, \Xi_m; \cdot; C''', f', C''; P;
-            AB; \Omega_N; \Delta_N \rightarrow \outsem$ (well-formed in relation to $T$)
-         \item $\Delta_{c_1}, \Delta_{c_2} = (\Delta_1, \Delta_2, \Xi) - (\Xi_1, \dotsc, \Xi_m)$
-      \end{itemize}
-
-      \item Match succeeds with backtracking to a persistent continuation frame
-      in stack $P$ ($C = \cdot$):
-      \begin{itemize}[leftmargin=\secondm]
-         \item $\mz \Gamma; \Delta_{c_2}, \Xi_1, \dotsc, \Xi_m \rightarrow A$
-         \item $\exists_{f \in P}. f = [\Gamma_1, p_2, \Gamma_2; \Delta_{c_1}, \Delta_{c_2};
-      \Xi_1, \dotsc, \Xi_m; \bang p; \Omega_1, \dotsc, \Omega_k; \Lambda_1,
-      \dotsc, \Lambda_m; \Upsilon_1, \dotsc, \Upsilon_n]$
-         \item $P = P', f, P''$
-         \item $f$ turns into $f' = [\Gamma_2; \Delta_{c_1},
-            \Delta_{c_2}; \Xi_1, \dotsc, \Xi_m; \bang p; \Omega_1, \dotsc,
-            \Omega_k; \Lambda_1, \dotsc, \Lambda_m; \Upsilon_1, \dotsc, \Upsilon_n]$
-         \item $\mc \Gamma; \Delta_{c_1}; \Xi_N; \Gamma_{N1}; \Delta_{N1};
-         \Delta_{c_2}, \Xi_1, \dotsc, \Xi_m; \cdot; C'; P''', f', P'';
-         AB; \Omega_N; \Delta_N \rightarrow \outsem$
-         (well-formed in relation to $T$)
-         \item $\Delta_{c_1}, \Delta_{c_2} = (\Delta_1, \Delta_2, \Xi) - (\Xi_1, \dotsc,
-               \Xi_m)$
-      \end{itemize}
+\begin{itemize}[leftmargin=*]
+   \item Match fails:
+   \begin{itemize}[leftmargin=\secondm]
+      \item $\done \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Omega_N \rightarrow \outsem$
    \end{itemize}
    
-If $\contc \Gamma; \Delta_{N}; \Xi_{N}; \Gamma_{N1}; \Delta_{N1}; C; P;
-AB; \Omega_N \rightarrow \outsem$ and $C$ and $P$ are
-well-formed in relation to $T$ then either:
+   \item Match succeeds with no backtracking to frames of stack $\lstack{C}$
+   or $\lstack{P}$ ($\lstack{C} \neq \cdot$):
+
+   \begin{itemize}[leftmargin=\secondm]
+      \item $\mz \Gamma; \Delta_2 \rightarrow A$
+      \item $\ma{AG} \Gamma; \Delta_1; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi,
+         \Delta_2; \cdot; \lstack{C'}, \lstack{C}; \lstack{P'}, \lstack{P};
+   \Omega_N; \Delta_N; \Sigma \rightarrow \outsem$ (well-formed in relation to $T$)
+   \end{itemize}
+
+   \input{lld/agg-match-soundness}
+
+\end{itemize}
+
+If $\conta{AG} \Gamma; \Delta_{N}; \Xi_{N}; \Gamma_{N1}; \Delta_{N1};
+\lstack{C}; \lstack{P}; \Omega_N; \Sigma \rightarrow \outsem$ and $\lstack{C}$ and
+$\lstack{P}$ are well-formed in relation to $T$ then either:
 
 \begin{itemize}[leftmargin=*]
    \item Match fails:
@@ -108,64 +43,364 @@ well-formed in relation to $T$ then either:
       \item $\done \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Omega_N \rightarrow \outsem$
    \end{itemize}
 
-   \item Match succeeds with backtracking to a linear continuation frame in
-   stack $C$ ($C \neq \cdot$):
-
-   \item Match succeeds: $\mz \Gamma; \Delta_x \rightarrow A$ (where
-         $\Delta_x \subseteq \Delta_N$) and either:
-   \begin{itemize}[leftmargin=\secondm]
-      \item $\mz \Gamma; \Xi_1, \dotsc, \Xi_m, p_2, \Xi_c$
-      \item $\exists_{f \in C}. f = (\Delta_a; \Delta_{b_1}, p_2,
-            \Delta_{b_2}; p; \Xi_1, \dotsc, \Xi_m; \Omega_1, \dotsc,
-            \Omega_k; \Lambda_1, \dotsc, \Lambda_m; \Upsilon_1, \dotsc,
-            \Upsilon_n)$
-      \item $C = C', f, C''$
-      \item $f$ turns into $f' = (\Delta_a, \Delta_{b_1}, p_2;
-            \Delta_{b_2}; p; \Xi_1, \dotsc, \Xi_m;
-            \Omega_1, \dotsc, \Omega_k; \Lambda_1, \dotsc, \Lambda_m;
-            \Upsilon_1, \dotsc, \Upsilon_n)$
-      \item $\mc \Gamma; \Delta_c; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi_1,
-         \dotsc, \Xi_m, p_2, \Xi_c; \cdot; C''', f', C''; P;
-         AB; \Omega_N; \Delta_N \rightarrow \outsem$ (well-formed in relation to $T$)
-      \item $\Delta_c = (\Delta_1, \Delta_2, \Xi) - (\Xi_1, \dotsc, \Xi_m,
-            p_2, \Xi_c)$
-   \end{itemize}
-
-   \item Match succeeds with backtracking to a persistent continuation frame
-   in stack $C$ ($C \neq \cdot$):
-   \begin{itemize}[leftmargin=\secondm]
-      \item $\mz \Gamma; \Delta_{c_2}, \Xi_1, \dotsc, \Xi_m \rightarrow A$
-      \item $\exists_{f \in C}. f = [\Gamma_1, p_2, \Gamma_2; \Delta_{c_1},
-         \Delta_{c_2}; \Xi_1, \dotsc, \Xi_m; \bang p; \Omega_1, \dotsc, \Omega_k;
-         \Lambda_1, \dotsc, \Lambda_m; \Upsilon_1, \dotsc, \Upsilon_n]$
-      \item $C = C', f, C''$
-      \item $f$ turns into $f' = [\Gamma_2; \Delta_{c_1}, \Delta_{c_2};
-         \Xi_1, \dotsc, \Xi_m; \bang p; \Omega_1, \dotsc, \Omega_k; \Lambda_1,
-         \dotsc, \Lambda_m; \Upsilon_1, \dotsc, \Upsilon_n]$
-      \item $\mc \Gamma; \Delta_{c_1}; \Xi_N; \Gamma_{N1}; \Delta_{N1};
-         \Delta_{c_2}, \Xi_1, \dotsc, \Xi_m; \cdot; C''', f', C''; P;
-         AB; \Omega_N; \Delta_N \rightarrow \outsem$ (well-formed in relation to $T$)
-      \item $\Delta_{c_1}, \Delta_{c_2} = (\Delta_1, \Delta_2, \Xi) - (\Xi_1, \dotsc, \Xi_m)$
-   \end{itemize}
-
-   \item Match succeeds with backtracking to a persistent continuation frame
-   in stack $P$ ($C = \cdot$):
-   \begin{itemize}[leftmargin=\secondm]
-      \item $\mz \Gamma; \Delta_{c_2}, \Xi_1, \dotsc, \Xi_m \rightarrow A$
-      \item $\exists_{f \in P}. f = [\Gamma_1, p_2, \Gamma_2; \Delta_{c_1}, \Delta_{c_2};
-   \Xi_1, \dotsc, \Xi_m; \bang p; \Omega_1, \dotsc, \Omega_k; \Lambda_1,
-   \dotsc, \Lambda_m; \Upsilon_1, \dotsc, \Upsilon_n]$
-      \item $P = P', f, P''$
-      \item $f$ turns into $f' = [\Gamma_2; \Delta_{c_1},
-         \Delta_{c_2}; \Xi_1, \dotsc, \Xi_m; \bang p; \Omega_1, \dotsc,
-         \Omega_k; \Lambda_1, \dotsc, \Lambda_m; \Upsilon_1, \dotsc, \Upsilon_n]$
-      \item $\mc \Gamma; \Delta_{c_1}; \Xi_N; \Gamma_{N1}; \Delta_{N1};
-      \Delta_{c_2}, \Xi_1, \dotsc, \Xi_m; \cdot; C'; P''', f', P'';
-      AB; \Omega_N; \Delta_N \rightarrow \outsem$
-      (well-formed in relation to $T$)
-      \item $\Delta_{c_1}, \Delta_{c_2} = (\Delta_1, \Delta_2, \Xi) - (\Xi_1, \dotsc,
-            \Xi_m)$
-   \end{itemize}
+   \input{lld/agg-match-soundness}
    
 \end{itemize}
 \end{lemma}
+
+Proving that matching the body of a aggregate is sound in relation to HLD
+follows the structure of the Lemma~\ref{thm:comprehension_body_match}. Next, we
+need to prove the theorem that corrects the continuation stack for the next
+application of the aggregate. Note that the aggregate value is appended to
+$\Sigma$ after matching finishes. We do not show that step here, but in
+Corollary~\ref{thm:agg_match_to_derivation}.
+
+\begin{theorem}[From update to derivation]\label{thm:agg_from_update_to_derivation}
+Assume an aggregate $AG = \aggsz{A}{B}{C}$. \\ A stack update
+$\fixa{AG} \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; \lstack{C};
+\lstack{P}; \Omega_N; \Delta_N; \Sigma \rightarrow \outsem$ implies a derivation
+$\da{AG} \Gamma; \Delta_N - \Xi; \Xi_N, \Xi; \Gamma_{N1}; \Delta_{N1}; B;
+\lstack{C'} ; \lstack{P'}; \Omega_N; \Sigma \rightarrow
+\outsem$, where:
+
+\begin{itemize}[leftmargin=*]
+   \item If $\lstack{C} = \cdot$ then $\lstack{C'} = \cdot$
+
+   \item If $\lstack{C} = \lstack{C_{1}}, (\Delta_a; \Delta_b; \cdot; p; \Omega; \cdot; \Upsilon)$
+   then $\lstack{C'} = (\Delta_a - \Xi; \Delta_b - \Xi; \cdot; p; \Omega; \cdot;
+         \Upsilon)$
+
+   \item $\lstack{P'}$ is the transformation of stack $\lstack{P}$, where for every frame $f \in
+   \lstack{P}$ of the form $[\Gamma'; \Delta_N; \cdot; \bang p; \Omega; \cdot; \Upsilon]$
+   will turn into $f' = [\Gamma';\Delta_N-\Xi;\cdot;\bang p;\Omega;\cdot;\Upsilon]$
+
+\end{itemize}
+\end{theorem}
+\begin{proof}
+Use induction on the size of the stack $\lstack{C}$ to get the result of
+$\lstack{C'}$ and then apply Theorem~\ref{thm:stack_update} to get $\lstack{P'}$.
+\end{proof}
+
+\begin{corollary}[Match to derivation]\label{thm:agg_match_to_derivation}
+If $\ma{AG} \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; \cdot; B;
+\lstack{C}; \lstack{P};
+\Omega_N; \Delta_N; \Sigma \rightarrow \outsem$ then\\
+$\da{AG} \Gamma; \Delta_N - \Xi; \Xi_N, \Xi; \Gamma_{N1}; \Delta_{N1}; B; \lstack{C'};
+\lstack{P'}; \Omega_N; V :: \Sigma \rightarrow \outsem$ where:
+   
+\begin{itemize}[leftmargin=*]
+   \item If $\lstack{C} = \cdot$ then $\lstack{C'} = \cdot$
+   \item If $\lstack{C} = \lstack{C_1}, (\Delta_a; \Delta_b; \cdot; p; \Omega;
+         \cdot; \Upsilon)$ then $\lstack{C'} = (\Delta_a - \Xi; \Delta_b - \Xi; \cdot; p;
+            \Omega; \cdot; \Upsilon)$
+   \item $\lstack{P'}$ is the transformation of stack $\lstack{P}$, where for every frame $f \in
+   \lstack{P}$ of the form $[\Gamma'; \Delta_N; \cdot; \bang p; \Omega; \cdot; \Upsilon]$
+   will turn into $f' = [\Gamma';\Delta_N-\Xi;\cdot;\bang p;\Omega;\cdot;\Upsilon]$
+\end{itemize}
+\end{corollary}
+
+\begin{proof}
+Invert the assumption and then apply Theorem~\ref{thm:agg_from_update_to_derivation}.
+\end{proof}
+
+
+\paragraph{Aggregate Derivation}
+
+We have just seen that after a single aggregate application, we add a value $V$
+to the $\Sigma$ context and that the continuation stacks are now valid.
+Now, we need to prove that deriving the head of the
+aggregate is sound in relation to HLD by using the new stacks.
+
+\begin{theorem}[Aggregate derivation soundness]\label{thm:aggregate_derivation}
+If $\da{AG} \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Omega_1, \dotsc,
+   \Omega_n; \lstack{C}; \lstack{P}; \Omega_N; \Sigma \rightarrow \outsem$ then:
+
+\begin{itemize}[leftmargin=*]
+   \item $\da{AG} \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_n; \Delta_{N1},
+   \Delta_1, \dotsc, \Delta_n; \cdot; \lstack{C}; \lstack{P}; \Omega_N \rightarrow
+   \outsem$;
+
+   \item $\forall_{\Omega_x}.($ if $\dz \Gamma; \Delta_N; \Xi_N;
+   \Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_n; \Delta_{N1}, \Delta_1, \dotsc,
+   \Delta_n; \Omega_x \rightarrow \outsem$ then
+
+   $\dz \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Omega_1, \dotsc,
+   \Omega_n, \Omega_x \rightarrow \outsem)$.
+
+\end{itemize}
+\end{theorem}
+
+\begin{proof}
+Straightforward induction on $\Omega_1, \dotsc, \Omega_n$.
+\end{proof}
+
+
+\paragraph{Multiple Aggregate Derivation} We now prove that it is possible
+to apply an aggregate several times in order to a get multiple values (one per
+application). In turn, we also conclude important results for the
+soundness of the aggregate computation mechanism.
+
+\begin{theorem}[Multiple aggregate derivation]\label{thm:multiple_aggregate_derivation}
+Consider a triplet $T = A; \Gamma; \Delta_{N}$ and an aggregate $AG =
+\aggsz{A}{B}{C}$. Assume that there exists $n \geq 0$ applications of $AG$
+where the $i_{th}$ application is related to the following information:
+\begin{description}
+   \item[$\Delta_i$]: context of derived linear facts;
+   \item[$\Gamma_i$]: context of derived persistent facts;
+   \item[$\Xi_i$]: context of consumed linear facts;
+   \item[$V_i$]: a value representing the aggregate application.
+\end{description}
+
+Since each application consumes $\Xi_i$ then the initial context $\Delta_N =
+\Delta, \Xi_1, \dotsc, \Xi_n$. We now define the two main implications of the
+theorem.
+
+\begin{itemize}[leftmargin=*]
+   \item Assume that $\Delta_N = \Delta_a, \Delta_b$, $\Delta_b =
+   \Delta'_b, p_1$ and there is a frame $f = (\Delta_a, p_1; \Delta'_b; \cdot;
+         p; \Omega; \cdot; \Upsilon)$.
+
+   If $\ma{AG} \Gamma; \Delta_a, \Delta'_b; \Xi_N; \Gamma_{N1}; \Delta_{N1};
+      p_1; \Omega; f; \lstack{P}; \Omega_N; \Delta, \Xi_1, \dotsc, \Xi_n;
+      \Sigma \rightarrow \outsem$ (well-formed in relation to $T$) then:
+
+   \begin{itemize}[leftmargin=\secondm]
+      \item $n$ values $V_i$ for each implication ($\Sigma' = V_n :: \dots :: V_1 :: \Sigma$)
+      \item $n$ aggregate applications are derived:\\
+      $\done \Gamma; \Delta_N; \Xi_N, \Xi_1, \dotsc, \Xi_n; \Gamma_{N1},
+      \Gamma_1, \dotsc, \Gamma_n; \Delta_{N1}, \Delta_1, \dotsc, \Delta_n;
+(\lambda x. C)\Sigma', \Omega_N \rightarrow \outsem$
+      \item $n$ $\mz$propositions for the $n$ aggregate matches:
+      \begin{itemize}[leftmargin=\thirdm]
+         \item $\mz \Gamma; \Xi_1 \rightarrow A$
+         \item $\dots$
+         \item $\mz \Gamma; \Xi_n \rightarrow A$
+      \end{itemize}
+      \item $n$ derivation implications for HLD: \\
+      $\forall_{\Omega_x}.($ if $\dz \Gamma; \Delta, \Xi_{i+1}, \dotsc, \Xi_{n}; \Xi_N, \Xi_1,
+            \dotsc, \Xi_i; \Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_i; \Delta_{N1},
+            \Delta_1, \dotsc, \Delta_i; \Omega_x \rightarrow \outsem$ then $\dz \Gamma; \Delta, \Xi_{i+1}, \dotsc, \Xi_{n}; \Xi_N, \Xi_1,
+            \dotsc,
+            \Xi_i; \Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_{i-1}; \Delta_{N1},
+            \Delta_1, \dotsc, \Delta_{i-1}; B, \Omega_x \rightarrow \outsem)$
+   \end{itemize}
+
+   \item If $\ma{AG} \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \cdot; \Omega;
+      \cdot; \lstack{P}; \Omega_N; \Delta, \Xi_1, \dotsc, \Xi_n; \Sigma \rightarrow \outsem$ (well-formed in relation to $T$) then:
+
+   \begin{itemize}[leftmargin=\secondm]
+      \item $n$ values $V_i$ for each implication ($\Sigma' = V_n :: \dotsb :: V_1 :: \Sigma$)
+      \item $n$ aggregate applications are derived:\\
+      $\done \Gamma; \Delta_N; \Xi_N, \Xi_1, \dotsc, \Xi_n; \Gamma_{N1},
+      \Gamma_1, \dotsc, \Gamma_n; \Delta_{N1}, \Delta_1, \dotsc, \Delta_n;
+(\lambda x. C)\Sigma', \Omega_N \rightarrow \outsem$
+
+      \item $n$ $\mz$propositions for the $n$ aggregate matches:
+      \begin{itemize}[leftmargin=\thirdm]
+         \item $\mz \Gamma; \Xi_1 \rightarrow A$
+         \item \dots
+         \item $\mz \Gamma; \Xi_n \rightarrow A$
+      \end{itemize}
+
+      \item $n$ derivation implications for HLD: \\
+      $\forall_{\Omega_x}.($ if $\dz \Gamma; \Delta, \Xi_{i+1}, \dotsc, \Xi_{n}; \Xi_N, \Xi_1,
+            \dotsc, \Xi_i; \Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_i; \Delta_{N1},
+            \Delta_1, \dotsc, \Delta_i; \Omega_x \rightarrow \outsem$ then $\dz \Gamma; \Delta, \Xi_{i+1}, \dotsc, \Xi_{n}; \Xi_N, \Xi_1,
+            \dotsc,
+            \Xi_i; \Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_{i-1}; \Delta_{N1},
+            \Delta_1, \dotsc, \Delta_{i-1}; B, \Omega_x \rightarrow \outsem)$
+
+   \end{itemize}
+
+\end{itemize}
+   
+\end{theorem}
+\begin{proof}
+By mutual induction, first on either the size of $\Delta'_b$ (second argument of
+the linear continuation frame) or $\Gamma'$ (second argument of the
+persistent frame in $\lstack{P}$) and then on the size of $\lstack{C},
+\lstack{P}$.  We only show how to prove the first implication since the
+second implication is proven in a similar way.
+
+$\ma{AG} \Gamma; \Delta_a, \Delta'_b; \Xi_N; \Gamma_{N1}; \Delta_{N1}; p_1;
+\Omega; f; \lstack{P}; \Omega_N; \Delta, \Xi_1, \dotsc, \Xi_n; \Sigma \rightarrow \outsem$ \hfill (1) assumption\\
+
+By applying Lemma~\ref{thm:comprehension_body_match} to (1), we get:
+
+\begin{itemize}[leftmargin=*]
+   \item Failure:
+   
+   $\done \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; (\lambda x.
+         C)\Sigma, \Omega_N
+      \rightarrow \outsem$ \hfill (2) from lemma, thus $n = 0$\\
+   
+   \item Success with no backtracking to frames of stack $\lstack{C}$ or
+   $\lstack{P}$:
+   
+      $\mz \Gamma; \Xi_1 \rightarrow A$ \hfill (2) from lemma \\
+
+      $\Xi_1 = \Xi'_1, p_1$ \hfill (3) from the well-formedness of (1) \\
+      $f = (\Delta_a, p_1; \Delta'_b; \cdot; p; \Omega; \cdot; \Upsilon)$ \\
+
+      $\ma{AG} \Gamma; \Delta, \Xi_2, \dotsc, \Xi_n; \Xi_N; \Gamma_{N1};
+            \Delta_{N1}; p_1, \Xi'_1; \cdot; \lstack{C'}, f; \lstack{P};
+            \Omega_N; \Delta_N; \Sigma \rightarrow \outsem$ \\
+      \dots \hfill (4) from lemma (1) \\
+
+      $f' = (\Delta_a, p_1 - \Xi_1; \Delta_b - \Xi_1; \cdot; p; \Omega; \cdot;
+            \Upsilon)$ \\
+
+      $\da{AG} \Gamma; \Delta, \Xi_2, \dotsc, \Xi_n; \Xi_N, \Xi_1; \Gamma_{N1}; \Delta_{N1}; B; f';
+      \lstack{P'}; \Omega_N; V_1 :: \Sigma \rightarrow \outsem$ \\
+      \dots \hfill (5) using Corollary~\ref{thm:agg_match_to_derivation} on (4) \\
+
+      $\da{AG} \Gamma; \Delta, \Xi_2, \dotsc, \Xi_n; \Xi_N, \Xi_1; \Gamma_{N1}, \Gamma_1; \Delta_{N1}, \Delta_1;
+            \cdot; f'; \lstack{P'}; \Omega_N; V_1 :: \Sigma \rightarrow \outsem$
+      \\ \dots \hfill (6) applying Theorem~\ref{thm:aggregate_derivation} on (5)
+
+      $\forall_{\Omega_x}. ($ if $\dz \Gamma; \Delta, \Xi_2, \dotsc, \Xi_n; \Xi_N, \Xi_1;
+            \Gamma_{N1}, \Gamma_1; \Delta_{N1}, \Delta_1; \Omega_x \rightarrow
+            \outsem$ then \\ \hspace*{0.5cm} $\dz \Gamma;
+            \Delta, \Xi_2, \dotsc, \Xi_n; \Xi_N, \Xi_1; \Gamma_{N1}; \Delta_{N1}; B, \Omega_x
+            \rightarrow \outsem)$ \hfill (7) from
+      Theorem~\ref{thm:aggregate_derivation} on (5) \\
+
+      $\conta{AG} \Gamma; \Delta, \Xi_2, \dotsc, \Xi_n; \Xi_N, \Xi_1; \Gamma_{N1},
+         \Gamma_1; \Delta_{N1}, \Delta_1; f'; \lstack{P'}; \Omega_N; V_1 ::
+         \Sigma \rightarrow \outsem$\\ \dots \hfill (8) inversion of (6) \\
+        
+        By inverting (8) we either fail (thus $n = 1$) or we get a new match.
+        For the latter case, we apply mutual induction to get the remaining $n -
+        1$ aggregate values.
+      
+   \item Success with backtracking to the linear continuation frame of stack $\lstack{C}$:
+      
+      $\mz \Gamma; \Xi_1 \rightarrow A$ \hfill (2) from lemma \\
+
+      $f = (\Delta_a, p_1; \Delta'_b; \cdot; p; \Omega; \cdot; \Upsilon)$ \hfill (3) frame to backtrack to \\
+      turns into $f' = (\Delta_a, p_1, \Delta'''_b, p_2; \Delta''_b; \cdot; p; \Omega; \cdot; \Upsilon)$ \hfill (4) resulting frame \\
+
+      $\ma{AG} \Gamma; \Delta, \Xi_2, \dotsc, \Xi_n; \Xi_N; \Gamma_{N1};
+         \Delta_{N1}; p_2, \Xi'_1; \cdot; \lstack{C'}, f'; \lstack{P}; \Omega_N;
+         \Delta_N; \Sigma \rightarrow \outsem$\\ \dots \hfill (5) from lemma (1) \\
+      
+      Use the same approach as the case with no backtracking.
+      
+   \item Success with backtracking to a persistent continuation frame of stack
+   $\lstack{P}$:
+
+      $\mz \Gamma; \Xi_1 \rightarrow A$ \hfill (2) from lemma \\
+
+      $f = [\Gamma''_1, p_2, \Gamma''_2; \Delta_N; \cdot; \bang p; \Omega; \cdot; \Upsilon]$ \hfill (4) from theorem \\
+      turns into $f' = [\Gamma''_2; \Delta_N; \cdot; \bang p; \Omega; \cdot;
+      \Upsilon]$ \hfill (5) from theorem \\
+
+      $\ma{AG} \Gamma; \Delta, \Xi_2, \dotsc, \Xi_n; \Xi_N; \Gamma_{N1};
+         \Delta_{N1}; \Xi_1; \cdot; \lstack{C'}; \lstack{P'}, f', \lstack{P''};
+         \Omega_N; \Delta_N; \Sigma \rightarrow
+         \outsem$ \\ \dots \hfill (6) from theorem \\
+         
+      Use the same approach as the case with no backtracking.
+      
+\end{itemize}
+\end{proof}
+
+
+
+
+This last theorem proves that from a certain initial continuation stack, we are
+able to apply the aggregate multiple times (until the stack is exhausted). The
+results of the theorem allows us to rebuild the proof tree in HLD since we get
+the HLD matching and derivation propositions. What remains to be done is to
+prove that we do the same for an empty continuation stack.
+
+\begin{lemma}[All aggregates]\label{thm:aggregates}
+Consider a triplet $T = A; \Gamma; \Delta_{N}$ and an aggregate $AG =
+\aggz{A}{B}{C}$. Assume that there exists $n \geq 0$ applications of $AG$
+where the $i_{th}$ application is related to the following information:
+\begin{description}
+   \item[$\Delta_i$]: context of derived linear facts;
+   \item[$\Gamma_i$]: context of derived persistent facts;
+   \item[$\Xi_i$]: context of consumed linear facts;
+   \item[$V_i$]: a value representing the aggregate application.
+\end{description}
+
+Since each application consumes $\Xi_i$ then the initial context $\Delta_N =
+\Delta, \Xi_1, \dotsc, \Xi_n$.
+
+If $\ma{AG} \Gamma; \Delta, \Xi_1, \dotsc, \Xi_n;
+\Xi_N; \Gamma_{N1}; \Delta_{N1}; \cdot; A; \cdot; \cdot; \Omega_N;
+\Delta, \Xi_1, \dotsc, \Xi_n; \cdot \rightarrow \outsem$ (well-formed in
+relation to $T$) then:
+
+\begin{itemize}[leftmargin=*]
+   \item $n$ values $V_i$ for each implication ($\Sigma = V_n :: \dotsb :: V_1
+         :: \cdot$)
+   \item $n$ aggregates are derived:\\
+   $\done \Gamma; \Delta_N; \Xi_N, \Xi_1, \dotsc, \Xi_n; \Gamma_{N1},
+   \Gamma_1, \dotsc, \Gamma_n; \Delta_{N1}, \Delta_1, \dotsc, \Delta_n; (\lambda
+         x. C)\Sigma, \Omega_N \rightarrow \outsem$
+   \item $n$ $\mz$propositions for the $n$ aggregate matches:
+   \begin{itemize}[leftmargin=\secondm]
+      \item $\mz \Gamma; \Xi_1 \rightarrow A$
+      \item $\dots$
+      \item $\mz \Gamma; \Xi_n \rightarrow A$
+   \end{itemize}
+   \item $n$ derivation implications for HLD: \\
+   $\forall_{\Omega_x}.($ if $\dz \Gamma; \Delta, \Xi_{i+1}, \dotsc, \Xi_n; \Xi_N, \Xi_1,
+         \dotsc, \Xi_i; \Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_i; \Delta_{N1},
+         \Delta_1, \dotsc, \Delta_i; \Omega_x \rightarrow \outsem$ then $\dz \Gamma; \Delta, \Xi_{i+1}, \dotsc, \Xi_n; \Xi_N, \Xi_1,
+         \dotsc,
+         \Xi_i; \Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_{i-1}; \Delta_{N1},
+         \Delta_1, \dotsc, \Delta_{i-1}; B, \Omega_x \rightarrow \outsem)$
+\end{itemize}
+\end{lemma}
+
+\begin{proof}
+Apply Lemma~\ref{thm:aggregate_body_match} to get two sub-cases:
+   
+\begin{itemize}[leftmargin=*]
+   \item Match fails:
+   
+   $\done \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; (\lambda x. C)\cdot \Omega_N
+   \rightarrow \outsem$\\
+   \dots \hfill (1) no aggregate application was possible ($n = 0$)\\
+   
+   \item Match succeeds:
+   
+   $\ma{AG} \Gamma; \Xi_2, \dotsc, \Xi_n; \Xi_N; \Gamma_{N1}; \Delta_{N1};
+\Xi_1; \cdot; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N; \cdot \rightarrow \outsem$
+   
+   \dots \hfill (1) result from Lemma~\ref{thm:aggregate_body_match}
+   
+   $\mz \Gamma; \Xi_1 \rightarrow A$
+   \hfill (2) also from Lemma~\ref{thm:aggregate_body_match}
+   
+   $\da{AG} \Gamma; \Delta, \Xi_2, \dotsc, \Xi_n; \Xi_N, \Xi_1; \Gamma_{N1}; \Delta_{N1}; B; \lstack{C'};
+\lstack{P'}; \Omega_N; V_1 :: \cdot \rightarrow \outsem$
+   
+   \dots \hfill (3) applying Corollary~\ref{thm:agg_match_to_derivation} on (1)
+   
+   $\da{AG} \Gamma; \Delta, \Xi_2, \dotsc, \Xi_n; \Xi_N, \Xi_1; \Gamma_{N1}, \Gamma_1; \Delta_{N1}, \Delta_1;
+   \cdot; \lstack{C'}; \lstack{P'}; \Omega_N; V_1 :: \cdot \rightarrow \outsem$
+   
+   \dots \hfill (4) using Theorem~\ref{thm:aggregate_derivation} on (3)\\
+   
+   $\forall_{\Omega_x}. ($ if $\dz \Gamma; \Delta, \Xi_2, \dotsc, \Xi_n; \Xi_N,
+         \Xi_1; \Gamma_{N1}, \Gamma_1; \Delta_{N1}, \Delta_1; \Omega_x
+         \rightarrow \outsem$ then
+   
+    \hspace*{0.5cm} $\dz \Gamma; \Delta, \Xi_2, \dotsc, \Xi_n; \Xi_N, \Xi_1; \Gamma_{N1};
+    \Delta_{N1}; B, \Omega_x \rightarrow \outsem)$ \\ \dots \hfill (5)
+   from the theorem applied in (4)\\
+   
+   $\conta{AG} \Gamma; \Delta, \Xi_2, \dotsc, \Xi_n; \Xi_N, \Xi_1; \Gamma_{N1},
+   \Gamma_1; \Delta_{N1}, \Delta_1; \lstack{C'}; \lstack{P'}; \Omega_N; V_1 ::
+   \cdot \rightarrow \outsem$
+   
+   \dots \hfill (6) inversion of (5)\\
+   
+   Invert (6) to get either $n = 1$ application of the aggregate or apply
+   Theorem~\ref{thm:multiple_aggregate_derivation} to the inversion to get the remaining $n-1$. 
+\end{itemize}
+\end{proof}

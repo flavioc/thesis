@@ -1,32 +1,31 @@
 \[
 \infer[\dc{AB} p]
-{\dc{AB} \Gamma; \Xi; \Gamma_1; \Delta_1; p, \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N
+{\dc{AB} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1; p, \Omega; \lstack{C}; \lstack{P}; \Omega_N
    \rightarrow \outsem}
-{\dc{AB} \Gamma; \Xi; \Gamma_1; \Delta_1, p; \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N
+{\dc{AB} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1, p; \Omega; \lstack{C}; \lstack{P}; \Omega_N
    \rightarrow \outsem}
 \]
 
 \[
 \infer[\dc{AB} \bang p]
-{\dc{AB} \Gamma; \Xi; \Gamma_1; \Delta_1; \bang p, \Omega; \lstack{C};
-   \lstack{P}; \Omega_N; \Delta_N
-   \rightarrow \outsem}
-{\dc{AB} \Gamma; \Xi; \Gamma_1, p; \Delta_1; \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N
+{\dc{AB} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1; \bang p, \Omega; \lstack{C};
+   \lstack{P}; \Omega_N \rightarrow \outsem}
+{\dc{AB} \Gamma; \Delta_N; \Xi_N; \Gamma_1, p; \Delta_1; \Omega; \lstack{C}; \lstack{P}; \Omega_N
    \rightarrow \outsem}
 \]
 
 \[
 \infer[\dc{AB} \otimes]
-{\dc{AB} \Gamma; \Xi; \Gamma_1; \Delta_1; A \otimes B, \Omega; \lstack{C}; \lstack{P}; \Omega_N;
-   \Delta_N \rightarrow \outsem}
-{\dc{AB} \Gamma; \Xi; \Gamma_1; \Delta_1; A, B, \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N
+{\dc{AB} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1; A \otimes B, \Omega; \lstack{C}; \lstack{P}; \Omega_N
+   \rightarrow \outsem}
+{\dc{AB} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1; A, B, \Omega; \lstack{C}; \lstack{P}; \Omega_N
    \rightarrow \outsem}
 \]
 
 \[
 \infer[\dc{AB} \one]
-{\dc{AB} \Gamma; \Xi; \Gamma_1; \Delta_1; 1, \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N
+{\dc{AB} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1; 1, \Omega; \lstack{C}; \lstack{P}; \Omega_N
    \rightarrow \outsem}
-{\dc{AB} \Gamma; \Xi; \Gamma_1; \Delta_1; \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N
+{\dc{AB} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1; \Omega; \lstack{C}; \lstack{P}; \Omega_N
    \rightarrow \outsem}
 \]

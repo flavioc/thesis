@@ -75,7 +75,7 @@ When the aggregate body finally matches, we retrieve the term for variable $x$
 After matching a single aggregate, the stack is updated as if it was a
 comprehension: we drop all but the first linear continuation frame and then fix
 the contexts of the remaining stack.  The judgment that updates the stack has
-the form $\fixa{AG} \Gamma; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; \lstack{C};
+the form $\fixa{AG} \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; \lstack{C};
 \lstack{P}; \Omega_N; \Delta_N; \Sigma \rightarrow \outsem$ and every argument
 has the usual meaning.
 

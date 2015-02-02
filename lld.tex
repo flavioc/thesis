@@ -72,7 +72,9 @@ it tries all rules in order.
 \subsection{Structure of continuation frames}
 
 We have two continuation frame types, depending on the type of the candidate
-facts.
+facts.\footnote{All continuation frames have an implicit $\Psi$ context that
+models variable assignments. This is important if we want to model variable
+assignment and for computing aggregates.}
 
 \subsubsection{Persistent continuation frame}
 

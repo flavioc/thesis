@@ -67,7 +67,7 @@
 \newcommand{\aggsz}[3]{\iters{agg}{[#1 \lolli #2 ; #3; x]}}
 \newcommand{\aggz}[5]{\iter{agg}{#1}{[#2 \lolli #3 ; #4; #5]}}
 \newcommand{\aggunfold}[5]{\forall_x. ((#2 \lolli #3)x \otimes
-      \aggz{#1}{#2}{#3}{#4}{#5 + x})}
+      \aggz{#1}{#2}{#3}{#4}{x :: #5})}
 \newcommand{\aggunfoldz}[2]{(\lambda x. #1) #2}
 \newcommand{\az}{\m{app}_{HLD} \;}
 \newcommand{\doz}{\m{run}_{HLD} \;}

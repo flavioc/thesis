@@ -94,10 +94,12 @@ As we said before, to update the continuation stacks, we need remove to all the
 frames except the first linear frame and remove the consumed linear facts from
 the remaining frames so that they are still valid for the next application of
 the comprehension.  The judgment that updates the stack has the form $\fix{AB}
-\Gamma; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N
+\Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N
 \rightarrow \outsem$, where:
 
 \begin{enumerate}
+   \item[$\Delta$] multi-set of linear facts remaining after matching the last
+   comprehension;
    \item[$\Xi_N$] multi-set of linear facts used during the matching process of
    the body of the rule and all the previous comprehensions;
    \item[$\Gamma_{N1}$] set of persistent facts derived by the head of the rule
@@ -138,7 +140,7 @@ If the comprehension match fails, we need to backtrack to the previous frame and
 restore the matching process at that point. The judgment used to backtrack is
 similar to the one presented in Section~\ref{sec:lld_match_cont} and has the
 form $\contc{AB} \Gamma; \Delta_N; \Xi_N; \Delta_{N1}; \lstack{C}; \lstack{P}; \Omega_N
-\rightarrow \Xi'; \Delta'; \Gamma'$, where:
+\rightarrow \outsem$, where:
 
 \begin{enumerate}
    \item[$\Delta_N$] multi-set of linear facts still available after matching
@@ -178,11 +180,13 @@ comprehension is done. The remaining head terms in $\Omega$ are then derived
 \subsubsection{Comprehension Derivation}
 
 After updating the continuation stacks, the head of the comprehension is
-derived. The judgment has the form $\dc{AB} \Gamma; \Xi; \Gamma_1; \Delta_1;
+derived. The judgment has the form $\dc{AB} \Gamma; \Gamma_N; \Xi_N; \Gamma_1; \Delta_1;
 \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N \rightarrow \outsem$, where:
 
 \begin{enumerate}
-   \item[$\Xi$] multi-set of linear facts consumed both by the body of the rule
+   \item[$\Delta_N$] multi-set of remaining linear facts that can be used for
+   the next comprehension applications.
+   \item[$\Xi_N$] multi-set of linear facts consumed both by the body of the rule
    and previous comprehension applications;
    \item[$\Gamma_1$] set of persistent facts derived by the head of the rule,
    previous comprehensions and current derivation;
@@ -192,8 +196,6 @@ derived. The judgment has the form $\dc{AB} \Gamma; \Xi; \Gamma_1; \Delta_1;
    \item[$\lstack{C}, \lstack{P}$] new continuation stacks;
    \item[$\Omega_N$] ordered list of remaining terms of the head of the rule to
    be derived;
-   \item[$\Delta_N$] multi-set of remaining linear facts that can be used for
-   the next comprehension applications.
 \end{enumerate}
 
 \input{lld/comp-der}

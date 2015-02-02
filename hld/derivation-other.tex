@@ -5,3 +5,12 @@
 {\mz \Gamma ; \Delta_a \rightarrow A & \dz \Gamma ; \Delta_b ; \Xi, \Delta_a ;
    \Gamma_1 ; \Delta_1 ; B, \Omega \rightarrow \outsem}
 \]
+
+\[
+\infer[\dz \forall]
+{\dz \Gamma; \Delta; \Xi; \Gamma_1; \Delta_1; \forall x. A, \Omega
+   \rightarrow \outsem}
+{\dz \Gamma; \Delta; \Xi; \Gamma_1; \Delta_1; A\{V/x\},
+   \Omega \rightarrow \outsem
+}
+\]

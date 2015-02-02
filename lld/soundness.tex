@@ -112,8 +112,8 @@ resources. A frame $f$ is well-formed iff:
 A continuation stack $C$ is well-formed iff every frame is well-formed.
 \end{definition}
 
-Given the previous definitions, we can now define what it means for a matching
-judgment to be well-formed.
+Given the previous definitions, we can now define what it means for a judgment
+to be well-formed.
 
 \begin{definition}[Well-formed body match]
 
@@ -149,10 +149,15 @@ is well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
 
 \end{definition}
 
-\begin{definition}[Well-formed comprehension match]
-$\mc{\compsz{A}{B}} \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi;
-\Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N \rightarrow \outsem$ is
-well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
+\begin{definition}[Well-formed matches]
+The following match propositions:
+\begin{itemize}
+   \item $\mc{\compsz{A}{B}} \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi;
+         \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N \rightarrow \outsem$
+   \item $\ma{\aggsz{A}{B}{C}} \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi;
+      \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N; \Sigma \rightarrow \outsem$ is
+\end{itemize}
+are well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
 
 \begin{itemize}[leftmargin=*]
    \item $\lstack{P}$ is composed solely of persistent frames.
@@ -165,14 +170,64 @@ well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
 \end{itemize}
 \end{definition}
 
-\begin{definition}[Well-formed aggregate match]
-$\ma{\aggsz{A}{B}{C}} \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi;
-   \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N; \Sigma \rightarrow \outsem$ is
-well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff the rules in
-"Well-formed comprehension match" also apply.
+\begin{definition}[Well-formed continuations]
+The following continuation propositions:
+\begin{itemize}[leftmargin=*]
+   \item $\contc{\compsz{A}{B}} \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \lstack{C}; \lstack{P}; \Omega_N \rightarrow \outsem$
+   \item $\conta{\aggsz{A}{B}{C}} \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \lstack{C}; \lstack{P}; \Omega_N; \Sigma \rightarrow \outsem$
+\end{itemize}
+are well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
+
+\begin{itemize}[leftmargin=*]
+   \item $\lstack{P}$ is composed solely of persistent frames.
+   \item $\lstack{C}$ is composed of either linear or persistent frames, but the first
+   frame is linear.
+   \item $\lstack{C}$ and $\lstack{P}$ are well-formed in relation to $A; \Gamma; \Delta_{N}$.
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Well-formed stack updates]
+The following continuation stack updates propositions:
+\begin{itemize}[leftmargin=*]
+   \item $\fix{\compsz{A}{B}} \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; \lstack{C}; \lstack{P}; \Omega_N;
+      \Delta_N \rightarrow \outsem$
+   \item $\fixa{\aggsz{A}{B}{C}} \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; \lstack{C}; \lstack{P}; \Omega_N;
+      \Delta_N; \Sigma \rightarrow \outsem$
+\end{itemize}
+are well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
+
+\begin{itemize}[leftmargin=*]
+   \item $\lstack{P}$ is composed solely of persistent frames.
+   \item $\lstack{C}$ is composed of either linear or persistent frames, but the first
+   frame is linear.
+   \item $\lstack{C}$ and $\lstack{P}$ are well-formed in relation to $A; \Gamma; \Delta_{N}$.
+   \item $\Delta, \Xi = \Delta_{N}$
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Well-formed derivations]
+The following derivation propositions:
+\begin{itemize}[leftmargin=*]
+   \item $\dc{\compsz{A}{B}} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1;
+      \Omega; \lstack{C}; \lstack{P}; \Omega_N \rightarrow \outsem$
+   \item $\da{\aggsz{A}{B}{C}} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1;
+      \Omega; \lstack{C}; \lstack{P}; \Omega_N \rightarrow \outsem$
+\end{itemize}
+are well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
+
+\begin{itemize}[leftmargin=*]
+   \item $\lstack{P}$ is composed solely of persistent frames.
+   \item $\lstack{C}$ is composed of either linear or persistent frames, but the first
+   frame is linear.
+   \item $\lstack{C}$ and $\lstack{P}$ are well-formed in relation to $A; \Gamma; \Delta_{N}$.
+\end{itemize}
 
 \end{definition}
 
+For the theorems that follow, we always assume that the propositions are
+well-formed in relation to their main contexts and matching body, be it either a
+rule body, a comprehension body or aggregate body. All the conclusions in the
+proofs also must prove that the resulting propositions are well-formed.
 
 \subsection{Soundness of matching}
 
@@ -487,7 +542,7 @@ A \lolli B, \compz{0}{A}{B}, \Omega \rightarrow \outsem$ \\
 \Gamma_1, \dotsc, \Gamma_{n-1}; \Delta_{N1}, \Delta_1, \dotsc, \Delta_{n-1};
 \compz{1}{A}{B}, \Omega \rightarrow \outsem$ \\
 
-\noindent Steps (5) through (8) are then applied $n-1$ times to get:
+\noindent The last 4 steps are then applied $n-1$ times to get:
 
 \noindent $\dz \Gamma; \Delta, \Xi_1, \dotsc, \Xi_n; \Xi_N; \Gamma_{N1}; \Delta_{N1};
 \compz{n}{A}{B}, \Omega \rightarrow \outsem$ \\
@@ -499,6 +554,93 @@ be applied:
 \compsz{A}{B}, \Omega \rightarrow \outsem$ \\
 
 \noindent This finishes the sub-case for comprehensions.
+
+\paragraph{Aggregates} Apply Lemma~\ref{thm:aggregates} on the assumption to get
+$n$ applications of the aggregate. Assume that $\Delta_N = \Delta, \Xi_1,
+\dotsc, \Xi_n$, where $\Xi_i$ are the facts consumed and $\Gamma_i, \Delta_i$
+the facts derived by the $i^{th}$ application.  The lemma proves the following:
+
+\begin{itemize}[leftmargin=*]
+   \item $n$ values $\Sigma = V_n :: \dotsb :: V_1 :: \cdot$
+   \item $\done \Gamma; \Delta; \Xi_N, \Xi_1, \dotsc, \Xi_n; \Gamma_{N1},
+   \Gamma_1, \dotsc, \Gamma_n; \Delta_{N1}, \Delta_1, \dotsc, \Delta_n; (\lambda
+         x. C)\Sigma, (\Omega_N \rightarrow \outsem$ \hfill (1)
+   \item $n$ propositions $\mz \Gamma; \Xi_i \rightarrow A$ \hfill (2)
+   \item $n$ implications\\
+   $\forall_{\Omega_x}.($ if $\dz \Gamma; \Delta, \Xi_{i+1}, \dotsc,
+         \Xi_{n}; \Xi_N, \Xi_1,
+         \dotsc, \Xi_i; \Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_i; \Delta_{N1},
+         \Delta_1, \dotsc, \Delta_i; \Omega_x \rightarrow \outsem$ then $\dz \Gamma; \Delta, \Xi_{i+1}, \dotsc, \Xi_n; \Xi_N, \Xi_1,
+         \dotsc,
+         \Xi_i; \Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_{i-1}; \Delta_{N1},
+         \Delta_1, \dotsc, \Delta_{i-1}; B, \Omega_x \rightarrow \outsem)$ \hfill (3) \\
+\end{itemize}
+
+\noindent From (1) we apply the inductive hypothesis since $C$ is smaller than
+the original aggregate:\\
+$\dz \Gamma; \Delta; \Xi_N, \Xi_1, \dotsc, \Xi_n; \Gamma_{N1}, \Gamma_1,
+\dotsc, \Gamma_n; \Delta_{N1}, \Delta_1, \dotsc, \Delta_n; (\lambda x. C)\Sigma, \Omega \rightarrow
+\outsem$ \\
+
+\noindent Since we are building the proof tree backwards, starting from the final
+derivation result, we first need to derive $\aggz{0}{A}{B}{C}{\Sigma}$ by applying rules
+$\dz \m{agg}^0$:\\
+$\dz \Gamma; \Delta; \Xi_N, \Xi_1, \dotsc, \Xi_n; \Gamma_{N1}, \Gamma_1,
+\dotsc, \Gamma_n; \Delta_{N1}, \Delta_1, \dotsc, \Delta_n;
+\aggz{0}{A}{B}{C}{\Sigma}, \Omega \rightarrow
+\outsem$
+\\
+
+\noindent From result (4), we first rebuild the matching and derivation process of the
+$n^{th}$ aggregate.  Using the $n^{th}$ implication (3) on (5):
+
+\noindent $\dz \Gamma; \Delta, \Xi_n; \Xi_N, \Xi_1, \dotsc, \Xi_{n-1}; \Gamma_{N1}, \Gamma_1,
+\dotsc, \Gamma_{n-1}; \Delta_{N1}, \Delta_1, \dotsc, \Delta_{n-1}; B,
+\aggz{0}{A}{B}{C}{\Sigma},
+\Omega \rightarrow \outsem$ \\
+
+\noindent Using $\dz \lolli$ and the matching proposition (2) on (6), the $A \lolli B$
+implication is reconstructed:
+
+\noindent $\dz \Gamma; \Delta, \Xi_n; \Xi_N, \Xi_1, \dotsc, \Xi_{n-1}; \Gamma_{N1},
+   \Gamma_1, \dotsc, \Gamma_{n-1}; \Delta_{N1}, \Delta_1, \dotsc, \Delta_{n-1};
+A \lolli B, \aggz{0}{A}{B}{C}{\Sigma}, \Omega \rightarrow \outsem$ \\
+
+\noindent Next, we package the implication and the aggregate using $\dz
+\otimes$:
+
+\noindent $\dz \Gamma; \Delta, \Xi_n; \Xi_N, \Xi_1, \dotsc, \Xi_{n-1}; \Gamma_{N1},
+\Gamma_1, \dotsc, \Gamma_{n-1}; \Delta_{N1}, \Delta_1, \dotsc, \Delta_{n-1};
+(A \lolli B) \otimes \aggz{0}{A}{B}{C}{\Sigma}, \Omega \rightarrow \outsem$ \\
+
+\noindent Now, we apply $\dz \forall$ to include the whole term and deconstruct $\Sigma$
+into $x :: V_{n-1} :: \dotsb :: V_1 :: \cdot$ since $V_n$ is the $x$ variable:
+
+\noindent $\dz \Gamma; \Delta, \Xi_n; \Xi_N; \Xi_1, \dotsc, \Xi_{n-1};
+\Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_{n-1}; \Delta_{N1}, \Delta_1, \dotsc,
+\Delta_{n-1}; \forall_x. ((A \lolli B) \otimes \aggz{0}{A}{B}{C}{x :: V_{n-1} ::
+   \dotsb :: V_1 :: \cdot}), \Omega \rightarrow \outsem$ \\
+
+\noindent This last expression can be folded into $\aggz{1}{A}{B}{C}{V_{n-1} ::
+   \dotsb :: V_1 :: \cdot}$:
+
+\noindent $\dz \Gamma; \Delta, \Xi_n; \Xi_N; \Xi_1, \dotsc, \Xi_{n-1};
+\Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_{n-1}; \Delta_{N1}, \Delta_1, \dotsc,
+\Delta_{n-1}; \aggz{1}{A}{B}{C}{V_{n-1} :: \dotsb :: V_1 :: \cdot}, \Omega
+   \rightarrow \outsem$ \\
+
+\noindent The last 5 steps are then applied $n-1$ times to get:
+
+\noindent $\dz \Gamma; \Delta, \Xi_1, \dotsc, \Xi_n; \Xi_N; \Gamma_{N1}; \Delta_{N1};
+\aggz{n}{A}{B}{C}{\cdot}, \Omega \rightarrow \outsem$ \\
+
+\noindent Finally, to construct the conclusion and finish the proof, $\dz \m{agg}^*$ needs to
+be applied:
+
+\noindent $\dz \Gamma; \Delta, \Xi_1, \dotsc, \Xi_n; \Xi_N; \Gamma_{N1}; \Delta_{N1};
+\aggsz{A}{B}{C}, \Omega \rightarrow \outsem$ \\
+
+\noindent This completes the sub-case for aggregates.
 
 \end{proof}
 
