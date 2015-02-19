@@ -1,11 +1,12 @@
-\[
-\infer[\done 1]
-{\done \Gamma; \Delta; \Xi; \Gamma_1 ; \Delta_1; 1, \Omega \rightarrow \outsem}
-{\done \Gamma; \Delta; \Xi; \Gamma_1 ; \Delta_1; \Omega \rightarrow \outsem}
-\tab
-\infer[\done \otimes]
-{\done \Gamma ; \Delta; \Xi; \Gamma_1; \Delta_1; A \otimes B, \Omega \rightarrow
-   \outsem}
-{\done \Gamma ; \Delta; \Xi; \Gamma_1; \Delta_1; A, B, \Omega \rightarrow
-   \outsem}
-\]
+
+\begin{align}
+\trans{\derstatex{\Gamma}{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\one, \Omega}}
+{\derstatex{\Gamma}{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\Omega}}
+\tag{new $\one$}
+\end{align}
+
+\begin{align}
+\trans{\derstatex{\Gamma}{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{A \otimes B, \Omega}}
+{\derstatex{\Gamma}{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{A, B, \Omega}}
+\tag{new $\otimes$}
+\end{align}

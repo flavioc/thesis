@@ -1,16 +1,15 @@
 \[
-\infer[\dz \lolli]
-{\dz \Gamma ; \Delta_a, \Delta_b ; \Xi ; \Gamma_1 ; \Delta_1 ; A \lolli B,
-   \Omega \rightarrow \outsem}
-{\mz \Gamma ; \Delta_a \rightarrow A & \dz \Gamma ; \Delta_b ; \Xi, \Delta_a ;
-   \Gamma_1 ; \Delta_1 ; B, \Omega \rightarrow \outsem}
+\infer[\dzname \lolli]
+{\dz{\Gamma}{\Pi}{\Delta_a, \Delta_b}{\Xi}{\Gamma_1}{\Delta_1}{A \lolli B,
+   \Omega}{\outsem}}
+{\mz{\Gamma}{\Delta_a}{A} & \dz{\Gamma}{\Pi}{\Delta_b}{\Xi, \Delta_a}
+   {\Gamma_1}{\Delta_1}{B, \Omega}{\outsem}}
 \]
 
 \[
-\infer[\dz \forall]
-{\dz \Gamma; \Delta; \Xi; \Gamma_1; \Delta_1; \forall x. A, \Omega
-   \rightarrow \outsem}
-{\dz \Gamma; \Delta; \Xi; \Gamma_1; \Delta_1; A\{V/x\},
-   \Omega \rightarrow \outsem
-}
+\infer[\dzname \forall]
+{\dz{\Gamma}{\Pi}{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\forall_x. A,
+   \Omega}{\outsem}}
+{\dz{\Gamma}{\Pi}{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{A\{V/x\},
+   \Omega}{\outsem}}
 \]

@@ -32,12 +32,11 @@ to prove \texttt{visit(A)} and the comprehension. If those facts were
 persistent, then the rule would make no sense, because the node would be
 \texttt{visited} and \texttt{unvisited} at the same time!
 
-\subsection{Sequent calculus of \fragment}
+\subsection{Sequent calculus}
 
 \input{sequent_calculus}
 
-\subsection{From the \fragment sequent calculus to LM}
-
+\subsection{From the sequent calculus to LM}
 
 \begin{table*}
 \begin{center}
@@ -53,41 +52,43 @@ persistent, then the rule would make no sense, because the node would be
     $\exists x. A$               & Instantiates new node variables.  & $\existsc{\widehat{x}}{B}$                  & Head            & \texttt{exists A.(path(A, P))}                 \\ \hline
     $A \lolli B$                 & $\lolli$ means "linearly implies".               & $A \lolli B$                                  & Rule            & \texttt{path(A, B) $\lolli$ reachable(A, B)}   \\
                                  & $A$ is the body and $B$ is the head.             &                                               &                 &                                                \\ \hline
-    $\iters{name}{\widehat{V}}$               & For comprehensions
+    $\defsz{comp}$               & For comprehensions
     ($\widehat{V}$ is empty).  & $\comprehension{\widehat{x}}{A}{B}$  & Head            & \texttt{\{B | !edge(A, B) | visit(B)\}}        \\
                                  & For aggregates ($\widehat{V}$ accumulates).          &                                               &                 &                                                \\ \hline
     \end{tabular}
 }
 \end{center}
-\caption{Connectives from \fragment and their use in LM.}
+\caption{Connectives from linear logic and their use in LM.}
 \label{table:linear}
 \end{table*}
 
-The connections between LM and \fragment presented in the previous section
+The connections between LM and the sequent calculus fragment presented in the previous section
 are somewhat obvious. We summarize the connection connectives of the system and
 the LM syntax in Table~\ref{table:linear}. As an example, we translate the
 abstract syntax of the first rule of the graph visit program shown
-in~\ref{visit:ast} to a proposition in \fragment:
+in~\ref{visit:ast} to a sequent calculus proposition:
 
 \begin{align}
 \forall_A. (\mathtt{visit}(A) \otimes \mathtt{unvisited}(A) \lolli
-   \mathtt{visited}(A) \otimes \itersz{comp} A)
+   \mathtt{visited}(A) \otimes \defsone{comp}{A})
 \end{align}
 
 The translation is fairly straightforward, except for the comprehension. Each
-comprehension of a LM program must be assigned to an unique name and its
-corresponding terms. For the iterative definition $comp$, it is defined as
-following:
+comprehension of a LM program must be assigned to an unique name (here
+$\m{comp}$) and a persistent term. For $comp$, the term is as follows:
 
 \begin{align}
-\iterz{comp}{0} A & \defeq \one\\
-\iterz{comp}{N} A & \defeq \forall_B.((\bang \mathtt{edge}(A, B) \lolli
-\mathtt{visit}(B)) \otimes \iterz{comp}{N-1} A)
+\bang \forall_A. (\defsone{comp}{A} \lolli (\one \with
+         (\forall_B. (\bang \mathtt{edge}(A, B) \lolli
+                                             \mathtt{visit}(B)) \otimes
+          \defsone{comp}{A})))
 \end{align}
 
-Notice that the argument list of the iterative definition is being used
-to pass around terms from outside the definition, in this case, the variable
-$A$. However, the argument list can also be used to implement aggregates.
+Notice that the enclosing $\forall$ includes all the arguments of the unique
+name in order to pass around variables from outside the definition of the
+comprehension, in this case variable $A$. The persistent term allows the
+implication of the comprehension to be derived as many times as needed.
+However, the argument list can also be used to implement aggregates.
 Recall the aggregate example shown before:
 
 {\small
@@ -99,16 +100,22 @@ count-prices(A) -o [sum => P | . | price(A, P) | 1 | total(A, P)].
 This rule is translated into a linear logic proposition as shown next:
 
 \begin{align}
-\forall A. (\mathtt{count-prices}(A) \lolli \iters{agg} A \; 0)
+\forall_{A}. (\mathtt{count-prices}(A) \lolli \defstwo{agg}{A}{0})
 \end{align}
 
-The iterative definition $\mathtt{agg}$ is defined as follows:
+The persistent term for $\mathtt{agg}$ is defined as follows:
 
 \begin{align}
-\iterz{agg}{0} A \; P' & \defeq \mathtt{total}(A, P') \\
-\iterz{agg}{N} A \; P' & \defeq \forall_P. ((\mathtt{price}(A, P) \lolli \one)
-      \otimes \iterz{agg}{N-1} A \; (P' + P))
+\bang \forall_{A, P}. (\defstwo{agg}{A}{P} \lolli (\mathtt{total}(A, P)
+            \with (\forall_{P'}.
+               ((\mathtt{price}(A, P') \lolli \one) \otimes \defstwo{agg}{A}{P +
+                P'}))))
 \end{align}
+
+The argument $P$ of $\defsz{agg}$ accumulates the aggregate computation by
+consuming $\mathtt{price}$ and re-deriving a new $\defsz{agg}$ with $P +
+P'$. Once the aggregate is complete, we simply select $\mathtt{total}(A, P)$
+instead.
 
 \section{High Level Dynamic Semantics}
 

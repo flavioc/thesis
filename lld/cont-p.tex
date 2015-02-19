@@ -1,15 +1,17 @@
-\[
-\infer[\cont p~\m{next}]
-{\cont (\Delta; p_1, \Delta''; p, \Omega; \Xi; \Lambda; \Upsilon), \lstack{C};
-   H; \lstack{R}; \Gamma \rightarrow \outsem}
-{\mo \Gamma ; \Delta, \Delta''; \Xi, p_1; \Omega; H; (\Delta, p_1; \Delta''; p,
-      \Omega; H; \Xi; \Lambda; \Upsilon), \lstack{C}; \lstack{R} \rightarrow \outsem}
-\]
+\begin{align}
+\trans{\contstate{A \lolli B}{\rulestk}{\lframe{\Delta}{p_2,
+   \Delta''}{p}{\Omega}{\Delta'}{\Omega'}, \lstack{C}}{\Gamma}}
+{
+   \matstate{A \lolli B}{\rulestk}{\lframe{\Delta,
+      p_2}{\Delta''}{p}{\Omega}{\Delta'}{\Omega'},
+   \lstack{C}}{\Gamma}{\Delta}{\Omega}{\Delta', p_2 \rightarrow \Omega' \otimes p}}
+   \tag{next p}
+\end{align}
 
-\[
-\infer[\cont p~\m{no~more}]
-{\cont (\Delta; \cdot; p, \Omega; \Xi; \Lambda; \Upsilon), \lstack{C}; H;
-   \lstack{R}; \Gamma
-   \rightarrow \outsem}
-{\cont \lstack{C}; H; \lstack{R}; \Gamma \rightarrow \outsem}
-\]
+\begin{align}
+\trans{\contstate{A \lolli
+   B}{\rulestk}{\lframe{\Delta}{\cdot}{p}{\Omega}{\Delta'}{\Omega'},
+      \lstack{C}}{\Gamma}}
+{
+   \contstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}} \tag{next frame}
+\end{align}

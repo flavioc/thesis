@@ -1,7 +1,10 @@
 \[
-\infer[\ma{AG} \m{end}]
-{\ma{AG} \Psi; \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; \cdot;
-   \lstack{C}; \lstack{P}; \Omega_N; \Delta_N; \Sigma \rightarrow \outsem}
-{\fixa{AG} \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; \lstack{C}; \lstack{P}; \Omega_N;
-   \Delta_N; V :: \Sigma \rightarrow \outsem & x : V : \tau \in \Psi}
+\trans{
+   \matstatea{\Delta_N}{\lstack{C};
+      \lstack{P}}{\Gamma}{\Delta}{\cdot}{\Delta' \rightarrow
+         \Omega'}{\Sigma}
+}
+{
+   \fixstatea{\Delta}{\Xi; \Delta'}{\lstack{C}; \lstack{P}}{\Gamma}{\Sigma}
+}
 \]

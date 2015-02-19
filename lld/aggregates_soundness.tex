@@ -1,11 +1,12 @@
 
-Aggregates differ from comprehensions in two major ways: (1) the aggregate needs to
-collect one value per application and (2) the aggregate needs to derive a second
-head where the aggregated value is instantiated. However, the proof of
-correctness for aggregates does not differ significantly from before. The
-soundness of matching and derivation needs to be proved in order to prove that
-the whole process derives $n$ aggregate applications with $n$ aggregated values.
+Proving that deriving an aggregate in LLD is sound in relation to HLD is
+built from 4 results: (1) proving that matching the body of the aggregate is
+sound in relation to HLD; (2) proving that updating the continuation stacks
+makes them suitable for use in the next aggregate applications; (3) proving
+that deriving the head of the aggregate is sound in relation to HLD; (4)
+proving that we can apply as many aggregates as the database allows.
 
+\iffalse
 \begin{lemma}[Aggregate body match]\label{thm:aggregate_body_match}
 Given an aggregate $AG = \aggsz{A}{B}{C}$, consider a triplet $T = A; \Gamma;
 \Delta_{N}$ and a context $\Delta_{N} = \Delta_1, \Delta_2, \Xi$.
@@ -404,3 +405,4 @@ Apply Lemma~\ref{thm:aggregate_body_match} to get two sub-cases:
    Theorem~\ref{thm:multiple_aggregate_derivation} to the inversion to get the remaining $n-1$. 
 \end{itemize}
 \end{proof}
+\fi

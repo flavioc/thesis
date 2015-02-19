@@ -1,12 +1,12 @@
 \[
-\infer[\az \m{rule}]
-{\az \Gamma ; \Delta_1, \Delta_2 ; A \lolli B \rightarrow \outsem}
-{\mz \Gamma ; \Delta_1 \rightarrow A & \dz \Gamma ; \Delta_2; \Delta_1; \cdot ;
-   \cdot ; B \rightarrow \outsem}
+\infer[\azname \m{rule}]
+{\az{\Gamma}{\Delta_1, \Delta_2}{\Pi}{A \lolli B}{\outsem}}
+{\mz{\Gamma}{\Delta_1}{A} &
+   \dz{\Gamma}{\Pi}{\Delta_2}{\Delta_1}{\cdot}{\cdot}{B}{\outsem}}
 \]
 
 \[
-\infer[\doz \m{rule}]
-{\doz \Gamma ; \Delta ; R, \Phi \rightarrow \outsem}
-{\az \Gamma ; \Delta ; R \rightarrow \outsem}
+\infer[\dozname \m{rule}]
+{\dozx{\Gamma}{\Delta}{R, \Phi}{\Pi}{\outsem}}
+{\az{\Gamma}{\Delta}{\Pi}{R}{\outsem}}
 \]

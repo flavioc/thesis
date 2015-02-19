@@ -22,6 +22,7 @@ thesis.pdf: thesis.tex	\
 		appendix/fragment.tex \
 		appendix/lld.tex \
 		hld/step.tex \
+		hld/derivation-agg.tex \
 		lld/step.tex \
 		lld/match-p.tex \
 		lld/match-bang-p.tex \
@@ -40,6 +41,11 @@ thesis.pdf: thesis.tex	\
 		lld/agg-cont-c.tex \
 		lld/agg-cont-p.tex \
 		lld/agg-fix.tex \
+		lld/agg-der.tex \
+		lld/cont-p.tex \
+		lld/cont-bang-p.tex \
+		lld/der-p.tex \
+		lld/der-other.tex \
 		lld/aggregates.tex \
 		lld/soundness.tex \
 		lld/comprehensions_soundness.tex \

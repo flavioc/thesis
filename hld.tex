@@ -2,10 +2,10 @@
 In this section, we present the high level dynamic~(HLD) semantics of LM.  HLD
 formalizes the mechanism of matching rules and deriving new facts.  HLD
 semantics present a simplified overview of the dynamics of the language that are
-closer to \fragment (Section~\ref{sec:fragment}) presented before.  than the
-implementation principles of our virtual machine. The low level dynamic~(LLD)
-semantics are much closer to a real implementation and represents the
-operational semantics of the language.
+closer to the sequent calculus (Section~\ref{sec:fragment}) presented before
+than the implementation principles of our virtual machine. The low level
+dynamic~(LLD) semantics are much closer to a real implementation and
+represent the operational semantics of the language.
 
 Note that both HLD and LLD do not model the use of variable bindings when
 matching facts from the database. The formalization of bindings tends to
@@ -13,16 +13,19 @@ complicate the formal system and it is not necessary for a good understanding of
 the system. Instead, we assume that all facts of type $\emph{fact}(\hat{x})$ do
 not have the argument $\hat{x}$.
 
-Starting from \fragment presented earlier, we consider $\Gamma$ and $\Delta$ the database
-of our program. $\Gamma$ contains the database of persistent facts while $\Delta$ the database of linear
-facts. We assume that the rules of the program are persistent linear implications of the form
-$\bang (A \lolli B)$ that can be used several times. However, we do not put the rules in the $\Gamma$
-context but in a separate context $\Phi$.
+Starting from the sequent calculus, we consider $\Gamma$ and $\Delta$ the
+database of our program. $\Gamma$ contains the database of persistent facts
+while $\Delta$ the database of linear facts. We assume that the rules of the
+program are persistent linear implications of the form $\bang (A \lolli B)$ that
+can be used several times. However, we do not put the rules in the $\Gamma$
+context but in a separate context $\Phi$. The persistent terms associated with
+each comprehension and aggregate are put in the $\Pi$ dictionary that maps the
+unique name of the comprehension/aggregate to the persistent term.
 
 The main idea of the dynamic semantics is to ignore the right side of the
 sequent calculus and use \emph{chaining} and \emph{inversion} on the $\Delta$
 and $\Gamma$ contexts so that we only have atomic facts (e.g., the database of
-facts).  To apply rules we use
+facts). To apply rules we use
 \emph{focusing}~\cite{Andreoli92logicprogramming} on one of the derivation rules
 in $\Phi$. Note that in the focusing process we assume that all the atoms
 (facts) are positive thus the chaining proceeds in a \emph{forward chaining}
@@ -42,12 +45,13 @@ Steps are defined as $\stepz \Gamma; \Delta; \Phi \Longrightarrow \Gamma';
 \Delta'$, where $\Gamma'$ and $\Delta'$ are the new database contexts. The step
 rule is as follows:
 
-\input{hld/step}
+%\input{hld/step}
 
 \subsection{Application}
 
-A step is performed through $\doz \Gamma; \Delta; \Phi \rightarrow \Xi';
-\Gamma'; \Delta'$.  $\Gamma$, $\Delta$ and $\Phi$ have the meaning explained
+A step is performed through
+$\doz{\Gamma}{\Delta}{\Phi}{\Pi}{\Xi'}{\Gamma'}{\Delta'}$.
+$\Gamma$, $\Delta$, $\Phi$ and $\Pi$ have the meaning explained
 before, while $\Xi'$, $\Gamma'$ and $\Delta'$ are output multi-sets from
 applying one of the rules in $\Phi$ and are usually written as $\outsem$. $\Xi'$ is
 the set of consumed linear resources, $\Gamma'$ is the set of derived persistent
@@ -55,7 +59,7 @@ facts and $\Delta'$ is the set of derived linear facts.  Note that for HLD
 semantics there is no concept of rule priority, therefore a rule is picked
 non-deterministically.
 
-The judgment $\az \Gamma ; \Delta ; A \lolli B \rightarrow \outsem$
+The judgment $\az{\Gamma}{\Delta}{\Pi}{A \lolli B}{\outsem}$
 applies the derivation rule $A \lolli B$. To do this, it
 splits the $\Delta$ context into $\Delta_1$ and $\Delta_2$, namely the set of
 linear resources consumed to match the body of the rule ($\Delta_1$) and the
@@ -67,24 +71,27 @@ calculate $\Delta_1$.
 
 \subsection{Match}
 
-The $\mz \Gamma ; \Delta \rightarrow C$ judgment uses the right ($R$) rules of
-\fragment in order to match (prove) the body $C$ using $\Gamma$
-and $\Delta$. We must consume all the linear facts in the multi-set $\Delta$
-when matching $C$. The context $\Gamma$ may be used to match persistent terms in
-$C$ but such facts are never consumed since they are persistent.
+The $\mz{\Gamma}{\Delta}{C}$ judgment uses the right ($R$) rules of the sequent
+calculus in order to match (prove) the body $C$ using $\Gamma$ and $\Delta$. We
+must consume all the linear facts in the multi-set $\Delta$ when matching $C$.
+The context $\Gamma$ may be used to match persistent terms in $C$ but such facts
+are never consumed since they are persistent.
 
 \input{hld/match}
 
 \subsection{Derivation}
 
 After successfully matching the body of the rule, we next derive the head of the
-rule. The derivation judgment has the form $\dz \Gamma ; \Delta ; \Xi ; \Gamma_1
-; \Delta_1 ; \Omega \rightarrow \outsem$ with the following
-meaning:
+rule. The derivation judgment has the form
+$\dz{\Gamma}{\Pi}{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\Omega}{\outsem}$ with the
+following meaning:
 
 \begin{enumerate}
 
    \item[$\Gamma$] the multi-set of persistent resources in the database;
+   
+   \item[$\Pi$] dictionary of persistent terms for comprehensions and
+   aggregates;
 
    \item[$\Delta$] the multi-set of linear resources in the database not yet
    consumed;
@@ -111,22 +118,21 @@ The following derivation rules are a direct translation from \fragment:
 
 \input{hld/derivation}
 
-We did not include the aggregates here because they are similar to comprehensions.
-The starting rule for deriving comprehensions is $\dz comp^*$. It
-deterministically picks a number $N$ that then can be unfolded $N$ times to get
-$A \lolli B$. The HLD semantics do not take into account the contents of the
-database to determine how many times a comprehension should be applied.
-
-\input{hld/derivation-comp}
-
-These rules mirror the rules for the iterative definition in \fragment.  Rules
-for aggregates are similar, but they accumulate a value as a list:
+The main rule for deriving aggregates is $\dzname \m{agg}_1$. It looks into $\Pi$
+for the appropriate persistent term and applies $\defsz{agg}$ to the implication
+and then selects the recursive case. On the other hand, the rule $\dzname
+\m{agg}_2$ is identical but instead decides t
+The HLD
+semantics do not take into account the contents of the database to determine how
+many times a comprehension should be applied.
 
 \input{hld/derivation-agg}
 
+We do not include comprehensions here because they are a special case of
+aggregates.
+
 Finally, because both comprehensions and aggregates create implications $A \lolli
-B$, we add a final derivation rule $\dz \lolli$. The rule $\dz \forall$ is
-needed because aggregates need them to instantiate variables for the aggregated
-value.
+B$ and use the $\forall$ connective, we add a derivation rules $\dzname \lolli$
+and $\dzname \forall$.
 
 \input{hld/derivation-other}

@@ -1,10 +1,13 @@
-\[
-\infer[\done p]
-{\done \Gamma ; \Delta; \Xi; \Gamma_1 ; \Delta_1; p, \Omega \rightarrow \outsem}
-{\done \Gamma ; \Delta; \Xi; \Gamma_1 ; p, \Delta_1; \Omega \rightarrow \outsem}
-\tab
-\infer[\done \bang p]
-{\done \Gamma ; \Delta ; \Xi; \Gamma_1 ; \Delta_1; \bang p, \Omega \rightarrow
-   \outsem}
-{\done \Gamma ; \Delta ; \Xi; \Gamma_1, p; \Delta_1; \Omega \rightarrow \outsem}
-\]
+\begin{align}
+\trans{
+   \derstatex{\Gamma}{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{p, \Omega}
+      }
+   {\derstatex{\Gamma}{\Delta}{\Xi}{\Gamma_1}{\Delta_1, p}{\Omega}}
+   \tag{new p}
+\end{align}
+
+\begin{align}
+\trans{\derstatex{\Gamma}{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\bang p, \Omega}}
+{\derstatex{\Gamma}{\Delta}{\Xi}{\Gamma_1, \bang p}{\Delta_1}{\Omega}}
+\tag{new \bang p}
+\end{align}

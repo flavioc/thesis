@@ -1,48 +1,16 @@
-\[
-\infer[\mo p~\m{first}]
-{\mo \Gamma ; \Delta, p_1, \Delta'' ; \Xi; p, \Omega; H; \cdot; \lstack{R} \rightarrow
-   \outsem}
-{
- \begin{gathered}
-   p_1, \Delta'' \prec p \\
-   \mo \Gamma ; \Delta, \Delta''; \Xi, p_1; \Omega; H;
-      (\Delta, p_1; \Delta''; p; \Omega; \Xi; \cdot; \cdot); \lstack{R} \rightarrow
-      \outsem
-  \end{gathered}
-}
-\]
 
-\[
-\infer[\mo p~\m{on}~q]
-{\mo \Gamma ; \Delta, p_1, \Delta'' ; \Xi; p, \Omega; H; f, \lstack{C};
-   \lstack{R} \rightarrow \outsem}
-{
-\begin{gathered}
-   p_1, \Delta'' \prec p \\
-   f = (\Delta_{old}; \Delta'_{old}; q; \Omega_{old}; \Xi_{old}; \Lambda;
-         \Upsilon) \\
-   \mo \Gamma ; \Delta, \Delta''; \Xi, p_1; \Omega; H; (\Delta, p_1; \Delta'';
-         p; \Omega; \Xi; q, \Lambda; \Upsilon), f, \lstack{C}; \lstack{R} \rightarrow \outsem
-\end{gathered}
-}
-\]
+\begin{align}
+\trans{\matstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta, p_1, \Delta''}{p,
+   \Omega}{\Delta' \rightarrow \Omega'}}
+{\matstate{A \lolli B}{\rulestk}{\lframe{\Delta,
+   p_1}{\Delta''}{p}{\Omega}{\Delta'}{\Omega'}, \lstack{C}}{\Gamma}{\Delta,
+   \Delta''}{\Omega}{\Delta', p_1 \rightarrow \Omega' \otimes p}} \;\;\; (p_1, \Delta'' \prec p)
+   \tag{match p ok}
+\end{align}
 
-
-\[
-\infer[\mo p~\m{on}~\bang q]
-{\mo \Gamma ; \Delta, p_1, \Delta'' ; \Xi; p, \Omega; H; f, \lstack{C};
-   \lstack{R} \rightarrow \outsem}
-{
-\begin{gathered}
-   p_1, \Delta'' \prec p \\
-   f = [\Gamma_{old}; \Delta_{old}; \bang q; \Omega_{old}; \Xi_{old}; \Lambda; \Upsilon] \\
-   \mo \Gamma ; \Delta, \Delta''; \Xi, p_1; \Omega; H; (\Delta, p_1; \Delta''; p; \Omega; \Xi;
-         \Lambda; q, \Upsilon), f, \lstack{C}; \lstack{R} \rightarrow \outsem
-\end{gathered}}
-\]
-
-\[
-\infer[\mo p~\m{fail}]
-{\mo \Gamma ; \Delta; \Xi; p, \Omega; H; \lstack{C}; \lstack{R} \rightarrow \outsem}
-{\Delta \npreceq p & \cont \lstack{C} ; H; \lstack{R}; \Gamma \rightarrow \outsem}
-\]
+\begin{align}
+\trans{\matstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta}{p,
+   \Omega}{\Delta' \rightarrow \Omega'}}
+{\contstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}} \;\;\; (\Delta \npreceq
+      p) \tag{match p fail}
+\end{align}

@@ -1,12 +1,13 @@
-
 \[
-\infer[\doo \m{rule}]
-{\doo \Gamma; \Delta; R_1, \Phi \rightarrow \outsem}
-{\ao \Gamma; \Delta; R_1; (\Phi, \Delta) \rightarrow \outsem}
+\trans{\dostate{\Delta}{R_1, \Phi}{\Gamma}{\Pi}}
+   {\appstate{\Delta}{\Phi}{\Pi}{\Gamma}{R}}
 \]
-
 \[
-\infer[\ao \m{rule}]
-{\ao \Gamma; \Delta; A \lolli B; R \rightarrow \outsem}
-{\mo \Gamma; \Delta; \cdot; A; B; \cdot; R \rightarrow \outsem}
+\trans{\dostate{\Delta}{\cdot}{\Gamma}{\Pi}}
+   {\failstate{\Gamma}{\Delta}}
+\]
+\[
+\trans{\appstate{\Delta}{\Phi}{\Pi}{\Gamma}{A \lolli B}}
+      {\matstate{A \lolli B}{(\Delta; \Phi)}{\cdot}{\Gamma}{\Delta}{A}{\cdot \rightarrow
+                                                            \one}}
 \]

@@ -1,32 +1,54 @@
+
 \[
-\infer[\da{AG} p]
-{\da{AG} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1; p, \Omega; \lstack{C}; \lstack{P}; \Omega_N;
-   \Sigma \rightarrow \outsem}
-{\da{AG} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1, p; \Omega; \lstack{C}; \lstack{P}; \Omega_N;
-   \Sigma \rightarrow \outsem}
+\trans{
+   \derstatea{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\Sigma}{\lstack{C};
+      \lstack{P}}{p, \Omega}
+}
+{
+   \derstatea{\Delta}{\Xi}{\Gamma_1}{\Delta_1, p}{\Sigma}{\lstack{C};
+      \lstack{P}}{\Omega}
+}
 \]
 
 \[
-\infer[\da{AG} \bang p]
-{\da{AG} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1; \bang p, \Omega; \lstack{C};
-   \lstack{P}; \Omega_N; \Sigma \rightarrow \outsem}
-{\da{AG} \Gamma; \Delta_N; \Xi_N; \Gamma_1, p; \Delta_1; \Omega; \lstack{C}; \lstack{P}; \Omega_N;
-   \Sigma \rightarrow \outsem}
+\trans{
+   \derstatea{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\Sigma}{\lstack{C};
+      \lstack{P}}{\bang p, \Omega}
+}
+{
+   \derstatea{\Delta}{\Xi}{\Gamma_1, p}{\Delta_1}{\Sigma}{\lstack{C};
+      \lstack{P}}{\Omega}
+}
 \]
 
 \[
-\infer[\da{AG} \otimes]
-{\da{AG} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1; A \otimes B, \Omega; \lstack{C}; \lstack{P}; \Omega_N;
-   \Sigma \rightarrow \outsem}
-{\da{AG} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1; A, B, \Omega; \lstack{C}; \lstack{P}; \Omega_N;
-   \Sigma \rightarrow \outsem}
+\trans{
+   \derstatea{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\Sigma}{\lstack{C};
+      \lstack{P}}{X \otimes Y, \Omega}
+}
+{
+   \derstatea{\Delta}{\Xi}{\Gamma_1, p}{\Delta_1}{\Sigma}{\lstack{C};
+      \lstack{P}}{X, Y, \Omega}
+}
 \]
 
 \[
-\infer[\da{AG} \m{end}]
-{\da{AG} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1; \cdot; \lstack{C}; \lstack{P}; \Omega_N;
-   \Sigma \rightarrow \outsem}
-{\conta{AG} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1; \lstack{C}; \lstack{P}; \Omega_N; \Sigma
-   \rightarrow \outsem}
+\trans{
+   \derstatea{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\Sigma}{\lstack{C};
+      \lstack{P}}{\one, \Omega}
+}
+{
+   \derstatea{\Delta}{\Xi}{\Gamma_1, p}{\Delta_1}{\Sigma}{\lstack{C};
+      \lstack{P}}{\Omega}
+}
 \]
 
+\[
+\trans{
+   \derstatea{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\Sigma}{\lstack{C};
+      \lstack{P}}{\cdot}
+}
+{
+   \contstatea{\Delta}{\lstack{C} ; \lstack{P}}{\Gamma}{\Sigma}
+}
+\]

@@ -1,8 +1,20 @@
+
 \[
-\infer[\conta{\aggsz{A}{B}{C}} \m{end}]
-{\conta{\aggsz{A}{B}{C}} \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \cdot; \cdot;
-   \Omega; \Sigma \rightarrow \outsem}
-{\done \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; (\lambda x. C
-      x)\Sigma,
-   \Omega \rightarrow \outsem}
+\underset{
+   \Pi(\m{agg}) = \forall_{\widehat{v}, \Sigma'}.
+   (\defstwo{agg}{\widehat{v}}{\Sigma'} \lolli ((\lambda x. C x)\Sigma' \with (\forall_{\widehat{x}, \sigma}.
+                                                (A \lolli B \otimes
+                                                 \defstwo{agg}{\widehat{v}}{\sigma
+                                                 ::\Sigma'}))))
+}
+{
+\trans{
+   \contstatea{\Delta_N}{\cdot ; \cdot}{\Gamma}{\Sigma}
+}
+{
+   \derstatex{\Gamma}{\Delta_N}{\Xi}{\Gamma_1}{\Delta_1}{(\lambda x.
+         C\{\Psi(\widehat{v})/\widehat{v}\} x) \Sigma,
+      \Omega_N}
+}
+}
 \]

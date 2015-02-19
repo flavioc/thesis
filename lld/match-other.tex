@@ -1,10 +1,22 @@
-\[
-\infer[\mo \otimes]
-{\mo \Gamma ; \Delta; \Xi; A \otimes B, \Omega ; H ; \lstack{C}; \lstack{R} \rightarrow \outsem}
-{\mo \Gamma ; \Delta; \Xi; A, B, \Omega; H; \lstack{C}; \lstack{R} \rightarrow \Xi';\Delta';\Gamma'}
-\]
-\[
-\infer[\mo \m{end}]
-{\mo \Gamma ; \Delta; \Xi; \cdot ; H; \lstack{C}; \lstack{R} \rightarrow \outsem}
-{\done \Gamma ; \Delta; \Xi; \cdot ; H; \cdot \rightarrow \outsem}
-\]
+
+\begin{align}
+\trans{\matstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta}{\one,
+   \Omega}{\Delta' \rightarrow \Omega'}}
+{\matstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta}{\Omega}{\Delta'
+   \rightarrow \Omega'}} \tag{match $\one$}
+\end{align}
+
+\begin{align}
+\trans{\matstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta}{X \otimes Y,
+   \Omega}{\Delta' \rightarrow \Omega'}}
+{\matstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta}{X, Y,
+   \Omega}{\Delta' \rightarrow \Omega;}} \tag{match $\otimes$}
+\end{align}
+
+\begin{align}
+\trans{\matstate{A \lolli
+   B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta}{\cdot}{\Delta' \rightarrow \Omega'}}
+{
+   \derstatex{\Gamma}{\Delta}{\Delta'}{\cdot}{\cdot}{B}
+} \tag{match end}
+\end{align}

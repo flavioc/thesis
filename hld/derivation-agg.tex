@@ -1,24 +1,32 @@
 \[
-\infer[\dz \m{agg}^*]
-{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \aggsz{A}{B}{C}, \Omega
-   \rightarrow \outsem}
-{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \aggz{N}{A}{B}{C}{\cdot}, \Omega
-   \rightarrow \outsem}
+\infer[\dzname \m{agg}_1]
+{\dz{\Gamma}{\Pi}{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\defstwo{agg}{\widehat{V}}{\Sigma},
+   \Omega}{\outsem}}
+{\begin{gathered}
+   \Pi(\m{agg}) = \forall_{\widehat{v}, \Sigma'}.
+   (\defstwo{agg}{\widehat{v}}{\Sigma'} \lolli ((\lambda x. C)\Sigma' \with (\forall_{\widehat{x}, \sigma}.
+                                                (A \lolli B \otimes
+                                                 \defstwo{agg}{\widehat{v}}{\Sigma'
+                                                 + \sigma})))) \\
+   \dz{\Gamma}{\Pi}{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\forall_{\widehat{x},
+   \sigma}. (A \lolli B \otimes \defstwo{agg}{\widehat{V}}{\Sigma
+    + \sigma})\{\widehat{V}/\widehat{v}\}\{\Sigma/\Sigma'\}, \Omega}{\outsem}
+   \end{gathered}
+}
 \]
 
 \[
-\infer[\dz \m{agg}^N]
-{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \aggz{N}{A}{B}{C}{\Sigma}, \Omega
-   \rightarrow \outsem}
-{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ;
-   \aggunfold{N-1}{A}{B}{C}{\Sigma},
-   \Omega \rightarrow \outsem}
-\]
-
-\[
-\infer[\dz \m{agg}^0]
-{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \aggz{0}{A}{B}{C}{\Sigma}, \Omega
-   \rightarrow \outsem}
-{\dz \Gamma ; \Delta ; \Xi ; \Gamma_1 ; \Delta_1 ; \aggunfoldz{C}{\Sigma}, \Omega
-   \rightarrow \outsem}
+\infer[\dzname \m{agg}_2]
+{\dz{\Gamma}{\Pi}{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\defstwo{agg}{\widehat{V}}{\Sigma},
+   \Omega}{\outsem}}
+{\begin{gathered}
+   \Pi(\m{agg}) = \forall_{\widehat{v}, \Sigma'}.
+   (\defstwo{agg}{\widehat{v}}{\Sigma'} \lolli ((\lambda x. C)\Sigma' \with (\forall_{\widehat{x}, \sigma}.
+                                                (A \lolli B \otimes
+                                                 \defstwo{agg}{\widehat{v}}{\Sigma'
+                                                 + \sigma})))) \\
+   \dz{\Gamma}{\Pi}{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{(\lambda x.
+      C\{\widehat{V}/\widehat{v}\}\{\Sigma/\Sigma'\}) \Sigma, \Omega}{\outsem}
+   \end{gathered}
+}
 \]

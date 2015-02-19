@@ -1,75 +1,39 @@
+
+
 \[
-\infer[\ma{AG} \bang p~\m{first}]
-{\ma{AG} \Gamma, \Gamma', p; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \cdot; \bang
-   p, \Omega; \cdot; \cdot; \Omega_N; \Delta_N; \Sigma \rightarrow \outsem}
+\trans{
+   \matstatea{\Delta_N}{\cdot;
+      \lstack{P}}{\Gamma, p_1, \Gamma''}{\Delta}{\bang p, \Omega}{\Delta' \rightarrow
+         \Omega'}{\Sigma}
+}
 {
-   \begin{gathered}
-      p_1, \Gamma'' \prec \bang p \\
-      f = [\Gamma'; \Delta_N; \cdot;
-         \bang p; \cdot; \Omega; \cdot; \cdot] \\
-      \ma{AG} \Gamma, \Gamma', p; \Delta_N; \Xi_N;
-         \Gamma_{N1}; \Delta_{N1}; \cdot; \Omega; \cdot; f; \Omega_N; \Delta_N; \Sigma
-         \rightarrow \outsem
-   \end{gathered}
+   \matstatea{\Delta_N}{\cdot; \pframe{\Gamma''}{\Delta}{\bang
+   p}{\Omega}{\Delta'}{\Omega'}, \lstack{P}}{\Gamma, p_1, \Gamma''}{\Delta}{\Omega}
+   {\Delta' \rightarrow \Omega' \otimes \bang p}{\Sigma}
 }
 \]
 
 \[
-\infer[\ma{AG} \bang p~\m{on}~\bang q~\lstack{P}]
-{\ma{AG} \Gamma, \Gamma', p; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \cdot; \bang
-   p, \Omega; \cdot; f, \lstack{P}; \Omega_N; \Delta_N; \Sigma \rightarrow \outsem}
+\trans{
+   \matstatea{\Delta_N}{\lstack{C};
+      \lstack{P}}{\Gamma, p_1, \Gamma''}{\Delta}{\bang p, \Omega}{\Delta' \rightarrow
+         \Omega'}{\Sigma}
+}
 {
-   \begin{gathered}
-      p_1, \Gamma' \prec \bang p \\
-      f = [\Gamma_{old}; \Delta_N; \cdot; \bang q; \Omega_{old}; \cdot; \Upsilon] \\
-      f' =  [\Gamma'; \Delta_N; \cdot; \bang p; \cdot; \Omega; \cdot; q, \Upsilon] \\
-      \ma{AG} \Gamma, \Gamma', p; \Delta_N; \Xi_N;
-         \Gamma_{N1}; \Delta_{N1}; \cdot; \Omega;
-         f', f, \lstack{P}; \Omega_N; \Delta_N; \Sigma \rightarrow \outsem
-   \end{gathered}
+   \matstatea{\Delta_N}{\pframe{\Gamma''}{\Delta}{\bang
+   p}{\Omega}{\Delta'}{\Omega'}, \lstack{C} ; \lstack{P}}{\Gamma, p_1, \Gamma''}{\Delta}{\Omega}
+   {\Delta' \rightarrow \Omega' \otimes \bang p}{\Sigma}
 }
 \]
 
+
 \[
-\infer[\ma{AG} \bang p~\m{on}~\bang q~\lstack{C}]
-{\ma{AG} \Gamma, \Gamma', p; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; \bang p,
-   \Omega; f, \lstack{C}; \lstack{P}; \Omega_N; \Delta_N; \Sigma \rightarrow \outsem}
+\trans{
+   \matstatea{\Delta_N}{\lstack{C}; \lstack{P}}{\Gamma}{\Delta}{\bang p,
+      \Omega}{\Delta' \rightarrow \Omega'}{\Sigma}
+}
 {
-   \begin{gathered}
-      p_1, \Gamma'' \prec \bang p \\
-      f = [\Gamma_{old}; \Delta_{old}; \Xi_{old};
-         \bang q; \Omega_{old}; \Lambda; \Upsilon] \\
-      f' = [\Gamma'; \Delta; \Xi; \bang p; \cdot; \Omega;
-         \Lambda; q, \Upsilon] \\
-      \ma{AG} \Gamma, \Gamma', p; \Delta; \Xi_N;
-         \Gamma_{N1}; \Delta_{N1}; \Xi; \Omega;
-         f', f, \lstack{C}; \lstack{P}; \Omega_N;
-         \Delta_N; \Sigma \rightarrow \outsem
-   \end{gathered}
+   \contstatea{\Delta_N}{\lstack{C} ; \lstack{P}}{\Gamma}{\Sigma}
 }
 \]
 
-\[
-\infer[\ma{AG} \bang p~\m{on}~q~\lstack{C}]
-{\ma{AG} \Gamma, \Gamma', p; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; \bang p,
-   \Omega; f, \lstack{C}; \lstack{P}; \Omega_N; \Delta_N; \Sigma \rightarrow \outsem}
-{
-   \begin{gathered}
-      p_1, \Gamma'' \prec \bang p \\
-      f = (\Delta_{old}; \Delta'_{old}; \Xi_{old}; q;
-            \Omega_{old}; \Lambda; \Upsilon) \\
-      f' =  [\Gamma'; \Delta; \Xi;
-         \bang p; \cdot; \Omega; \Lambda, q; \Upsilon] \\
-      \ma{AG} \Gamma, \Gamma', p; \Delta; \Xi_N; \Gamma_{N1};
-         \Delta_{N1}; \Xi; \Omega; f', f, \lstack{C}; \lstack{P}; \Omega_N; \Delta_N; \Sigma \rightarrow \outsem
-   \end{gathered}
-}
-\]
-
-\[
-\infer[\ma{AG} \bang p~\m{fail}]
-{\ma{AG} \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; \bang p, \Omega;
-   \lstack{C}; \lstack{P}; \Omega_N; \Delta_N; \Sigma \rightarrow \outsem}
-{\Gamma \npreceq \bang p & \conta{AG} \Gamma; \Delta_N; \Xi_N; \Gamma_{N1};
-   \Delta_{N1}; \lstack{C}; \lstack{P}; \Omega_N; \Sigma \rightarrow \outsem}
-\]

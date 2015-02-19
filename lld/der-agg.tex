@@ -1,7 +1,17 @@
-\[
-\infer[\done \m{agg}]
-{\done \Gamma; \Delta ; \Xi; \Gamma_1; \Delta_1; \aggsz{A}{B}{C}, \Omega
-   \rightarrow \outsem}
-{\ma \Gamma; \Delta; \Xi; \Gamma_1; \Delta_1; \cdot; A ; \cdot; \cdot;
-   \aggsz{A}{B}{C}; \Omega; \Delta; \cdot \rightarrow \outsem}
-\]
+\begin{align}
+\underset{
+   \Pi(\m{agg}) = \forall_{\widehat{v}, \Sigma'}.
+   (\defstwo{agg}{\widehat{v}}{\Sigma'} \lolli ((\lambda x. C x)\Sigma' \with (\forall_{\widehat{x}, \sigma}.
+                                                (A \lolli B \otimes
+                                                 \defstwo{agg}{\widehat{v}}{\sigma
+                                                 ::\Sigma'}))))
+}
+{
+   \trans{
+         \derstatex{\Gamma}{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\defstwo{agg}{\widehat{V}}{\cdot
+         ; \cdot}, \Omega}
+   }
+   {\matstatea{\Delta}{\cdot ; \cdot}{\Gamma}{\Delta}{A}{\cdot \rightarrow
+      \one}{\cdot}}
+} \tag{new agg}
+\end{align}

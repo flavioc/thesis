@@ -25,12 +25,12 @@ constituent atoms.
 {\feq{\bang p, A}{\bang p, B}}
 {\feq{A}{B}}
 \tab
-\infer[\equiv 1~L]
-{\feq{1, A}{B}}
+\infer[\equiv \one~L]
+{\feq{\one, A}{B}}
 {\feq{A}{B}}
 \tab
-\infer[\equiv 1~R]
-{\feq{A}{1, B}}
+\infer[\equiv \one~R]
+{\feq{A}{\one, B}}
 {\feq{A}{B}}
 \]
 
@@ -50,13 +50,27 @@ constituent atoms.
 
 \begin{theorem}[Match equivalence]
 If two multi-sets are equivalent, $\feq{A_1, \dotsc, A_n}{B_1, \dotsc, B_m}$,
-   and we can match $A_1 \otimes \dotsb \otimes A_n$ in HLD such that $\mz
-   \Gamma ; \Delta \rightarrow A_1 \otimes \dotsb \otimes A_n$ then $\mz \Gamma;
-   \Delta \rightarrow B_1 \otimes \dotsb \otimes B_m$ is also true.
+   and we can match $A_1 \otimes \dotsb \otimes A_n$ in HLD such that
+   $\mz{\Gamma}{\Delta}{A_1 \otimes \dotsb \otimes A_n}$ then
+      $\mz{\Gamma}{\Delta}{B_1 \otimes \dotsb \otimes B_m}$ is also true.
 \end{theorem}
 \begin{proof}
 By straightforward induction on the first assumption.
 \end{proof}
+
+\begin{definition}[Split contexts]
+$split(\Omega)$ is defined as $split(\Omega) = times(flatten(\Omega))$, where:
+
+\begin{align}
+flatten(\cdot) = \cdot \\
+flatten(\one, \Omega) = flatten(\Omega) \\
+flatten(A \otimes B, \Omega) = flatten(A), flatten(B), flatten(\Omega) \\
+flatten(p, \Omega) = p, flatten(\Omega) \\
+flatten(\bang p, \Omega) = \bang p, flatten(\Omega)
+\end{align}
+
+And $times(A_1, \dotsc, A_n) = A_1 \otimes \dotsb \otimes A_n$.
+\end{definition}
 
 \subsection{Well-formed continuation frames}
 
@@ -66,117 +80,111 @@ persistent contexts and a term $A$ that needs to be matched.
 \begin{definition}[Well-formed frame]
 
 Consider a triplet $A; \Gamma; \Delta_{N}$ where $A$ is a term, $\Gamma$ is a
-multi-set of persistent resources and $\Delta_{N}$ a multi-set of linear
+set of persistent resources and $\Delta_{N}$ a multi-set of linear
 resources. A frame $f$ is well-formed iff:
 
 \begin{enumerate}[leftmargin=*]
-   \item Linear frame $f = (\Delta, p_1; \Delta'; \Xi_1, \dotsc, \Xi_m; p;
-         \Omega_1, \dotsc, \Omega_n; \Lambda_1, \dotsc, \Lambda_m; \Upsilon_1,
-         \dotsc, \Upsilon_k)$
+   \item Linear frame $f = \lframe{\Delta,
+      p_1}{\Delta''}{p}{\Omega}{\Delta'}{\Omega'}$
 
    \begin{enumerate}
-      \item $\feq{p, \Omega_1, \dotsc, \Omega_n, \Lambda_1, \dotsc, \Lambda_m,
-         \Upsilon_1, \dotsc, \Upsilon_k}{A}$ (the remaining terms and already
+      \item $\feq{p, \Omega, \Omega'}{A}$ (the remaining terms and already
                matched terms are equivalent to the initial body $A$);
-      \item $\mz \Xi_1, \dotsc, \Xi_m \rightarrow \Lambda_1 \otimes \dotsb \otimes
-      \Lambda_m$ and $\mz \Xi_i \rightarrow \Lambda_i$ for every $i$;
-
-      \item $\Delta, \Delta', \Xi, p_1 = \Delta_{N}$ (available facts, candidate
+      \item $\Delta' = \Delta'_1, \dotsc, \Delta'_n$ and $\Omega' =
+      \Omega'_1 \otimes \dotsb \otimes \Omega'_n$
+      \item $\Delta, \Delta'', \Delta, p_1 = \Delta_{N}$ (available facts, candidate
             facts for $p$, consumed facts and the linear fact used for $p$,
             respectively, are the same as the initial $\Delta_{N}$);
-
-      \item $\mz \Gamma; \cdot \rightarrow \Upsilon_1 \otimes \dotsb \otimes
-      \Upsilon_k$ (past persistent facts can be matched with $\Gamma$).
+      \item $\mz{\Gamma}{\Delta'}{\Omega}$ is valid.
 
    \end{enumerate}
-   \item Persistent frame $f = [\Gamma'; \Delta; \Xi_1, \dotsc, \Xi_m; \bang p;
-         \Omega_1, \dotsc, \Omega_n; \Lambda_1, \dotsc, \Lambda_m; \Upsilon_1,
-         \dotsc, \Upsilon_k]$
-
+   \item Persistent frame $f = \pframe{\Gamma''}{\Delta}{\bang
+   p}{\Omega}{\Delta'}{\Omega'}$
       \begin{enumerate}
-         \item $\feq{\bang p, \Omega_1, \dotsc, \Omega_n, \Lambda_1, \dotsc,
-                     \Lambda_m, \Upsilon_1, \dotsc, \Upsilon_k}{A}$;
-         \item $\mz \Xi_1, \dots, \Xi_m \rightarrow \Lambda_1 \otimes \dotsb \otimes
-                     \Lambda_m$ and $\mz \Xi_i \rightarrow \Lambda_i$ for every $i$;
-         \item $\Delta, \Xi = \Delta_{N}$;
-         \item $\mz \Gamma; \cdot \rightarrow \bang p \otimes \Upsilon_1 \otimes
-                     \dotsb \otimes \Upsilon_k$;
-         \item $\Gamma' \subset \Gamma$ (remaining candidates are a subset of
-                     $\Gamma$).
+         \item $\feq{\bang p, \Omega, \Omega'}{A}$;
+         \item $\Delta' = \Delta'_1, \dotsc, \Delta'_n$ and $\Omega' =
+         \Omega'_1 \otimes \dotsb \otimes \Omega'_n$
+         \item $\Delta, \Delta' = \Delta_{N}$;
+         \item $\Gamma'' \subset \Gamma$ (remaining candidates are a subset of
+                     $\Gamma$);
+         \item $\mz{\Gamma}{\Delta'}{\Omega}$ is valid.
       \end{enumerate}
 \end{enumerate}
 \end{definition}
 
 
 \begin{definition}[Well-formed stack]
-A continuation stack $C$ is well-formed iff every frame is well-formed.
+A continuation stack $\lstack{C}$ is well-formed iff every frame is well-formed.
 \end{definition}
 
-Given the previous definitions, we can now define what it means for a judgment
-to be well-formed.
+Given the previous definitions, we can now define what it means for a given
+machine state to be well-formed.
 
 \begin{definition}[Well-formed body match]
 
-$\mo \Gamma; \Delta; \Xi; \Omega; H; \lstack{C}; \lstack{R} \rightarrow \outsem$
-is well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
+$\matstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta}{\Omega}{\Delta'
+\rightarrow \Omega'}$ is well-formed in relation to a triplet $A; \Gamma;
+\Delta_{N}$ iff:
 
 \begin{itemize}[leftmargin=*]
-   \item $\Delta, \Xi = \Delta_{N}$
+   \item $\Delta, \Delta' = \Delta_{N}$
+   \item $\feq{\Omega', \Omega}{A}$;
+   \item $\mz{\Gamma}{\Delta'}{\Omega}$ is valid;
    \item $\lstack{C}$ is well-formed in relation to $A; \Gamma; \Delta_{N}$ and:
    \begin{itemize}[leftmargin=\secondm]
       \item If $\lstack{C} = \cdot$
    
       $\feq{\Omega}{A}$.
    
-      \item If $\lstack{C} = (\Delta_a, p_1; \Delta_b; \Xi''; p; \Omega'; \Lambda_1,
-            \dotsc, \Lambda_m; \Upsilon_1, \dotsc, \Upsilon_k), C'$
-   
+      \item If $\lstack{C} = \lframe{\Delta_a,
+   p_1}{\Delta_b}{p}{\Omega_a}{\Delta_c}{\Omega_b}, \lstack{C'}$:
       \begin{itemize}[leftmargin=\thirdm]
          \item $\feq{\Omega'}{\Omega}$;
-         \item $p_1 \in \Xi$ and $\mz \Gamma; p_1 \rightarrow p$;
-         \item $\Xi = \Xi'', p_1$;
-         \item $\Delta = \Delta_a, \Delta_b$.
+         \item $\Delta = \Delta_a, \Delta_b$;
+         \item $\Delta' = \Delta_c, p_1$.
       \end{itemize}
-      \item If $\lstack{C} = [\Gamma'; \Delta''; \Xi''; \bang p; \Omega'; \Lambda_1,
-      \dotsc, \Lambda_m; \Upsilon_1, \dotsc, \Upsilon_k], \lstack{C'}$
+
+      \item If $\lstack{C} = \pframe{\Gamma''}{\Delta_a}{\bang
+         p}{\Omega_a}{\Delta_a}{\Omega_b}, \lstack{C'}$:
       \begin{itemize}[leftmargin=\thirdm]
-         \item $\feq{\Omega}{\Omega'}$;
-         \item $\Xi = \Xi''$;
-         \item $\Delta = \Delta''$.
+         \item $\feq{\Omega}{\Omega_a}$;
+         \item $\Delta' = \Delta_a$;
+         \item $\Delta = \Delta_a$.
       \end{itemize}
    \end{itemize}
 \end{itemize}
 
 \end{definition}
 
-\begin{definition}[Well-formed matches]
-The following match propositions:
-\begin{itemize}
-   \item $\mc{\compsz{A}{B}} \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi;
-         \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N \rightarrow \outsem$
-   \item $\ma{\aggsz{A}{B}{C}} \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi;
-      \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N; \Sigma \rightarrow \outsem$ is
-\end{itemize}
-are well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
+\begin{definition}[Well-formed backtracking]
+$\contstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}$ is well-formed in
+relation to a triplet $A; \Gamma; \Delta_{N}$ iff $\lstack{C}$ is well-formed in
+relation to $A; \Gamma; \Delta_{N}$.
+\end{definition}
+
+\begin{definition}[Well-formed aggregate match]
+The matching state $\matstatea{\Delta_N}{\lstack{C};
+      \lstack{P}}{\Gamma}{\Delta}{\Omega}{\Delta' \rightarrow
+         \Omega'}{\Sigma}$
+is well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
 
 \begin{itemize}[leftmargin=*]
-   \item $\lstack{P}$ is composed solely of persistent frames.
+   \item $\lstack{P}$ is composed solely of persistent frames;
    \item $\lstack{C}$ is composed of either linear or persistent frames, but the first
-   frame is linear.
-   \item $\Delta, \Xi = \Delta_{N}$
+   frame is linear;
+   \item $\mz{\Gamma}{\Delta'}{\Omega}$ is valid;
+   \item $\Delta, \Delta' = \Delta_{N}$;
+   \item $\feq{\Omega, \Omega'}{A}$;
    \item $\lstack{C}$ and $\lstack{P}$ are well-formed in relation to $A; \Gamma; \Delta_{N}$ and
    follow the same rules presented before in "Well-formed body match" as a stack
    $\lstack{C}, \lstack{P}$.
 \end{itemize}
 \end{definition}
 
-\begin{definition}[Well-formed continuations]
-The following continuation propositions:
-\begin{itemize}[leftmargin=*]
-   \item $\contc{\compsz{A}{B}} \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \lstack{C}; \lstack{P}; \Omega_N \rightarrow \outsem$
-   \item $\conta{\aggsz{A}{B}{C}} \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \lstack{C}; \lstack{P}; \Omega_N; \Sigma \rightarrow \outsem$
-\end{itemize}
-are well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
+
+\begin{definition}[Well-formed aggregate backtracking]
+$\contstatea{\Delta_N}{\lstack{C} ; \lstack{P}}{\Gamma}{\Sigma}$ is well-formed
+in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
 
 \begin{itemize}[leftmargin=*]
    \item $\lstack{P}$ is composed solely of persistent frames.
@@ -186,15 +194,9 @@ are well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
 \end{itemize}
 \end{definition}
 
-\begin{definition}[Well-formed stack updates]
-The following continuation stack updates propositions:
-\begin{itemize}[leftmargin=*]
-   \item $\fix{\compsz{A}{B}} \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; \lstack{C}; \lstack{P}; \Omega_N;
-      \Delta_N \rightarrow \outsem$
-   \item $\fixa{\aggsz{A}{B}{C}} \Gamma; \Delta; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Xi; \lstack{C}; \lstack{P}; \Omega_N;
-      \Delta_N; \Sigma \rightarrow \outsem$
-\end{itemize}
-are well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
+\begin{definition}[Well-formed stack update]
+$\fixstatea{\Delta}{\Xi}{\lstack{C}; \lstack{P}}{\Gamma}{\Sigma}$ is
+well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
 
 \begin{itemize}[leftmargin=*]
    \item $\lstack{P}$ is composed solely of persistent frames.
@@ -205,20 +207,14 @@ are well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
 \end{itemize}
 \end{definition}
 
-\begin{definition}[Well-formed derivations]
-The following derivation propositions:
-\begin{itemize}[leftmargin=*]
-   \item $\dc{\compsz{A}{B}} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1;
-      \Omega; \lstack{C}; \lstack{P}; \Omega_N \rightarrow \outsem$
-   \item $\da{\aggsz{A}{B}{C}} \Gamma; \Delta_N; \Xi_N; \Gamma_1; \Delta_1;
-      \Omega; \lstack{C}; \lstack{P}; \Omega_N \rightarrow \outsem$
-\end{itemize}
-are well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
+\begin{definition}[Well-formed aggregate derivation]
+$\derstatea{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\Sigma}{\lstack{C};
+      \lstack{P}}{\Omega}$
+is well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
 
 \begin{itemize}[leftmargin=*]
    \item $\lstack{P}$ is composed solely of persistent frames.
-   \item $\lstack{C}$ is composed of either linear or persistent frames, but the first
-   frame is linear.
+   \item $\lstack{C}$ is empty or has a single linear frame;
    \item $\lstack{C}$ and $\lstack{P}$ are well-formed in relation to $A; \Gamma; \Delta_{N}$.
 \end{itemize}
 
@@ -226,8 +222,7 @@ are well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
 
 For the theorems that follow, we always assume that the propositions are
 well-formed in relation to their main contexts and matching body, be it either a
-rule body, a comprehension body or aggregate body. All the conclusions in the
-proofs also must prove that the resulting propositions are well-formed.
+rule body or an aggregate body.
 
 \subsection{Soundness of matching}
 
@@ -236,221 +231,180 @@ performing a rule match at LLD is sound in relation to HLD and then we prove
 that the derivation of head terms in LLD is also sound.
 
 In order to prove the soundness of matching, we want to reconstitute a valid
-$\mz$in HLD from a valid $\mo$in LLD. However, LLD may fail during matching,
-therefore our body match lemma needs to handle unsuccessful matches. In order to
-be able to use induction, we must assume a matching proposition $\mo$that
-already contains some continuation frames in stack $\lstack{C}$ that is
-well-formed in relation to the rule's body $A$ and initial database.
+match $\mz{\Gamma}{\Delta}{A}$ in HLD from machine steps in LLD. Our machine
+specification already includes a built-in $\mz{\Gamma}{\Delta}{A}$ judgment that
+can be used to prove soundness immediatelly. However, we need to prove that
+every state transition preserves the well-formedness of the machine from the
+previous definitions.
 
-Our lemma also needs to apply to our continuation judgment $\contlld$, because
-when inverting some of the matching assumptions, we get a continuation
-proposition. Apart from an unsuccessful match, we deal with two situations
+\begin{theorem}[Rule transitions preserve well-formedness]
+Given a rule $A \lolli B$, consider a triplet $T = A; \Gamma; \Delta_{N}$.
+If a state $s_1$ is well-formed in relation to $T$ and $\trans{s_1}{s_2}$ then
+$s_2$ is also well-formed.
+\end{theorem}
+\begin{proof}
+Case by case analysis.
+\begin{itemize}
+\item match p ok: simple manipulation of multi-set equality and use of
+equivalence rules.
+\item match p fail: trivial.
+\item match \bang p ok: multi-set manipulation and use of
+equivalence rules.
+\item match \bang p fail: trivial.
+\item match $\one$: use of term equivalence rules.
+\item match $\bang$: use of term equivalence rules.
+\item next p: simple multi-set manipulation.
+\item next frame: trivial.
+\item next \bang frame: trivial.
+\end{itemize}
+\end{proof}
+
+Given this result, we now need to prove that from an initial matching state, we
+end up with a final matching state. The final matching state will include the
+soundness result since all state transitions preserve well-formedness.
+However, LLD may fail during matching, therefore the match lemma needs to handle
+unsuccessful matches. In order to be able to use induction, we must assume a
+general matching state that  already contains some continuation frames in
+stack $\lstack{C}$. The lemma also needs to relate the matching state with the
+backtracking state since there is a need to backtrack during the matching
+process. Apart from an unsuccessful match, we deal with two situations
 during a successful match: (1) we succeed without needing to backtrack to a
 frame in stack $\lstack{C}$ or (2) we need to backtrack to a frame in
 $\lstack{C}$. The complete lemma is stated and proven below.
 
-\begin{lemma}[Body match soundness]\label{thm:body_match}
+
+\begin{lemma}[Body match result]\label{thm:body_match}
    
 Given a rule $A \lolli H$, consider a triplet $T = A; \Gamma; \Delta_{N}$ and a
 context $\Delta_{N} = \Delta_1, \Delta_2, \Xi$.
 
-If $\mo \Gamma; \Delta_1, \Delta_2; \Xi; \Omega; H; \lstack{C}; \lstack{R}
-\rightarrow \outsem$ is well-formed in relation to $T$ then either:
+If $s_1 = \matstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta_1,
+   \Delta_2}{\Omega}{\Delta' \rightarrow \Omega'}$
+is well-formed in relation to $T$ and $\transs{s_1}{s_2}$ then:
 
 \begin{itemize}[leftmargin=*]
-   \item Match fails:
-   \begin{itemize}[leftmargin=\secondm]
-      \item $\cont \cdot; H; \lstack{R}; \Gamma \rightarrow \outsem$
-   \end{itemize}
-
    \item Match succeeds with no backtracking to frames of stack $\lstack{C}$:
    \begin{itemize}[leftmargin=\secondm]
-      \item $\mz \Gamma; \Xi, \Delta_2 \rightarrow A$
-      \item $\mo \Gamma; \Delta_1; \Xi, \Delta_2; \cdot; H; \lstack{C''},
-   \lstack{C}; \lstack{R}
-         \rightarrow \outsem$ (well-formed in relation to $T$)
-      \item $\mo \Gamma; \Delta_1; \Xi, \Delta_2; \Omega; H; \lstack{C}; (\cdot, \Delta_N) \rightarrow \outsem$ (well-formed in relation to $T$)
+      \item $s_2 = \matstate{A \lolli B}{\rulestk}{\lstack{C''},
+         \lstack{C}}{\Gamma}{\Delta_1}{\cdot}{\Delta', \Delta_2 \rightarrow
+            \Omega' \otimes split(\Omega)}$
+      %\item $\mo \Gamma; \Delta_1; \Xi, \Delta_2; \cdot; H; \lstack{C''}, \lstack{C}; \lstack{R} \rightarrow \outsem$ (well-formed in relation to $T$)
+      %\item $\mo \Gamma; \Delta_1; \Xi, \Delta_2; \Omega; H; \lstack{C}; (\cdot, \Delta_N) \rightarrow \outsem$ (well-formed in relation to $T$)
    \end{itemize}
 
-   \item Match succeeds with backtracking to a linear frame:
-   \begin{itemize}[leftmargin=\secondm]
-      \item $\mz \Gamma; \Xi_1, \dotsc, \Xi_m, p_2, \Xi_c \rightarrow A$
-      \item $\exists_{f \in \lstack{C}}. f = (\Delta_a; \Delta_{b_1}, p_2, \Delta_{b_2}; p;
-            \Omega_1, \dotsc, \Omega_k; \Xi_1 .. \Xi_m; \Lambda_1, \dotsc,
-            \Lambda_m; \Upsilon_1, \dotsc, \Upsilon_n)$
+   \input{lld/body}
 
-      \item $\lstack{C} = \lstack{C'}, f, \lstack{C''}$
-
-      \item $f$ turns into $f' = (\Delta_a, \Delta_{b_1}, p_2;
-            \Delta_{b_2}; p; \Omega_1, \dotsc, \Omega_k; \Xi_1, \dotsc, \Xi_m;
-            \Lambda_1, \dotsc, \Lambda_m; \Upsilon_1, \dotsc, \Upsilon_n)$
-
-      \item $\mo \Gamma; \Delta_c; \Xi_1, \dotsc, \Xi_m, p_2, \Xi_c; \cdot; H;
-            \lstack{C'''}, f', \lstack{C''}; \lstack{R} \rightarrow \outsem$ (well-formed in
-                  relation to $T$)
-      \item $\Delta_c = (\Delta_1, \Delta_2, \Xi) - (\Xi_1, \dotsc, \Xi_m, p_2, \Xi_c)$
-   \end{itemize}
-
-   \item Match succeeds with backtracking to a persistent frame:
-   \begin{itemize}[leftmargin=\secondm]
-      \item $\mz \Gamma; \Xi_1, \dotsc, \Xi_m, \Delta_{c_2} \rightarrow A$
-      \item $\exists_{f \in \lstack{C}}. = f = [\Gamma_1, p_2, \Gamma_2; \Delta_{c_1}, \Delta_{c_2}; \Xi_c; \bang
-         p; \Omega_1, \dotsc, \Omega_k; \Lambda_1, \dotsc, \Lambda_m;
-         \Upsilon_1, \dotsc, \Upsilon_n]$
-      \item $\lstack{C} = \lstack{C'}, f, \lstack{C''}$
-      \item $f$ turns into $f' = [\Gamma_2; \Delta_{c_1}, \Delta_{c_2}; \Xi_1, \dotsc,
-         \Xi_m; \bang p; \Omega_1, \dotsc, \Omega_k; \Lambda_1, \dotsc,
-         \Lambda_m; \Upsilon_1, \dotsc, \Upsilon_n]$
-      \item $\mo \Gamma; \Delta_{c_1}; \Xi_1, \dotsc, \Xi_m, \Delta_{c_2};
-         \cdot; H; \lstack{C''}, f', \lstack{C''}; \lstack{R} \rightarrow \outsem$ (well-formed in
-            relation to $T$)
-      \item $\Delta_{c_1}, \Delta_{c_2} = (\Delta_1, \Delta_2,
-            \Xi) - (\Xi_1, \dotsc, \Xi_m)$
-   \end{itemize}
 \end{itemize}
 
-If $\cont \lstack{C}; H; \lstack{R}; \Gamma \rightarrow \outsem$ and $\lstack{C}$ is
-well-formed in relation to $T$ then either:
+If $s_1 = \contstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}$ 
+is well-formed in relation to $T$ and $\transs{s_1}{s_2}$ then either:
 
 \begin{itemize}[leftmargin=*]
-   \item Match fails:
-   \begin{itemize}[leftmargin=\secondm]
-      \item $\cont \cdot; H; \lstack{R}; \Gamma \rightarrow \outsem$
-   \end{itemize}
-
-   \item Match succeeds with backtracking to a linear frame:
-   \begin{itemize}[leftmargin=\secondm]
-      \item $\mz \Gamma; \Xi_1, \dotsc, \Xi_m, p_2, \Xi_c \rightarrow A$
-      \item $\exists_{f \in \lstack{C}}. f = (\Delta_a; \Delta_{b_1}, p_2, \Delta_{b_2}; p;
-            \Omega_1, \dotsc, \Omega_k; \Xi_1 .. \Xi_m; \Lambda_1, \dotsc,
-            \Lambda_m; \Upsilon_1, \dotsc, \Upsilon_n)$
-
-      \item $\lstack{C} = \lstack{C'}, f, \lstack{C''}$
-
-      \item $f$ turns into $f' = (\Delta_a, \Delta_{b_1}, p_2;
-            \Delta_{b_2}; p; \Omega_1, \dotsc, \Omega_k; \Xi_1, \dotsc, \Xi_m;
-            \Lambda_1, \dotsc, \Lambda_m; \Upsilon_1, \dotsc, \Upsilon_n)$
-
-      \item $\mo \Gamma; \Delta_c; \Xi_1, \dotsc, \Xi_m, p_2, \Xi_c; \cdot; H;
-            \lstack{C'''}, f', \lstack{C''}; \lstack{R} \rightarrow \outsem$ (well-formed in
-                  relation to $T$)
-      \item $\Delta_c = (\Delta_1, \Delta_2, \Xi) - (\Xi_1, \dotsc, \Xi_m, p_2, \Xi_c)$
-   \end{itemize}
-
-   \item Match succeeds with backtracking to a persistent frame:
-   \begin{itemize}[leftmargin=\secondm]
-      \item $\mz \Gamma; \Xi_1, \dotsc, \Xi_m, \Delta_{c_2} \rightarrow A$
-      \item $\exists_{f \in \lstack{C}}. = f = [\Gamma_1, p_2, \Gamma_2; \Delta_{c_1}, \Delta_{c_2}; \Xi_c; \bang
-         p; \Omega_1, \dotsc, \Omega_k; \Lambda_1, \dotsc, \Lambda_m;
-         \Upsilon_1, \dotsc, \Upsilon_n]$
-      \item $\lstack{C} = \lstack{C'}, f, \lstack{C''}$
-      \item $f$ turns into $f' = [\Gamma_2; \Delta_{c_1}, \Delta_{c_2}; \Xi_1, \dotsc,
-         \Xi_m; \bang p; \Omega_1, \dotsc, \Omega_k; \Lambda_1, \dotsc,
-         \Lambda_m; \Upsilon_1, \dotsc, \Upsilon_n]$
-      \item $\mo \Gamma; \Delta_{c_1}; \Xi_1, \dotsc, \Xi_m, \Delta_{c_2};
-         \cdot; H; \lstack{C''}, f', \lstack{C''}; \lstack{R} \rightarrow \outsem$ (well-formed in
-            relation to $T$)
-      \item $\Delta_{c_1}, \Delta_{c_2} = (\Delta_1, \Delta_2,
-            \Xi) - (\Xi_1, \dotsc, \Xi_m)$
-   \end{itemize}
+   \input{lld/body}
 \end{itemize}
 \end{lemma}
 
 \begin{proof}
-   Proof by mutual induction. In $\mo$on the size of $\Omega$ and on $\contlld$,
-   first on the size of the second argument of the frame ($\Delta''$ and
-   $\Gamma''$) and then on the size of the stack $C$. Sub-cases:
-   
+   Proof by lexicographic induction on the state transitions. First on the size of
+   $\Omega$ and then on the size of the second argument of the linear frame or
+   on the first argument of the linear frame and then on the size of the stack
+   $\lstack{C}$.
+   Sub-cases:
+
 \begin{itemize}[leftmargin=*]
-   \item $\mo p~\m{first}$, $\mo p~\m{on}~q$, $\mo p~\m{on}~\bang q$, $\mo \bang p~\m{first}$ $\mo \bang p~\m{on}~q$, $\mo \bang p~\m{on}~\bang q$, $\mo \otimes$
-   
-   When inverting the assumption, the well-formedness of the stack and match are
-   proven straightforwardly using the well-formedness of the assumption and the
-   match equivalence theorem. The induction hypothesis is then applied
-   straightforwardly.
-   
-   \item $\mo \m{end}$
-   
-   Trivial.
-   
-   \item $\mo p~\m{fail}$, $\mo \bang p~\m{fail}$
-   
-   Invert the assumption and apply induction hypothesis on the $\cont$assumption.
-   
-   \item $\cont \m{next}~\m{rule}$
-   
-   Match fails.
-   
-   \item $\cont p~\m{next}, \cont \bang p~\m{next}$
-   
-   When inverting the assumption, we get a $\mo$proposition that is trivially
-   proven to be well-formed in relation to $T$. Using induction hypothesis on
-   this assumption, we have 3 sub-cases:
-   
-   \begin{itemize}[leftmargin=\secondm]
-      \item Match fails: trivial.
-      \item Match succeeds with no backtracking: the frame that we updated is the successful frame to backtrack to.
-      \item Match succeeds with backtracking: $f \in C$ from the new assumption is the frame we need.
-   \end{itemize}
-   
-   \item $\cont p~\m{no}~\m{more}$, $\cont \bang p~\m{no}~\m{more}$
-   
-   Invert the assumption to apply the induction hypothesis.
+\item match p ok
+
+Induction on the state with a new frame ($\Omega$ is smaller). Trivial if match
+fails, otherwise it succeeds by adding new frames (including the new frame) or by backtracking.
+
+\item match p fail
+
+State gets smaller (see next).
+
+\item match \bang p ok
+
+Use the strategy used for match p ok.
+
+\item match \bang p fail: state gets smaller.
+
+\item match $\one$: trivial because $split$ removes $\one$.
+
+\item match $\bang$: same.
+\item next p
+
+Frame gets smaller so we can use the induction hypothesis:
+\begin{itemize}
+   \item Match fails: trivial.
+   \item Match succeeds with no backtracking: the frame that was updated is the
+   successful frame to backtrack to.
+   \item Match succeeds with backtracking: the frame $f \in \lstack{C}$ is the
+   frame we need.
 \end{itemize}
+
+\item next frame: stack gets smaller.
+\item next \bang frame: stack gets smaller (see above).
+\end{itemize}
+
 \end{proof}
 
-For the induction hypothesis to be applicable in in Lemma~\ref{thm:body_match}
-there must be a relation between the judgments $\mo$and $\contlld$.  We can
-define a lexicographic ordering $A \prec B$, meaning that proposition $A$ has a
-smaller proof than proposition $B$ (potentially $A$ is sub-proof of $B$), or
-alternatively, $A$ is "executed later" than $B$.  The specific ordering is as
-follows:
+
+For the induction hypothesis to be applicable in Lemma~\ref{thm:body_match}
+there must be a relation between the machine states.  We can define a
+lexicographic ordering $s_1 \prec s_2$, meaning that $s_1$ has a smaller number
+of remaining steps than state $s_2$.  The specific ordering is as follows:
 
 \begin{enumerate}[leftmargin=*]
-   \item $\cont \lstack{C}; H; \lstack{R}; \Gamma \rightarrow \outsem \prec
-   \cont \lstack{C'}, \lstack{C}; H; \lstack{R}; \Gamma \rightarrow \outsem$\\
+   \item $\contstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma} \prec
+   \contstate{A \lolli B}{\rulestk}{\lstack{C'}, \lstack{C}}{\Gamma}$
 
    The continuation must use the top of the stack $\lstack{C'}$ before using
    $\lstack{C}$;
 
-   \item $\cont \lstack{C'}, (\Delta, \Delta_1; \Delta_2; \Xi; p; \Omega;
-         \Lambda; \Upsilon), \lstack{C}; H; \lstack{R}; \Gamma \rightarrow \outsem$\\
+   \item $\contstate{A \lolli B}{\rulestk}{\lframe{\Delta,
+      \Delta_1}{\Delta_2}{p}{\Omega}{\Delta_f}{\Omega_f}, \lstack{C}}{\Gamma}
+      \prec \contstate{A \lolli B}{\rulestk}{\lframe{\Delta}{\Delta_1,
+         \Delta_2}{p}{\Omega}{\Delta_f}{\Omega_f}, \lstack{C}}{\Gamma}$
 
-   \hspace*{1cm}$\prec \cont \lstack{C''}, (\Delta; \Delta_1, \Delta_2; \Xi; p;
-         \Omega; \Lambda; \Upsilon), \lstack{C}; H; \lstack{R}; \Gamma \rightarrow \outsem$\\
    A continuation frame with more candidates has more steps to do than a frame with less candidates;
 
-   \item $\cont \lstack{C'}, [\Gamma_1; \Delta; \Xi; \bang p; \Omega; \Lambda;
-   \Upsilon], \lstack{C}; H; \lstack{R}; \Gamma \rightarrow \outsem$\\
-   \hspace*{1cm} $\prec \cont \lstack{C''}, [\Gamma_2, \Gamma_3; \Delta; \Xi;
-\bang p; \Omega; \Lambda; \Upsilon], \lstack{C}; H; \lstack{R}; \Gamma \rightarrow \outsem$\\
+   \item $\contstate{A \lolli B}{\rulestk}{\pframe{\Gamma_1}{\Delta}{\bang
+      p}{\Omega}{\Delta_f}{\Omega_f}}{\Gamma} \prec \contstate{A \lolli
+         B}{\rulestk}{\pframe{\Gamma_1, \Gamma_2}{\Delta}{\bang
+            p}{\Omega}{\Delta_f}{\Omega_f}}{\Gamma}$
+
       Same as the previous one;
 
-   \item $\cont \lstack{C}; H; \lstack{R}; \Gamma \rightarrow \outsem \prec \mo
-   \Gamma; \Delta; \Xi; \Omega; H; \lstack{C'}, \lstack{C}; \lstack{R}
-   \rightarrow \outsem$\\ Same as (1);
+   \item $\contstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma} \prec
+      \matstate{A \lolli B}{\rulestk}{\lstack{C'},
+         \lstack{C}}{\Gamma}{\Delta}{\Omega}{\Delta' \rightarrow \Omega'}$
 
-   \item $\mo \Gamma; \Delta; \Xi; \Omega; H; \lstack{C}; \lstack{R} \rightarrow \outsem \prec
-   \cont \lstack{C'}, \lstack{C}; H; \lstack{R}; \Gamma \rightarrow \outsem$\\ Same as the previous one;
+   \item $\matstate{A \lolli
+      B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta}{\Omega}{\Delta' \rightarrow
+         \Omega'} \prec \contstate{A \lolli B}{\rulestk}{\lstack{C'},
+            \lstack{C}}{\Gamma}$
+   \item $\matstate{A \lolli B}{\rulestk}{\lstack{C'},
+      \lstack{C}}{\Gamma}{\Delta_1}{\Omega_1}{\Delta'_1 \rightarrow \Omega'_1} \prec
+      \matstate{A \lolli
+         B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta_2}{\Omega_2}{\Delta'_2 \rightarrow
+            \Omega'_2}$
 
-   \item $\mo \Gamma; \Delta''; \Xi''; \Omega'; H; \lstack{C'}, \lstack{C};
-         \lstack{R} \rightarrow \outsem \prec \mo \Gamma; \Delta; \Xi; \Omega;
-         H; \lstack{C}; \lstack{R} \rightarrow \outsem$ as long
-   as $\Omega' \prec \Omega$\\ Adding continuation frames to the stack makes the
-   proof smaller as long as $\Omega$ is also smaller; 
+   Adding continuation frames to the stack makes the proof smaller as long as
+   $\Omega$ is also smaller; 
 
-   \item $\mo \Gamma; \Delta; \Xi; \Omega; H; \lstack{C'}, (\Delta, \Delta_1;
-         \Delta_2; \Xi; p; \Omega; \Lambda; \Upsilon), \lstack{C}; \lstack{R}
-   \rightarrow \outsem$\\ \hspace*{1cm} $\prec \mo \Gamma; \Delta''; \Xi'';
-   \Omega'; \lstack{C''}, (\Delta; \Delta_1, \Delta_2; \Xi; p; \Omega; \Lambda;
-         \Upsilon), \lstack{C}; \lstack{R} \rightarrow \outsem$\\ Same as (2);
+   \item $\matstate{A \lolli B}{\rulestk}{\lstack{C'}, \lframe{\Delta_f,
+      \Delta_{f_1}}{\Delta_{f_2}}{p}{\Omega_f}{\Delta'_f}{\Omega'_f},
+   \lstack{C}}{\Gamma}{\Delta_1}{\Omega_1}{\Delta'_1 \rightarrow \Omega'_1}$\\
+   \hspace*{1cm} $\prec \matstate{A \lolli B}{\rulestk}{\lstack{C''},
+      \lframe{\Delta_f}{\Delta_{f_1},
+         \Delta_{f_2}}{p}{\Omega_f}{\Delta'_f}{\Omega'_f},
+      \lstack{C}}{\Gamma}{\Delta_2}{\Omega_2}{\Delta'_2 \rightarrow \Omega'_2}$
 
-   \item $\mo \Gamma; \Delta; \Xi; \Omega; H; \lstack{C'}, [\Gamma_1; \Delta;
-   \Xi; \bang p; \Omega; \Lambda; \Upsilon], \lstack{C}; \lstack{R} \rightarrow \outsem$\\
-   \hspace*{1cm} $\prec \mo \Gamma; \Delta''; \Xi''; \Omega'; \lstack{C''},
-   [\Gamma_2, \Gamma_3; \Delta; \Xi; \bang p; \Omega; \Lambda; \Upsilon],
-   \lstack{C}; \lstack{R} \rightarrow \outsem$\\
-   Same as (3).
+   \item $\matstate{A \lolli B}{\rulestk}{\lstack{C'},
+      \pframe{\Gamma_1}{\Delta_f}{\bang p}{\Omega_f}{\Delta_f}{\Omega_f},
+   \lstack{C}}{\Gamma}{\Delta_1}{\Omega_1}{\Delta'_1 \rightarrow \Omega'_1}$\\
+   \hspace*{1cm} $\prec \matstate{A \lolli B}{\rulestk}{\lstack{C''},
+      \pframe{\Gamma_1, \Gamma_2}{\Delta_f}{\bang p}{\Omega_f}{\Delta'_f}{\Omega'_f},
+      \lstack{C}}{\Gamma}{\Delta_2}{\Omega_2}{\Delta'_2 \rightarrow \Omega'_2}$
 
 \end{enumerate}
 
@@ -458,19 +412,16 @@ follows:
 
 Proving that the derivation of the head of the rule is sound is trivial except
 for comprehensions and aggregates. LLD deterministically computes the number of
-available comprehensions to apply while HLD "guesses" the number and then
-performs the derivation. In the next two sections, we show how to prove the
-soundness of comprehensions and aggregates. The strategy for proving for proving
-both is identical due to their inherient similarities.
-
-\subsection{Comprehension soundness}
-
-\input{lld/comprehensions_soundness}
+available aggregates to apply while HLD "guesses" the number of required
+derivations.  In the next two sections, we show how to prove the soundness of
+aggregates. The strategy for proving for proving both is identical due to their
+inherient similarities.
 
 \subsection{Aggregate soundness}
 
 \input{lld/aggregates_soundness}
 
+\iffalse
 \subsection{Soundness of derivation}
 
 We are finally ready to prove that the derivation of terms of the head of a rule
@@ -691,3 +642,4 @@ $\done \Gamma; \Delta_1; \Delta_2; \cdot; \cdot; B \rightarrow \outsem$ \hfill (
 $\dz \Gamma; \Delta_1; \Delta_2; \cdot; \cdot; B \rightarrow \outsem$ \hfill (7) Head derivation soundness lemma (\ref{thm:head_derivation_soundness}) on (6) \\
 $\az \Gamma ; \Delta_1, \Delta_2 ; A \lolli B \rightarrow \outsem$ \hfill (8) rule $\az \m{rule}$ on (5) and (7)\\
 \end{proof}
+\fi
