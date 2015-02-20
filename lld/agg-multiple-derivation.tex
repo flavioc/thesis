@@ -1,0 +1,22 @@
+   \begin{itemize}[leftmargin=\secondm]
+      \item $n$ values $V_i$ for each implication ($\Sigma' = V_n :: \dots :: V_1 :: \Sigma$)
+      \item $n$ aggregate applications are derived:\\
+      $s_2 = \derstatex{\Gamma}{\Delta}{\Xi, \Xi_1, \dotsc, \Xi_n}{\Gamma_{N1},
+      \Gamma_1, \dotsc, \Gamma_n}{\Delta_{N1}, \Delta_1, \dotsc,
+         \Delta_n}{(\lambda x.  C\{\Psi(\widehat{v})/\widehat{v}\} x) \Sigma,
+            \Omega_N}$
+      \item $n$ soundness proofs for the $n$ aggregate matches:
+      \begin{itemize}[leftmargin=\thirdm]
+         \item $\mz{\Gamma}{\Xi_1}{A}$
+         \item $\dots$
+         \item $\mz{\Gamma}{\Xi_n}{A}$
+      \end{itemize}
+
+      \item $n$ derivation implications for HLD: \\
+      If $\dz{\Gamma}{\Pi}{\Delta, \Xi_{i+1}, \dotsc, \Xi_{n}}{\Xi, \Xi_1,
+         \dotsc, \Xi_i}{\Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_i}{\Delta_{N1},
+            \Delta_1, \dotsc, \Delta_i}{\Omega_x}{\outsem}$ then\\
+            \hspace{5cm} $\dz{\Gamma}{\Pi}{\Delta, \Xi_{i+1}, \dotsc, \Xi_{n}}{\Xi, \Xi_1,
+            \dotsc, \Xi_i}{\Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_{i-1}}{\Delta_{N1},
+            \Delta_1, \dotsc, \Delta_{i-1}}{B, \Omega_x}{\outsem}$
+   \end{itemize}

@@ -72,6 +72,13 @@ flatten(\bang p, \Omega) = \bang p, flatten(\Omega)
 And $times(A_1, \dotsc, A_n) = A_1 \otimes \dotsb \otimes A_n$.
 \end{definition}
 
+\begin{theorem}[Split equivalence]
+$\feq{split(\Omega)}{\Omega}$.
+\end{theorem}
+\begin{proof}
+Induction on the structure of $\Omega$.
+\end{proof}
+
 \subsection{Well-formed continuation frames}
 
 We now define the concept of a well-formed frame given initial linear and
@@ -195,7 +202,7 @@ in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
 \end{definition}
 
 \begin{definition}[Well-formed stack update]
-$\fixstatea{\Delta}{\Xi}{\lstack{C}; \lstack{P}}{\Gamma}{\Sigma}$ is
+$\fixstatea{\Delta}{\Xi; \Delta'}{\lstack{C}; \lstack{P}}{\Gamma}{\Sigma}$ is
 well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
 
 \begin{itemize}[leftmargin=*]
@@ -203,7 +210,7 @@ well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
    \item $\lstack{C}$ is composed of either linear or persistent frames, but the first
    frame is linear.
    \item $\lstack{C}$ and $\lstack{P}$ are well-formed in relation to $A; \Gamma; \Delta_{N}$.
-   \item $\Delta, \Xi = \Delta_{N}$
+   \item $\Delta, \Delta' = \Delta_{N}$
 \end{itemize}
 \end{definition}
 

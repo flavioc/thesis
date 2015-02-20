@@ -37,6 +37,7 @@ thesis.pdf: thesis.tex	\
 		lld/comprehensions.tex \
 		lld/agg-match-p.tex \
 		lld/agg-match-bang-p.tex \
+		lld/agg-match-soundness.tex \
 		lld/agg-cont-end.tex \
 		lld/agg-cont-c.tex \
 		lld/agg-cont-p.tex \
