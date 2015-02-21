@@ -1,13 +1,13 @@
 \[
 \trans{\dostate{\Delta}{R_1, \Phi}{\Gamma}{\Pi}}
-   {\appstate{\Delta}{\Phi}{\Pi}{\Gamma}{R}}
+   {\appstate{\Delta}{\Phi}{\Pi}{\Gamma}{R}} \tag{select rule}
 \]
 \[
 \trans{\dostate{\Delta}{\cdot}{\Gamma}{\Pi}}
-   {\failstate{\Gamma}{\Delta}}
+   {\failstate{\Gamma}{\Delta}} \tag{fail}
 \]
 \[
 \trans{\appstate{\Delta}{\Phi}{\Pi}{\Gamma}{A \lolli B}}
       {\matstate{A \lolli B}{(\Delta; \Phi)}{\cdot}{\Gamma}{\Delta}{A}{\cdot \rightarrow
-                                                            \one}}
+                                                            \one}} {init rule}
 \]

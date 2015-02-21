@@ -428,90 +428,23 @@ inherient similarities.
 
 \input{lld/aggregates_soundness}
 
-\iffalse
 \subsection{Soundness of derivation}
 
 We are finally ready to prove that the derivation of terms of the head of a rule
 is sound in relation to HLD.
 
 \begin{lemma}[Head derivation soundness]\label{thm:head_derivation_soundness}
-If $\done \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Omega \rightarrow \outsem$ then
-$\dz \Gamma; \Delta_N; \Xi_N; \Gamma_{N1}; \Delta_{N1}; \Omega \rightarrow \outsem$.
+If $s_1 = \derstatex{\Gamma}{\Delta_N}{\Xi}{\Gamma_{N1}}{\Delta_{N1}}{\Omega}$
+then $\transs{s_1}{\finalstate{\Xi, \Xi^{*}}{\Gamma_{N1},
+      \Gamma^{*}}{\Delta_{N1}, \Delta^{*}}}$ and
+$\dz{\Gamma}{\Pi}{\Delta_N}{\Xi}{\Gamma_{N1}}{\Delta_{N1}}{A \lolli B,
+   \Omega}{\Xi, \Xi^{*}; \Gamma_{N1}, \Gamma^{*}; \Delta_{N1}, \Delta^{*}}$
 \end{lemma}
 
 \begin{proof}\label{sec:derivation_theorem} Induction on $\Omega$. Most of the
 sub-cases can be proven using the induction hypothesis or by straightforward
-rule inference. The sub-cases for the comprehensions and aggregates are
-complicated and are proved beflow.
-
-\paragraph{Comprehensions} Apply Lemma~\ref{thm:comprehension} on the assumption
-to get $n$ applications of the comprehension. Assume that 
-$\Delta_N = \Delta, \Xi_1, \dotsc, \Xi_n$, where $\Xi_i$ are the facts consumed
-and $\Gamma_i, \Delta_i$ the facts derived by the $i^{th}$ application.
-The lemma proves the following:
-
-\begin{itemize}[leftmargin=*]
-   \item $\done \Gamma; \Delta; \Xi_N, \Xi_1, \dotsc, \Xi_n; \Gamma_{N1},
-   \Gamma_1, \dotsc, \Gamma_n; \Delta_{N1}, \Delta_1, \dotsc, \Delta_n;
-\Omega_N \rightarrow \outsem$ \hfill (1)
-   \item $n$ propositions $\mz \Gamma; \Xi_i \rightarrow A$ \hfill (2)
-   \item $n$ implications\\
-   $\forall_{\Omega_x}.($ if $\dz \Gamma; \Delta, \Xi_{i+1}, \dotsc,
-         \Xi_{n}; \Xi_N, \Xi_1,
-         \dotsc, \Xi_i; \Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_i; \Delta_{N1},
-         \Delta_1, \dotsc, \Delta_i; \Omega_x \rightarrow \outsem$ then $\dz \Gamma; \Delta, \Xi_{i+1}, \dotsc, \Xi_n; \Xi_N, \Xi_1,
-         \dotsc,
-         \Xi_i; \Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_{i-1}; \Delta_{N1},
-         \Delta_1, \dotsc, \Delta_{i-1}; B, \Omega_x \rightarrow \outsem)$ \hfill (3) \\
-\end{itemize}
-
-\noindent From (1) we apply the inductive hypothesis since $\Omega$ gets
-smaller:\\
-$\dz \Gamma; \Delta; \Xi_N, \Xi_1, \dotsc, \Xi_n; \Gamma_{N1}, \Gamma_1,
-\dotsc, \Gamma_n; \Delta_{N1}, \Delta_1, \dotsc, \Delta_n; \Omega \rightarrow
-\outsem$ \\
-
-\noindent Since we are building the proof tree backwards, starting from the final
-derivation result, we first need to derive $\compz{0}{A}{B}$ by applying rules
-$\dz \one$ and $\dz \m{comp}^0$:\\
-$\dz \Gamma; \Delta; \Xi_N, \Xi_1, \dotsc, \Xi_n; \Gamma_{N1}, \Gamma_1,
-\dotsc, \Gamma_n; \Delta_{N1}, \Delta_1, \dotsc, \Delta_n; \compz{0}{A}{B}, \Omega \rightarrow
-\outsem$
-\\
-
-\noindent From result (4), we first rebuild the matching and derivation process of the
-$n^{th}$ comprehension.  Using the $n^{th}$ implication (3) on (5):
-
-\noindent $\dz \Gamma; \Delta, \Xi_n; \Xi_N, \Xi_1, \dotsc, \Xi_{n-1}; \Gamma_{N1}, \Gamma_1,
-\dotsc, \Gamma_{n-1}; \Delta_{N1}, \Delta_1, \dotsc, \Delta_{n-1}; B, \compz{0}{A}{B},
-\Omega \rightarrow \outsem$ \\
-
-\noindent Using $\dz \lolli$ and the matching proposition (2) on (6), the $A \lolli B$
-implication is reconstructed:
-
-\noindent $\dz \Gamma; \Delta, \Xi_n; \Xi_N, \Xi_1, \dotsc, \Xi_{n-1}; \Gamma_{N1},
-   \Gamma_1, \dotsc, \Gamma_{n-1}; \Delta_{N1}, \Delta_1, \dotsc, \Delta_{n-1};
-A \lolli B, \compz{0}{A}{B}, \Omega \rightarrow \outsem$ \\
-
-\noindent Now, $\compz{1}{A}{B}$ is rebuilt by applying $\dz \otimes$ followed by $\dz
-\m{comp}^N$:
-
-\noindent $\dz \Gamma; \Delta, \Xi_n; \Xi_N, \Xi_1, \dotsc, \Xi_{n-1}; \Gamma_{N1},
-\Gamma_1, \dotsc, \Gamma_{n-1}; \Delta_{N1}, \Delta_1, \dotsc, \Delta_{n-1};
-\compz{1}{A}{B}, \Omega \rightarrow \outsem$ \\
-
-\noindent The last 4 steps are then applied $n-1$ times to get:
-
-\noindent $\dz \Gamma; \Delta, \Xi_1, \dotsc, \Xi_n; \Xi_N; \Gamma_{N1}; \Delta_{N1};
-\compz{n}{A}{B}, \Omega \rightarrow \outsem$ \\
-
-\noindent Finally, to construct the conclusion and finish the proof, $\dz \m{comp}^*$ needs to
-be applied:
-
-\noindent $\dz \Gamma; \Delta, \Xi_1, \dotsc, \Xi_n; \Xi_N; \Gamma_{N1}; \Delta_{N1};
-\compsz{A}{B}, \Omega \rightarrow \outsem$ \\
-
-\noindent This finishes the sub-case for comprehensions.
+rule inference. The sub-case for aggregates is more
+complicated and is proved beflow.
 
 \paragraph{Aggregates} Apply Lemma~\ref{thm:aggregates} on the assumption to get
 $n$ applications of the aggregate. Assume that $\Delta_N = \Delta, \Xi_1,
@@ -520,85 +453,91 @@ the facts derived by the $i^{th}$ application.  The lemma proves the following:
 
 \begin{itemize}[leftmargin=*]
    \item $n$ values $\Sigma = V_n :: \dotsb :: V_1 :: \cdot$
-   \item $\done \Gamma; \Delta; \Xi_N, \Xi_1, \dotsc, \Xi_n; \Gamma_{N1},
-   \Gamma_1, \dotsc, \Gamma_n; \Delta_{N1}, \Delta_1, \dotsc, \Delta_n; (\lambda
-         x. C)\Sigma, (\Omega_N \rightarrow \outsem$ \hfill (1)
-   \item $n$ propositions $\mz \Gamma; \Xi_i \rightarrow A$ \hfill (2)
+   \item $n$ applications are derived:\\
+   $\derstatex{\Gamma}{\Delta}{\Xi, \Xi_1, \dotsc, \Xi_n}{\Gamma_{N1},
+      \Gamma_1, \dotsc, \Gamma_n}{\Delta_{N1}, \Delta_1, \dotsc,
+         \Delta_n}{(\lambda x.  C\{\Psi(\widehat{v})/\widehat{v}\} x) \Sigma,
+            \Omega_N}$ (final state) \hfill (1)
+   \item $n$ propositions $\mz{\Gamma}{\Xi_i}{A}$ \hfill (2)
    \item $n$ implications\\
-   $\forall_{\Omega_x}.($ if $\dz \Gamma; \Delta, \Xi_{i+1}, \dotsc,
-         \Xi_{n}; \Xi_N, \Xi_1,
-         \dotsc, \Xi_i; \Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_i; \Delta_{N1},
-         \Delta_1, \dotsc, \Delta_i; \Omega_x \rightarrow \outsem$ then $\dz \Gamma; \Delta, \Xi_{i+1}, \dotsc, \Xi_n; \Xi_N, \Xi_1,
-         \dotsc,
-         \Xi_i; \Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_{i-1}; \Delta_{N1},
-         \Delta_1, \dotsc, \Delta_{i-1}; B, \Omega_x \rightarrow \outsem)$ \hfill (3) \\
+      If $\dz{\Gamma}{\Pi}{\Delta, \Xi_{i+1}, \dotsc, \Xi_{n}}{\Xi, \Xi_1,
+         \dotsc, \Xi_i}{\Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_i}{\Delta_{N1},
+            \Delta_1, \dotsc, \Delta_i}{\Omega_x}{\outsem}$ then\\
+            \hspace*{2cm} $\dz{\Gamma}{\Pi}{\Delta, \Xi_{i+1}, \dotsc, \Xi_{n}}{\Xi, \Xi_1,
+            \dotsc, \Xi_i}{\Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_{i-1}}{\Delta_{N1},
+            \Delta_1, \dotsc, \Delta_{i-1}}{B, \Omega_x}{\outsem}$ \hfill (3)
+   \item $n$ contexts $\Psi_1, \dotsc, \Psi_n$ for variable bindings \hfill (4)
 \end{itemize}
+
+\newcommand{\outsemm}[3]{#1, \Xi^{*}; #2, \Gamma^{*}; #3, \Delta^{*}}
+\newcommand{\aggoutsem}[0]{\outsemm{\Xi, \Xi_1, \dotsc, \Xi_n}{\Gamma_{N1}, \Gamma_1, \dotsc,
+      \Gamma_n}{\Delta_{N1}, \Delta_1, \dotsc, \Delta_n}}
 
 \noindent From (1) we apply the inductive hypothesis since $C$ is smaller than
 the original aggregate:\\
-$\dz \Gamma; \Delta; \Xi_N, \Xi_1, \dotsc, \Xi_n; \Gamma_{N1}, \Gamma_1,
-\dotsc, \Gamma_n; \Delta_{N1}, \Delta_1, \dotsc, \Delta_n; (\lambda x. C)\Sigma, \Omega \rightarrow
-\outsem$ \\
+$\dz{\Gamma}{\Pi}{\Delta}{\Xi, \Xi_1, \dotsc, \Xi_n}{\Gamma_{N1}, \Gamma_1,
+\dotsc, \Gamma_n}{\Delta_{N1}, \Delta_1, \dotsc, \Delta_n}{
+   (\lambda x.  C\{\Psi(\widehat{v})/\widehat{v}\} x) \Sigma,
+   \Omega\\ \hspace*{2cm}}{\aggoutsem}$
 
 \noindent Since we are building the proof tree backwards, starting from the final
-derivation result, we first need to derive $\aggz{0}{A}{B}{C}{\Sigma}$ by applying rules
-$\dz \m{agg}^0$:\\
-$\dz \Gamma; \Delta; \Xi_N, \Xi_1, \dotsc, \Xi_n; \Gamma_{N1}, \Gamma_1,
-\dotsc, \Gamma_n; \Delta_{N1}, \Delta_1, \dotsc, \Delta_n;
-\aggz{0}{A}{B}{C}{\Sigma}, \Omega \rightarrow
-\outsem$
-\\
+derivation result, we first need to derive $\defstwo{agg}{\widehat{V}}{\Sigma}$ by applying rules
+$\dzname \m{agg}_2$:\\
+$\dz{\Gamma}{\Pi}{\Delta}{\Xi, \Xi_1, \dotsc, \Xi_n}{\Gamma_{N1}, \Gamma_1,
+\dotsc, \Gamma_n}{\Delta_{N1}, \Delta_1, \dotsc, \Delta_n}
+{\defstwo{agg}{\Phi(\widehat{v})}{\Sigma}, \Omega \\ \hspace*{2cm}}{\aggoutsem}$ \\
 
-\noindent From result (4), we first rebuild the matching and derivation process of the
+\noindent If $n = 0$ then this is all we need, otherwise
+we need to rebuild the matching and derivation tree of the
 $n^{th}$ aggregate.  Using the $n^{th}$ implication (3) on (5):
 
-\noindent $\dz \Gamma; \Delta, \Xi_n; \Xi_N, \Xi_1, \dotsc, \Xi_{n-1}; \Gamma_{N1}, \Gamma_1,
-\dotsc, \Gamma_{n-1}; \Delta_{N1}, \Delta_1, \dotsc, \Delta_{n-1}; B,
-\aggz{0}{A}{B}{C}{\Sigma},
-\Omega \rightarrow \outsem$ \\
+\noindent $\dz{\Gamma}{\Pi}{\Delta, \Xi_n}{\Xi, \Xi_1, \dotsc, \Xi_{n-1}}{\Gamma_{N1}, \Gamma_1,
+\dotsc, \Gamma_{n-1}}{\Delta_{N1}, \Delta_1, \dotsc, \Delta_{n-1}}{B, \defstwo{agg}{\Phi(\widehat{v})}{\Sigma},
+   \Omega \\ \hspace*{2cm}}{\aggoutsem}$ \\
 
-\noindent Using $\dz \lolli$ and the matching proposition (2) on (6), the $A \lolli B$
+\noindent Using $\dzname \lolli$ and the matching proposition (2) on (6), the $A \lolli B$
 implication is reconstructed:
 
-\noindent $\dz \Gamma; \Delta, \Xi_n; \Xi_N, \Xi_1, \dotsc, \Xi_{n-1}; \Gamma_{N1},
-   \Gamma_1, \dotsc, \Gamma_{n-1}; \Delta_{N1}, \Delta_1, \dotsc, \Delta_{n-1};
-A \lolli B, \aggz{0}{A}{B}{C}{\Sigma}, \Omega \rightarrow \outsem$ \\
+\noindent $\dz{\Gamma}{\Pi}{\Delta, \Xi_n}{\Xi, \Xi_1, \dotsc, \Xi_{n-1}}{\Gamma_{N1},
+   \Gamma_1, \dotsc, \Gamma_{n-1}}{\Delta_{N1}, \Delta_1, \dotsc, \Delta_{n-1}}
+{A \lolli B, \defstwo{agg}{\Phi(\widehat{v})}{\Sigma}, \Omega \\ \hspace*{2cm}}{\aggoutsem}$ \\
 
-\noindent Next, we package the implication and the aggregate using $\dz
-\otimes$:
+\noindent Next, we package the implication and the aggregate using $\dzname \otimes$:
 
-\noindent $\dz \Gamma; \Delta, \Xi_n; \Xi_N, \Xi_1, \dotsc, \Xi_{n-1}; \Gamma_{N1},
-\Gamma_1, \dotsc, \Gamma_{n-1}; \Delta_{N1}, \Delta_1, \dotsc, \Delta_{n-1};
-(A \lolli B) \otimes \aggz{0}{A}{B}{C}{\Sigma}, \Omega \rightarrow \outsem$ \\
+\noindent $\dz{\Gamma}{\Pi}{\Delta, \Xi_n}{\Xi, \Xi_1, \dotsc, \Xi_{n-1}}{\Gamma_{N1},
+\Gamma_1, \dotsc, \Gamma_{n-1}}{\Delta_{N1}, \Delta_1, \dotsc, \Delta_{n-1}}{
+(A \lolli B) \otimes \defstwo{agg}{\Phi(\widehat{v})}{\Sigma}, \Omega \\
+\hspace*{2cm}}{\aggoutsem}$ \\
 
-\noindent Now, we apply $\dz \forall$ to include the whole term and deconstruct $\Sigma$
-into $x :: V_{n-1} :: \dotsb :: V_1 :: \cdot$ since $V_n$ is the $x$ variable:
+\noindent Now, we apply $\dzname \forall$ to include the whole term and deconstruct $\Sigma$
+into $\sigma :: V_{n-1} :: \dotsb :: V_1 :: \cdot$ since $V_n$ is the $\sigma$
+variable. The $\widehat{x}$ terms included in the body of the aggregate are
+replaced using information constructed in $\Psi_n$:
 
-\noindent $\dz \Gamma; \Delta, \Xi_n; \Xi_N; \Xi_1, \dotsc, \Xi_{n-1};
-\Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_{n-1}; \Delta_{N1}, \Delta_1, \dotsc,
-\Delta_{n-1}; \forall_x. ((A \lolli B) \otimes \aggz{0}{A}{B}{C}{x :: V_{n-1} ::
-   \dotsb :: V_1 :: \cdot}), \Omega \rightarrow \outsem$ \\
+\noindent $\dz{\Gamma}{\Pi}{\Delta, \Xi_n}{\Xi, \Xi_1, \dotsc, \Xi_{n-1}}
+{\Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_{n-1}}{\Delta_{N1}, \Delta_1, \dotsc,
+\Delta_{n-1}}{\\ \hspace*{2cm} \forall_{\widehat{x}, \sigma}. ((A' \lolli B') \otimes
+      \defstwo{agg}{\Psi(\widehat{v})}{\sigma :: V_{n-1} ::
+   \dotsb :: V_1 :: \cdot}), \Omega \\ \hspace*{3cm}}{\aggoutsem}$ \\
 
-\noindent This last expression can be folded into $\aggz{1}{A}{B}{C}{V_{n-1} ::
+
+\noindent This last expression can be folded into
+$\defstwo{agg}{\Psi(\widehat{v})}{V_{n-1} ::
    \dotsb :: V_1 :: \cdot}$:
 
-\noindent $\dz \Gamma; \Delta, \Xi_n; \Xi_N; \Xi_1, \dotsc, \Xi_{n-1};
-\Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_{n-1}; \Delta_{N1}, \Delta_1, \dotsc,
-\Delta_{n-1}; \aggz{1}{A}{B}{C}{V_{n-1} :: \dotsb :: V_1 :: \cdot}, \Omega
-   \rightarrow \outsem$ \\
+\noindent $\dz{\Gamma}{\Pi}{\Delta, \Xi_n}{\Xi, \Xi_1, \dotsc, \Xi_{n-1}}
+{\Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_{n-1}}{\Delta_{N1}, \Delta_1, \dotsc,
+\Delta_{n-1}}{\defstwo{agg}{\Psi(\widehat{v})}{V_{n-1} ::
+   \dotsb :: V_1 :: \cdot}, \Omega \\ \hspace*{2cm}}{\aggoutsem}$ \\
 
 \noindent The last 5 steps are then applied $n-1$ times to get:
 
-\noindent $\dz \Gamma; \Delta, \Xi_1, \dotsc, \Xi_n; \Xi_N; \Gamma_{N1}; \Delta_{N1};
-\aggz{n}{A}{B}{C}{\cdot}, \Omega \rightarrow \outsem$ \\
-
-\noindent Finally, to construct the conclusion and finish the proof, $\dz \m{agg}^*$ needs to
-be applied:
-
-\noindent $\dz \Gamma; \Delta, \Xi_1, \dotsc, \Xi_n; \Xi_N; \Gamma_{N1}; \Delta_{N1};
-\aggsz{A}{B}{C}, \Omega \rightarrow \outsem$ \\
+\noindent $\dz{\Gamma}{\Pi}{\Delta, \Xi_1, \dotsc,
+   \Xi_n}{\Xi}{\Gamma_{N1}}{\Delta_{N1}}{\defstwo{agg}{\Psi(\widehat{v})}{\cdot},
+      \Omega \\ \hspace*{2cm}}{\aggoutsem}$ \\
 
 \noindent This completes the sub-case for aggregates.
+
 
 \end{proof}
 
@@ -606,47 +545,99 @@ be applied:
 
 In order to bring everything together, we need to use the Head derivation
 soundness lemma (Lemma~\ref{thm:head_derivation_soundness}) and the Body match
-soundness lemma (Lemma~\ref{thm:body_match}).  We first prove that if we run one
-step in the LLD semantics then there exists one rule where matching was
-successful. Then, we prove that the application of such rule is sound in
-relation to HLD.
+result lemma (Lemma~\ref{thm:body_match}).  We first prove that if the LLD
+machine is able to reach the final state, then there exists one rule where
+matching was successful. Then, we prove that the application of such rule is
+sound in relation to HLD.
 
+\iffalse
 \begin{theorem}[One rule]\label{thm:one_rule}
-If $\doo \Gamma; \Delta; \Phi \rightarrow \outsem$ then
-$\exists_{R \in \Phi}. \doo \Gamma; \Delta; R \rightarrow \outsem$.
+If $\transs{\dostate{\Delta}{\Phi}{\Gamma}{\Pi}}{\finalstate{\Xi}{\Gamma_{N1}}{\Delta_{N1}}}$
+then $\exists_{R \in \Phi}$ such that
+$\transs{\dostate{\Delta}{R}{\Gamma}{\Pi}}{\finalstate{\Xi}{\Gamma_{N1}}{\Delta_{N1}}}$
 \end{theorem}
 \begin{proof}
 Induction on the size of $\Phi$.
 
-Inverting the assumption twice, we get $\mo \Gamma; \Delta; \cdot; A; B; \cdot;
-(\Phi', \Delta) \rightarrow \outsem$, where $\Phi = A \lolli B, \Phi'$. Applying Lemma~\ref{thm:body_match} (body match soundness), we have two sub-cases:
+Assume $\Phi = A \lolli B, \Phi'$ and $\rulestk = (\Delta; \Phi')$.
+Apply two steps to the first state of the assumption to get
+$\matstate{A \lolli B}{\rulestk}{\cdot}{\Gamma}{\Delta}{A}{\cdot
+   \rightarrow \one}$.
+
+Applying Lemma~\ref{thm:body_match} (body match result) leads to two
+subcases:
 
 \begin{itemize}[leftmargin=*]
-   \item Match fails: \\ $\cont \cdot; H; (\Phi', \Delta); \Gamma \rightarrow
-   \outsem$ \hfill (1)\\
-   $\doo \Gamma; \Delta; \Phi' \rightarrow \outsem$ \hfill (2) inversion of (1) \\
-   $\doo \Gamma; \Delta; R' \rightarrow \outsem$ \hfill (3) i.h. on (2) where $R' \in \Phi'$ \\
+   \item Match fails: \\
+   $\contstate{A \lolli B}{\rulestk}{\cdot}{\Gamma}$ \hfill (1) \\
+
+   $\dostate{\Delta}{\Phi'}{\Gamma}{\Pi}$ \hfill (2) state after (1) \\
+   $\transs{\dostate{\Delta}{R'}{\Gamma}{\Pi}}{\finalstate{\Xi}{\Gamma_{N1}}{\Delta_{N1}}}$
+   \hfill (3) i.h. on (2) where $R' \in \Phi'$ \\
+
    \item Match succeeds: \\
+
+   $\matstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta_1}{\cdot}{\Delta'
+      \rightarrow split(A)}$ \\ \hfill (1) \\
    $\mo \Gamma; \Delta; \cdot; A; B; \cdot; (\cdot, \Delta) \rightarrow \outsem$ \hfill (1)\\
    $\ao \Gamma; \Delta; A \lolli B; (\cdot, \Delta) \rightarrow \outsem$ \hfill (2) rule $\ao \m{rule}$ on (1) \\
    $\doo \Gamma; \Delta; A \lolli B \rightarrow \outsem$ \hfill (3) rule $\doo \m{rule}$ on (2) \\
 \end{itemize}
 \end{proof}
+\fi
+
 
 \begin{theorem}[Soundness]\label{thm:soundness}
-If $\doo \Gamma; \Delta; \Phi \rightarrow \outsem$ then $\exists_{R \in \Phi}.
-\az \Gamma ; \Delta ; R \rightarrow \outsem$.
+If $s_1 = \dostate{\Delta_N}{\Phi}{\Gamma}{\Pi}$
+then either $\transs{s_1}{\finalstate{\Xi}{\Gamma_{N1}}{\Delta_{N1}}}$
+and $\exists_{R \in \Phi}. \az{\Gamma}{\Delta_N}{\Pi}{R}{\Xi; \Gamma_{N1};
+      \Delta_{N1}}$
+or $\transs{s_1}{\failstate{\Gamma}{\Delta_N}}$.
 \end{theorem}
 
 \begin{proof}
-As follows:\\
-$\doo \Gamma; \Delta; \Phi \rightarrow \outsem$ \hfill (1) assumption \\
-$\doo \Gamma; \Delta; R \rightarrow \outsem$ \hfill (2) One rule theorem (\ref{thm:one_rule}) on (1), where $R \in \Phi$ \\
-$\mo \Gamma; \Delta; \cdot; A; B; \cdot; R \rightarrow \outsem$ \hfill (3) inversion of (2) \\
-$\mo \Gamma; \Delta_1; \Delta_2; \cdot; B; C; R \rightarrow \outsem$ \hfill (4) Body match soundness lemma (\ref{thm:body_match}) on (3), where $\Delta = \Delta_1, \Delta_2$ \\
-$\mz \Gamma; \Delta_2 \rightarrow A$ \hfill (5) from same lemma \\
-$\done \Gamma; \Delta_1; \Delta_2; \cdot; \cdot; B \rightarrow \outsem$ \hfill (6) inversion of (4) \\
-$\dz \Gamma; \Delta_1; \Delta_2; \cdot; \cdot; B \rightarrow \outsem$ \hfill (7) Head derivation soundness lemma (\ref{thm:head_derivation_soundness}) on (6) \\
-$\az \Gamma ; \Delta_1, \Delta_2 ; A \lolli B \rightarrow \outsem$ \hfill (8) rule $\az \m{rule}$ on (5) and (7)\\
+If $\Phi = \cdot$ then the second conclusion applies immediatelly, otherwise use
+induction on the size of $\Phi$.
+
+Assume $\Phi = A \lolli B, \Phi'$ and $\rulestk = (\Delta_N; \Phi')$.
+
+$\dostate{\Delta_N}{\Phi}{\Gamma}{\Pi}$ \hfill (1) first state of the assumption \\
+
+Applying Lemma~\ref{thm:body_match} (body match result) to the state after two
+transitions of (1) leads to two subcases:
+
+\begin{itemize}[leftmargin=*]
+   \item Match fails: \\
+   $\contstate{A \lolli B}{\rulestk}{\cdot}{\Gamma}$ \hfill (2) \\
+   $\dostate{\Delta_N}{\Phi'}{\Gamma}{\Pi}$ \hfill (3) state after (2) \\
+
+   $\exists_{R' \in \Phi'}. \az{\Gamma}{\Delta_N}{\Pi}{R'}{\Xi; \Gamma_{N1};
+   \Delta_{N1}}$. \hfill (4) i.h. on (3) where $R' \in \Phi'$ if $\Phi'$ is
+   not empty \\
+
+   $\failstate{\Gamma}{\Delta_N}$ \hfill (5) if $\Phi' = \cdot$ \\
+
+   \item Match succeeds: \\
+
+   $\matstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta}{\cdot}{\Delta'
+      \rightarrow split(A)}$ \hfill (1) $\Delta_N = \Delta', \Delta$ \\
+
+   $\feq{split(A)}{A}$ \hfill (2) well-formedness of state (1) \\
+
+   $\mz{\Gamma}{\Delta}{A}$ \hfill (3) match equivalence for (2) and (1) \\
+
+   $\derstatex{\Gamma}{\Delta}{\Delta'}{\cdot}{\cdot}{B}$ \hfill (4) state
+   after (1) \\
+
+   $\transs{\derstatex{\Gamma}{\Delta}{\Delta'}{\cdot}{\cdot}{B}}{\finalstate{\Xi}{\Gamma_{N1}}{\Delta_{N1}}}$
+   \hfill (5) applying Lemma~\ref{thm:head_derivation_soundness} to (4) \\
+
+   $\dz{\Gamma}{\Pi}{\Delta}{\Xi}{\Gamma_{N1}}{\Delta_{N1}}{B}{\Delta', \Xi^{*}; \Gamma_{N1}; \Delta_{N1}}$ \hfill (5) from the
+      same Lemma \\
+
+   $\az{\Gamma}{\Delta, \Delta'}{\Pi}{A \lolli B}{\Delta', \Xi^{*}; \Gamma_{N1};
+      \Delta_{N1}}$ \hfill (6) using $\azname \m{rule}$ on (5) and (3) \\
+
+\end{itemize}
+
 \end{proof}
-\fi
