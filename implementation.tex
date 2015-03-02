@@ -1,192 +1,30 @@
-This chapter presents a brief overview of the current implementation of \lang.
-We developed a compiler that given an \lang program generates \lang byte-code and a virtual machine that runs the byte-code.
-Since the virtual machine makes use of the Pthreads library, the concept of worker explained in Chapter~\ref{chapter:coordination} is thus realized as a POSIX thread.
+This chapter describes the multicore implementation of the LM language,
+including its compiler, supporting runtime and parallelism. We first start with
+an overview of the implementation in order to understand how all pieces of the
+implementation fit together. Secondly, we describe how parallelism achieved,
+including its data structures and thread scheduling. Thirdly, we present the
+implementation details of coordination and how it relates with parallelism.  We
+then describe the runtime and data structure used to implement nodes and the
+database of facts, followed by the compilation algorithm used by our compiler to
+turn logical rules into efficient C++ code.
 
-The goal of our system is to keep the threads as busy as possible and to reduce inter-thread communication.
-The load balancing aspect of the system is performed by our work scheduler that is based on a work
-stealing algorithm. More specifically, threads can steal nodes of other threads to keep themselves busy.
-Reduction of inter-thread communication is achieved by first ordering the node addresses present in the code
-in such a way that closer nodes are clustered together and then partitioning them to threads.
+\section{Overview}
+\input{implementation/overview}
 
-\section{Core Engine}
-
-When the virtual machine starts, it reads the byte-code file and starts all threads.
-As a first step, all threads will grab their nodes and assign the \texttt{owner} property of each node.
-Because only one thread is allowed to do computation on a node at any giving time, the owner property
-defines the thread with such permission.
-Next, each thread fills up its \emph{work queue} with the nodes picked. This queue
-maintains the nodes that have new facts to be processed.
-
-When a node sends a fact to another node, we need to check if the target node is in the same work queue of the owner thread.
-When the two nodes are in different threads, then we have a point of synchronization. Eventually,
-there will be no more work to do and the threads will go idle. There is a global atomic counter, a global
-boolean flag and one boolean flag (active/idle) for each thread that are used to detect termination.
-Once a thread goes idle, it decrements the global counter and changes its flag to idle. If the counter
-reaches zero, the global flag is set to idle. Since every thread will be busy-waiting and checking
-the global flag, they will detect the change and exit the program.
-
-\section{Work Queue}
-
-The work queue is actually implemented as two queues: a \emph{normal queue} and a \emph{priority queue}.
-The normal queue is implemented as a double-linked list and stores the nodes with priority equal to 0.
-We use a double-linked list because it will be easier to move the node from this queue to the
-\emph{priority queue}. The priority queue is an array based binary heap data structure that contains
-all the unprocessed nodes with priority. To reduce the memory footprint of our queues, all the bookkeeping fields
-such as the \texttt{next} and \texttt{prev} are part of the node data structure.
-Each node also contains flags that indicate the queue where they are currently in and if they have facts to process.
-
-\normalsize
-
-\begin{comment}
-\section{Nodes}
-
-\begin{figure}[h!]
-     \centering
-   \resizebox{10cm}{!}{
-
-    \includegraphics[width=0.5\textwidth]{node.pdf}}
-    \caption{The node data structure.}
-    \label{fig:node}
-\end{figure}
-
-The node data structure with an empty database occupies around 150 bytes.
-In Fig.~\ref{fig:node} we present the node data structure and its fields. We summarize the data below:
-
-\begin{description}
-   \item[queue data]: Includes the field \texttt{Prev} (for the normal queue), \texttt{Next} (for the normal queue), \texttt{Prio} (priority) and \texttt{Queue Pos} (for the priority queue).
-   \item[flags]: If the node is currently in the queue and in which queue. Includes \texttt{In Queue}, \texttt{In Normal Queue} and \texttt{In Priority Queue}.
-   \item[temporary store]: A simple linked-list containing the unprocessed facts called \texttt{Temporary Store}.
-   \item[database]: All the facts already processed which are true for this node. Is implemented as a trie and it is called \texttt{Tries}.
-   \item[rule matcher]: The \texttt{Matcher} maintains the number of facts per predicate and which rules can be activated next. This is used for selecting the candidate rules.
-   \item[owner]: Pointer to the owner thread. \texttt{Owner} in the figure.
-   \item[lock]: A \texttt{Lock} mutex used to manipulate the node.
-\end{description}
-\end{comment}
-
-When a thread runs out of nodes to process, it will pick a thread at random and try to steal one node
-from the target thread. The stealer thread will pop a node from either the priority queue or the normal queue. We use locks for mutual exclusion when dealing with those queues. Note that when a
-node is stolen, its owner information also changes to the stealer thread.
-
-In Fig.~\ref{code:work_loop} we present a simplified version of the work loop that is executed in all threads. At each work cycle,
-a thread checks if it has work in one of the two queues and, if not, it attempts to steal a node from the other thread's queues.
-If the attempt succeeds, then it processes the new node. Otherwise, the thread becomes idle and tries to
-synchronize with the other threads to finish. Meanwhile, if the thread receives new work inside
-\texttt{synchronize\_termination}, this function will succeed and the thread will return to the work cycle.
-
-\begin{figure}[h!]
-\small\begin{Verbatim}
-void work_loop(thread_id tid) {
-   while (true) {
-      if(has_work(tid)) {
-         current_node = pop_work(tid); // take node from one of the queues
-      } else {
-         // need to steal a node
-         other = random_thread();
-         current_node = steal_node_from_thread(other);
-      }
-      if(current_node == NULL) {
-         become_idle(tid);
-         if(!synchronize_termination(tid))
-            return;
-         become_active(tid);
-      } else {
-         process_node(current_node, tid);
-      }
-   }
-}
-\end{Verbatim}
-  \caption{Thread work loop.}
-  \label{code:work_loop}
-\end{figure}
-
-\section{Database and Core Engine}\label{sec:core_engine}
-
-The database is implemented using three data structures: trie data structures, list data structures and hash table data structures.
-The database must be implemented efficiently because during matching of rules, we build a
-\emph{match object}, which fixes arguments of the target predicate to instantiated values.
-
-\begin{description}
-   \item[Trie Data Structures]
-
-   Tries are used exclusively to store persistent facts.
-   Tries are trees where facts are indexed by the common arguments. When a trie level has too many nodes, we
-   transform the linked list into a hash table in order to improve lookup.
-      
-   \item[List Data Structures]
-   
-   We use doubly linked lists to store linear facts. Each fact contains the standard \texttt{prev} and \texttt{next} pointers
-   and also the fact arguments. We use a double linked list because it is very efficient to add and remove facts.
-   
-   \item[Hash Table Data Structures]
-   
-   When a double linked list is too long and we need to search for facts by a fixed argument, it becomes very slow to go through the
-   linked list and find the matched facts. To fix this, the virtual machine decides which arguments are best to be indexed and then
-   uses an hash table indexed by the appropriate argument. If we need to look for such argument then we just lookup in the hash table. However,
-   if we need to go through all the facts, we just iterate through all the facts in the table. For collisions, we use the above doubly linked list
-   data structure.
-\end{description}
-
-The core engine decides which rules need to be executed and then executes their byte-code.
-In Fig.~\ref{fig:rule_engine} we present the 5 main data structures for scheduling rule execution.
-\emph{Rule Queue} is the bitmap representing the rules that will be run, \emph{Active Bitmap} contains the rules that have enough
-facts to be fired, \emph{Inactive Bitmap} contains the rules that must be dropped from \emph{Rule Queue}, \emph{Predicates Bitmap}
-marks the newly derived facts and \emph{Predicates Count} counts the number of facts per predicate.
-To understand how our engine works, consider
-the following small program:
-
-\begin{Verbatim}
-a, e(1) -o b.
-a -o c.
-b -o d.
-e(0) -o f.
-c -o e(1).
-\end{Verbatim}
-
-To apply the rules, we take the least significant rule from the bitmap, which is
-the candidate rule with the higher priority, and then run it. In our example, we
-need to execute the second rule \texttt{a -o c}, since we have facts \texttt{a}
-and \texttt{e(0)}.  Because the derivation is successful, we derive \texttt{c}
-and consume \texttt{a}. In Fig.~\ref{fig:rule_engine}~(b) we activate the
-\texttt{c} predicate in the \emph{Predicates Bitmap} since it was derived and
-then activate the first and second rules in \emph{Dropped Bitmap} since such
-rules are no longer applicable (\texttt{a} is gone). To update the \emph{Rule
-   Queue}, we remove the bits marked in \emph{Dropped Bitmap} and add the active
-   rules marked in \emph{Active Bitmap} that are affected by predicates in
-   \emph{Predicates Map}. The engine has now scheduled the fourth and fifth
-   rules to be run.
-
-\begin{figure*}[h]
-   \centering
-   \begin{subfigure}[b]{0.4\textwidth}
-      \caption{Before applying the second rule.}
-   \end{subfigure}
-   \begin{subfigure}[b]{0.4\textwidth}
-      \caption{After applying the second rule.}
-   \end{subfigure}
-   \caption{Rule engine main data structures.}
-   \label{fig:rule_engine}
-\end{figure*}
-
-We do a small optimization to reduce the number of derivations of persistent
-facts. We divide the program rules into two sets: \emph{persistent rules} and
-\emph{non persistent rules}.  Persistent rules are rules where only persistent
-facts are involved. We compile such rules incrementally, that is, we attempt to
-fire all rules where a persistent fact is used. This is called the
-\emph{pipelined semi-naive} evaluation and it originated in the P2
-system~\cite{Loo-condie-garofalakis-p2}.  This evaluation method avoids
-excessing re-derivations of the same fact. The order of derivation does not
-matter for those rules, since only persistent facts are used.
+\section{Parallelism}
+\input{implementation/parallelism}
 
 \section{Coordination}
+\input{implementation/coord}
 
-Action facts used for coordination are derived just like regular facts, however when they need to be sent to the target node
-they are consumed and the corresponding action performed immediately.
-It is important to note that whenever a node sends a coordination action fact to a node in another thread,
-the fact is ignored, due to the costs of sending
-coordination data between threads. We intend to design an efficient mechanism to solve this problem.
+\section{Node Data Structure}\label{sec:data_structures}
+\input{implementation/node}
+
+\section{Compilation}
+\input{implementation/comp}
 
 \section{Summary}
 
-This section provided a very brief overview of the current implementation of \lang. Although the parallel and load balancing facilities of the
+This section provided a full description of the implementation of LM. Although the parallel and load balancing facilities of the
 runtime system are mostly completed, there is still some implementation work to be done, specially at the coordination level.
 We also explained how \lang can be implemented in different distributed systems.

@@ -5,6 +5,9 @@ thesis.pdf: thesis.tex	\
 		introduction.tex \
 		coordination.tex \
 		implementation.tex \
+		implementation/node.tex implementation/coord.tex \
+		implementation/overview.tex implementation/comp.tex \
+		implementation/parallelism.tex \
 		language.tex \
 		experiments.tex \
 		logic_foundations.tex \
@@ -15,7 +18,6 @@ thesis.pdf: thesis.tex	\
 		appendix.tex \
 		statement.tex \
 		related_work.tex \
-		program_proofs.tex \
 		abstract.tex \
 		macros.tex \
 		appendix/hld.tex \

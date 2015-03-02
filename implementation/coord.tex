@@ -1,0 +1,52 @@
+To support priorities each thread has two pairs of queues: a pair of
+doubly linked lists known as the \emph{standard queue} and a pair of
+\emph{min/max} heaps known as the \emph{priority queue}.  The standard queue
+contains nodes without priorities and supports push into tail, remove
+node from the head, remove arbitrary node, and remove first half of
+nodes.  The priority queue contains nodes with priorities and is
+implemented as a binary heap array. It supports the following
+operations: push into the heap, remove the \emph{min} node, remove an
+arbitrary node, remove half of the nodes (horizontal split), and
+priority update.  Operations for removing half of the queue are
+implemented in order to support node stealing, while operations to
+remove arbitrary nodes or update priority allows threads
+to change the priority of nodes.
+
+To minimize inter-thread communication, node priorities are
+implemented at the thread level. Thus, when a thread picks the highest
+priority node from the priority queue, it is only the highest priority
+with respect to the set of nodes owned by the thread and not the
+highest priority node in the whole program.  
+
+The \texttt{next} and \texttt{prev} pointers of the regular queue are
+part of the node structure in order to save space. These pointers are
+also used as the index in the priority queue and current priority,
+respectively. Both the regular and priority queue are implemented as a pair of
+queues.  This first queue is the \emph{static queue} which
+contains nodes that cannot be stolen.  The other queue is
+the \emph{dynamic queue} which contains nodes which can be stolen by
+other threads.
+
+\subsection{Communication}
+
+At this point, we can summarize the main thread synchronization hotspots in the
+virtual machine. Threads synchronize with each other using mutual exclusion. We
+use a spin-lock in each queue to protect queue operations.  Given threads $T_1$
+and $T_2$, we enumerate the most important synchronization hotspots:
+
+\begin{itemize}
+   \item \textbf{New facts}: When a node executes in $T_1$ and derives facts
+   to a node in $T_2$, $T_1$ first buffers the facts 
+   and then sends them to the target node. Here, it checks if the
+   node is currently \textbf{idle} and then synchronizes with $T_2$ to add the
+   node to the $T_2$'s queue.
+   \item \textbf{Thread activation}: If $T_2$ is inactive when adding facts to a node in
+   $T_2$, $T_1$ also synchronizes with $T_2$ to change $T_2$'s state to \emph{active}.
+   \item \textbf{Node stealing}: $T_1$ synchronizes with $T_2$ when it attempts to steal
+   nodes from $T_2$ by removing half of the nodes from one of $T_2$'s queues.
+   \item \textbf{Coordination}: If $T_1$ needs to perform coordination operations
+   to a node in $T_2$, it may need to synchronize with $T_2$ during priority
+   updates in order to move the node in $T_2$'s queues.
+\end{itemize}
+
+
