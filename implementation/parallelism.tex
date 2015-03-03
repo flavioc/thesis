@@ -1,28 +1,25 @@
-A key goal of our parallel design is to keep the threads as busy as possible
-and to reduce inter-thread communication. Initially, the VM will
-partition the application graph of $N$ nodes into $T$ subgraphs (the
-number of threads) and then each thread will work on their own
-subgraph. Reduction of communication between nodes in different threads
-is achieved by compiler as explained before and the threads only need to
-initialize their pre-defined sub-graphs.
+A key goal of our parallel design is to keep the threads as busy as possible and
+to reduce inter-thread communication. Initially, the VM will partition the
+application graph of $N$ nodes into $T$ subgraphs (the number of threads) and
+then each thread will work on their own subgraph. Reduction of communication
+between nodes in different threads is achieved by compiler as explained before
+and the threads only need to initialize their pre-defined sub-graphs.
 
-During execution, threads can steal nodes of other threads to keep
-themselves busy. The load balancing aspect of the system is performed
-by our work scheduler that is based on a simple work stealing
-algorithm. The pseudo-code for the main thread loop is shown in
-Fig.~\ref{code:work_loop}. In each round, a thread inspects its work
-queue for active nodes with new candidate rules and, if there is any,
-procedure \texttt{process\_node()} executes it. If the work queue is
-empty, the thread attempts to steal half of the nodes from another
-thread. Starting from a random thread, it cycles through all the
-threads to find one active thread. Eventually, there will be no more
-work to do and the threads will go idle. There is a global atomic
-counter, a global boolean flag and one boolean flag for each thread
-that are used to detect termination. Once a thread goes idle, it
-decrements the global counter and changes its flag to idle. If the
-counter reaches zero, the global flag is set to idle. Since every
-thread will be busy-waiting and checking the global flag, they will
-detect the change and stop executing.
+During execution, threads can steal nodes of other threads to keep themselves
+busy. The load balancing aspect of the system is performed by our work scheduler
+that is based on a simple work stealing algorithm. The pseudo-code for the main
+thread loop is shown in Fig.~\ref{code:work_loop}. In each round, a thread
+inspects its work queue for active nodes with new candidate rules and, if there
+is any, procedure \texttt{process\_node()} executes it. If the work queue is
+empty, the thread attempts to steal half of the nodes from another thread.
+Starting from a random thread, it cycles through all the threads to find one
+active thread. Eventually, there will be no more work to do and the threads will
+go idle. There is a global atomic counter, a global boolean flag and one boolean
+flag for each thread that are used to detect termination. Once a thread goes
+idle, it decrements the global counter and changes its flag to idle. If the
+counter reaches zero, the global flag is set to idle. Since every thread will be
+busy-waiting and checking the global flag, they will detect the change and stop
+executing.
 
 \begin{figure}
 \begin{algorithm}[H]
@@ -100,15 +97,14 @@ data structures, but instead will add the new fact to \emph{Fact Buffer}
 (\emph{New fact (2)}). The facts stored in \emph{Fact Buffer} will then be
 processed whenever the corresponding node's flag becomes active.
 
-There is another thread interaction that might happen during fact
-derivation if the node receiving a new fact is not active. In such
-case, the sending thread needs to activate the node by pushing it to
-the \emph{Work Queue} of the target thread. For example, consider
-again the situation in which thread 2 sends a new fact to
-node \texttt{@1}. If node \texttt{@1} is not active, then thread 2
-also needs to activate it by pushing it to the \emph{Work Queue} of
-thread 1. After this synchronization point, if the target thread is
-currently idle, it will become active and with a new node to process.
+There is another thread interaction that might happen during fact derivation if
+the node receiving a new fact is not active. In such case, the sending thread
+needs to activate the node by pushing it to the \emph{Work Queue} of the target
+thread. For example, consider again the situation in which thread 2 sends a new
+fact to node \texttt{@1}. If node \texttt{@1} is not active, then thread 2 also
+needs to activate it by pushing it to the \emph{Work Queue} of thread 1. After
+this synchronization point, if the target thread is currently idle, it will
+become active and with a new node to process.
 
 \subsection{Runtime Data Structures and Garbage Collection}
 

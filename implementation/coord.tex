@@ -38,20 +38,18 @@ operations and compares the standard queue against the priority queue.
 \label{fig:implementation:work_queue}
 \end{figure*}
 
-The \texttt{next} and \texttt{prev} pointers of the regular queue are
-part of the node structure in order to save space. These pointers are
-also used as the index in the priority queue and current priority,
-respectively. Both the regular and priority queue are implemented as a pair of
-queues.  This first queue is the \emph{static queue} which
-contains nodes that cannot be stolen.  The other queue is
-the \emph{dynamic queue} which contains nodes which can be stolen by
-other threads.
+The \texttt{next} and \texttt{prev} pointers of the regular queue are part of
+the node structure in order to save space. These pointers are also used as the
+index in the priority queue and current priority, respectively. Both the regular
+and priority queue are implemented as a pair of queues.  This first queue is the
+\emph{static queue} which contains nodes that cannot be stolen.  The other queue
+is the \emph{dynamic queue} which contains nodes which can be stolen by other
+threads.
 
-To minimize inter-thread communication, node priorities are
-implemented at the thread level. Thus, when a thread picks the highest
-priority node from the priority queue, it is only the highest priority
-with respect to the set of nodes owned by the thread and not the
-highest priority node in the whole program.  
+To minimize inter-thread communication, node priorities are implemented at the
+thread level. Thus, when a thread picks the highest priority node from the
+priority queue, it is only the highest priority with respect to the set of nodes
+owned by the thread and not the highest priority node in the whole program.  
 
 \subsection{Communication}
 
@@ -84,8 +82,9 @@ and $T_2$, we enumerate the most important synchronization hotspots:
 \subsection{Node State Machine}
 
 In order to facilitate the implementation of coordination, we added a state
-variable for each node. The state machine in Fig.~\ref{fig:implementation:node_states}
-represents the valid state transitions of a node:
+variable for each node. The state machine in
+Fig.~\ref{fig:implementation:node_states} represents the valid state transitions
+of a node:
 
 \begin{itemize}
    \item \textbf{working}: the node is executing.
