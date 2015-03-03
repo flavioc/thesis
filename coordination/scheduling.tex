@@ -46,8 +46,26 @@ automatically by the runtime system.
 
 The priorities assigned to nodes are respected on a thread basis, therefore a
 thread will always pick the highest priority node on its sub-graph but not the
-highest priority node of the whole graph. Priorities can then be seen as hints
-because they do not provide a global ordering but only a local
-ordering that is somewhat similar to the global ordering. The only
-exception is \texttt{schedule-next}, which, when the target node is located in
-the current thread, will always be enforced.
+highest priority node of the whole graph.
+Figure~\ref{fig:coordination:priorities} shows a graph that is being processed
+by two threads \texttt{T1} and \texttt{T2}. The order for \texttt{T1} will be
+\texttt{@0}, \texttt{1}, \texttt{@3}, \texttt{@2} and for thread \texttt{T2} it
+will be \texttt{@4}, \texttt{@6}, \texttt{@5}.  Priorities can also be seen as
+hints because they do not provide a global ordering but only a local ordering
+that is somewhat similar to the global ordering. The only exception is
+\texttt{schedule-next}, which, when the target node is located in the current
+thread, will always be enforced.
+
+Note that priorities of nodes can be set from any node in the graph, even if those nodes
+live on different threads. Of course, this implies communication between
+threads.
+
+\begin{figure}
+\begin{center}
+   \includegraphics[width=0.7\textwidth]{figures/coordination/priorities.pdf}
+\end{center}
+\caption{Priorities with sub-graph partitioning. Priorities are used on a
+   per-thread basis therefore thread \texttt{T1} schedules \texttt{@0} to
+   execute, while \texttt{T2} schedules node \texttt{@4}.}
+\label{fig:coordination:priorities}
+\end{figure}

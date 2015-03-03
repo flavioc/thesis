@@ -38,6 +38,6 @@ shortest(A, D1, P1), D1 <= D2, relax(A, D2, P2)
 The most interesting property of the SSSP program presented in
 Fig.~\ref{code:shortest_path_program_coord} is that it remains provably correct,
 although it applies rules using smarter ordering and the code remains
-declarative. Since the proof of correctness considers that, eventually, the shortest
-path is computed at all nodes of the graph, the use of \texttt{set-priority}
-does not change this at all.
+declarative. Since the proof of correctness considers that, eventually, the
+shortest path is computed at all nodes of the graph, the use of
+\texttt{set-priority} does not change this at all.
