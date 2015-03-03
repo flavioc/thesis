@@ -45,12 +45,13 @@ detect the change and stop executing.
             }
             $i \longleftarrow i + 1$\;
          }
-         \If{$len(TH.work\_queue) > 0$}{
+         \If{$len(TH.work\_queue) == 0$}{
             \tcc{try to terminate}
             $TH.become\_idle()$\;
             \If{$TH.synchronize\_termination()$}{
                \Return{}\;
             }
+            \tcc{There's new nodes in the queue.}
             $TH.become\_active()$\;
          }
       }
@@ -108,3 +109,24 @@ node \texttt{@1}. If node \texttt{@1} is not active, then thread 2
 also needs to activate it by pushing it to the \emph{Work Queue} of
 thread 1. After this synchronization point, if the target thread is
 currently idle, it will become active and with a new node to process.
+
+\subsection{Runtime Data Structures and Garbage Collection}
+
+LM also supports recursive types such as lists and pairs. These complex data
+structures are stored in the heap of the VM and are managed through reference
+counting. For instance, each list is a \emph{cons cell} with 3 fields:
+\texttt{tail}, the pointer to the next element of the list; \texttt{head}, the
+element stored by this element of the list; and \texttt{refs} that counts the
+number of pointers to this list element in the VM. The list is deleted from the
+heap whenever \texttt{refs} is decremented to zero.
+
+Nodes are also subject to garbage collection. If the database of a node becomes
+empty and there are no references to the node from other logical facts, then
+the node is deleted from the program.
+
+We avoid garbage collection schemes based on tracing since objects are created
+and discarded in very specific points of the virtual machine and the runtime
+objects cannot contain circular references. A reference counting mechanism is
+thus more appropriate than a parallel tracing garbage collector which would
+entail pausing the execution of the program to garbage collect all the unused
+objects.

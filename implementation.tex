@@ -25,6 +25,9 @@ turn logical rules into efficient C++ code.
 
 \section{Summary}
 
-This section provided a full description of the implementation of LM. Although the parallel and load balancing facilities of the
-runtime system are mostly completed, there is still some implementation work to be done, specially at the coordination level.
-We also explained how \lang can be implemented in different distributed systems.
+This section provided a full description of the implementation of LM, including
+its compiler and virtual machine. We explained how the virtual machine is
+organized to provide scalable multi threaded execution and fast fact assertion
+and retraction using efficient data structures. We also gave a detailed
+description of the compilation algorithm used to transform LM rules into
+efficient C++ code.

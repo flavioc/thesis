@@ -27,6 +27,7 @@ neighbor-pagerank(A, B, Old)
    -o neighbor-pagerank(A, B, New).
 \end{Verbatim}
 
+\noindent
 where variable \texttt{B} must have the same value in both facts\footnote{Rule taken
 from an asynchronous PageRank program.}.
 
@@ -85,7 +86,7 @@ constraint. If the constraint expression is true then the rule matches and a new
 erasing the iterators from the linked lists. Note that after the rule is
 derived, the code must return since there is a higher priority rule that may be
 triggered with the new \texttt{shortest} fact (see
-Fig.~\ref{fig:shortest_path_program}). This enforces the priority semantics
+Fig.~\ref{code:shortest_path_program}). This enforces the priority semantics
 of the language.
     
 If the constraint had failed, another \texttt{relax} fact would have been tried
@@ -154,7 +155,7 @@ Derivation of new facts belonging to the local node implies adding the new fact
 to the local node data structure. Facts that belong to other nodes are sent
 using an appropriate runtime API.
 
-\subsection{Persistency Checking}
+\subsection{Persistence Checking}
 
 Not all linear facts need to be deleted. For instance, in the compiled rule
 above, the fact \texttt{shortest(A, D1, P1)} is re-derived in the head. Our
@@ -411,3 +412,17 @@ for(auto it1(linked_list("pagerank").begin()); it1 != linked_list("pagerank").en
 next: continue;
 }
 \end{Verbatim}
+
+\subsection{Coordination directives}
+
+Coordination directives are compiled in two different ways, depending on whether
+they appear in the body or in the head of the rule. Coordination facts in the
+body are compiled into code that inspects the state of the virtual machine. For
+example, the fact \texttt{priority} will inspect the target node, retrieve the
+current priority and assign the priority to a variable.  Coordination facts in
+the head of the rule are also implemented as API commands of the virtual
+machine instead of being added to the database as facts. Semantically, action
+facts are like any other. However, since they are immediately used by the
+machine, there is no need to store them in the database, therefore avoiding
+unnecessary allocations and deallocations.
+
