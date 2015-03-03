@@ -1,0 +1,37 @@
+
+We provide several coordination facts for dealing with node partitioning among
+the running threads. Since each node is placed in some thread, the partitioning
+facts revolve around thread placement.  In terms of action facts, we have the
+following:
+
+\begin{itemize}
+   \item \code{set-cpu(node A, thread T)}: Moves node \texttt{A} to thread
+   \texttt{T}.
+
+   \item \code{set-affinity(node A, node B)}: Places node \texttt{B} in
+   the thread of node \texttt{A}.
+
+   \item \code{set-moving(node A)}: Allows node \texttt{A} to move freely
+   between threads.
+
+   \item \code{set-static(node A)}: Forces node \texttt{A} to stay in the
+   same thread indefinitely.
+
+\end{itemize}
+
+Sensing facts retrieve information about node placement and are specified as
+follows:
+
+\begin{itemize}
+
+   \item \code{cpu-id(node A, node B, thread T)}: Store at node \texttt{A} which
+   thread \texttt{T}, \texttt{B} is actually running on.
+
+   \item \code{is-moving(node A, node B)}: Fact available at node \texttt{A} if \texttt{B} is allowed
+   to move between threads.
+
+   \item \code{is-static(node A, node B)}: Fact available at node \texttt{A} if \texttt{B} is not
+   allowed to move between threads.
+
+\end{itemize}
+

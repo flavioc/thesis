@@ -1,0 +1,54 @@
+LM introduces the concept of coordination that allows the programmer to write
+code that changes how the runtime system schedules and partitions node across
+threads of execution. Beyond the distinction between linear and persistent
+facts, LM further classifies facts into 3 categories: \emph{computation} facts,
+\emph{structural} facts and \emph{coordination} facts.
+Predicates are also classified accordingly.
+
+Computation facts are regular facts used to represent the program state. In
+Fig.~\ref{code:shortest_path_program}, \texttt{relax} and \texttt{shortest} are
+all computation facts.
+
+Structural facts describe information about the connections between the nodes in
+the graph.  In the example of Fig.~\ref{code:shortest_path_program},
+\texttt{edge} facts are structural since the corresponding \texttt{edge}
+predicate is marked as a \texttt{route} predicate. Note that structural facts
+can also be seen as computation facts since they are heavily used in the program
+logic.
+
+\emph{Coordination facts} allow the programmer to change how the run time
+schedules nodes and how it partitions the nodes among threads of execution.
+Coordination facts can be used in either the body of the rule, the head of the
+rule or both.  This allows scheduling and partition decisions to be made based
+on the state of the program and on the state of the underlying machine.  In this
+fashion, we keep the language declarative because we reason logically about the
+state of execution, without the need to introduce extra-logical operators into
+the language that would introduce significant issues when proving properties
+about programs.
+
+Coordination facts are further classified into two kinds of facts:
+\emph{sensing} and \emph{action} facts. Sensing facts are used to sense
+information about the underlying runtime system, including node placement and
+node scheduling.  Action facts are used to apply a coordination operations on
+the runtime system.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Sensing facts are facts about the current state of the runtime system, such as
+the placement of nodes in the CPU and scheduling information. In the original
+Meld, sensing facts were used to get information about the outside world, like
+temperature, touch data, neighborhood status, etc.
+
+Action facts are linear facts which are consumed when the corresponding action
+is performed. In the original Meld, they were used to make the robots perform
+actions in the outside world.  For LM we use them to change the order in which
+nodes are evaluated in the runtime system and to make partitioning decisions
+(assign nodes to threads). It is possible to give hints to the virtual machine
+in order to prioritize the computation of some nodes.
+
+With sensing facts and action facts, we can write \emph{meta-rules} that will
+sense the state of the runtime system and then apply decisions in order to
+improve execution speed or change partitioning information. In some situations,
+this set of rules can be added to the program without any modifications to the
+original rules.
+
