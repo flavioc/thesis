@@ -1,7 +1,8 @@
-
 We provide several coordination facts for dealing with node partitioning among
 the running threads. Since each node is placed in some thread, the partitioning
-facts revolve around thread placement.  In terms of action facts, we have the
+facts revolve around thread placement.
+
+In terms of action facts, we have the
 following:
 
 \begin{itemize}
@@ -18,6 +19,22 @@ following:
    same thread indefinitely.
 
 \end{itemize}
+
+As an example of \texttt{set-cpu}, consider the graph in
+Fig.~\ref{fig:coordination:priorities}. If a coordination fact
+\texttt{set-cpu(@2, T1)} is derived, then node \texttt{@2} will become part of
+the sub-graph of thread \texttt{T1}. The result is shown in
+Fig.~\ref{fig:coordination:partitioning}.
+
+\begin{figure}
+\begin{center}
+   \includegraphics[width=0.7\textwidth]{figures/coordination/partitioning.pdf}
+\end{center}
+\caption{Moving node \texttt{@2} to thread \texttt{T1} using
+   \texttt{set-cpu(@2, T1)}.}
+\label{fig:coordination:partitioning}
+\end{figure}
+
 
 Sensing facts retrieve information about node placement and are specified as
 follows:
