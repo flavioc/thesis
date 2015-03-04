@@ -10,7 +10,7 @@ thesis.pdf: thesis.tex	\
 		implementation/parallelism.tex \
 		coordination/partitioning.tex coordination/scheduling.tex \
 		coordination/types.tex coordination/rationale.tex \
-		coordination/coord_sssp.tex \
+		coordination/coord_sssp.tex coordination/programs.tex \
 		language.tex \
 		experiments.tex \
 		logic_foundations.tex \
