@@ -7,7 +7,7 @@ thesis.pdf: thesis.tex	\
 		implementation.tex \
 		implementation/node.tex implementation/coord.tex \
 		implementation/overview.tex implementation/comp.tex \
-		implementation/parallelism.tex \
+		implementation/parallelism.tex implementation/locks.tex \
 		coordination/partitioning.tex coordination/scheduling.tex \
 		coordination/types.tex coordination/rationale.tex \
 		coordination/coord_sssp.tex coordination/programs.tex \

@@ -50,28 +50,8 @@ Those are all stored continuously to improve data locality.
 \label{sec:implementation:rule_engine}
 
 The rule engine decides which rules may need to be executed while taking into
-account rule priorities. Figure~\ref{fig:implementation:rule_engine} shows the
-rule engine data structures in more detail. There are 3 data structures for
-scheduling rule execution:
-
-\begin{itemize}
-
-   \item \texttt{Rule Queue} is the bitmap representing the rules scheduled to
-      run. The $i^{th}$ is set if the $i^{th}$ rule is scheduled to run;
-
-   \item \texttt{Rule Counter}, which keeps a count of the number of predicates
-      needed by the rule that exist in the database. If we have a rule
-      \texttt{a, b -o c} then the rule needs predicates \texttt{a} and
-      \texttt{b} and the rule counter is at the most 2 (where the rule can be
-      executed).
-
-   \item \texttt{Predicate Bitmap} is a bitmap representing the existence of a
-      given predicate in the database;
-
-\end{itemize}
-
-To understand how our engine works, consider the following set of
-facts and rules:
+account rule priorities. To understand how our engine works, consider the
+following set of facts and rules:
 
 \begin{Verbatim}[numbers=left]
 a, e(1) -o b.  // rule 1
@@ -84,47 +64,65 @@ a.
 e(0).
 \end{Verbatim}
 
+Figure~\ref{fig:implementation:rule_engine} shows the rule engine data
+structures for this example. The purpose of each data structure is as follows:
+
+\begin{itemize}
+
+   \item \texttt{Rule Queue} is the bitmap representing the rules scheduled to
+      run. The $i^{th}$ is set if the $i^{th}$ rule is scheduled to run;
+
+   \item \texttt{Rule Counter}, which keeps a count of the number of predicates
+      needed by the rule that exist in the database. For the rule
+      \texttt{a, e(1) -o b} then the rule needs predicates \texttt{a} and
+      \texttt{e} and the rule counter is at the most 2 (where the rule can be
+      executed).
+
+   \item \texttt{Predicate Bitmap} is a bitmap representing the existence of a
+      given predicate in the database;
+
+\end{itemize}
+
 \begin{figure}[t]
-\centering
-\includegraphics[width=0.8\textwidth]{figures/implementation/rule_queue.pdf}
-\caption{Rule engine data structures (a) before and (b) after applying 
-   the rule \texttt{a -o c}.}
-\label{fig:implementation:rule_engine}
+   \centering
+   \includegraphics[width=0.8\textwidth]{figures/implementation/rule_queue.pdf}
+   \caption{Rule engine data structures (a) before and (b) after applying 
+      the rule \texttt{a -o c}.}
+   \label{fig:implementation:rule_engine}
 \end{figure}
 
-Since we have facts for predicates \texttt{a/0} and \texttt{e/1}, the
-\texttt{Rules Counter} starts with rules 1, 2 and 4 with 2, 1, 1 predicate
-counts. Since these rules have the required counter to be applied, the
-\texttt{Rule Queue} bitmap starts with the same three rules.  In order to pick
-rules for execution, we take the rule corresponding to the least significant bit
-from the \texttt{Rule Queue} bitmap, initially the first rule \texttt{a, e(1) -o
-   b}. However, since we don't have fact \texttt{e(1)}, this rule fails and its
-bit in \texttt{Rule Queue} must be set to 0.
-Figure~\ref{fig:implementation:rule_engine}(a) shows the rule engine data
-structures at that point.
+Since we have facts for predicates \texttt{a} and \texttt{e}, the \texttt{Rules
+Counter} starts with rules 1, 2 and 4 with 2, 1, 1 predicate counts. Since these
+rules have the required counter to be applied, the \texttt{Rule Queue} bitmap
+starts with the same three rules.  In order to pick rules for execution, we take
+the rule corresponding to the least significant bit from the \texttt{Rule Queue}
+bitmap, initially the first rule \texttt{a, e(1) -o b}. However, since we don't
+have fact \texttt{e(1)}, this rule fails and its bit in \texttt{Rule Queue} must
+be set to 0.  Figure~\ref{fig:implementation:rule_engine}(a) shows the rule
+engine data structures at that point.
 
 The next rule in \texttt{Rule Queue} is the second rule \texttt{a -o c}.
 Because the this rule will succeed, we must consume fact \texttt{a} and derive
-fact \texttt{c}. We thus update \texttt{Predicates Existence} accordingly,
-decrease the counters for the first and second rule in \texttt{Rule Counter}
-since such rules are no longer applicable (\texttt{a} was consumed), and
-increase the counter for the fifth rule since \texttt{c} was derived. Finally,
-to update the \texttt{Rule Queue}, we must schedule the fifth rule since its
-counter has been increased to the required number (we have all predicates).  In
-the continuation, the rule engine will schedule the fourth and fifth rules to
-run. Figure~\ref{fig:implementation:rule_engine}(b) shows the rule engine data
+fact \texttt{c}. We thus update \texttt{Predicates Bitmap} accordingly, decrease
+the counters for the first and second rule in \texttt{Rule Counter} since such
+rules are no longer applicable (\texttt{a} was consumed), and increase the
+counter for the fifth rule since \texttt{c} was derived. Finally, to update the
+\texttt{Rule Queue}, we must schedule the fifth rule since its counter has been
+increased to the required number (we have all predicates).  In the continuation,
+the rule engine will schedule the fourth and fifth rules to run.
+Figure~\ref{fig:implementation:rule_engine}(b) shows the rule engine data
 structures at that point.
 
 Note that every node in the program has the same set of data structures
 presented in Fig.~\ref{fig:implementation:rule_engine}. We use 64 bit integers
 to implement the 2 bitmaps and an array of 16 bits integers for \texttt{Rule
-   Counter}.
+Counter}.
 
 We do a small optimization to reduce the number of derivations of persistent
 facts and, for that, we divide the program rules into two sets: \emph{persistent
-   rules} and \emph{non persistent rules}.  Persistent rules are rules where
-only persistent facts are involved. We compile such rules incrementally, i.e.,
-we attempt to fire all rules where a persistent fact is used. This is called the
+rules} and \emph{non persistent rules}. Persistent rules are rules where only
+persistent facts are involved. We compile such rules incrementally, i.e., we
+attempt to fire all rules where a persistent fact is used. This is called the
 \emph{pipelined semi-naive} evaluation and it originated in the P2
 system~\cite{Loo-condie-garofalakis-p2}. This evaluation method avoids excessing
 re-derivations of the same fact. The order of derivation does not matter for
