@@ -14,7 +14,7 @@ is any, procedure \texttt{process\_node()} executes it. If the work queue is
 empty, the thread attempts to steal half of the nodes from another thread.
 Starting from a random thread, it cycles through all the threads to find one
 active thread. Eventually, there will be no more work to do and the threads will
-go idle. There is a global atomic counter, a global boolean flag and one boolean
+go idle. There is a global atomic counter, a global boolean flag and one state
 flag for each thread that are used to detect termination. Once a thread goes
 idle, it decrements the global counter and changes its flag to idle. If the
 counter reaches zero, the global flag is set to idle. Since every thread will be

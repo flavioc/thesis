@@ -51,35 +51,7 @@ thread level. Thus, when a thread picks the highest priority node from the
 priority queue, it is only the highest priority with respect to the set of nodes
 owned by the thread and not the highest priority node in the whole program.  
 
-\subsection{Communication}
-
-At this point, we can summarize the main thread synchronization hotspots in the
-virtual machine. Threads synchronize with each other using mutual exclusion. We
-use a spin-lock in each queue to protect queue operations.  Given threads $T_1$
-and $T_2$, we enumerate the most important synchronization hotspots:
-
-\begin{itemize}
-
-   \item \textbf{New facts}: When a node executes in $T_1$ and derives facts to
-      a node in $T_2$, $T_1$ first buffers the facts and then sends them to the
-      target node. Here, it checks if the node is currently \textbf{idle} and
-      then synchronizes with $T_2$ to add the node to the $T_2$'s queue.
-
-   \item \textbf{Thread activation}: If $T_2$ is inactive when adding facts to a
-      node in $T_2$, $T_1$ also synchronizes with $T_2$ to change $T_2$'s state
-      to \emph{active}.
-
-   \item \textbf{Node stealing}: $T_1$ synchronizes with $T_2$ when it attempts
-      to steal nodes from $T_2$ by removing half of the nodes from one of
-      $T_2$'s queues.
-
-   \item \textbf{Coordination}: If $T_1$ needs to perform coordination
-      operations to a node in $T_2$, it may need to synchronize with $T_2$
-      during priority updates in order to move the node in $T_2$'s queues.
-
-\end{itemize}
-
-\subsection{Node State Machine}
+\subsection{Node State Machine}\label{sec:node_state_machine}
 
 In order to facilitate the implementation of coordination, we added a state
 variable for each node. The state machine in
@@ -117,3 +89,33 @@ another thread, the current thread first attempts to lock the database lock of
 the target node in order to directly update its database and indexing
 structures, otherwise it adds the facts to the list of incoming facts that are
 later processed by the owner thread of the target node.
+
+
+\subsection{Communication}
+
+At this point, we can summarize the main thread synchronization hotspots in the
+virtual machine. Threads synchronize with each other using mutual exclusion. We
+use a spin-lock in each queue to protect queue operations.  Given threads $T_1$
+and $T_2$, we enumerate the most important synchronization hotspots:
+
+\begin{itemize}
+
+   \item \textbf{New facts}: When a node executes in $T_1$ and derives facts to
+   a node in $T_2$, $T_1$ first buffers the facts and then sends them to the
+   target node. Here, it checks if the node is currently \textbf{idle} and then
+   synchronizes with $T_2$ to add the node to the $T_2$'s queue.  If $T_2$ is
+   inactive  then $T_1$ also synchronizes with $T_2$ to change $T_2$'s state to
+   \emph{active}.
+
+   \item \textbf{Node stealing}: $T_1$ synchronizes with $T_2$ when it attempts
+   to steal nodes from $T_2$ by removing half of the nodes from one of $T_2$'s
+   queues.
+
+   \item \textbf{Coordination}: If $T_1$ needs to perform coordination
+   operations to a node in $T_2$, it may need to synchronize with $T_2$ during
+   priority updates in order to move the node in $T_2$'s queues.
+
+\end{itemize}
+
+\input{implementation/locks}
+
