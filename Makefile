@@ -4,6 +4,7 @@ all: thesis.pdf
 thesis.pdf: thesis.tex	\
 		introduction.tex \
 		coordination.tex \
+		language/applications.tex \
 		implementation.tex \
 		implementation/node.tex implementation/coord.tex \
 		implementation/overview.tex implementation/comp.tex \
