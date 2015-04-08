@@ -2,6 +2,7 @@
 all: thesis.pdf
 
 thesis.pdf: thesis.tex	\
+		thesis-cover.tex \
 		introduction.tex \
 		coordination.tex \
 		language/applications.tex \
