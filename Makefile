@@ -16,7 +16,6 @@ thesis.pdf: thesis.tex	\
 		logic_foundations.tex \
 		refs.bib \
 		thread.tex \
-		applications.tex \
 		conclusions.tex \
 		appendix.tex \
 		statement.tex \

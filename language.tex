@@ -25,8 +25,7 @@ three basic LM programs.
 \subsection{First example: key/value dictionary}
 
 \begin{figure}[ht]
-{\scriptsize
-\begin{Verbatim}[numbers=right]
+\begin{Verbatim}[numbers=right,fontsize=\scriptsize]
 type left(node, node).
 type right(node, node).
 type linear value(node, int Key, string Value).
@@ -63,7 +62,6 @@ value(@6, 6, "g").
 // update key 6 to value "x"
 replace(@0, 6, "x").
 \end{Verbatim}
-}
 \caption{LM program for replacing a key's value in a binary tree dictionary.}
 \label{code:btree_replace}
 \end{figure}
@@ -603,6 +601,9 @@ create a priority queue of \emph{candidate rules}.  The queue of candidate rules
 is then applied (by priority) and updated as new facts are derived or consumed.
 Section~\ref{sec:implementation:rule_engine} gives details in how our
 implementation manages the set of candidate rules.
+
+\section{Applications}
+\input{language/applications}
 
 \section{Summary}
 

@@ -50,5 +50,8 @@ follows:
    \item \code{is-static(node A, node B)}: Fact available at node \texttt{A} if
       \texttt{B} is not allowed to move between threads.
 
+   \item \code{just-moved(node A)}: Linear fact derived after the \code{set-cpu}
+      action is performed and the node is running on the target thread.
+
 \end{itemize}
 
