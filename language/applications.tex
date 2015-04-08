@@ -1,0 +1,263 @@
+In this section, we present solutions to well-known problems. We start with
+straightforward graph-based problems such as bipartitness checking and two
+versions of the PageRank program. Next, we present the LM version of the
+QuickSort algorithm, which from a first impression may not fit well under the
+programming paradigm offered by LM. Informal correctness and termination proofs
+are also included to further show that such important properties are relatively
+easy to prove for programs written in LM.
+
+\subsection{Bipartiteness Checking}
+
+The problem of checking if a graph is bipartite can be seen as a 2-color graph
+coloring problem.  The code for this algorithm is shown in
+Fig.~\ref{language:code:bichecking}. All nodes in the graph start as
+\texttt{uncolored},
+because they do not have a color yet. The axiom \texttt{visit(@1, 1)} is
+instantiated at node \texttt{@1} (line 9) in order to color it with color 1.
+
+If a node is \texttt{uncolored} and needs to be marked with a color \texttt{P}
+then the rule in lines 11-12 is applied. We consume the \texttt{uncolored} fact
+and derive a \texttt{colored(A, P)} to effectively color the node with
+\texttt{P}. We also derive \texttt{visit(B, next(P))} in neighbor nodes to color
+them with the other color. Line 
+
+The coloring can fail if a node is already colored with a color \texttt{P} and
+needs to be colored with a different color (line 15) or if it has already failed
+(line 16).
+
+\begin{figure}[h!]
+\begin{Verbatim}[numbers=left,fontsize=\scriptsize]
+type route edge(node, node).
+type linear visit(node, int).
+type linear uncolored(node).
+type linear colored(node, int).
+type linear fail(node).
+
+fun next(int X) : int = if X <> 1 then 1 else 2 end.
+
+visit(@1, 1).
+
+visit(A, P), uncolored(A)
+   -o {B | !edge(A, B) | visit(B, next(P))}, colored(A, P).
+
+visit(A, P), colored(A, P) -o colored(A, P).
+visit(A, P1), colored(A, P2), P1 <> P2 -o fail(A).
+visit(A, P), fail(A) -o fail(A).
+\end{Verbatim}
+  \caption{Bipartiteness Checking program.}
+  \label{language:code:bichecking}
+\end{figure}
+
+\subsubsection{Proof Of Correctness}
+
+In order to show that the code in Fig.~\ref{language:code:bichecking} works as
+intended, we first setup some invariants that hold throughout the execution of
+the program. Assume that the set of nodes in the graph is represented as $N$.
+
+\begin{invariant}[Node state]
+Set of nodes $N$ is partitioned into 4 different states that represent the 4
+possible states that a node can be in, namely:
+
+\begin{itemize}
+   \item $U$ (\texttt{uncolored} nodes)
+   \item $F$ (\texttt{fail} nodes)
+   \item $C_{true}$ (\texttt{colored(A, 1)} nodes)
+   \item $C_{false}$ (\texttt{colored(A, 2)} nodes)
+\end{itemize}
+\end{invariant}
+\begin{proof}
+Initially, all nodes start in set $U$. All the 4 rules of the programs either
+keep the node in the same set or exchange the node with another set.
+\end{proof}
+
+A bipartite graph is one where in every edge $a \leftrightarrow b$, there is a
+valid assignment that makes $a$ member of set $C_{true}$ or $C_{false}$ and node
+$b$ member of either $C_{false}$ or $C_{true}$ respectively.
+
+\begin{lemma}[Bipartiteness
+   Convergence]\label{language:lemma:bipartite_convergence}
+   We now reason from the application of the program rules. After each
+   application of an inference rule, one of the following will happen:
+
+   \begin{itemize}
+      \item Set $U$ will decrease and set $C_{true}$ or $C_{false}$ will
+         increase, with a potential increase in the number of \texttt{visit}
+         facts.
+      \item Set $C_{true}$ or $C_{false}$ will stay the same, while the number
+         of \texttt{visit} facts will be reduced.
+
+      \item Set $C_{true}$ or $C_{false}$ will decrease and set $F$ will
+         increase, while the number of \texttt{visit} facts will be reduced.
+
+      \item Set $F$ will stay the same, while the number of \texttt{visit} facts
+         decreases.
+   \end{itemize}
+
+\end{lemma}
+\begin{proof}
+Directly from the rules.
+\end{proof}
+
+From this invariant, it can be inferred that set $U$ never increases in size
+and a node transition from \texttt{uncolored} to \texttt{colored}, the
+database may increase in size. For every other rule application, the database of
+facts always decreases. This also means that the program will eventually
+terminate, since it is limited by the number of \texttt{visit} facts that can be
+generated.
+
+\begin{theorem}[Bipartiteness Correctness]
+If the graph is connected and bipartite then the nodes will be partitioned into
+sets $C_{true}$ and $C_{false}$, while sets $F$ and $U$ are empty.
+\end{theorem}
+\begin{proof}
+   By induction, we prove that uncolored nodes become part of either $C_{true}$
+   and $C_{false}$ and, if there is an edge between nodes in the two sets then
+   they have different colors.
+
+   In the base case, we start with empty sets but node \texttt{@1} is made
+   member of $C_{true}$. Rule 1 sends \texttt{visit} facts to the neighbors of
+   \texttt{@1}, forcing them to be members of $C_{false}$.
+
+   In the inductive case, we have sets $C'_{true}$ and $C'_{false}$ with some
+   nodes already colored. From Lemma~\ref{language:lemma:bipartite_convergence},
+   we know that $U$ always decreases. Since the graph is bipartite, events 3 and
+   4 never happen since there is a possible partitioning of nodes. With event 1,
+   we have set $C_{true} = C'_{true}, n$, (or $C_{false}$) where $n$ is the
+   node and with event 2, the sets remain the same. Since the graph is
+   connected, every node will be colored, therefore event 1 will happen for
+   every node of the graph.
+\end{proof}
+
+\subsection{PageRank}
+
+PageRank~\cite{Page:2001:MNR} is a well known graph algorithm that is used to compute the relative relevance of web pages.
+The code for a synchronous version of the algorithm is shown in Fig.~\ref{code:pagerank}.
+As the name indicates, the pagerank is computed for a certain number of iterations. The initial pagerank is the same for every page and is
+initialized in the first rule (lines 15-16) along with an accumulator.
+
+The second rule of the program (lines 18-22) propagates a newly computed pagerank value to all neighbors. Each node will then accumulate
+the pagerank values that are sent to them through the fourth rule (lines 30-32) and it will immediately add other currently available values
+through the use of the aggregate. When we have accumulated all the values we need, the third rule (lines 24-28) is fired and a new pagerank value is derived.
+
+We also have an asynchronous version of the algorithm that trades correctness with convergence speed since it does not synchronize between iterations.
+
+\begin{figure}[h!]
+   \footnotesize\begin{Verbatim}[numbers=left]
+type output(node, node, float).
+type linear pagerank(node, float, int).
+type numLinks(node, int).
+type numInput(node, int).
+type linear accumulator(node, float, int, int).
+type linear newrank(node, node, float, int).
+type linear start(node).
+
+const damping = 0.85.
+const iterations = str2int(@arg1).
+const pages = @world.
+
+start(A).
+
+start(A), !numInput(A, T)
+   -o accumulator(A, 0.0, T, 1), pagerank(A, 1.0 / float(pages), 0).
+
+pagerank(A, V, Id), // propagate new pagerank value
+!numLinks(A, C),
+Id < iterations,
+Result = V / float(C)
+   -o {B, W | !output(A, B, W) | newrank(B, A, Result, Id + 1)}.
+
+accumulator(A, Acc, 0, Id), // new pagerank
+!numInput(A, T),
+V = damping + (1.0 - damping) * Acc,
+Id <= iterations
+   -o pagerank(A, V, Id), accumulator(A, 0.0, T, Id + 1).
+	
+newrank(A, B, V, Id), accumulator(A, Acc, T, Id), T > 0
+   -o [sum => S, count => C | D | newrank(A, D, S, Id) |
+            1 | accumulator(A, Acc + V + S, T - 1 - C, Id)].
+\end{Verbatim}
+\caption{Synchronous PageRank program.}
+\label{code:pagerank}
+\normalsize
+\end{figure}
+
+\subsubsection{Asynchronous PageRank}
+
+\subsection{Quick-Sort}
+
+The quick-sort algorithm is a divide and conquer sorting algorithm that works by splitting
+a list of items into two sublists and then recursively sorting the two sublists.
+To split the list, we pick a pivot element and put the items that are smaller than the pivot
+into the first sublist and items greater than the pivot into the second list.
+
+The quick-sort algorithm is interesting because it does not map immediately to the graph-based
+model of LM. Our approach considers that the program starts with a single node where
+the initial list is located. Then we split the list as usual and create two nodes
+that will recursively sort the sublists. Interestingly, this will create a tree
+that will look similar to a call tree in a functional language.
+
+Fig.~\ref{code:quicksort} presents the code for the quick-sort algorithm in LM.
+For each sublist to sort, we start with a \texttt{down} fact that must be (eventually)
+transformed into an \texttt{up} fact, where the sublist in the \texttt{up} fact is sorted.
+In line 11 we start with the initial list at node \texttt{@0}. Lines 13-16 will immediately
+sort the list when the number of items is very small. Otherwise, we apply the rule in line 17.
+\texttt{buildpivot} will first split the list using the pivot \texttt{X} using rules in
+lines 23-26. When there is nothing more to split, we apply the rule in lines 19-21
+that uses an exist construct to create nodes \texttt{B} and \texttt{C}. The sublists
+are then sent to these nodes using \texttt{down} facts. Note, however, that we also
+derive \texttt{back} facts, that will be used to send the sorted list back using the rule
+in line 40.
+
+When the sublists are finally sorted, we get two \texttt{sorted} facts that will match
+against \texttt{waitpivot} in the rule located in lines 28-31. The sorted sublists
+are appended and then an \texttt{up} fact is finally derived (line 37).
+
+\begin{figure}[h!]
+\small\begin{Verbatim}[numbers=left]
+type route back(node, node).
+type linear down(node, list int).
+type linear up(node, list int).
+type linear sorted(node, node, list int).
+type linear buildpivot(node, list int, int, list int, list int).
+type linear waitpivot(node, node, node, int).
+type linear append(node, list int, list int).
+type linear reverse(node, list int, list int, list int).
+type linear reverse2(node, list int, list int).
+
+down(@0, tosort).
+
+down(A, []) -o up(A, []).
+down(A, [X]) -o up(A, [X]).
+down(A, [X, Y]), X < Y -o up(A, [X, Y]).
+down(A, [X, Y]), X >= Y -o up(A, [Y, X]).
+down(A, [X | L]) -o buildpivot(A, L, X, [], []).
+
+buildpivot(A, [], X, Smaller, Greater)
+   -o exists B, C. (back(B, A), down(B, Smaller),
+            back(C, A), down(C, Greater), waitpivot(A, B, C, X)).
+
+buildpivot(A, [Y | L], X, Smaller, Greater), Y <= X
+   -o buildpivot(A, L, X, [Y | Smaller], Greater).
+buildpivot(A, [Y | L], X, Smaller, Greater), Y > X
+   -o buildpivot(A, L, X, Smaller, [Y | Greater]).
+   
+waitpivot(A, NodeSmaller, NodeGreater, Pivot),
+sorted(A, NodeSmaller, Smaller),
+sorted(A, NodeGreater, Greater)
+   -o append(A, Smaller, [Pivot | Greater]).
+
+append(A, L1, L2) -o reverse(A, L1, L2, []).
+
+reverse(A, [], L2, L3) -o reverse2(A, L3, L2).
+reverse(A, [X | L], L2, L3) -o reverse(A, L, L2, [X | L3]).
+reverse2(A, [], Result) -o up(A, Result).
+reverse2(A, [X | L1], L2) -o reverse2(A, L1, [X | L2]).
+
+up(A, L), back(A, B) -o sorted(B, A, L).
+\end{Verbatim}
+  \caption{Quick-Sort program.}
+  \label{code:quicksort}
+\end{figure}
+\normalsize
+
+
