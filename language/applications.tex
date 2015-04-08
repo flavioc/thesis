@@ -1,7 +1,7 @@
 In this section, we present solutions to well-known problems. We start with
 straightforward graph-based problems such as bipartitness checking and two
 versions of the PageRank program. Next, we present the LM version of the
-QuickSort algorithm, which from a first impression may not fit well under the
+Quick-Sort algorithm, which from a first impression may not fit well under the
 programming paradigm offered by LM. Informal correctness and termination proofs
 are also included to further show that such important properties are relatively
 easy to prove for programs written in LM.
@@ -434,44 +434,45 @@ program will terminate.
 
 \subsection{Quick-Sort}
 
-The quick-sort algorithm is a divide and conquer sorting algorithm that works by splitting
+The Quick-Sort algorithm is a divide and conquer sorting algorithm that works by splitting
 a list of items into two sublists and then recursively sorting the two sublists.
 To split the list, we pick a pivot element and put the items that are smaller than the pivot
 into the first sublist and items greater than the pivot into the second list.
 
-The quick-sort algorithm is interesting because it does not map immediately to the graph-based
-model of LM. Our approach considers that the program starts with a single node where
-the initial list is located. Then we split the list as usual and create two nodes
-that will recursively sort the sublists. Interestingly, this will create a tree
-that will look similar to a call tree in a functional language.
+The Quick-Sort algorithm is interesting because it does not map immediately to
+the graph-based model of LM. Our approach considers that the program starts with
+a single node where the initial list is located. Then the list is split as usual
+and two nodes are created that will recursively sort the sublists.
+Interestingly, this creates a tree that will look similar to a call tree in a
+functional programming language.
 
-Fig.~\ref{code:quicksort} presents the code for the quick-sort algorithm in LM.
-For each sublist to sort, we start with a \texttt{down} fact that must be (eventually)
-transformed into an \texttt{up} fact, where the sublist in the \texttt{up} fact is sorted.
-In line 11 we start with the initial list at node \texttt{@0}. Lines 13-16 will immediately
-sort the list when the number of items is very small. Otherwise, we apply the rule in line 17.
-\texttt{buildpivot} will first split the list using the pivot \texttt{X} using rules in
-lines 23-26. When there is nothing more to split, we apply the rule in lines 19-21
-that uses an exist construct to create nodes \texttt{B} and \texttt{C}. The sublists
-are then sent to these nodes using \texttt{down} facts. Note, however, that we also
-derive \texttt{back} facts, that will be used to send the sorted list back using the rule
-in line 40.
+Fig.~\ref{language:code:quicksort} presents the code for the quick-sort
+algorithm in LM. For each sublist to sort, we start with a \texttt{down} fact
+that must be (eventually) transformed into an \texttt{up} fact, where the
+sublist in the \texttt{up} fact is sorted.  In line 11 we start with the initial
+list at node \texttt{@0}. If the list has a small number of items, then lines
+13-16 will immediately sort it, otherwise the rule in line 17 is applied.
+\texttt{split} first splits the list using the pivot \texttt{Pivot} using rules
+in lines 23-26.  When there is nothing more to split, the rule in lines 19-21
+uses an exists construct to create nodes \texttt{B} and \texttt{C}. The sublists
+are then sent to nodes \texttt{B} and \texttt{C} using \texttt{down} facts.
+Note, however, that \texttt{back} facts are also derived and are going to be
+used to send the sorted list back to the parent using the rule in line 39.
 
-When the sublists are finally sorted, we get two \texttt{sorted} facts that will match
-against \texttt{waitpivot} in the rule located in lines 28-31. The sorted sublists
-are appended and then an \texttt{up} fact is finally derived (line 37).
+When the sublists are finally sorted, two \texttt{sorted} facts are derived that
+must be matched against \texttt{waitpivot} in the rule in lines 28-31. The sorted
+sublists are appended and then an \texttt{up} fact is finally derived (line 37).
 
 \begin{figure}[h!]
-\small\begin{Verbatim}[numbers=left]
+\begin{Verbatim}[numbers=left,fontsize=\scriptsize]
 type route back(node, node).
 type linear down(node, list int).
 type linear up(node, list int).
 type linear sorted(node, node, list int).
-type linear buildpivot(node, list int, int, list int, list int).
-type linear waitpivot(node, node, node, int).
-type linear append(node, list int, list int).
+type linear split(node, int list int, list int, list int).
+type linear waitpivot(node, int, node, node).
 type linear reverse(node, list int, list int, list int).
-type linear reverse2(node, list int, list int).
+type linear append(node, list int, list int).
 
 down(@0, tosort).
 
@@ -479,34 +480,133 @@ down(A, []) -o up(A, []).
 down(A, [X]) -o up(A, [X]).
 down(A, [X, Y]), X < Y -o up(A, [X, Y]).
 down(A, [X, Y]), X >= Y -o up(A, [Y, X]).
-down(A, [X | L]) -o buildpivot(A, L, X, [], []).
+down(A, [Pivot | Xs]) -o split(A, Pivot, Xs, [], []).
 
-buildpivot(A, [], X, Smaller, Greater)
-   -o exists B, C. (back(B, A), down(B, Smaller),
-            back(C, A), down(C, Greater), waitpivot(A, B, C, X)).
+split(A, Pivot, [], Smaller, Greater) -o
+   exists B, C. (back(B, A), back(C, A),
+                 down(B, Smaller), down(C, Greater), waitpivot(A, Pivot, B, C)).
 
-buildpivot(A, [Y | L], X, Smaller, Greater), Y <= X
-   -o buildpivot(A, L, X, [Y | Smaller], Greater).
-buildpivot(A, [Y | L], X, Smaller, Greater), Y > X
-   -o buildpivot(A, L, X, Smaller, [Y | Greater]).
+split(A, Pivot, [X | Xs], Smaller, Greater), X <= Pivot
+   -o split(A, Pivot, Xs, [Y | Smaller], Greater).
+split(A, Pivot, [X | Xs], Smaller, Greater), X > Pivot
+   -o split(A, Pivot, Xs, Smaller, [Y | Greater]).
    
-waitpivot(A, NodeSmaller, NodeGreater, Pivot),
+waitpivot(A, Pivot, NodeSmaller, NodeGreater),
 sorted(A, NodeSmaller, Smaller),
 sorted(A, NodeGreater, Greater)
-   -o append(A, Smaller, [Pivot | Greater]).
+   -o reverse(A, Smaller, [], [Pivot | Greater]).
 
-append(A, L1, L2) -o reverse(A, L1, L2, []).
+reverse(A, [X | Xs], S, G) -o reverse(A, Xs, [X | S], G).
+reverse(A, [], S, G) -o append(A, S, G).
 
-reverse(A, [], L2, L3) -o reverse2(A, L3, L2).
-reverse(A, [X | L], L2, L3) -o reverse(A, L, L2, [X | L3]).
-reverse2(A, [], Result) -o up(A, Result).
-reverse2(A, [X | L1], L2) -o reverse2(A, L1, [X | L2]).
+append(A, [X | Xs], L) -o append(A, Xs, [X | L]).
+append(A, [], Result) -o up(A, Result).
 
 up(A, L), back(A, B) -o sorted(B, A, L).
 \end{Verbatim}
-  \caption{Quick-Sort program.}
-  \label{code:quicksort}
+  \caption{Quick-Sort program written in LM.}
+  \label{language:code:quicksort}
 \end{figure}
-\normalsize
 
+The Quick-Sort program shows that it is possible for applications to manipulate
+and change the structure of the graph during run time. This is possible with the
+use of the exists operator, which allows the programmer to create new nodes
+where facts can be derived. In the case of the Quick-Sort, it allows the program
+to create a tree of nodes where sorting can take place concurrently.
+
+\subsubsection{Proof Of Correctness}
+
+The proof of correctness for Quick-Sort will follow a different style than what
+we have done up to this point. Instead of proving invariants, we prove what
+happens to the database given the presence of some logical facts.
+
+\begin{lemma}[Split lemma]
+
+If fact \texttt{split(A, Pivot, L, Small, Great)} exists then it will be
+consumed and \texttt{split(A, Pivot, [], Small' ++ Small, Great' ++ Great)} will
+be derived, where elements of \texttt{Small'} are \texttt{<=} \texttt{Pivot} and
+elements of \texttt{Great'} are \texttt{> Pivot}.
+
+\end{lemma}
+\begin{proof}
+By induction on the size of \texttt{L}.
+\end{proof}
+
+\begin{lemma}[Reverse lemma]
+
+If fact \texttt{reverse(A, L, R, G)} exists then it will be consumed and
+\texttt{reverse(A, [], R' ++ R, G)} will be derived, where \texttt{R'} is the
+reverse of \texttt{L}.
+
+\end{lemma}
+\begin{proof}
+By induction on the size of $L$.
+\end{proof}
+
+\begin{lemma}[Append lemma]
+If fact \texttt{append(A, L, R)} exists then it will be consumed and
+\texttt{append(A, [], R' ++ R)} will be derived, where \texttt{R'} is the reverse of \texttt{L}.
+\end{lemma}
+\begin{proof}
+By induction on the size of $L$.
+\end{proof}
+
+\begin{theorem}[Sort theorem]
+If fact \texttt{down(A, L)} exists then it will be consumed and a \texttt{up(A,
+L')} fact will be derived, where \texttt{L'} is the sorted list.
+\end{theorem}
+\begin{proof}
+By induction on the size of \texttt{L}.
+
+The base cases are proven trivially.
+
+In the inductive case we have:
+\begin{Verbatim}[fontsize=\scriptsize]
+down(A, [Pivot | Xs]) -o split(A, Pivot, Xs, [], []).
+\end{Verbatim}
+
+We necessarily derive \texttt{split(A, Pivot, Xs, [], [])}. Using the split
+lemma we get \texttt{split(A, Pivot, Smaller, Greater)}. With this linear fact
+we can only use the rule:
+
+\begin{Verbatim}[fontsize=\scriptsize]
+split(A, Pivot, [], Smaller, Greater) -o
+   exists B, C. (back(B, A), back(C, A),
+                 down(B, Smaller), down(C, Greater), waitpivot(A, Pivot, B, C)).
+\end{Verbatim}
+
+We derive \texttt{back(B, A)}, \texttt{back(C, A)}, \texttt{down(B, Smaller)},
+\texttt{down(C, Greater)} and \texttt{waitpivot(A, Pivot, B, C)}. We know that
+\texttt{Smaller} and \texttt{Greater} are both smaller (in size) than
+\texttt{L}, so, if we use the induction hypothesis, we get \texttt{up(B,
+Smaller')} and \texttt{up(C, Greater')}.  These last two facts will be applied
+using the following rule:
+
+\begin{Verbatim}[fontsize=\scriptsize]
+up(A, L), back(A, B) -o sorted(B, A, L).
+\end{Verbatim}
+
+Generating \texttt{sorted(A, B, Smaller')} and \texttt{sorted(A, C, Greater')}.
+Furthermore, we can use the only rule that accepts \texttt{sorted} and
+\texttt{waitpivot} facts:
+
+\begin{Verbatim}[fontsize=\scriptsize]
+waitpivot(A, Pivot, NodeSmaller, NodeGreater),
+sorted(A, NodeSmaller, Smaller),
+sorted(A, NodeGreater, Greater)
+   -o reverse(A, Smaller, [], [Pivot | Greater]).
+\end{Verbatim}
+
+Returning \texttt{reverse(A, Smaller', [], [Pivot | Greater'])}. By applying the
+reverse lemma, we get \texttt{reverse(A, [], Smaller'', [Pivot | Greater'])},
+where \texttt{Smaller''} is the reverse of \texttt{Smaller'}.
+
+Now, if we apply the only available rule for \texttt{reverse}, we get
+\texttt{append(A, Smaller'', [Pivot | Greater'])}. Applying the append lemma, we
+get \texttt{append(A, [], Smaller' ++ [Pivot | Greater'])} and then
+\texttt{up(A, Smaller' ++ [Pivot | Greater']).}. We know that \texttt{Smaller'
+++ [Pivot | Greater']} is sorted since \texttt{Small'} contains the sorted list
+of elements \texttt{<= Pivot} and \texttt{Great'} the elements \texttt{> Pivot}.
+
+\end{proof}
 

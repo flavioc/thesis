@@ -138,26 +138,29 @@ Ricardo Rocha\\\
 %
 % Other than that, just make it look good...
 
-%\chapter{Introduction}
-%\input{introduction}
+%\iffalse
+\chapter{Introduction}
+\input{introduction}
 
-%\chapter{Related Work}
-%\input{related_work}
+\chapter{Related Work}
+\input{related_work}
+%\fi
 
 \chapter{Linear Meld}
 \input{language}
 
-%\chapter{Logical Foundations}
-%\input{logic_foundations}
+%\iffalse
+\chapter{Logical Foundations}
+\input{logic_foundations}
 
-%\chapter{Coordination}\label{chapter:coordination}
-%\input{coordination}
+\chapter{Coordination}\label{chapter:coordination}
+\input{coordination}
 
-%\chapter{Thread Linear Meld}
-%\input{thread}
+\chapter{Thread Linear Meld}
+\input{thread}
 
-%\chapter{Multicore Implementation}
-%\input{implementation}
+\chapter{Multicore Implementation}
+\input{implementation}
 
 
 \chapter{Experimental Results}\label{chapter:exp}
@@ -169,6 +172,7 @@ Ricardo Rocha\\\
 \appendix
 \include{appendix}
 
+%\fi
 \backmatter
 
 %\renewcommand{\baselinestretch}{1.0}\normalsize
