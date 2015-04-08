@@ -10,7 +10,7 @@ lacks the non-determinism inherent in HLD.
 First and foremost, we need to prove some auxiliary theorems and definitions
 that will be used during the soundness theorem.
 
-\subsection{Term equivalence}
+\subsection{Term Equivalence}
 
 The first definition defines the equality between two multi-sets of terms.  Two
 multi-sets $A$ and $B$ are equal, $\feq{A}{B}$, when they have the same
@@ -79,7 +79,7 @@ $\feq{split(\Omega)}{\Omega}$.
 Induction on the structure of $\Omega$.
 \end{proof}
 
-\subsection{Well-formed continuation frames}
+\subsection{Well-Formed Continuation Frames}
 
 We now define the concept of a well-formed frame given initial linear and
 persistent contexts and a term $A$ that needs to be matched.
@@ -231,7 +231,7 @@ For the theorems that follow, we always assume that the propositions are
 well-formed in relation to their main contexts and matching body, be it either a
 rule body or an aggregate body.
 
-\subsection{Soundness of matching}
+\subsection{Soundness Of Matching}
 
 The soundness theorem will be proven into two main steps. First, we prove that
 performing a rule match at LLD is sound in relation to HLD and then we prove
@@ -415,7 +415,7 @@ of remaining steps than state $s_2$.  The specific ordering is as follows:
 
 \end{enumerate}
 
-\subsection{Soundness of derivation}
+\subsection{Soundness Of Derivation}
 
 Proving that the derivation of the head of the rule is sound is trivial except
 for comprehensions and aggregates. LLD deterministically computes the number of
@@ -424,11 +424,11 @@ derivations.  In the next two sections, we show how to prove the soundness of
 aggregates. The strategy for proving for proving both is identical due to their
 inherient similarities.
 
-\subsection{Aggregate soundness}
+\subsection{Aggregate Soundness}
 
 \input{lld/aggregates_soundness}
 
-\subsection{Soundness of derivation}
+\subsection{Soundness Of Derivation}
 
 We are finally ready to prove that the derivation of terms of the head of a rule
 is sound in relation to HLD.

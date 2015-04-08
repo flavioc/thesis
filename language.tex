@@ -17,12 +17,12 @@ independent rule derivations at the node level, thus introducing concurrency in
 the program. Communication between nodes arises when a derivation rule derives a
 fact that is in another node.
 
-\section{A taste of LM}
+\section{A Taste Of LM}
 
 In order to understand how LM programs are written, we now present and discuss
 three basic LM programs.
 
-\subsection{First example: key/value dictionary}
+\subsection{First Example: Key/value Dictionary}
 
 \begin{figure}[ht]
 \begin{Verbatim}[numbers=right,fontsize=\scriptsize]
@@ -140,7 +140,7 @@ The present example offers many opportunies for concurrency. If we have multiple
 \texttt{replace/3} facts on different nodes, we can perform multiple value
 updates at the same time without introducing any kind of database inconsistency.
 
-\subsection{Second example: message routing}
+\subsection{Second Example: Message Routing}
 
 Fig.~\ref{code:message} shows a second LM program, a message routing program
 that simulates message transmission through a network of nodes.  Predicate
@@ -221,7 +221,7 @@ again, the message is then routed to node \texttt{@4}
         world" travels from node \texttt{@1} to node \texttt{@4}.}\label{fig:message_trace}
 \end{figure}
 
-\subsection{Third example: graph visit}
+\subsection{Third Example: Graph Visit}
 
 \begin{figure}[h!]
 \scriptsize\begin{Verbatim}[numbers=left]
@@ -480,7 +480,7 @@ Finally, axioms are represented using an empty body:
 \one \lolli & \bang \mathtt{visit}(@1)
 \end{align}
 
-\subsection{Predicates and Facts}
+\subsection{Predicates And Facts}
 
 Each fact is an association between a \emph{predicate} and a tuple of values. A
 predicate is a pair with a name and a tuple of types (the argument types). LM

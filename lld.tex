@@ -70,7 +70,7 @@ with a very high change of success, LLD is more na\"{i}ve in this aspect because
 it tries all rules in order.
 
 
-\subsection{Structure of continuation frames}
+\subsection{Structure of Continuation Frames}
 
 We have two continuation frame types, depending on the type of the candidate
 facts.\footnote{All continuation frames have an implicit $\Psi$ context that
@@ -78,7 +78,7 @@ models variable assignments, including variable names, values and their
 locations in the terms. This is important if we want to model variable
 assignments and matchings.}
 
-\subsubsection{Linear continuation frames}
+\subsubsection{Linear Continuation Frames}
 
 There are two types of continuation frames. Linear frames use the form
 $\lframe{\Delta}{\Delta''}{p}{\Omega}{\Delta'}{\Omega}$, where:
@@ -100,7 +100,7 @@ $\lframe{\Delta}{\Delta''}{p}{\Omega}{\Delta'}{\Omega}$, where:
    \item[$\Omega'$] terms matched up-to this point using $\Delta'$ and $\Gamma$.
 \end{description}
 
-\subsubsection{Persistent continuation frame}
+\subsubsection{Persistent Continuation Frame}
 
 Persistent frames are slightly different since they only need to keep track of
 remaining persistent candidates. They are structured as $\pframe{\Gamma''}{\Delta}{\bang
