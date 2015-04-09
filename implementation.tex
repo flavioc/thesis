@@ -14,14 +14,33 @@ turn logical rules into efficient C++ code.
 \section{Parallelism}\label{sec:implementation:parallelism}
 \input{implementation/parallelism}
 
-\section{Coordination}
-\input{implementation/coord}
-
-\section{Thread Facts}
-\input{implementation/thread}
-
 \section{Node Data Structure}\label{sec:data_structures}
 \input{implementation/node}
+
+\subsection{Communication}
+
+At this point, we can now summarize the main thread synchronization hotspots in the
+virtual machine. Threads synchronize with each other using mutual exclusion. We
+use a spin-lock in the work queue to protect queue operations.  Given threads $T_1$
+and $T_2$, we enumerate the most important synchronization hotspots:
+
+\begin{itemize}
+
+   \item \textbf{New facts}: When a node executes in $T_1$ and derives facts to
+   a node in $T_2$, $T_1$ first buffers the facts and then sends them to the
+   target node. Here, it checks if the node is currently \textbf{idle} and then
+   synchronizes with $T_2$ to add the node to the $T_2$'s queue.  If $T_2$ is
+   inactive  then $T_1$ also synchronizes with $T_2$ to change $T_2$'s state to
+   \emph{active}.
+
+   \item \textbf{Node stealing}: $T_1$ synchronizes with $T_2$ when it attempts
+   to steal nodes from $T_2$ by removing half of the nodes from one of $T_2$'s
+   queues.
+
+\end{itemize}
+
+\input{implementation/locks}
+
 
 \section{Compilation}
 \input{implementation/comp}

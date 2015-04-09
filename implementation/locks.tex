@@ -2,12 +2,11 @@ In order to protect these important synchronization points, we use ticket spin-l
 We now summarize the locks used in the different data structures of the VM:
 
 \begin{description}
-   \item[Queue Locks] A lock per queue data structure that protects access to the queue. Both the standard queue and priority queue need a lock in order to allow concurrent manipulation of the data structure. This type of lock is used when a thread needs to add an active node to a queue or when a coordination fact performs scheduling operations.
+   \item[Queue Locks] A lock per queue data structure that protects access to
+      the work queue.
    \item[Node Locks] Lock refered in Section~\ref{sec:node_state_machine} and used to protect the state of the node. We have one node lock per node.
    \item[Database Locks] Locks that protect the database data structures of each node. The lock is activated when the node is executing and can be grabbed by other threads when a fact is sent to another thread. We have one database lock per node.
 \end{description}
-
-From the list above, we see that each node has 2 locks and each thread has $2 * 8$ locks. For a program with $T$ threads and $N$ nodes, we have a total of $2N + 16T$ locks.
 
 In order to manipulate the state flag of each thread (see Section~\ref{sec:implementation:parallelism}) we do not use locks but instead manipulate the state flag using lock-free \emph{compare-and-swap} operations to implement a state machine.
 
@@ -16,5 +15,4 @@ Finally, we now improve the description of the synchronization hotspots by descr
 \begin{description}
 \item \textbf{New Facts}: We use the node lock and then attempt to lock the database lock. If the database lock cannot be used, then the new facts are added to the fact buffer, otherwise the node data structure is updated with new facts. If the target node is not currently in any queue, we lock the destination queue (either the standard queue or the priority queue) and then add the node and change the state of the node to \textbf{queue}. Finally, if the target thread that owns the target node is idle, we activate it by updating its state flag.
 \item \textbf{Node Stealing}: For node stealing, we simply have to lock the queue spin-lock of the target thread's queue and then copy the nodes we need to a temporary buffer. Once the buffer is filled up, we unlock the queue's spin-lock. For each node, we use the node lock to update its \textbf{owner} field and then add it to thread's queue.
-\item \textbf{Coordination}: First, the node lock is acquired in order to update scheduling and partitioning information. Depending on the coordination directive used, we may need to also lock the queues of the current thread or of another thread.
 \end{description}

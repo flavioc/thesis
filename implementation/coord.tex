@@ -1,15 +1,17 @@
-In order to support priorities, the work queue is implemented as two pairs of
-queues: a pair of doubly linked lists known as the \emph{standard queue} and a
-pair of \emph{min/max} heaps known as the \emph{priority queue}.  The standard
-queue contains nodes without priorities and supports push into tail, remove node
-from the head, remove arbitrary node, and remove first half of nodes.  The
-priority queue contains nodes with priorities and is implemented as a binary
-heap array. It supports the following operations: push into the heap, remove the
-\emph{min} node, remove an arbitrary node, remove half of the nodes (horizontal
-split), and priority update.  Operations for removing half of the queue are
-implemented in order to support node stealing, while operations to remove
-arbitrary nodes or update priority allows threads to change the priority of
-nodes. Table~\ref{fig:implementation:table_queue} show the complexity of queue
+In order to support priorities and static/moving nodes, the work queue of each
+thread presented in Fig.~\ref{fig:implementation:vm_overview} must be extended.
+For that, we updated the queue implementation to include two pairs of queues:
+a pair of doubly linked lists known as the \emph{standard queue} and a pair of
+\emph{min/max} heaps known as the \emph{priority queue}.  The standard queue
+contains nodes without priorities and supports push into tail, remove node from
+the head, remove arbitrary node, and remove first half of nodes.  The priority
+queue contains nodes with priorities and is implemented as a binary heap array.
+It supports the following operations: push into the heap, remove the \emph{min}
+node, remove an arbitrary node, remove half of the nodes (horizontal split), and
+priority update.  Operations for removing half of the queue are implemented in
+order to support node stealing, while operations to remove arbitrary nodes or
+update priority allows threads to change the priority of nodes.
+Table~\ref{fig:implementation:table_queue} show the complexity of queue
 operations and compares the standard queue against the priority queue.
 
 \begin{table}[h]
@@ -54,9 +56,10 @@ owned by the thread and not the highest priority node in the whole program.
 \subsection{Node State Machine}\label{sec:node_state_machine}
 
 In order to facilitate the implementation of coordination, we added a state
-variable for each node. The state machine in
-Fig.~\ref{fig:implementation:node_states} represents the valid state transitions
-of a node:
+variable for each node. The state variable is protected by the node's main lock
+already described in Section~\ref{sec:data_structures}. The state
+machine in Fig.~\ref{fig:implementation:node_states} represents the valid state
+transitions of a node:
 
 \begin{itemize}
    \item \textbf{working}: the node is executing.
@@ -78,44 +81,11 @@ of a node:
    \label{fig:implementation:node_states}
 \end{figure}
 
-Each node is protected by a main spin-lock that allows threads to change node
-attributes: the fact buffer, owner thread, state variable and locality
-information. There is also a database spin-lock that protects the internal
-database of the node and is locked whenever the node is in the \textbf{working}
-state.  
+\subsection{Communication And Locks}
 
-To avoid unnecessary copying, when a node sends facts to a node located in
-another thread, the current thread first attempts to lock the database lock of
-the target node in order to directly update its database and indexing
-structures, otherwise it adds the facts to the list of incoming facts that are
-later processed by the owner thread of the target node.
-
-
-\subsection{Communication}
-
-At this point, we can summarize the main thread synchronization hotspots in the
-virtual machine. Threads synchronize with each other using mutual exclusion. We
-use a spin-lock in each queue to protect queue operations.  Given threads $T_1$
-and $T_2$, we enumerate the most important synchronization hotspots:
-
-\begin{itemize}
-
-   \item \textbf{New facts}: When a node executes in $T_1$ and derives facts to
-   a node in $T_2$, $T_1$ first buffers the facts and then sends them to the
-   target node. Here, it checks if the node is currently \textbf{idle} and then
-   synchronizes with $T_2$ to add the node to the $T_2$'s queue.  If $T_2$ is
-   inactive  then $T_1$ also synchronizes with $T_2$ to change $T_2$'s state to
-   \emph{active}.
-
-   \item \textbf{Node stealing}: $T_1$ synchronizes with $T_2$ when it attempts
-   to steal nodes from $T_2$ by removing half of the nodes from one of $T_2$'s
-   queues.
-
-   \item \textbf{Coordination}: If $T_1$ needs to perform coordination
-   operations to a node in $T_2$, it may need to synchronize with $T_2$ during
-   priority updates in order to move the node in $T_2$'s queues.
-
-\end{itemize}
-
-\input{implementation/locks}
-
+When a thread $T_1$ needs to perform coordination operations to a node in thread
+$T_2$ then it needs to synchronize with $T_2$. The target node lock always needs
+to be acquired.  Optionally, we may need to also lock the queues of the current
+thread $T_1$ or $T_2$.  Note that both the standard queue and priority
+queue have separate locks in order to allow concurrent manipulation of the two
+data structures.

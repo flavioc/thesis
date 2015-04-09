@@ -44,6 +44,20 @@ Those are all stored continuously to improve data locality.
 \label{fig:implementation:hash_table}
 \end{figure}
 
+\subsubsection{Locking}
+
+Each node is protected by a main spin-lock that allows threads to change node
+attributes. There is also a database spin-lock that protects the internal
+database of the node and is locked whenever the node is in the \textbf{working}
+state.  
+
+To avoid unnecessary copying, when a node sends facts to a node located in
+another thread, the current thread first attempts to lock the database lock of
+the target node in order to directly update its database and indexing
+structures, otherwise it adds the facts to the list of incoming facts that are
+later processed by the owner thread of the target node.
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Rule Engine}
