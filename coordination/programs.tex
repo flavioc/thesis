@@ -78,17 +78,17 @@ belief(A, MyBelief)
 \label{code:coordination:bp}
 \end{figure}
 
-Belief values are arrays of floats and are represented by \texttt{belief/2}
+Belief values are arrays of floats and are represented by \code{belief/2}
 facts. The first rule (lines 1-3) updates a given neighbor belief whenever a new
 belief value is received. This is the highest priority rule since we want to
 update the neighbor beliefs before doing anything else. In order to store the
-belief values of the neighbor nodes, we use \texttt{neighbor-belief/3} facts,
+belief values of the neighbor nodes, we use \code{neighbor-belief/3} facts,
 where the second argument is the neighbor address and the third argument is the
 belief value.
 
 The last two rules (lines 26-37) update the belief value of a node. An
-\texttt{update/1} fact starts the process. The first rule (lines 27) simply
-consumes redundant \texttt{update/1} facts and the second rule (lines 30-37)
+\code{update/1} fact starts the process. The first rule (lines 27) simply
+consumes redundant \code{update/1} facts and the second rule (lines 30-37)
 performs the belief update by aggregating all the neighbor belief values. The
 aggregate in lines 33-37 also derives copies of the neighbors beliefs that need
 to be consumed in order to compute the belief value that is going to be sent to
@@ -97,19 +97,19 @@ arrays and adds the floating point numbers at each index of the array.  The rule
 in lines 10-22 iterates through the neighbor belief values and sends new belief
 values by performing the appropriate computations on the new belief value of the
 current node and on the belief value sent previously.  Once the facts
-\texttt{neighbor-belief-old} are fully consumed, the rule in line 24 is fired in
-order to consume \texttt{update-messages}.
+\code{neighbor-belief-old} are fully consumed, the rule in line 24 is fired in
+order to consume \code{update-messages}.
 
 For each neighbor update, we also check in lines 5-8 if the change in belief
-values is greater than \texttt{bound} (a program constant) and then force the
-neighbor nodes to update their belief values by deriving \texttt{update(B)}.
+values is greater than \code{bound} (a program constant) and then force the
+neighbor nodes to update their belief values by deriving \code{update(B)}.
 This allows neighbor nodes to use updated neighbor values and recompute their
 own belief values using better information. The computation of belief values
 will then start to converge to their true belief values, independently of the
 node scheduling used. However, if we prioritize nodes that receive new neighbor
-belief values with a larger \texttt{Residual} then we will converge faster.
+belief values with a larger \code{Residual} then we will converge faster.
 Figure~\ref{code:coordination:improved_bp} shows the fourth rule modified with
-\texttt{add-priority} in order to increase to priority of neighbor nodes when
+\code{add-priority} in order to increase to priority of neighbor nodes when
 the source node has large changes in its belief value.
 
 \begin{figure}[h!]
@@ -168,9 +168,9 @@ diagonal (rules in lines 37-43) and if there is no queen on $S$'s right
 diagonal (rules in lines 45-51).
 
 If there is any conflict, we do not derive anything and for that we use the
-language expression \texttt{1} (lines 33, 41 and 49), which corresponds to an
+language expression \code{1} (lines 33, 41 and 49), which corresponds to an
 empty rule head. If there are no conflicts, this means that it is possible to
-add a queen to the current state (line 31). The fact \texttt{send-down/2} is
+add a queen to the current state (line 31). The fact \code{send-down/2} is
 used to either complete the computation of a valid state (lines 53-54) or to
 propagate the state to the row below (lines 55-57) as shown in
 Fig.~\ref{coordination:fig:nqueens}.
@@ -244,6 +244,84 @@ send-down(A, State), !coord(A, CX, _), CX <> size - 1
   \label{coordination:code:nqueens}
 \end{figure}
 
+\subsubsection{Proof Of Correctness}
+
+\begin{lemma}[test-y lemma]
+
+If \code{test-y(A, Y, State, OriginalState)} then either $\exists_{x'}. {(x',
+y) \in \mathtt{State}}$ and \code{test-y} is consumed or
+\code{test-diag-left(A, OX - 1, OY - 1, OriginalState, OriginalState)}, where
+\code{OX} and \code{OY} are the coordinates of the square.
+
+\end{lemma}
+\begin{proof}
+Induction on the size of \code{State}.
+
+First rule: immediately the second conclusion.
+
+Second rule: immediately the third conclusion.
+
+Third rule: by induction.
+\end{proof}
+
+\begin{lemma}[test-diag-left lemma]
+If \code{test-diag-left(A, X, Y, State, OriginalState)} then either $\exists_{x', y'}. {(x', y') \in \mathtt{State}}$, where $x = x' - a$ and $y' = y - a$, where $a$ is positive or $0$ and \code{test-diag-left} is consumed or \code{test-diag-right(A, OX - 1, OY + 1, OriginalState, OriginalState)}, where \code{OX} and \code{OY} are the coordinates of the square.
+\end{lemma}
+\begin{proof}
+Induction on the size of \code{State}.
+
+First rule: immediately the second conclusion.
+
+Second rule: immediately the first conclusion.
+
+Third rule: by induction.
+\end{proof}
+
+\begin{lemma}[test-diag-right lemma]
+If \code{test-diag-right(A, X, Y, State, OriginalState)} then either $\exists_{x', y'}. {(x', y') \in \mathtt{State}}$, where $x = x' - a$ and $y' = y + a$, where $a$ is positive or $0$ and \code{test-diag-right} is consumed or \code{send-down(A, [(OX, OY) | OriginalState])}, where \code{OX} and \code{OY} are the coordinates of the square.
+\end{lemma}
+\begin{proof}
+Induction on the size of \code{State}.
+
+First rule: immediately the second conclusion.
+
+Second rule: immediately the first conclusion.
+
+Third rule: by induction.
+\end{proof}
+
+\begin{theorem}[State validation]
+If \code{test-y(A, OY, State, State)} then either everything is consumed or \code{send-down(A, [(OX, OY) | State])} is derived, where \code{OX} and \code{OY} are the coordinates of the square and are a valid addition to the \code{State}.
+\end{theorem}
+\begin{proof}
+Use the previous three lemmas.
+\end{proof}
+
+\begin{lemma}[Propagate left lemma]
+If \code{propagate-left(A, State)} then every cell to the left, including \code{A} will derive \code{new-state(A, State)}.
+\end{lemma}
+\begin{proof}
+By induction on the number of cells to the left of \code{A}. The only rule that uses \code{propagate-left/2} will prove the lemma.
+\end{proof}
+
+\begin{lemma}[Propagate right lemma]
+If \code{propagate-right(A, State)} then every cell to the right, including \code{A} will derive \code{new-state(A, State)}.
+\end{lemma}
+\begin{proof}
+By induction on the number of cells to the right of \code{A}. The only rule that uses \code{propagate-right/2} will prove the lemma.
+\end{proof}
+
+\begin{theorem}[States theorem]
+For a given row, we will compute several \code{send-down(A, State)} facts that represent valid configurations that include that row and the rows above.
+\end{theorem}
+\begin{proof}
+By induction on the number of rows.
+
+For row 0, we use the axiom \code{propagate-right(@0, [])}, that will be propagated to all nodes in row 0. By using the state validation theorem, we know that every node will derive \code{send-down(A, [(X, Y)])}, all valid configurations.
+
+
+By induction, we know that row $X'$ has derived every \code{send-down/2} possible. Such facts will be sent downwards to row $X = X' + 1$ using the last rule in the program, deriving \code{propagate-right} or \code{propagate-left} that will derive \code{new-state} at each right or left cell. We do not derive anything at the cell below or the ones to the sides since they would not be valid. Using the \code{new-state} fact, we get a \code{test-y} fact that will be checked using the state validation theorem, filtering all new valid configurations and deriving \code{send-down/2}.
+\end{proof}
 
 \subsection{Heat Transfer}
 
