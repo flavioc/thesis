@@ -8,7 +8,7 @@ and the threads only need to initialize their pre-defined sub-graphs.
 During execution, threads can steal nodes of other threads to keep themselves
 busy. The load balancing aspect of the system is performed by our work scheduler
 that is based on a simple work stealing algorithm. The pseudo-code for the main
-thread loop is shown in Fig.~\ref{code:work_loop}. In each round, a thread
+thread loop is shown in Fig.~\ref{alg:thread_work_loop}. In each round, a thread
 inspects its work queue for active nodes with new candidate rules and, if there
 is any, procedure \texttt{process\_node()} executes it. If the work queue is
 empty, the thread attempts to steal half of the nodes from another thread.
