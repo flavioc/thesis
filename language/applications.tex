@@ -231,7 +231,7 @@ update(A), update(A) -o update(A).
 
 update(A),
 !numInbound(A, T)
-   -o [sum => V | B, W, Val, Iter | neighbor-pagerank(A, B, Val, Iter)
+   -o [sum => V | B, W, Val, Iter | neighbor-pagerank(A, B, Val, Iter),
          V = Val/float(T) | neighbor-pagerank(A, B, Val, Iter) | sum-ranks(A, V)].
 \end{Verbatim}
 \caption{Asynchronous PageRank program.}

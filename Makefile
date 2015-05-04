@@ -23,14 +23,11 @@ thesis.pdf: thesis.tex	\
 		statement.tex \
 		related_work.tex \
 		abstract.tex \
-		macros.tex \
-		appendix/hld.tex \
+		macros.tex appendix/hld.tex \
 		appendix/fragment.tex \
 		appendix/lld.tex \
-		hld/step.tex \
-		hld/derivation-agg.tex \
-		lld/step.tex \
-		lld/match-p.tex \
+		hld/step.tex hld/derivation-agg.tex \
+		lld/step.tex lld/match-p.tex \
 		lld/match-bang-p.tex \
 		lld/der-comp.tex \
 		lld/der-agg.tex \
