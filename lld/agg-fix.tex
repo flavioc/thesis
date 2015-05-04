@@ -1,3 +1,11 @@
+\[
+\trans{
+   \fixstatea{\Delta}{\Xi; \Delta'}{\_, f, \lstack{C}; \lstack{P}}{\Gamma}{\Sigma}
+}
+{
+   \fixstatea{\Delta}{\Xi; \Delta'}{f, \lstack{C}; \lstack{P}}{\Gamma}{\Sigma}
+} \tag{agg fix rec}
+\]
 
 \[
 \underset{
@@ -13,7 +21,7 @@
    \end{gathered}
 }
 {
-   \trans{
+   \transx{
       \fixstatea{\Delta}{\Xi; \Delta'}{f; \lstack{P}}{\Gamma}{\Sigma}
    }
    {
@@ -21,15 +29,7 @@
          \lstack{P'}}{B\{\Psi(\widehat{x}), V / \widehat{x}, \sigma \}}
    }
 }
-\]
-
-\[
-\trans{
-   \fixstatea{\Delta}{\Xi; \Delta'}{\_, f, \lstack{C}; \lstack{P}}{\Gamma}{\Sigma}
-}
-{
-   \fixstatea{\Delta}{\Xi; \Delta'}{f, \lstack{C}; \lstack{P}}{\Gamma}{\Sigma}
-}
+   \tag{agg fix end1}
 \]
 
 \[
@@ -52,5 +52,5 @@
       \derstatea{\Delta}{\Xi, \Delta'}{\Gamma_{N1}}{\Delta_{N1}}{V :: \Sigma}{\cdot;
          \lstack{P}'}{B\{\Psi(\widehat{x}), V / \widehat{x}, \sigma \}}
    }
-}
+} \tag{agg fix end2}
 \]

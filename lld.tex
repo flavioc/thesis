@@ -47,20 +47,19 @@ We start by picking the first rule $R_1$ from $\Phi$:
 
 \subsection{Continuation Frames}
 
-The most interesting aspects introduced by the LLD machine are the \emph{continuation frame}
-and the \emph{continuation stack}. A continuation frame acts as a choice point
-that is created during rule matching whenever we try to match a fact expression
-against the database.  The frame considers all the facts relevant to the
-expression given the current variable bindings and predicate, that may or not
-fail during the remaining matching process.
+The most interesting aspects introduced by the LLD machine are the
+\emph{continuation frame} and the \emph{continuation stack}. A continuation
+frame acts as a choice point that is created during rule matching whenever we
+try to match a fact expression against the database.  The frame considers all
+the facts relevant to the expression given the current variable bindings and
+predicate, that may or not fail during the remaining matching process.
 
 The frame contains enough state to resume the matching process at the time of
 its creation, therefore we can easily backtrack to the choice point and select
-the next candidate fact from the database.
-We keep the continuation frames in a continuation stack for backtracking
-purposes. If a given fact fails, we update the top frame to try the next
-candidate fact. If all candidates are exhausted, we pop the top frame and
-continue with the next available frame.
+the next candidate fact from the database.  We keep the continuation frames in a
+continuation stack for backtracking purposes. If a given fact fails, we update
+the top frame to try the next candidate fact. If all candidates are exhausted,
+we pop the top frame and continue with the next available frame.
 
 By using this match mechanism, we determine which facts need to be used to match
 a rule.  Our LM implementation works like LLD, by iterating over the available
@@ -81,7 +80,7 @@ assignments and matchings.}
 \subsubsection{Linear Continuation Frames}
 
 There are two types of continuation frames. Linear frames use the form
-$\lframe{\Delta}{\Delta''}{p}{\Omega}{\Delta'}{\Omega}$, where:
+$\lframe{\Delta}{\Delta''}{p}{\Omega}{\Delta'}{\Omega'}$, where:
 
 \begin{description}
    \item[$\Delta$] multi-set of linear facts that are not of type $p$ plus all

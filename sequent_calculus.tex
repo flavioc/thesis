@@ -12,53 +12,21 @@ linear resources together. In the right rule, $A \otimes B$ is true if both $A$
 and $B$ are true, and, in the left rule, it is possible to split $A \otimes B$
 apart.
 
-\[
-\infer[\otimes R]
-{\Psi ; \seqx{\Gamma}{\Delta, \Delta'}{A \otimes B}}
-{\Psi ; \seqx{\Gamma}{\Delta}{A} & \Psi ; \seqx{\Gamma}{\Delta}{B}}
-\tab
-\infer[\otimes L]
-{\Psi ;\seqx{\Gamma}{\Delta, A \otimes B}{C}}
-{\Psi ; \seqx{\Gamma}{\Delta, A, B}{C}}
-\]
+\input{appendix/fragment_otimes}
 
 Next, we have the \emph{additive conjunction} $A \with B$ that allows us to
 select between $A$ or $B$. In the right rule we must prove $A$ and $B$ using
 the same resources, while in the left rule, we can select one of the
 resources.
 
-\[
-\infer[\with R]
-{\Psi ; \seqx{\Gamma}{\Delta}{A \with B}}
-{\Psi ; \seqx{\Gamma}{\Delta}{A} & \Psi ; \seqx{\Gamma}{\Delta}{B}}
-\]
-
-\[
-\infer[\with L_1]
-{\Psi ; \seqx{\Gamma}{\Delta, A \with B}{C}}
-{\Psi ; \seqx{\Gamma}{\Delta, A}{C}}
-\tab
-\infer[\with L_2]
-{\Psi ; \seqx{\Gamma}{\Delta, A \with B}{C}}
-{\Psi ; \seqx{\Gamma}{\Delta, B}{C}}
-\]
-
+\input{appendix/fragment_with}
 
 To express inference, we introduce the \emph{linear implication} connective
 written as $A \lolli B$. For the right rule, we prove $A \lolli B$ by assuming
 $A$ and then proving $B$, while in the left rule, we obtain $B$ by using some
 linear resources to prove $A$.
 
-\[
-\infer[\lolli R]
-{\Psi ; \seqx{\Gamma}{\Delta}{A \lolli B}}
-{\Psi ; \seqx{\Gamma}{\Delta, A}{B}}
-\tab
-\infer[\lolli L]
-{\seqx{\Gamma}{\Delta, \Delta', A \lolli B}{C}}
-{\Psi ; \seqx{\Gamma}{\Delta}{A} &
-   \Psi ; \seqx{\Gamma}{\Delta', B}{C}}
-\]
+\input{appendix/fragment_lolli}
 
 Next, we introduce persistent resources written as $\bang A$. For the right
 rule, we prove $\bang A$ by proving it without any linear resources. Likewise,
@@ -66,33 +34,13 @@ to use a persistent resource, we simply drop the $
 \bang$. There is also a $\m{copy}$ rule that moves persistent resources from
 $\Gamma$ to $\Delta$. Remember that $\Gamma$ contains persistent resources.
 
-\[
-\infer[\bang R]
-{\Psi ; \seqx{\Gamma}{\cdot}{\bang A}}
-{\Psi ; \seqx{\Gamma}{\cdot}{A}}
-\tab
-\infer[\bang L]
-{\Psi ; \seqx{\Gamma}{\Delta, \bang A}{C}}
-{\Psi ; \seqx{\Gamma, A}{\Delta}{C}}
-\tab
-\infer[\m{copy}]
-{\Psi ; \seqx{\Gamma, A}{\Delta}{C}}
-{\Psi ; \seqx{\Gamma, A}{\Delta, A}{C}}
-\]
+\input{appendix/fragment_bang}
 
 Another useful connective is the \emph{multiplicative unit} of the $\otimes$
 connective. It is written as $\one$ and is best understood as something that
 does not need any resource to be proven.
 
-\[
-\infer[\one R]
-{\Psi ; \seqx{\Gamma}{\cdot}{\one}}
-{}
-\tab
-\infer[\one L]
-{\Psi ; \seqx{\Gamma}{\Delta, \one}{C}}
-{\Psi ; \seqx{\Gamma}{\Delta}{C}}
-\]
+\input{appendix/fragment_one}
 
 Next, we introduce the \emph{quantification} connectives, namely \emph{universal
 quantification} $\forall_{n:\tau}. A$ and \emph{existencial quantification}
@@ -100,42 +48,10 @@ $\exists_{n:\tau}. A$. These connectives use the typing context $\Psi$ because
 they can introduce and read terms from the context. The right and left duals of
 those two connectives are dual.
 
-\[
-\infer[\forall R]
-{\Psi ; \seqx{\Gamma}{\Delta}{\forall_{n:\tau}. A}}
-{\Psi, m:\tau ; \seqx{\Gamma}{\Delta}{A\{m/n\}}}
-\tab
-\infer[\forall L]
-{\Psi ; \seqx{\Gamma}{\Delta, \forall_{n:\tau}. A}{C}}
-{\Psi \vdash M : \tau & \Psi ; \seqx{\Gamma}{\Delta, A\{M/n\}}{C}}
-\]
-
-\[
-\infer[\exists R]
-{\Psi ; \seqx{\Gamma}{\Delta}{\exists_{n: \tau}. A}}
-{\Psi \vdash M : \tau &
-   \Psi ; \seqx{\Gamma}{\Delta}{A \{M/n\}}}
-\tab
-\infer[\exists L]
-{\Psi ; \seqx{\Gamma}{\Delta, \exists_{n:\tau}. A}{C}}
-{\Psi, m:\tau ; \seqx{\Gamma}{\Delta, A\{m/n\}}{C}}
-\]
+\input{appendix/fragment_quant}
 
 Finally, we complete the linear logic system with the \emph{cut rules} and the
 \emph{identity rule}:
 
-\[
-\infer[cut_A]
-{\Psi ; \seqx{\Gamma}{\Delta, \Delta'}{C}}
-{\Psi ; \seqx{\Gamma}{\Delta}{A} & \Psi ; \seqx{\Gamma}{\Delta', A}{C}}
-\tab
-\infer[cut\bang_A]
-{\Psi ; \seqx{\Gamma}{\Delta}{C}}
-{\Psi ; \seqx{\Gamma}{\cdot}{A} & \Psi ; \seqx{\Gamma, A}{\Delta}{C}}
-\]
-
-\[
-\infer[id_A]
-{\Psi ; \seqx{\Gamma}{A}{A}}
-{}
-\]
+\input{appendix/fragment_cut}
+\input{appendix/fragment_id}

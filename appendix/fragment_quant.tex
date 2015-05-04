@@ -1,0 +1,20 @@
+\[
+\infer[\forall R]
+{\Psi ; \seqx{\Gamma}{\Delta}{\forall_{n:\tau}. A}}
+{\Psi, m:\tau ; \seqx{\Gamma}{\Delta}{A\{m/n\}}}
+\tab
+\infer[\forall L]
+{\Psi ; \seqx{\Gamma}{\Delta, \forall_{n:\tau}. A}{C}}
+{\Psi \vdash M : \tau & \Psi ; \seqx{\Gamma}{\Delta, A\{M/n\}}{C}}
+\]
+
+\[
+\infer[\exists R]
+{\Psi ; \seqx{\Gamma}{\Delta}{\exists_{n: \tau}. A}}
+{\Psi \vdash M : \tau &
+   \Psi ; \seqx{\Gamma}{\Delta}{A \{M/n\}}}
+\tab
+\infer[\exists L]
+{\Psi ; \seqx{\Gamma}{\Delta, \exists_{n:\tau}. A}{C}}
+{\Psi, m:\tau ; \seqx{\Gamma}{\Delta, A\{m/n\}}{C}}
+\]

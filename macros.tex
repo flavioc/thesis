@@ -54,7 +54,6 @@
 \newcommand{\iterop}[2]{\mathtt{op} \; \widehat{#1} \; \widehat{#2}}
 \newcommand{\iterunfold}[5]{\forall_{\widehat{#3}}. (#5 \widehat{x} \otimes \iter{#1}{#2}{(\iterop{#3}{#4})})}
 \newcommand{\iterunfoldz}[2]{(\lambda_{\widehat{x}}. #1)\widehat{#2}}
-\newcommand{\fragment}{$LL^{0..+}$}
 \newcommand{\defsz}[1]{\mathcal{R}_{#1}}
 \newcommand{\defsone}[2]{\defsz{#1}^{(#2)}}
 \newcommand{\defstwo}[3]{\defsz{#1}^{(#2, #3)}}
@@ -103,6 +102,7 @@
 \newcommand{\conta}[1]{\m{cont}_{LLDa}^{#1} \;}
 \newcommand{\lstack}[1]{\mathcal{#1}}
 \newcommand{\trans}[2]{#1 \;\; \mapsto \;\; #2}
+\newcommand{\transx}[2]{#1 \;\; \mapsto \\ #2}
 \newcommand{\transs}[2]{#1 \;\; \mapsto^{*} \;\; #2}
 \newcommand{\dostate}[4]{\mathtt{infer} \; #1; #2; #3; #4}
 \newcommand{\appstate}[5]{\mathtt{apply} \; #1; #2; #3; #4; #5}
@@ -125,7 +125,8 @@
 #2}\curvearrowright}_{\m{agg} ; #5}^{#3; #4} \; #6 ; \Gamma ; #7}
 
 % term equivalence
-\newcommand{\feq}[2]{#1 \equiv #2}
+\newcommand{\feq}[2]{#1 \equiv^{\theta_1, \theta_2} #2}
+\newcommand{\feqa}[4]{#1 \equiv^{#3, #4} #2}
 
 %\newcommand{\outsem}[0]{\Xi'; \Delta'; \Gamma'}
 \newcommand{\outsem}[0]{\mathcal{O}}

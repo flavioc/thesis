@@ -41,8 +41,7 @@ thesis.pdf: thesis.tex	\
 		lld/comp-der.tex \
 		lld/comp-der-end.tex \
 		lld/comprehensions.tex \
-		lld/agg-match-p.tex \
-		lld/agg-match-bang-p.tex \
+		lld/agg-match-p.tex lld/agg-match-bang-p.tex lld/agg-match-other.tex \
 		lld/agg-match-soundness.tex \
 		lld/agg-cont-end.tex \
 		lld/agg-cont-c.tex \
@@ -59,10 +58,10 @@ thesis.pdf: thesis.tex	\
 		lld/aggregates_soundness.tex \
 		lld.tex hld.tex sequent_calculus.tex
 	pdflatex thesis.tex
-	pdflatex thesis.tex
-	bibtex thesis
-	pdflatex thesis.tex
-	pdflatex thesis.tex
+	#pdflatex thesis.tex
+	#bibtex thesis
+	#pdflatex thesis.tex
+	#pdflatex thesis.tex
 
 language.tex: figures/btree/btree_trace1.pdf figures/btree/btree_trace2.pdf \
 	figures/btree/btree_trace3.pdf figures/btree/btree_trace4.pdf \

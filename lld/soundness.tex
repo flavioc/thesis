@@ -13,46 +13,41 @@ that will be used during the soundness theorem.
 \subsection{Term Equivalence}
 
 The first definition defines the equality between two multi-sets of terms.  Two
-multi-sets $A$ and $B$ are equal, $\feq{A}{B}$, when they have the same
-constituent atoms.
+multi-sets $A$ and $B$ are equal, $\feq{A}{B}$, when there exists two
+substitutions $\theta_1$ and $\theta_2$ that allow $A\theta_1$ and $B\theta_2$
+to have the same constituent atoms.
 
 \[
 \infer[\equiv p]
-{\feq{p, A}{p, B}}
-{\feq{A}{B}}
+{\feq{p, A}{q, B}}{\feq{A}{B} & p\theta_1 \triangleq q\theta_2}
 \tab
 \infer[\equiv \bang p]
-{\feq{\bang p, A}{\bang p, B}}
-{\feq{A}{B}}
+{\feq{\bang p, A}{\bang p, B}}{\feq{A}{B} & \bang p \theta_1 \triangleq
+\bang q\theta_2}
 \tab
 \infer[\equiv \one~L]
-{\feq{\one, A}{B}}
-{\feq{A}{B}}
-\tab
-\infer[\equiv \one~R]
-{\feq{A}{\one, B}}
-{\feq{A}{B}}
+{\feq{\one, A}{B}}{\feq{A}{B}}
 \]
 
 \[
+\infer[\equiv \one~R]
+{\feq{A}{\one, B}}{\feq{A}{B}}
+\tab
 \infer[\equiv \cdot]
-{\feq{\cdot}{\cdot}}
-{}
+{\feq{\cdot}{\cdot}} {}
 \tab
 \infer[\equiv \otimes~L]
-{\feq{A \otimes B, C}{D}}
-{\feq{A, B, C}{D}}
+{\feq{A \otimes B, C}{D}}{\feq{A, B, C}{D}}
 \tab
 \infer[\equiv \otimes~R]
-{\feq{A}{B \otimes C, D}}
-{\feq{A}{B, C, D}}
+{\feq{A}{B \otimes C, D}}{\feq{A}{B, C, D}}
 \]
 
 \begin{theorem}[Match equivalence]
 If two multi-sets are equivalent, $\feq{A_1, \dotsc, A_n}{B_1, \dotsc, B_m}$,
    and we can match $A_1 \otimes \dotsb \otimes A_n$ in HLD such that
-   $\mz{\Gamma}{\Delta}{A_1 \otimes \dotsb \otimes A_n}$ then
-      $\mz{\Gamma}{\Delta}{B_1 \otimes \dotsb \otimes B_m}$ is also true.
+   $\mz{\Gamma}{\Delta}{(A_1 \otimes \dotsb \otimes A_n)\theta_1}$ then
+      $\mz{\Gamma}{\Delta}{(B_1 \otimes \dotsb \otimes B_m)\theta_2}$ is also true.
 \end{theorem}
 \begin{proof}
 By straightforward induction on the first assumption.
@@ -73,7 +68,7 @@ And $times(A_1, \dotsc, A_n) = A_1 \otimes \dotsb \otimes A_n$.
 \end{definition}
 
 \begin{theorem}[Split equivalence]
-$\feq{split(\Omega)}{\Omega}$.
+$\feqa{split(\Omega)}{\Omega}{\theta}{\theta}$.
 \end{theorem}
 \begin{proof}
 Induction on the structure of $\Omega$.
@@ -102,7 +97,7 @@ resources. A frame $f$ is well-formed iff:
       \item $\Delta, \Delta'', \Delta, p_1 = \Delta_{N}$ (available facts, candidate
             facts for $p$, consumed facts and the linear fact used for $p$,
             respectively, are the same as the initial $\Delta_{N}$);
-      \item $\mz{\Gamma}{\Delta'}{\Omega}$ is valid.
+      \item $\mz{\Gamma}{\Delta'}{\Omega'}$ is valid.
 
    \end{enumerate}
    \item Persistent frame $f = \pframe{\Gamma''}{\Delta}{\bang
@@ -114,7 +109,7 @@ resources. A frame $f$ is well-formed iff:
          \item $\Delta, \Delta' = \Delta_{N}$;
          \item $\Gamma'' \subset \Gamma$ (remaining candidates are a subset of
                      $\Gamma$);
-         \item $\mz{\Gamma}{\Delta'}{\Omega}$ is valid.
+         \item $\mz{\Gamma}{\Delta'}{\Omega'}$ is valid.
       \end{enumerate}
 \end{enumerate}
 \end{definition}
@@ -122,6 +117,11 @@ resources. A frame $f$ is well-formed iff:
 
 \begin{definition}[Well-formed stack]
 A continuation stack $\lstack{C}$ is well-formed iff every frame is well-formed.
+For two consequent linear frames $f_1 = \lframe{\Delta, \Delta_q, q_1,
+p_1}{\Delta_p}{p}{\Omega_1}{\Delta'_1}{\Omega'_1}$ and $f_2 = \lframe{\Delta,
+\Delta_p, q_1}{\Delta_q}{q}{\Omega_2}{\Delta'_1, p_1}{\Omega'_1 \otimes p}$
+where $f_2$ is on top of $f_1$, we also know that $\feq{\Omega_1}{\Omega_2, p}$.
+Identical relationships exist between different pairs of frames.
 \end{definition}
 
 Given the previous definitions, we can now define what it means for a given
@@ -227,7 +227,7 @@ is well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
 
 \end{definition}
 
-For the theorems that follow, we always assume that the propositions are
+For the theorems that follow, we always assume that the states are
 well-formed in relation to their main contexts and matching body, be it either a
 rule body or an aggregate body.
 
@@ -240,7 +240,7 @@ that the derivation of head terms in LLD is also sound.
 In order to prove the soundness of matching, we want to reconstitute a valid
 match $\mz{\Gamma}{\Delta}{A}$ in HLD from machine steps in LLD. Our machine
 specification already includes a built-in $\mz{\Gamma}{\Delta}{A}$ judgment that
-can be used to prove soundness immediatelly. However, we need to prove that
+can be used to prove soundness immediately. However, we need to prove that
 every state transition preserves the well-formedness of the machine from the
 previous definitions.
 

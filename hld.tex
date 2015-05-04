@@ -45,27 +45,25 @@ Steps are defined as $\stepz \Gamma; \Delta; \Phi \Longrightarrow \Gamma';
 \Delta'$, where $\Gamma'$ and $\Delta'$ are the new database contexts. The step
 rule is as follows:
 
-%\input{hld/step}
+\input{hld/step}
 
 \subsection{Application}
 
 A step is performed through
-$\doz{\Gamma}{\Delta}{\Phi}{\Pi}{\Xi'}{\Gamma'}{\Delta'}$.
-$\Gamma$, $\Delta$, $\Phi$ and $\Pi$ have the meaning explained
-before, while $\Xi'$, $\Gamma'$ and $\Delta'$ are output multi-sets from
-applying one of the rules in $\Phi$ and are usually written as $\outsem$. $\Xi'$ is
-the set of consumed linear resources, $\Gamma'$ is the set of derived persistent
-facts and $\Delta'$ is the set of derived linear facts.  Note that for HLD
-semantics there is no concept of rule priority, therefore a rule is picked
-non-deterministically.
+$\doz{\Gamma}{\Delta}{\Phi}{\Pi}{\Xi'}{\Gamma'}{\Delta'}$.  $\Gamma$, $\Delta$,
+$\Phi$ and $\Pi$ have the meaning explained before, while $\Xi'$, $\Gamma'$ and
+$\Delta'$ are output multi-sets from applying one of the rules in $\Phi$ and are
+usually written as $\outsem$. $\Xi'$ is the set of consumed linear resources,
+$\Gamma'$ is the set of derived persistent facts and $\Delta'$ is the set of
+derived linear facts.  Note that for HLD semantics there is no concept of rule
+priority, therefore a rule is picked non-deterministically.
 
-The judgment $\az{\Gamma}{\Delta}{\Pi}{A \lolli B}{\outsem}$
-applies the derivation rule $A \lolli B$. To do this, it
-splits the $\Delta$ context into $\Delta_1$ and $\Delta_2$, namely the set of
-linear resources consumed to match the body of the rule ($\Delta_1$) and the
-remaining linear facts ($\Delta_2$).  Again, the set of resources needed to
-match the body of the rule is guessed. LLD semantics will deterministically
-calculate $\Delta_1$.
+The judgment $\az{\Gamma}{\Delta}{\Pi}{A \lolli B}{\outsem}$ applies the
+derivation rule $A \lolli B$. To do this, it splits the $\Delta$ context into
+$\Delta_1$ and $\Delta_2$, namely the set of linear resources consumed to match
+the body of the rule ($\Delta_1$) and the remaining linear facts ($\Delta_2$).
+Again, the set of resources needed to match the body of the rule is guessed. LLD
+semantics will deterministically calculate $\Delta_1$.
 
 \input{hld/application}
 
@@ -114,17 +112,17 @@ following meaning:
 
 \end{enumerate}
 
-The following derivation rules are a direct translation from \fragment:
+The following derivation rules are a direct translation from the sequent
+calculus:
 
 \input{hld/derivation}
 
-The main rule for deriving aggregates is $\dzname \m{agg}_1$. It looks into $\Pi$
-for the appropriate persistent term and applies $\defsz{agg}$ to the implication
-and then selects the recursive case. On the other hand, the rule $\dzname
-\m{agg}_2$ is identical but instead decides t
-The HLD
-semantics do not take into account the contents of the database to determine how
-many times a comprehension should be applied.
+The main rule for deriving aggregates is $\dzname \m{agg}_1$. It looks into
+$\Pi$ for the appropriate persistent term and applies $\defsz{agg}$ to the
+implication and then selects the recursive case. On the other hand, the rule
+$\dzname \m{agg}_2$ is identical but instead decides t The HLD semantics do not
+take into account the contents of the database to determine how many times a
+comprehension should be applied.
 
 \input{hld/derivation-agg}
 
