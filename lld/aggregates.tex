@@ -38,20 +38,21 @@ Let's assume that the rule above was successfully matched with \code{A = 1} and
 \code{T = 2} and the database contains the following facts: \code{\bang edge(1,
 2)}, \code{\bang edge(1, 3)}, \code{neighbor-pagerank(1, 2, 0.5)} and
 \code{neighbor-pagerank(1, 3, 0.5)}. Figure~\ref{fig:logic:backtrack} shows how
-the aggregate is computed using the continuation stack. An initial frame is created for
-\code{\bang edge(1, B)} which includes two \code{edge} facts and \code{\bang
-edge(1, 2)} is selected to continue the process. Since \code{B = 2}, the frame
-for \code{neighbor-pagerank(1, 2, Val)} includes only \code{neighbor-pagerank(1,
-2, 0.5)} which completes the first application of the aggregate and the same
-linear fact is re-derived using the first aggregate head. Computation then
-proceeds by backtracking to the first linear frame, the frame of
-\code{neighbor-pagerank(1, 2, Val)}, but there are no more available candidates,
-therefore the frame is removed and the next candidate \code{\bang edge(1, 3)} of
-frame \code{\bang edge(1, B)} is selected. Here, a frame is created for \code{B
-= 3} with \code{neighbor-pagerank(1, 3, 0.5)} and the second application of the
-aggregate is completed. The process backtracks again twice but now there
-are no more candidates and the second aggregate head derives \code{sum-ranks(1,
-1.0)} because \code{V = 0.5 + 0.5}, completing the aggregate computation.
+the aggregate is computed using the continuation stack. An initial frame is
+created for \code{\bang edge(1, B)} which includes two \code{edge} facts and
+\code{\bang edge(1, 2)} is selected to continue the process. Since \code{B = 2},
+the frame for \code{neighbor-pagerank(1, 2, Val)} includes only
+\code{neighbor-pagerank(1, 2, 0.5)} which completes the first application of the
+aggregate and the same linear fact is re-derived using the first aggregate head.
+Computation then proceeds by backtracking to the first linear frame, the frame
+of \code{neighbor-pagerank(1, 2, Val)}, but there are no more available
+candidates, therefore the frame is removed and the next candidate \code{\bang
+edge(1, 3)} of frame \code{\bang edge(1, B)} is selected. Here, a frame is
+created for \code{B = 3} with \code{neighbor-pagerank(1, 3, 0.5)} and the second
+application of the aggregate is completed. The process backtracks again twice
+but now there are no more candidates and the second aggregate head derives
+\code{sum-ranks(1, 1.0)} because \code{V = 0.5 + 0.5}, completing the aggregate
+computation.
 
 \begin{figure}[ht]
    \begin{center}
@@ -106,11 +107,10 @@ $\matstatea{\Delta_N}{\lstack{C};
 
 \end{enumerate}
 
-Since aggregates accumulate values (from specific variables), we extend the
-$\Psi$ context to include triplets $x : M : \tau$ (variable, term and type)
-instead of pairs $M : \tau$ in order to be able to retrieve bound variables.
-Remember that $\Psi$ is used for the quantification connectives in the sequent
-calculus.
+Since aggregates accumulate values (from specific variables), we retrieved the
+value from the $\Psi$ context. Remember that $\Psi$ is used for the
+quantification connectives in the sequent calculus and in LLD is used to store
+current variable bindings.
 
 \subsubsection{Linear fact expressions}
 

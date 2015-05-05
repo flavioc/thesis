@@ -51,8 +51,7 @@ The most interesting aspects introduced by the LLD machine are the
 \emph{continuation frame} and the \emph{continuation stack}. A continuation
 frame acts as a choice point that is created during rule matching whenever we
 try to match a fact expression against the database.  The frame considers all
-the facts relevant to the expression given the current variable bindings and
-predicate, that may or not fail during the remaining matching process.
+the facts relevant to the expression given the current context $\Psi$.
 
 The frame contains enough state to resume the matching process at the time of
 its creation, therefore we can easily backtrack to the choice point and select
@@ -80,7 +79,7 @@ assignments and matchings.}
 \subsubsection{Linear Continuation Frames}
 
 There are two types of continuation frames. Linear frames use the form
-$\lframe{\Delta}{\Delta''}{p}{\Omega}{\Delta'}{\Omega'}$, where:
+$\lframe{\Delta}{\Delta''}{p}{\Omega; \Psi}{\Delta'}{\Omega'}$, where:
 
 \begin{description}
    \item[$\Delta$] multi-set of linear facts that are not of type $p$ plus all
@@ -96,14 +95,15 @@ $\lframe{\Delta}{\Delta''}{p}{\Omega}{\Delta'}{\Omega'}$, where:
 
    \item[$\Delta'$] multi-set of linear facts we have consumed to reach this point;
 
-   \item[$\Omega'$] terms matched up-to this point using $\Delta'$ and $\Gamma$.
+   \item[$\Omega'$] terms matched up-to this point using $\Delta'$ and $\Gamma$;
+   \item[$\Psi$] dictionary of variable assignments (includes variable and value).
 \end{description}
 
 \subsubsection{Persistent Continuation Frame}
 
 Persistent frames are slightly different since they only need to keep track of
 remaining persistent candidates. They are structured as $\pframe{\Gamma''}{\Delta}{\bang
-   p}{\Omega}{\Delta'}{\Omega'}$:
+   p}{\Omega; \Psi}{\Delta'}{\Omega'}$:
 
 \begin{description}
    \item[$\Gamma''$] remaining candidate facts;
@@ -112,7 +112,8 @@ remaining persistent candidates. They are structured as $\pframe{\Gamma''}{\Delt
    \item[$\Omega$] ordered list of remaining terms needed to match past this
    choice point;
    \item[$\Delta'$] multi-set of linear facts consumed up-to this point;
-   \item[$\Omega'$] terms matched up-to this point using $\Delta'$ and $\Gamma$.
+   \item[$\Omega'$] terms matched up-to this point using $\Delta'$ and $\Gamma$;
+   \item[$\Psi$] dictionary of variable assignments (includes variable and value).
 \end{description}
 
 
@@ -148,11 +149,15 @@ structured as $\matstate{A \lolli
 
 \end{description}
 
-Matching will attempt to use facts from $\Delta$ and $\Gamma$ to match the terms
+Not shown in the matching state is the context $\Psi$ that maps variables to
+values. At the start of matching, the $\widehat{x}$ variables are set as
+\emph{undefined}. The terms to match are then d
+Matching then uses facts from $\Delta$ and $\Gamma$ to match the terms
 of the body of the rule represented as $\Omega$. During the process
 continuation frames are pushed into $\lstack{C}$ and if the matching process
 fails, we use $\lstack{C}$ to restore the process using different
-candidate facts.
+candidate facts. New facts also update the variables in the $\Psi$ context by
+assigning them concrete values.
 
 \subsubsection{Linear fact expression}
 
@@ -169,7 +174,8 @@ thus a different machine state is used for enabling backtracking.
 
 Note that the proposition $p_1, \Delta'' \prec p$ indicates that facts
 $\Delta'', p_1$ satisfy the constraints of $p$ while $\Delta \npreceq p$
-indicates that no fact in $\Delta$ satisfies $p$.
+indicates that no fact in $\Delta$ satisfies $p$. Both propositions use the
+omitted variable context $\Psi$ in order to replace the variables of $p$.
 
 \input{lld/match-p}
 
