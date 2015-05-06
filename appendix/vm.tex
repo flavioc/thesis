@@ -1,0 +1,264 @@
+In this appendix, we present the instructions implemented by our virtual
+machine. We consider that the machine has an arbitrary number of registers (or
+variables) that can be assigned to values or facts and a database of facts
+indexed by program predicates.
+
+\paragraph{Values}\label{appendix:vm:values} Values can be assigned to registers or to fact arguments
+which are stored in the database. The following values are allowed:
+
+\begin{itemize}
+      \item Boolean values;
+      \item Integer numbers;
+      \item Floating point numbers;
+      \item Node pointers;
+      \item Thread pointers;
+      \item String pointers;
+      \item List pointers;
+      \item Array pointers;
+\end{itemize}
+
+\section{Iteration Instructions}
+
+The iteration instructions perform searches on the database of facts. When
+inferring a rule, each iteration instruction iterates over a predicate in the
+body of the rule in order to derive all combinations of facts that match the
+rule.
+
+\paragraph{Match Object} Every instruction points to a \code{match} object that
+filters the facts from the database. The object maps argument indexes to value
+templates. Value templates include the values described
+in~\ref{appendix:vm:values} and the following variable templates:
+
+\begin{itemize}
+      \item Register: fact argument must equal to the value stored in the
+         register;
+      \item Fact argument: fact argument must be equal to the value stored in
+         another fact argument;
+      \item List template: describes the structure of a list, namely, the head
+         and tail value template;
+\end{itemize}
+
+\paragraph{Iteration} Each iteration instruction contains the \code{body}, a list of instructions
+that must be executed for each fact found in the database. The \code{body} also
+returns a status indicating whether rule inference was successful or not.
+
+\begin{itemize}
+   \item \code{persistent iterate [pred : predicate, dest : register, m : match, body : instructions]}
+
+   Iterate over persistent facts with the predicate \code{pred} that match
+   \code{m}. For each iteration, we assign \code{dest} the next candidate fact
+   and execute instructions \code{body}.
+
+   \item \code{linear iterate [pred: predicate, dest : register, m : match, body : instructions]}
+
+   Same as before but iterate over linear facts.
+
+   \item \code{reuse linear iterate [pred: predicate, dest : register, m :
+      match, body : instructions]}
+
+   Iterates over linear facts but, if the rule has been successful, it does not
+   remove the linear fact stored in \code{dest} since the same fact has been
+   re-derived in the head of the rule.
+
+\end{itemize}
+
+\subsection{Return Instructions}
+
+Return instructions terminate the current execution flow and force the machine
+to backtrack to a previous state. In most cases, they are the return values used by iterate
+instructions and force the iterate instruction to use the next candidate fact.
+
+\begin{itemize}
+   \item \code{return}
+
+      Return without return value. Used at the end of rules to complete rule
+      inference or in rules where a higher priority rule is available.
+
+   \item \code{return derived}
+
+      The rule was successfully derived.
+
+   \item \code{return next}
+
+      The matching has failed and the iterate instruction must use the next
+      candidate fact.
+
+\end{itemize}
+
+\section{Conditional Instructions} Conditional instructions are used to
+conditionally execute certain instructions.
+
+\begin{itemize}
+   \item \code{if [reg : register, body : instructions]}
+
+   If the boolean value stored in \code{reg} is true then execute \code{body}.
+
+   \item \code{if [reg : register, body1 : instructions, body2 : instructions]}
+
+   If the boolean value stored in \code{reg} is true then execute \code{body1},
+   otherwise execute \code{body2}.
+
+   \item \code{jump [offset : integer]}
+
+   Used as a goto at the end of \code{body1} in the instruction above. Jumps a
+   certain number of instructions.
+
+\end{itemize}
+
+\section{Arithmetic and Boolean Instructions}
+
+We briefly describe the most important arithmetic and boolean instructions.
+
+\paragraph{Operations}
+
+Available operations are as follows:
+
+\begin{itemize}
+   \item Addition \code{+};
+   \item Subtraction \code{-};
+   \item Multiplication \code{*};
+   \item Division \code{/};
+   \item Integer remainder \code{\%};
+   \item Equality \code{=};
+   \item Inequality \code{<>};
+   \item Greater \code{>};
+   \item Greater or equal \code{>=};
+   \item Lesser \code{<};
+   \item Lesser or equal \code{<=};
+   \item Logical or \code{or};
+   \item Logical and \code{and};
+\end{itemize}
+
+\paragraph{Instructions}
+
+These operations are used as follows:
+
+\begin{itemize}
+   \item \code{test nil [reg : register, dest : register]}
+
+   If the list stored in \code{reg} is null then set \code{dest} as \code{true}.
+
+   \item \code{not [reg : register, dest : register]}
+
+   Perform a boolean \code{not} operation.
+
+   \item \code{int op [op1 : register, op2 : register, dest : register]}
+
+   Perform an binary arithmetic operation on two integer numbers \code{op1} and
+   \code{op2} and store result in \code{dest}. Operations include: \code{+},
+   \code{-}, \code{*}, \code{/}, \code{\%}, \code{=}, \code{<>}, \code{<}, \code{<=},
+   \code{>=}, and \code{>}.
+
+   \item \code{float op [op1 : register, op2 : register, dest : register]}
+
+   Perform an binary arithmetic operation on two floating point numbers \code{op1} and
+   \code{op2} and store result in \code{dest}. Operations include: \code{+},
+   \code{-}, \code{*}, \code{/}, \code{=}, \code{<>}, \code{<}, \code{<=},
+   \code{>=}, and \code{>}.
+
+   \item \code{node op [op1 : register, op2 : register, dest : register]}
+
+   Perform an operation on two node addresses \code{op1} and
+   \code{op2} and store result in \code{dest}. Operations include: \code{=} and
+   \code{<>}.
+
+   \item \code{thread op [op1 : register, op2 : register, dest : register]}
+
+   Perform an operation on two thread addresses \code{op1} and
+   \code{op2} and store result in \code{dest}. Operations include: \code{=} and
+   \code{<>}.
+
+   \item \code{[bool op [op1 : register, op2 : register, dest : register]}
+
+   Perform an operation on two boolean values \code{op1} and
+   \code{op2} and store result in \code{dest}. Operations include: \code{=} and
+   \code{<>}, \code{and} and \code{or}.
+
+\end{itemize}
+
+\section{Data Instructions}
+
+Data instructions include instructions which move values between registers and fact arguments and
+instructions which call external functions written in C++ code.
+
+\begin{itemize}
+   \item \code{move-value-to-reg [val : value, reg : register]}
+
+      Moves any value presented in~\ref{appendix:values} to register \code{reg}.
+
+   \item \code{move-arg-to-reg [fact : register, arg : integer, reg : register]}
+
+      Moves the $\mathtt{arg}^{th}$ argument of fact stored in \code{fact} to
+      register \code{reg}.
+
+   \item \code{move-reg-to-arg [reg : register, fact : register, arg : integer]}
+
+      Moves the value stored in \code{reg} to the $\mathtt{arg}^{th}$ argument of
+      fact stored in \code{fact}.
+
+   \item \code{call [id : integer, gc : boolean, dest : register, n : integer, arg1 :
+      register, arg2 : register, ...]}
+
+      Call external function with number \code{id} with \code{n} arguments
+      \code{arg1} up to \code{argn} and store the return value in \code{dest}.
+      If \code{gc} is \code{true} then garbage collect the return value at the
+      end of the rule.
+
+\end{itemize}
+
+\section{List Instructions}
+
+List instructions manipulate and access list addresses.
+
+\begin{itemize}
+   \item \code{cons [head : register, tail : register, gc : boolean, dest : register]}
+
+      Create a new list and store its address in \code{dest}. The value of
+      \code{tail} must be a list address or a null list. If \code{gc} is
+      \code{true} then the list must be garbage collected after the rule
+      executes.
+
+   \item \code{head [ls : register, dest : register]}
+
+   Retrieve the head value from the list address \code{ls} and store it in
+   \code{dest}.
+
+   \item \code{tail [ls : register, dest : register]}
+
+   Retrieve the tail value from the list address \code{ls} and store it in
+   \code{dest}.
+
+\end{itemize}
+
+\section{Derivation and Removal Instructions}
+
+Derivation instructions create facts and add them to the corresponding node
+databases. We also include instructions that remove facts from the database.
+
+\begin{itemize}
+   \item \code{alloc [pred : predicate, dest : register]}
+
+      Allocate new fact for predicate \code{pred} and assign it to \code{dest}.
+
+   \item \code{add linear [fact : register]}
+
+      Add linear fact stored in \code{fact} to the current node's database.
+
+   \item \code{add persistent [fact : register]}
+
+      Add persistent fact stored in \code{fact} to the current node's database.
+
+   \item \code{send [fact : register, dest : register]}
+
+      Send fact stored in \code{fact} to the node address stored in \code{dest}.
+
+   \item \code{run action [fact : register]}
+
+   Execute action fact stored in \code{fact} and then deallocate the fact. This
+   instruction is used for coordination instructions.
+
+   \item \code{remove [fact : register]}
+
+      Removes linear fact stored in \code{fact} from the database. The fact has
+      been retrieved from one of the iterate instructions.
+\end{itemize}

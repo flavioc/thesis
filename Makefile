@@ -19,7 +19,7 @@ thesis.pdf: thesis.tex	\
 		refs.bib \
 		thread.tex \
 		conclusions.tex \
-		appendix.tex \
+		appendix.tex appendix/vm.tex \
 		statement.tex \
 		related_work.tex \
 		abstract.tex \

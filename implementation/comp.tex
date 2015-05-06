@@ -1,6 +1,10 @@
-In this section, we present the main algorithm of the compiler, that turns
-inference rules into C++ code, and we discuss the key optimizations for
-efficient code execution.
+As an intermediate step, our compiler first transforms rules into high level
+instructions that are then transformed into C++. In Appendix~\ref{appendix:vm}
+we present an overview of the high level instructions that can be used as a
+reference to the operations that are required by the compiler. In this
+section, we present the main algorithm of the compiler and its key
+optimizations. However, all the examples are shown in C++ since it makes it
+easier to understand how the final code looks like.
 
 \subsection{Ordinary Rules}\label{sec:compile}
 
