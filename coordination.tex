@@ -1,22 +1,7 @@
-LM has no natural matching of nodes and computation to threads since nodes are a
-program abstraction and part of the program's logic. We view the set of nodes as
-a graph data structure $G = (V, E)$ with nodes $V$ and edges $E$ where threads
-$T$ perform work. A thread is able to process any node in $V$, although a node
-cannot be computed by more than one thread at the same time. It is possible to
-specify many scheduling policies in order to compute the program in $G$.
-
-The original Meld language was implemented as an ensemble programming language,
-targeting modular robotic systems such as
-Claytronics~\cite{ashley-rollman-derosa-iros07wksp}. In such systems, there is a
-natural matching between computation and processing units, since each robot is
-represented by a node. This distribution of data leaves little choice to be made
-in the division of computation to the various nodes.
-
-For LM, we have decided to partition the nodes $G$ into $T$ sub-graphs, that
-are then assigned and processed by a thread. In the case where the subgraph of a
-given thread has no more work available (no more rules to run) then the thread
-is allowed to steal nodes from another thread and update its own sub-graph.
-
+As already explained in Chapter~\ref{chapter:implementation}, the set of nodes
+of an LM program is seen as a graph data structure $G = (V, E)$ with nodes $V$
+and edges $E$ where threads $T$ perform work. Our implementation also allows
+threads to steal nodes from other threads in order to improve scalability.
 However, there are many scheduling details that are left undefined. How should a
 thread schedule the computation of its sub-graph? Is node stealing beneficial to
 all programs? What is the best sub-graph partitioning for a given LM program?
@@ -24,9 +9,7 @@ The answer to all these questions is \emph{coordination}, a mechanism that we
 introduce to allow the programmer to specify custom scheduling and node
 partitioning policies. This is an important functionality because LM uses linear
 logic and thus the order in which nodes are scheduled can impact the performance
-and even the results of the program. Note that when using classical logic (or
-persistent logic), the computation order does not matter and the end result is
-always the same since the program is strictly monotonic.
+and even the results of the program.
 
 \section{Rationale}
 
@@ -41,7 +24,6 @@ always the same since the program is strictly monotonic.
 \input{coordination/scheduling}
 
 \section{Partitioning Facts}
-
 \input{coordination/partitioning}
 
 \section{Global Directives}

@@ -6,7 +6,7 @@ In terms of action facts, we have the
 following:
 
 \begin{itemize}
-   \item \code{set-cpu(node A, thread T)}: Moves node \texttt{A} to thread
+   \item \code{set-thread(node A, thread T)}: Moves node \texttt{A} to thread
    \texttt{T}.
 
    \item \code{set-affinity(node A, node B)}: Places node \texttt{B} in
@@ -20,10 +20,10 @@ following:
 
 \end{itemize}
 
-As an example of \texttt{set-cpu}, consider the graph in
+As an example of \texttt{set-thread}, consider the graph in
 Fig.~\ref{fig:coordination:priorities}. If a coordination fact
-\texttt{set-cpu(@2, T1)} is derived, then node \texttt{@2} will become part of
-the sub-graph of thread \texttt{T1}. The result is shown in
+\texttt{set-thread(@2, T1)} is derived, then node \texttt{@2} will become part
+of the sub-graph of thread \texttt{T1}. The result is shown in
 Fig.~\ref{fig:coordination:partitioning}.
 
 \begin{figure}
@@ -31,7 +31,7 @@ Fig.~\ref{fig:coordination:partitioning}.
    \includegraphics[width=0.7\textwidth]{figures/coordination/partitioning.pdf}
 \end{center}
 \caption{Moving node \texttt{@2} to thread \texttt{T1} using
-   \texttt{set-cpu(@2, T1)}.}
+   \texttt{set-thread(@2, T1)}.}
 \label{fig:coordination:partitioning}
 \end{figure}
 
@@ -41,17 +41,18 @@ follows:
 
 \begin{itemize}
 
-   \item \code{cpu-id(node A, node B, thread T)}: Store at node \texttt{A} which
-      thread \texttt{T}, \texttt{B} is actually running on.
+   \item \code{thread-id(node A, thread T)}: Store at node \texttt{A} which
+      thread \texttt{T}, \texttt{B} is running on.
 
-   \item \code{is-moving(node A, node B)}: Fact available at node \texttt{A} if
-      \texttt{B} is allowed to move between threads.
+   \item \code{is-moving(node A)}: Fact available at node \texttt{A} if
+      \texttt{A} is allowed to move between threads.
 
-   \item \code{is-static(node A, node B)}: Fact available at node \texttt{A} if
-      \texttt{B} is not allowed to move between threads.
+   \item \code{is-static(node A)}: Fact available at node \texttt{A} if
+      \texttt{A} is not allowed to move between threads.
 
-   \item \code{just-moved(node A)}: Linear fact derived after the \code{set-cpu}
-      action is performed and the node is running on the target thread.
+   \item \code{just-moved(node A)}: Linear fact derived after the
+      \code{set-thread} action is performed and the node is running on the
+      target thread.
 
 \end{itemize}
 

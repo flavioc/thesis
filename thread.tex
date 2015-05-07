@@ -68,8 +68,8 @@ token(A, All, [A | Next])
          0 = count(All, L),
          0 = count(Next, L),
          *underline{priority(A, L, P)}, P > 0.0,
-         *underline{cpu-id(A, L, Id1)},
-         *underline{cpu-id(A, A, Id2)}, Id1 = Id2 |
+         *underline{thread-id(L, Id1)},
+         *underline{thread-id(A, Id2)}, Id1 = Id2 |
          send-token(A, All, Next ++ L)].
 
 send-token(A, All, [])
