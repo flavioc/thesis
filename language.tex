@@ -25,31 +25,31 @@ three basic LM programs.
 \subsection{First Example: Key/value Dictionary}
 
 \begin{figure}[ht]
-\begin{Verbatim}[numbers=right,fontsize=\scriptsize]
-type left(node, node).
+\begin{Verbatim}[numbers=right,fontsize=\codesize,commandchars=\*\{\}]
+type left(node, node).*label{line:language:dict_header1}
 type right(node, node).
 type linear value(node, int Key, string Value).
-type linear replace(node, int Key, string Value).
+type linear replace(node, int Key, string Value).*label{line:language:dict_header2}
 
-replace(A, K, New),
+replace(A, K, New),*label{line:language:dict_first1}
 value(A, K, Old)
-   -o value(A, K, New). // we found our key
+   -o value(A, K, New). // we found our key*label{line:language:dict_first2}
 
-replace(A, RKey, RValue),
+replace(A, RKey, RValue),*label{line:language:dict_second1}
 value(A, Key, Value),
 !left(A, B),
 RKey < Key
    -o value(A, Key, Value),
-      replace(B, RKey, RValue). // go left
+      replace(B, RKey, RValue). // go left*label{line:language:dict_second2}
 
-replace(A, RKey, RValue),
+replace(A, RKey, RValue),*label{line:language:dict_third1}
 value(A, Key, Value),
 !right(A, B),
 RKey > Key
    -o value(A, Key, Value),
-      replace(B, RKey, RValue). // go right
+      replace(B, RKey, RValue). // go right*label{line:language:dict_third2}
 
-// initial configuration
+// initial configuration*label{line:language:dict_axioms1}
 !left(@0, @1).     !right(@0, @2).
 !left(@1, @3).     !right(@1, @4). 
 !left(@2, @5).     !right(@2, @6).
@@ -60,7 +60,7 @@ value(@4, 2, "e").   value(@5, 4, "f").
 value(@6, 6, "g").
 
 // update key 6 to value "x"
-replace(@0, 6, "x").
+replace(@0, 6, "x").*label{line:language:dict_axioms2}
 \end{Verbatim}
 \caption{LM program for replacing a key's value in a binary tree dictionary.}
 \label{code:btree_replace}
@@ -68,33 +68,38 @@ replace(@0, 6, "x").
 
 Our first example, shown in Fig.~\ref{code:btree_replace}, implements the key
 update operation for a binary tree represented as a key/value dictionary. Each
-LM node represents a binary tree node.  We first declare all the predicates
-(lines 1-4), which represent the kinds of facts we are going to use. Note that
-the first argument of every predicate must be typed as \texttt{node} because the
-first argument indicates where the node lives in the graph. Predicates
-\texttt{left/2} and \texttt{right/2} are persistent while \texttt{value/3} and
-\texttt{replace/3} are linear. Persistent predicates are preceded with a
-\texttt{!} symbol in LM rules for improved readability. Linear predicate
-\texttt{value/3} assigns a key/value pair to a node that can be updated later.
-The \texttt{replace/3} linear predicate represents an update operation where the
-key in the second argument will be updated to the value in the third argument.
+LM node represents a binary tree node. We first declare all the predicates
+(lines~\ref{line:language:dict_header1}-\ref{line:language:dict_header2}), which
+represent the kinds of facts we are going to use. Note that the first argument
+of every predicate must be typed as \texttt{node} because the first argument
+indicates where the node lives in the graph. Predicates \texttt{left/2} and
+\texttt{right/2} are persistent while \texttt{value/3} and \texttt{replace/3}
+are linear. Persistent predicates are preceded with a \texttt{!} symbol in LM
+rules for improved readability. Linear predicate \texttt{value/3} assigns a
+key/value pair to a node that can be updated later.  The \texttt{replace/3}
+linear predicate represents an update operation where the key in the second
+argument will be updated to the value in the third argument.
 
 The algorithm uses three rules for the three possible cases of updating a key's
-value: the first rule (lines 6-8) performs the update by removing
-\texttt{replace(A, K, New)} and \texttt{value(A, K, Old)} and deriving
-\texttt{value(A, K, New)}; the second rule (lines 10-15) recursively picks the
-left branch for the update operation by deleting \texttt{replace(A, RKey,
-RValue)} and re-deriving it at node \texttt{B}; and the third rule (lines
-17-22) picks the right branch. Note that in all the rules, the body of
-each rule uses facts from the same node (in this particular case,
-\texttt{A}), but the head of the rule may derive facts in other
-nodes (e.g., the second and third rules) because a node variable was
-instantiated in the body of the rule. Moreover, persistent facts used in
-the body of the rule are not deleted after rule application - only linear
-facts are. The axioms of this program are presented in lines 24-35 and
-they describe the initial binary tree configuration, including keys and
-values.  The axiom \texttt{update(@0, 6, "x")} instantiated at the root
-node \texttt{@3} manifests the intent to change the value of key 6 to 7.
+value: the first rule
+(lines~\ref{line:language:dict_first1}-\ref{line:language:dict_first2}) performs
+the update by removing \texttt{replace(A, K, New)} and \texttt{value(A, K, Old)}
+and deriving \texttt{value(A, K, New)}; the second rule
+(lines~\ref{line:language:dict_second1}-\ref{line:language:dict_second2})
+recursively picks the left branch for the update operation by deleting
+\texttt{replace(A, RKey, RValue)} and re-deriving it at node \texttt{B}; and the
+third rule
+(lines~\ref{line:language:dict_third1}-\ref{line:language:dict_third2}) picks
+the right branch. Note that in all the rules, the body of each rule uses facts
+from the same node (in this particular case, \texttt{A}), but the head of the
+rule may derive facts in other nodes (e.g., the second and third rules) because
+a node variable was instantiated in the body of the rule. Moreover, persistent
+facts used in the body of the rule are not deleted after rule application - only
+linear facts are. The axioms of this program are presented in
+lines~\ref{line:language:dict_axioms1}-\ref{line:language:dict_axioms2} and they
+describe the initial binary tree configuration, including keys and values.  The
+axiom \texttt{update(@0, 6, "x")} instantiated at the root node \texttt{@3}
+manifests the intent to change the value of key 6 to 7.
 
 Fig.~\ref{fig:btree_trace} represents the trace of the algorithm. The program
 database is partitioned by the seven nodes using the first argument of each
@@ -150,37 +155,40 @@ predicate \texttt{processed/2} keeps count of the number of messages routed at
 each node.
 
 \begin{figure}[h!]
-\scriptsize\begin{Verbatim}[numbers=left]
+\begin{Verbatim}[numbers=left,commandchars=\*\{\},fontsize=\codesize]
 type edge(node, node Neighbor).
 type linear message(node, string Content, list node Routing).
 type linear processed(node, int Total).
 
-!edge(A, B),
+!edge(A, B),*label{line:language:message_first1}
 message(A, Content, [B | L]),
 processed(A, N)
    -o message(B, Content, L),
-      processed(A, N + 1).
+      processed(A, N + 1).*label{line:language:message_first2}
 
-message(A, Content, []),
+message(A, Content, []),*label{line:language:message_second1}
 processed(A, N)
-   -o processed(A, N + 1).
+   -o processed(A, N + 1).*label{line:language:message_second2}
 
 !edge(@1, @2). !edge(@2, @3). !edge(@3, @4). !edge(@1, @3).
 processed(@1, 0). processed(@2, 0). processed(@3, 0). processed(@4, 0).
-message(@1, "hello world", [@3, @4]).
+message(@1, "hello world", [@3, @4]).*label{line:language:message_message}
 \end{Verbatim}
 \caption{Code for routing messages in a graph. There is only one message ("hello
 world") to route through nodes \texttt{@3} and \texttt{@4}.}
 \label{code:message}
 \end{figure}
 
-The first rule (lines 5-9) grabs the next node in the route list (third argument
-of \texttt{message/3}) and ensures that a communication edge exists
-(through \texttt{edge(A,B)}). We increase the number of processed messages by
-consuming \texttt{processed(A,~N)} and deriving \texttt{processed(A,~N+1)}.
-When the route list is empty, the message has reached its destination and thus
-it is consumed (rule in lines 11-13).  Note that we only need to send one
-message since there is only one \texttt{message} axiom (line 17).
+The first rule
+(lines~\ref{line:language:message_first1}-\ref{line:language:message_first2})
+grabs the next node in the route list (third argument of \texttt{message/3}) and
+ensures that a communication edge exists (through \texttt{edge(A,~B)}). We
+increase the number of processed messages by consuming \texttt{processed(A,~N)}
+and deriving \texttt{processed(A,~N+1)}.  When the route list is empty, the
+message has reached its destination and thus it is consumed (rule in lines
+\ref{line:language:message_first1}-\ref{line:language:message_first2}).  Note
+that we only need to send one message since there is only one \texttt{message}
+axiom (line~\ref{line:language:message_message}).
 
 In Fig.~\ref{fig:message_trace} we present an execution trace of the message
 routing program.  The database is represented as a graph structure where the
@@ -224,23 +232,23 @@ again, the message is then routed to node \texttt{@4}
 \subsection{Third Example: Graph Visit}
 
 \begin{figure}[h!]
-\scriptsize\begin{Verbatim}[numbers=left]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\[\]]
 type route edge(node, node).
 type linear visit(node).
 type linear unvisited(node).
 type linear visited(node).
 
-// the program rules
+// the program rules*label[line:language:visit_first1]
 visit(A), unvisited(A) -o
-   visited(A), {B | !edge(A, B) | visit(B)}.
+   visited(A), {B | !edge(A, B) | visit(B)}.*label[line:language:visit_first2]*label[line:language:visit_comprehension]
 
-visit(A), visited(A) -o visited(A).
+visit(A), visited(A) -o visited(A).*label[line:language:visit_second]
 
 // axioms: the input data
 !edge(@1, @2). !edge(@2, @3). !edge(@1, @4). !edge(@2, @4).
 unvisited(@1). unvisited(@2). unvisited(@3). unvisited(@4).
 
-visit(@1).
+visit(@1).*label[line:language:visit_axiom]
 \end{Verbatim}
   \caption{Visit program. Nodes reachable from node \texttt{@1} will be marked
      as \texttt{visited}.}
@@ -250,14 +258,15 @@ visit(@1).
 
 Our final example shown in Fig.~\ref{code:visit} presents another complete LM
 program that, for a given graph of nodes, performs a visit to all nodes
-reachable from node \texttt{@1}.  The first rule of the program (lines 7-8)
-visits node \texttt{A} for the first time: fact \texttt{visited(A)} is
-derived and a \emph{comprehension} construct is derived in order to go
-through all the edge facts and then derive \texttt{visit(B)} for each
-neighbor \texttt{B}.  The second rule (line 10) is fired when the node is
+reachable from node \texttt{@1}.  The first rule of the program
+(lines~\ref{line:language:visit_first1}-\ref{line:language:visit_first2}) visits
+node \texttt{A} for the first time: fact \texttt{visited(A)} is derived and a
+\emph{comprehension} construct is derived in order to go through all the edge
+facts and then derive \texttt{visit(B)} for each neighbor \texttt{B}.  The
+second rule (line~\ref{line:language:visit_second}) is fired when the node is
 already visited more than once: we keep the \texttt{visited} fact and delete
-\texttt{visit/1}.  Node \texttt{@1} starts with the \texttt{visit(@1)} fact
-(line 16).
+\texttt{visit/1}. Node \texttt{@1} starts with the \texttt{visit(@1)} fact (line
+\ref{line:language:visit_axiom}).
 
 Fig.~\ref{fig:exec_trace} shows a possible execution trace for the visit
 program.  After applying the first rule at node \texttt{@1} we get the database
@@ -429,18 +438,20 @@ Table~\ref{tbl:ast} shows the abstract syntax for rules in LM.  A LM program
 $Prog$ consists of a list of derivation rules $\Sigma$ and a database $D$.  Each
 derivation rule $R$ can be written as $BE \lolli HE$ where $BE$ is the body of a
 rule and $HE$ is the head. Rules without bodies are allowed in LM and they are
-called \textit{axioms} (lines 13-16 in Fig.~\ref{code:visit}). Rules without
-heads are also allowed.
+called \textit{axioms}
+(lines~\ref{line:language:dict_axioms1}-\ref{line:language:dict_axioms2} in
+Fig.~\ref{code:btree_replace}). Rules without heads are also allowed.
 
 The body of a rule, $BE$, may contain linear ($L$) and persistent ($P$)
 \emph{fact expressions} and constraints ($C$). Fact expressions are template
 facts that instantiate variables (from facts in the database) such as
-\texttt{visit(A)} in line 10 in Fig.~\ref{code:visit}. Variables can be used
-again in the body for matching and also in the head when instantiating facts.
-Constraints are boolean expressions that must be true in order for the rule
-to be fired. Constraints use variables from fact expressions and are built
-using a small functional language that includes mathematical operations,
-boolean operations, external functions and literal values.
+\texttt{visit(A)} in line~\ref{line:language:visit_second} in
+Fig.~\ref{code:visit}. Variables can be used again in the body for matching and
+also in the head when instantiating facts.  Constraints are boolean expressions
+that must be true in order for the rule to be fired. Constraints use variables
+from fact expressions and are built using a small functional language that
+includes mathematical operations, boolean operations, external functions and
+literal values.
 
 The head of a rule, $HE$, contains linear ($L$) and persistent ($P$) \emph{fact
 templates} which are uninstantiated facts and will derive new facts. The head
@@ -529,16 +540,16 @@ use of the exists construct, where we derive \texttt{perform-work} at a new node
 
 Sometimes we need to consume a linear fact and then immediately generate several
 facts depending on the contents of the database. To solve this particular need,
-we created the concept of comprehensions, which are sub-rules that are
-applied with all possible combinations of facts from the database. In a
-comprehension $\comprehension{\widehat{x}}{SB}{SH}$, $\widehat{x}$ is a
-list of variables, $SB$ is the body of the comprehension and $SH$ is the
-head.  The body $SB$ is used to generate all possible combinations for the
-head $SH$, according to the facts in the database.  We have already seen
-an example of comprehensions in the visit program (Fig.~\ref{code:visit}
-line 8).  Here, we match \texttt{!edge(A, B)} using all the
-combinations available in the database and for each combination we derive
-\texttt{visit(B)}.
+we created the concept of comprehensions, which are sub-rules that are applied
+with all possible combinations of facts from the database. In a comprehension
+$\comprehension{\widehat{x}}{SB}{SH}$, $\widehat{x}$ is a list of variables,
+$SB$ is the body of the comprehension and $SH$ is the head.  The body $SB$ is
+used to generate all possible combinations for the head $SH$, according to the
+facts in the database.  We have already seen an example of comprehensions in the
+visit program (Fig.~\ref{code:visit}
+line~\ref{line:language:visit_comprehension}). Here, we match \texttt{!edge(A,
+B)} using all the combinations available in the database and for each
+combination we derive \texttt{visit(B)}.
 
 \subsection{Aggregates}
 

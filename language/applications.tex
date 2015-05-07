@@ -11,22 +11,23 @@ easy to prove for programs written in LM.
 The problem of checking if a graph is bipartite can be seen as a 2-color graph
 coloring problem.  The code for this algorithm is shown in
 Fig.~\ref{language:code:bichecking}. All nodes in the graph start as
-\texttt{uncolored},
-because they do not have a color yet. The axiom \texttt{visit(@1, 1)} is
-instantiated at node \texttt{@1} (line 9) in order to color it with color 1.
+\texttt{uncolored}, because they do not have a color yet. The axiom
+\texttt{visit(@1, 1)} is instantiated at node \texttt{@1}
+(line~\ref{line:language:bc_axiom}) in order to color it with color 1.
 
 If a node is \texttt{uncolored} and needs to be marked with a color \texttt{P}
-then the rule in lines 11-12 is applied. We consume the \texttt{uncolored} fact
-and derive a \texttt{colored(A, P)} to effectively color the node with
-\texttt{P}. We also derive \texttt{visit(B, next(P))} in neighbor nodes to color
-them with the other color. Line 
+then the rule in
+lines~\ref{line:language:bc_first1}-\ref{line:language:bc_first2} is applied. We
+consume the \texttt{uncolored} fact and derive a \texttt{colored(A, P)} to
+effectively color the node with \texttt{P}. We also derive \texttt{visit(B,
+next(P))} in neighbor nodes to color them with the other color. Line 
 
 The coloring can fail if a node is already colored with a color \texttt{P} and
-needs to be colored with a different color (line 15) or if it has already failed
-(line 16).
+needs to be colored with a different color (line~\ref{line:language:bc_third})
+or if it has already failed (line~\ref{line:language:bc_fourth}).
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\scriptsize]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\[\]]
 type route edge(node, node).
 type linear visit(node, int).
 type linear uncolored(node).
@@ -35,14 +36,15 @@ type linear fail(node).
 
 fun next(int X) : int = if X <> 1 then 1 else 2 end.
 
-visit(@1, 1).
+visit(@1, 1).*label[line:language:bc_axiom]
 
-visit(A, P), uncolored(A)
-   -o {B | !edge(A, B) | visit(B, next(P))}, colored(A, P).
+visit(A, P), uncolored(A)*label[line:language:bc_first1]
+   -o {B | !edge(A, B) | visit(B, next(P))},
+      colored(A, P).*label[line:language:bc_first2]
 
-visit(A, P), colored(A, P) -o colored(A, P).
-visit(A, P1), colored(A, P2), P1 <> P2 -o fail(A).
-visit(A, P), fail(A) -o fail(A).
+visit(A, P), colored(A, P) -o colored(A, P).*label[line:language:bc_second]
+visit(A, P1), colored(A, P2), P1 <> P2 -o fail(A).*label[line:language:bc_third]
+visit(A, P), fail(A) -o fail(A).*label[line:language:bc_fourth]
 \end{Verbatim}
   \caption{Bipartiteness Checking program.}
   \label{language:code:bichecking}
@@ -132,22 +134,27 @@ sets $C_{true}$ and $C_{false}$, while sets $F$ and $U$ are empty.
 
 PageRank~\cite{Page:2001:MNR} is a well known graph algorithm that is used to
 compute the relative relevance of web pages.  The code for a synchronous version
-of the algorithm is shown in Fig.~\ref{language:code:pagerank}.  As the name indicates,
-the pagerank is computed for a certain number of iterations. The initial
-pagerank is the same for every page and is initialized in the first rule (lines
-15-16) along with an accumulator.
+of the algorithm is shown in Fig.~\ref{language:code:pagerank}. As the name
+indicates, the pagerank is computed for a certain number of iterations. The
+initial pagerank is the same for every page and is initialized in the first rule
+(lines
+\ref{line:language:spagerank_first1}-\ref{line:language:spagerank_first2}) along
+with an accumulator.
 
-The second rule of the program (lines 17-19) propagates a newly computed
-pagerank value to all neighbors. The fact \texttt{neighbor-pagerank} informs the
-neighbor node about the pagerank value of node \texttt{A} for iteration
-\texttt{Iter + 1}. For every iteration, each node will accumulate the all the
-\texttt{neighbor-pagerank} facts into the \texttt{accumulator} fact (lines
-27-28). When all inbound neighbor pagerank values are accumulated, the third
-rule (lines 21-25) is fired and a pagerank value is derived for iteration
-\texttt{Iter}.
+The second rule of the program
+(lines~\ref{line:language:spagerank_second1}-\ref{line:language:spagerank_second2})
+propagates a newly computed pagerank value to all neighbors. The fact
+\texttt{neighbor-pagerank} informs the neighbor node about the pagerank value of
+node \texttt{A} for iteration \texttt{Iter + 1}. For every iteration, each node
+will accumulate the all the \texttt{neighbor-pagerank} facts into the
+\texttt{accumulator} fact (lines
+\ref{line:language:spagerank_fourth1}-\ref{line:language:spagerank_fourth2}).
+When all inbound neighbor pagerank values are accumulated, the third rule
+(lines~\ref{line:language:spagerank_third1}-\ref{line:language:spagerank_third2})
+is fired and a pagerank value is derived for iteration \texttt{Iter}.
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\scriptsize]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\[\]]
 type outbound(node, node, float).
 type linear pagerank(node, float, int).
 type numInbound(node, int).
@@ -161,21 +168,21 @@ const pages = @world. // number of pages in the graph.
 
 start(A).
 
-start(A), !numInbound(A, T)
-   -o accumulator(A, 0.0, T, 1), pagerank(A, 1.0 / float(pages), 0).
+start(A), !numInbound(A, T)*label[line:language:spagerank_first1]
+   -o accumulator(A, 0.0, T, 1), pagerank(A, 1.0 / float(pages), 0).*label[line:language:spagerank_first2]
 
-pagerank(A, V, Iter), // propagate new pagerank value
+pagerank(A, V, Iter), // propagate new pagerank value*label[line:language:spagerank_second1]
 Iter < iterations
-   -o {B, W | !outbound(A, B, W) | neighbor-pagerank(B, A, V * W, Iter + 1)}.
+   -o {B, W | !outbound(A, B, W) | neighbor-pagerank(B, A, V * W, Iter + 1)}.*label[line:language:spagerank_second2]
 
-accumulator(A, Acc, 0, Iter), // new pagerank
+accumulator(A, Acc, 0, Iter), // new pagerank*label[line:language:spagerank_third1]
 !numInbound(A, T),
 V = damping + (1.0 - damping) * Acc,
 Iter <= iterations
-   -o pagerank(A, V, Iter), accumulator(A, 0.0, T, Iter + 1).
+   -o pagerank(A, V, Iter), accumulator(A, 0.0, T, Iter + 1).*label[line:language:spagerank_third2]
 	
-neighbor-pagerank(A, B, V, Iter), accumulator(A, Acc, T, Iter)
-   -o accumulator(A, Acc + V, T - 1, Iter).
+neighbor-pagerank(A, B, V, Iter), accumulator(A, Acc, T, Iter)*label[line:language:spagerank_fourth1]
+   -o accumulator(A, Acc + V, T - 1, Iter).*label[line:language:spagerank_fourth2]
 \end{Verbatim}
 \caption{Synchronous PageRank program.}
 \label{language:code:pagerank}
@@ -190,13 +197,16 @@ version, where two major differences can be observed: (1) there is a linear fact
 \texttt{neighbor-pagerank} containing the most up-to-date pagerank value of a
 neighbor node; (2) a new \texttt{update} fact that forces the node to re-compute
 its pagerank by processing the currently available \texttt{neighbor-pagerank}
-facts. Rules in lines 13-21 update the \texttt{neighbor-pagerank} values, while
-rule in lines 23-29 asynchronously update the current pagerank value. This last
-rule derives multiple \texttt{new-neighbor-rank} that is used to inform the
-neighbor about the new pagerank value.
+facts. Rules in
+lines~\ref{line:language:apagerank_update1}-\ref{line:language:apagerank_update2}
+update the \texttt{neighbor-pagerank} values, while rule in
+lines~\ref{line:language:apagerank_new1}-\ref{line:language:apagerank_new2}
+asynchronously update the current pagerank value. This last rule derives
+multiple \texttt{new-neighbor-rank} that is used to inform the neighbor about
+the new pagerank value.
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\scriptsize]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\#\&]
 type outbound(node, node, float).
 type linear pagerank(node, float, int).
 type numInbound(node, int).
@@ -209,7 +219,7 @@ pagerank(A, 1.0 / float(pages), 0).
 update(A).
 neighbor-pagerank(A, B, 1.0 / float(pages), 0). // pagerank of B is ...
 
-// save incoming pagerank value.
+// save incoming pagerank value.*label#line:language:apagerank_update1&
 new-neighbor-rank(A, B, New, Iteration),
 neighbor-pagerank(A, B, Old, OldIteration),
 Iteration > OldIteration
@@ -217,7 +227,7 @@ Iteration > OldIteration
 new-neighbor-rank(A, B, New, Iteration),
 neighbor-pagerank(A, B, Old, OldIteration),
 Iteration <= OldIteration
-   -o neighbor-pagerank(A, B, Old, OldIteration).
+   -o neighbor-pagerank(A, B, Old, OldIteration).*label#line:language:apagerank_update2&
 
 sum-ranks(A, Acc),
 NewRank = damping/float(pages) + (1.0 - damping) * Acc,
@@ -229,10 +239,10 @@ pagerank(A, OldRank, Iteration)
 
 update(A), update(A) -o update(A).
 
-update(A),
+update(A),*label#line:language:apagerank_new1&
 !numInbound(A, T)
    -o [sum => V | B, W, Val, Iter | neighbor-pagerank(A, B, Val, Iter),
-         V = Val/float(T) | neighbor-pagerank(A, B, Val, Iter) | sum-ranks(A, V)].
+         V = Val/float(T) | neighbor-pagerank(A, B, Val, Iter) | sum-ranks(A, V)].*label#line:language:apagerank_new2&
 \end{Verbatim}
 \caption{Asynchronous PageRank program.}
 \label{language:code:async_pagerank}
@@ -431,7 +441,6 @@ program will terminate.
 
 \end{proof}
 
-
 \subsection{Quick-Sort}
 
 The Quick-Sort algorithm is a divide and conquer sorting algorithm that works by splitting
@@ -449,22 +458,28 @@ functional programming language.
 Fig.~\ref{language:code:quicksort} presents the code for the quick-sort
 algorithm in LM. For each sublist to sort, we start with a \texttt{down} fact
 that must be (eventually) transformed into an \texttt{up} fact, where the
-sublist in the \texttt{up} fact is sorted.  In line 11 we start with the initial
-list at node \texttt{@0}. If the list has a small number of items, then lines
-13-16 will immediately sort it, otherwise the rule in line 17 is applied.
-\texttt{split} first splits the list using the pivot \texttt{Pivot} using rules
-in lines 23-26.  When there is nothing more to split, the rule in lines 19-21
-uses an exists construct to create nodes \texttt{B} and \texttt{C}. The sublists
-are then sent to nodes \texttt{B} and \texttt{C} using \texttt{down} facts.
-Note, however, that \texttt{back} facts are also derived and are going to be
-used to send the sorted list back to the parent using the rule in line 39.
+sublist in the \texttt{up} fact is sorted.  In line~\ref{line:language:qs_axiom}
+we start with the initial list at node \texttt{@0}. If the list has a small
+number of items, then
+lines~\ref{line:language:qs_small1}-\ref{line:language:qs_small2} will
+immediately sort it, otherwise the rule in line 17 is applied.  \texttt{split}
+first splits the list using the pivot \texttt{Pivot} using rules in lines 23-26.
+When there is nothing more to split, the rule in
+lines~\ref{line:language:qs_exists1}-\ref{line:language:qs_exists2} uses an
+exists construct to create nodes \texttt{B} and \texttt{C}. The sublists are
+then sent to nodes \texttt{B} and \texttt{C} using \texttt{down} facts.  Note,
+however, that \texttt{back} facts are also derived and are going to be used to
+send the sorted list back to the parent using the rule in
+line~\ref{line:language:qs_back}.
 
 When the sublists are finally sorted, two \texttt{sorted} facts are derived that
-must be matched against \texttt{waitpivot} in the rule in lines 28-31. The sorted
-sublists are appended and then an \texttt{up} fact is finally derived (line 37).
+must be matched against \texttt{waitpivot} in the rule in
+lines~\ref{line:language:qs_sorted1}-\ref{line:language:qs_sorted2}. The sorted
+sublists are appended and then an \texttt{up} fact is finally derived
+(line~\ref{line:language:qs_up}).
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\scriptsize]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\{\}]
 type route back(node, node).
 type linear down(node, list int).
 type linear up(node, list int).
@@ -474,35 +489,35 @@ type linear waitpivot(node, int, node, node).
 type linear reverse(node, list int, list int, list int).
 type linear append(node, list int, list int).
 
-down(@0, tosort).
+down(@0, tosort).*label{line:language:qs_axiom}
 
-down(A, []) -o up(A, []).
+down(A, []) -o up(A, []).*label{line:language:qs_small1}
 down(A, [X]) -o up(A, [X]).
 down(A, [X, Y]), X < Y -o up(A, [X, Y]).
-down(A, [X, Y]), X >= Y -o up(A, [Y, X]).
+down(A, [X, Y]), X >= Y -o up(A, [Y, X]).*label{line:language:qs_small2}
 down(A, [Pivot | Xs]) -o split(A, Pivot, Xs, [], []).
 
-split(A, Pivot, [], Smaller, Greater) -o
+split(A, Pivot, [], Smaller, Greater) -o*label{line:language:qs_exists1}
    exists B, C. (back(B, A), back(C, A),
-                 down(B, Smaller), down(C, Greater), waitpivot(A, Pivot, B, C)).
+                 down(B, Smaller), down(C, Greater), waitpivot(A, Pivot, B, C)).*label{line:language:qs_exists2}
 
 split(A, Pivot, [X | Xs], Smaller, Greater), X <= Pivot
    -o split(A, Pivot, Xs, [Y | Smaller], Greater).
 split(A, Pivot, [X | Xs], Smaller, Greater), X > Pivot
    -o split(A, Pivot, Xs, Smaller, [Y | Greater]).
    
-waitpivot(A, Pivot, NodeSmaller, NodeGreater),
+waitpivot(A, Pivot, NodeSmaller, NodeGreater),*label{line:language:qs_sorted1}
 sorted(A, NodeSmaller, Smaller),
 sorted(A, NodeGreater, Greater)
-   -o reverse(A, Smaller, [], [Pivot | Greater]).
+   -o reverse(A, Smaller, [], [Pivot | Greater]).*label{line:language:qs_sorted2}
 
 reverse(A, [X | Xs], S, G) -o reverse(A, Xs, [X | S], G).
 reverse(A, [], S, G) -o append(A, S, G).
 
 append(A, [X | Xs], L) -o append(A, Xs, [X | L]).
-append(A, [], Result) -o up(A, Result).
+append(A, [], Result) -o up(A, Result).*label{line:language:qs_up}
 
-up(A, L), back(A, B) -o sorted(B, A, L).
+up(A, L), back(A, B) -o sorted(B, A, L).*label{line:language:qs_back}
 \end{Verbatim}
   \caption{Quick-Sort program written in LM.}
   \label{language:code:quicksort}
@@ -561,7 +576,7 @@ By induction on the size of \texttt{L}.
 The base cases are proven trivially.
 
 In the inductive case we have:
-\begin{Verbatim}[fontsize=\scriptsize]
+\begin{Verbatim}[fontsize=\codesize]
 down(A, [Pivot | Xs]) -o split(A, Pivot, Xs, [], []).
 \end{Verbatim}
 
@@ -569,7 +584,7 @@ We necessarily derive \texttt{split(A, Pivot, Xs, [], [])}. Using the split
 lemma we get \texttt{split(A, Pivot, Smaller, Greater)}. With this linear fact
 we can only use the rule:
 
-\begin{Verbatim}[fontsize=\scriptsize]
+\begin{Verbatim}[fontsize=\codesize]
 split(A, Pivot, [], Smaller, Greater) -o
    exists B, C. (back(B, A), back(C, A),
                  down(B, Smaller), down(C, Greater), waitpivot(A, Pivot, B, C)).
@@ -582,7 +597,7 @@ We derive \texttt{back(B, A)}, \texttt{back(C, A)}, \texttt{down(B, Smaller)},
 Smaller')} and \texttt{up(C, Greater')}.  These last two facts will be applied
 using the following rule:
 
-\begin{Verbatim}[fontsize=\scriptsize]
+\begin{Verbatim}[fontsize=\codesize]
 up(A, L), back(A, B) -o sorted(B, A, L).
 \end{Verbatim}
 
@@ -590,7 +605,7 @@ Generating \texttt{sorted(A, B, Smaller')} and \texttt{sorted(A, C, Greater')}.
 Furthermore, we can use the only rule that accepts \texttt{sorted} and
 \texttt{waitpivot} facts:
 
-\begin{Verbatim}[fontsize=\scriptsize]
+\begin{Verbatim}[fontsize=\codesize]
 waitpivot(A, Pivot, NodeSmaller, NodeGreater),
 sorted(A, NodeSmaller, Smaller),
 sorted(A, NodeGreater, Greater)

@@ -52,7 +52,6 @@ thesis.pdf: thesis.tex	\
 		lld/aggregates_soundness.tex \
 		lld.tex hld.tex sequent_calculus.tex
 	pdflatex thesis.tex
-	pdflatex thesis.tex
 	bibtex thesis
 	pdflatex thesis.tex
 	pdflatex thesis.tex
