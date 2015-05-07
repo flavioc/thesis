@@ -20,7 +20,7 @@ then the rule in
 lines~\ref{line:language:bc_first1}-\ref{line:language:bc_first2} is applied. We
 consume the \texttt{uncolored} fact and derive a \texttt{colored(A, P)} to
 effectively color the node with \texttt{P}. We also derive \texttt{visit(B,
-next(P))} in neighbor nodes to color them with the other color. Line 
+next(P))} in neighbor nodes to color them with the other color. 
 
 The coloring can fail if a node is already colored with a color \texttt{P} and
 needs to be colored with a different color (line~\ref{line:language:bc_third})
@@ -462,8 +462,9 @@ sublist in the \texttt{up} fact is sorted.  In line~\ref{line:language:qs_axiom}
 we start with the initial list at node \texttt{@0}. If the list has a small
 number of items, then
 lines~\ref{line:language:qs_small1}-\ref{line:language:qs_small2} will
-immediately sort it, otherwise the rule in line 17 is applied.  \texttt{split}
-first splits the list using the pivot \texttt{Pivot} using rules in lines 23-26.
+immediately sort it, otherwise the rule in line~\ref{line:language:qs_complex} is applied.  \texttt{split}
+first splits the list using the pivot \texttt{Pivot} using rules in
+lines~\ref{line:language:qs_split1}-\ref{line:language:qs_split2}.
 When there is nothing more to split, the rule in
 lines~\ref{line:language:qs_exists1}-\ref{line:language:qs_exists2} uses an
 exists construct to create nodes \texttt{B} and \texttt{C}. The sublists are
@@ -495,16 +496,16 @@ down(A, []) -o up(A, []).*label{line:language:qs_small1}
 down(A, [X]) -o up(A, [X]).
 down(A, [X, Y]), X < Y -o up(A, [X, Y]).
 down(A, [X, Y]), X >= Y -o up(A, [Y, X]).*label{line:language:qs_small2}
-down(A, [Pivot | Xs]) -o split(A, Pivot, Xs, [], []).
+down(A, [Pivot | Xs]) -o split(A, Pivot, Xs, [], []).*label{line:language:qs_complex}
 
 split(A, Pivot, [], Smaller, Greater) -o*label{line:language:qs_exists1}
    exists B, C. (back(B, A), back(C, A),
                  down(B, Smaller), down(C, Greater), waitpivot(A, Pivot, B, C)).*label{line:language:qs_exists2}
 
-split(A, Pivot, [X | Xs], Smaller, Greater), X <= Pivot
+split(A, Pivot, [X | Xs], Smaller, Greater), X <= Pivot*label{line:language:qs_split1}
    -o split(A, Pivot, Xs, [Y | Smaller], Greater).
 split(A, Pivot, [X | Xs], Smaller, Greater), X > Pivot
-   -o split(A, Pivot, Xs, Smaller, [Y | Greater]).
+   -o split(A, Pivot, Xs, Smaller, [Y | Greater]).*label{line:language:qs_split2}
    
 waitpivot(A, Pivot, NodeSmaller, NodeGreater),*label{line:language:qs_sorted1}
 sorted(A, NodeSmaller, Smaller),

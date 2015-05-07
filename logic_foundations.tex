@@ -91,11 +91,9 @@ implication of the comprehension to be derived as many times as needed.
 However, the argument list can also be used to implement aggregates.
 Recall the aggregate example shown before:
 
-{\small
-\begin{Verbatim}
+\begin{Verbatim}[fontsize=\codesize]
 count-prices(A) -o [sum => P | . | price(A, P) | 1 | total(A, P)].
 \end{Verbatim}
-}
 
 This rule is translated into a linear logic proposition as shown next:
 

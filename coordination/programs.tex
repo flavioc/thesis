@@ -35,17 +35,17 @@ implementation.
 \end{figure}
 
 \begin{figure}[h!]
-   \begin{Verbatim}[numbers=left, fontsize=\scriptsize]
-neighbor-belief(A, B, Belief),
+\begin{Verbatim}[numbers=left, fontsize=\codesize, commandchars=\*\{\}]
+neighbor-belief(A, B, Belief),*label{line:coord:bp_first1}
 new-neighbor-belief(A, B, NewBelief)
-   -o neighbor-belief(A, B, NewBelief).
+   -o neighbor-belief(A, B, NewBelief).*label{line:coord:bp_first2}
 
-check-residual(A, Residual, B),
+check-residual(A, Residual, B),*label{line:coord:bp_check1}
 Residual > bound
    -o update(B).
-check-residual(A, _, _) -o 1.
+check-residual(A, _, _) -o 1.*label{line:coord:bp_check2}
 
-// update belief to be sent to one neighbor
+// update belief to be sent to one neighbor*label{line:coord:bp_iterate1}
 update-messages(A, NewBelief),
 !edge(A, B),
 neighbor-belief-old(A, B, OldIn),
@@ -57,63 +57,68 @@ OutMessage = damp(Convolved, OldOut, damping)
       check-residual(A, Residual, B),
       update-messages(A, NewBelief),
       new-neighbor-belief(B, A, OutMessage),
-      sent-neighbor-belief(A, B, OutMessage).
+      sent-neighbor-belief(A, B, OutMessage).*label{line:coord:bp_iterate2}
 
-update-messages(A, NewBelief) -o 1.
+update-messages(A, NewBelief) -o 1.*label{line:coord:bp_iterate_final}
 
-// if we have two update functions, just run one of them
-update(A), update(A) -o update(A).
+// if we have two update functions, just run one of them*label{line:coord:bp_last1}
+update(A), update(A) -o update(A).*label{line:coord:bp_update}
 
-// make a copy of neighbors beliefs in order to add them up
+// make a copy of neighbors beliefs in order to add them up*label{line:coord:bp_update1}
 update(A),
 !potential(A, Potential),
 belief(A, MyBelief)
-   -o [custom addfloats Potential => Belief | B, Belief |
+   -o [custom addfloats Potential => Belief | B, Belief |*label{line:coord:bp_agg1}
          neighbor-belief(A, B, Belief) |
          neighbor-belief-old(A, B, Belief), neighbor-belief(A, B, Belief) |
          Normalized = normalizestruct(Belief),
-         update-messages(A, Normalized), belief(A, Normalized)].
+         update-messages(A, Normalized), belief(A, Normalized)].*label{line:coord:bp_last2}*label{line:coord:bp_update2}*label{line:coord:bp_agg2}
 \end{Verbatim}
 \caption{LM code for the Loopy Belief Propagation problem.}
 \label{code:coordination:bp}
 \end{figure}
 
-Belief values are arrays of floats and are represented by \code{belief/2}
-facts. The first rule (lines 1-3) updates a given neighbor belief whenever a new
-belief value is received. This is the highest priority rule since we want to
-update the neighbor beliefs before doing anything else. In order to store the
-belief values of the neighbor nodes, we use \code{neighbor-belief/3} facts,
-where the second argument is the neighbor address and the third argument is the
-belief value.
+Belief values are arrays of floats and are represented by \code{belief/2} facts.
+The first rule (lines~\ref{line:coord:bp_first1}-\ref{line:coord:bp_first2})
+updates a given neighbor belief whenever a new belief value is received. This is
+the highest priority rule since we want to update the neighbor beliefs before
+doing anything else. In order to store the belief values of the neighbor nodes,
+we use \code{neighbor-belief/3} facts, where the second argument is the neighbor
+address and the third argument is the belief value.
 
-The last two rules (lines 26-37) update the belief value of a node. An
-\code{update/1} fact starts the process. The first rule (lines 27) simply
-consumes redundant \code{update/1} facts and the second rule (lines 30-37)
-performs the belief update by aggregating all the neighbor belief values. The
-aggregate in lines 33-37 also derives copies of the neighbors beliefs that need
-to be consumed in order to compute the belief value that is going to be sent to
-the target neighbor. The aggregate uses a custom accumulator that takes two
-arrays and adds the floating point numbers at each index of the array.  The rule
-in lines 10-22 iterates through the neighbor belief values and sends new belief
-values by performing the appropriate computations on the new belief value of the
-current node and on the belief value sent previously.  Once the facts
-\code{neighbor-belief-old} are fully consumed, the rule in line 24 is fired in
+The last two rules (lines~\ref{line:coord:bp_last1}-\ref{line:coord:bp_last2})
+update the belief value of a node. An \code{update/1} fact starts the process.
+The first rule (lines~\ref{line:coord:bp_update}) simply consumes redundant
+\code{update/1} facts and the second rule
+(lines~\ref{line:coord:bp_update1}-\ref{line:coord:bp_update2}) performs the
+belief update by aggregating all the neighbor belief values. The aggregate in
+lines~\ref{line:coord:bp_agg1}-\ref{line:coord:bp_agg2} also derives copies of
+the neighbors beliefs that need to be consumed in order to compute the belief
+value that is going to be sent to the target neighbor. The aggregate uses a
+custom accumulator that takes two arrays and adds the floating point numbers at
+each index of the array. The rule in
+lines~\ref{line:coord:bp_iterate1}-\ref{line:coord:bp_iterate2} iterates through
+the neighbor belief values and sends new belief values by performing the
+appropriate computations on the new belief value of the current node and on the
+belief value sent previously.  Once the facts \code{neighbor-belief-old} are
+fully consumed, the rule in line~\ref{line:coord:bp_iterate_final} is fired in
 order to consume \code{update-messages}.
 
-For each neighbor update, we also check in lines 5-8 if the change in belief
-values is greater than \code{bound} (a program constant) and then force the
-neighbor nodes to update their belief values by deriving \code{update(B)}.
+For each neighbor update, we also check in
+lines~\ref{line:coord:bp_check1}-\ref{line:coord:bp_check2} if the change in
+belief values is greater than \code{bound} (a program constant) and then force
+the neighbor nodes to update their belief values by deriving \code{update(B)}.
 This allows neighbor nodes to use updated neighbor values and recompute their
 own belief values using better information. The computation of belief values
 will then start to converge to their true belief values, independently of the
 node scheduling used. However, if we prioritize nodes that receive new neighbor
 belief values with a larger \code{Residual} then we will converge faster.
 Figure~\ref{code:coordination:improved_bp} shows the fourth rule modified with
-\code{add-priority} in order to increase to priority of neighbor nodes when
-the source node has large changes in its belief value.
+\code{add-priority} in order to increase to priority of neighbor nodes when the
+source node has large changes in its belief value.
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,commandchars=\\\{\},fontsize=\scriptsize]
+\begin{Verbatim}[numbers=left,commandchars=\\\{\},fontsize=\codesize]
 // update belief to be sent to one neighbor
 update-messages(A, NewBelief),
 !edge(A, B),
@@ -159,20 +164,28 @@ at the same time.
 \label{coordination:fig:nqueens}
 \end{figure}
 
-An empty state is instantiated in the top-left square (line 17) and is
-then propagated to all squares in the same row (rule in lines
-22-24). Once a square $S$ receives a new state $L$, it checks if $S$ can be
-incorporated into $L$. For that, it checks if there is no queen on $S$'s
-column (rules in lines 29-35), if there is no queen on $S$'s left
-diagonal (rules in lines 37-43) and if there is no queen on $S$'s right
-diagonal (rules in lines 45-51).
+An empty state is instantiated in the top-left square
+(line~\ref{line:coord:queens_axiom}) and is then propagated to all squares in
+the same row (rule in
+lines~\ref{line:coord:queens_propr1}-\ref{line:coord:queens_propr2}). Once a
+square $S$ receives a new state $L$, it checks if $S$ can be incorporated into
+$L$. For that, it checks if there is no queen on $S$'s column (rules in lines
+\ref{line:coord:queens_col1}-\ref{line:coord:queens_col2}), if there is no queen
+on $S$'s left diagonal (rules in
+lines~\ref{line:coord:queens_ldiag1}-\ref{line:coord:queens_ldiag2}) and if
+there is no queen on $S$'s right diagonal (rules in
+lines~\ref{line:coord:queens_rdiag1}-\ref{line:coord:queens_rdiag2}).
 
 If there is any conflict, we do not derive anything and for that we use the
-language expression \code{1} (lines 33, 41 and 49), which corresponds to an
-empty rule head. If there are no conflicts, this means that it is possible to
-add a queen to the current state (line 31). The fact \code{send-down/2} is
-used to either complete the computation of a valid state (lines 53-54) or to
-propagate the state to the row below (lines 55-57) as shown in
+language expression \code{1}
+(lines~\ref{line:coord:queens_empty1},~\ref{line:coord:queens_empty2}
+and~\ref{line:coord:queens_emtpy3}), which corresponds to an empty rule head. If
+there are no conflicts, this means that it is possible to add a queen to the
+current state (line~\ref{line:coord:queens_add}). The fact \code{send-down/2} is
+used to either complete the computation of a valid state
+(lines~\ref{line:coord:queens_complete1}-\ref{line:coord:queens_complete2}) or
+to propagate the state to the row below
+(lines~\ref{line:coord:queens_down1}-\ref{line:coord:queens_down2}) as shown in
 Fig.~\ref{coordination:fig:nqueens}.
 
 Most popular parallel implementations of the N-Queens problem
@@ -181,7 +194,7 @@ boards as tasks to threads. Our approach is unusual because the tasks
 are the squares of the board.
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\scriptsize]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\#\&]
 type list int state.
 
 type left(node, node).
@@ -198,47 +211,47 @@ type linear send-down(node, state).
 type linear new-state(node, state).
 type linear final-state(node, state).
 
-propagate-right(@0, []).
+propagate-right(@0, []).*label#line:coord:queens_axiom&
 
 propagate-left(A, State)
   -o {L | !left(A, L), L <> A | propagate-left(L, State)},
      new-state(A, State).
-propagate-right(A, State)
+propagate-right(A, State)*label#line:coord:queens_propr1&
   -o {R | !right(A, R), R <> A | propagate-right(R, State)},
-     new-state(A, State).
+     new-state(A, State).*label#line:coord:queens_propr2&
 
 new-state(A, State), !coord(A, X, Y)
   -o test-y(A, Y, State, State).
 
-// check if there is no queen on the same column
+// check if there is no queen on the same column*label#line:coord:queens_col1&
 test-y(A, Y, [], State), !coord(A, OX, OY)
   -o test-diag-left(A, OX - 1, OY - 1, State, State).
 test-y(A, Y, [X, Y1 | RestState], State), Y = Y1
-  -o 1. // fail
+  -o 1. // fail*label#line:coord:queens:empty1&
 test-y(A, Y, [X, Y1 | RestState], State), Y <> Y1
-  -o test-y(A, Y, RestState, State).
+  -o test-y(A, Y, RestState, State).*label#line:coord:queens_col2&
 
-// check if there is no queen on the left diagonal
+// check if there is no queen on the left diagonal*label#line:coord:queens_ldiag1&
 test-diag-left(A, X, Y, _, State), X < 0 || Y < 0, !coord(A, OX, OY)
   -o test-diag-right(A, OX - 1, OY + 1, State, State).
 test-diag-left(A, X, Y, [X1, Y1 | RestState], State), X = X1, Y = Y1
-  -o 1. // fail
+  -o 1. // fail*label#line:coord:queens:empty2&
 test-diag-left(A, X, Y, [X1, Y1 | RestState], State), X <> X1 || Y <> Y1
-  -o test-diag-left(A, X - 1, Y - 1, RestState, State).
+  -o test-diag-left(A, X - 1, Y - 1, RestState, State).*label#line:coord:queens_ldiag2&
 
-// check if there is no queen on the right diagonal
+// check if there is no queen on the right diagonal*label#line:coord:queens_rdiag1&
 test-diag-right(A, X, Y, [], State), X < 0 || Y >= size, !coord(A, OX, OY)
-  -o send-down(A, [OX, OY | State]). // add new queen
+  -o send-down(A, [OX, OY | State]). // add new queen*label#line:coord:queens_add&
 test-diag-right(A, X, Y, [X1, Y1 | RestState], State), X = X1, Y = Y1
-  -o 1. // fail
+  -o 1. // fail*label#line:coord:queens:empty3&
 test-diag-right(A, X, Y, [X1, Y1 | RestState], State), X <> X1 || Y <> Y1
-  -o test-diag-right(A, X - 1, Y + 1, RestState, State).
+  -o test-diag-right(A, X - 1, Y + 1, RestState, State).*label#line:coord:queens_rdiag2&
 
-send-down(A, State), !coord(A, size - 1, _)
-  -o final-state(A, State).
-send-down(A, State), !coord(A, CX, _), CX <> size - 1
+send-down(A, State), !coord(A, size - 1, _)*label#line:coord:queens_complete1&
+  -o final-state(A, State).*label#line:coord:queens_complete2&
+send-down(A, State), !coord(A, CX, _), CX <> size - 1*label#line:coord:queens_down1&
   -o {B | !down-right(A, B), B <> A | propagate-right(B, State)},
-     {B | !down-left(A, B), B <> A | propagate-left(B, State)}.
+     {B | !down-left(A, B), B <> A | propagate-left(B, State)}.*label#line:coord:queens_down2&
 \end{Verbatim}
   \caption{N-Queens problem solved in LM.}
   \label{coordination:code:nqueens}

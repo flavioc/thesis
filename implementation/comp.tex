@@ -14,7 +14,7 @@ represented by variable constraints and/or boolean expressions. For instance,
 consider gain the second rule of the SSSP program presented in
 Fig.~\ref{code:shortest_path_program}:
 
-\begin{Verbatim}[label=example_rule]
+\begin{Verbatim}[label=example_rule,fontsize=\codesize]
 shortest(A, D1, P1), D1 <= D2, relax(A, D2, P2)
    -o shortest(A, D1, P1).
 \end{Verbatim}
@@ -25,7 +25,7 @@ constraints include the expression \texttt{D1 <= D2}.
 
 However, rules may also have other less obvious join constraints such as:
 
-\begin{Verbatim}
+\begin{Verbatim}[fontsize=\codesize]
 new-neighbor-pagerank(A, B, New),
 neighbor-pagerank(A, B, Old)
    -o neighbor-pagerank(A, B, New).
@@ -50,7 +50,7 @@ assignments (e.g., argument $i = V$, where $V$ is a concrete value).
 Iterators are heavily used in the compiled code. For instance, the second rule in
 Fig.~\ref{code:shortest_path_program} is compiled as follows:
 
-\begin{Verbatim}[numbers=left,fontsize=\scriptsize]
+\begin{Verbatim}[numbers=left,fontsize=\codesize]
 for(auto it1(linked_list("shortest").begin()); it1 != linked_list("shortest").end(); )
 {
    fact *f1(*it1);
@@ -166,7 +166,7 @@ above, the fact \texttt{shortest(A, D1, P1)} is re-derived in the head. Our
 compiler is able to turn linear loops into persistent loops for linear facts
 that are retracted and then asserted.  The rule is then compiled as follows:
 
-\begin{Verbatim}[numbers=left,fontsize=\scriptsize]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\#\&]
 for(auto it1(linked_list("shortest").begin()); it1 != linked_list("shortest").end(); )
 {
    fact *f1(*it1);
@@ -175,7 +175,7 @@ for(auto it1(linked_list("shortest").begin()); it1 != linked_list("shortest").en
       fact *f2(*it2);
       if(f1->get_int(1) <= f2->get_int(1)) {
          it2 = linked_list("relax").erase(it2);
-         goto next;
+         goto next;*label#line:implementation:goto&
       }
       ++it2;
 next: continue;
@@ -185,14 +185,14 @@ next: continue;
 \end{Verbatim}
 
 In this new version of the code, only the \texttt{relax} facts are deleted,
-   while the \texttt{shortest} facts remain untouched. In the SSSP program, each
-   node has one \texttt{shortest} fact and this compiled code simply filters out
-   the \texttt{relax} facts with the distances that are equal or greater than
-   the current best distance. Note that now have a \emph{goto statement} (line
-         13) that is executed when the rule is fired.  In this case, since no
-   new \texttt{shortest} fact was derived, we can avoid returning to enforce
-   rule priorities and we can continue to try to fire the rule as many times as
-   possible.
+while the \texttt{shortest} facts remain untouched. In the SSSP program, each
+node has one \texttt{shortest} fact and this compiled code simply filters out
+the \texttt{relax} facts with the distances that are equal or greater than the
+current best distance. Note that now have a \emph{goto statement}
+(line~\ref{line:implementation:goto}) that is executed when the rule is fired.
+In this case, since no new \texttt{shortest} fact was derived, we can avoid
+returning to enforce rule priorities and we can continue to try to fire the rule
+as many times as possible.
 
 All the rule combinations are attempted in cases where a rule does not derive
 any facts or the facts derived do not appear before the rule, that is, the new
@@ -210,7 +210,7 @@ different arguments. The compiler recognizes those cases and instead of
 retracting the fact from its linked list or hash table, it updates the fact
 in-place. As an example, consider the following rule:
 
-\begin{Verbatim}
+\begin{Verbatim}[fontsize=\codesize]
 new-neighbor-pagerank(A, B, New),
 neighbor-pagerank(A, B, Old)
    -o neighbor-pagerank(A, B, New).
@@ -219,7 +219,7 @@ neighbor-pagerank(A, B, Old)
 Assuming that \texttt{neighbor-pagerank} is stored in a hash table and indexed by the
 second argument, the code for the rule above is as follows:
 
-\begin{Verbatim}[numbers=left,fontsize=\scriptsize]
+\begin{Verbatim}[numbers=left,fontsize=\codesize]
 for(auto it1(linked_list("new-neighbor-pagerank").begin()); it1 !=
       linked_list("new-neighbor-pagerank").end(); )
 {
@@ -253,7 +253,7 @@ We have already introduced the \emph{goto} statement as a way to avoid reusing
 retracted linear facts. However, this is not enough in order to enforce
 linearity of facts. Consider the following inference rule:
 
-\begin{Verbatim}
+\begin{Verbatim}[fontsize=\codesize]
 add(A, N1), add(A, N2) -o add(A, N1 + N2).
 \end{Verbatim}
 
@@ -264,7 +264,7 @@ same as the first one. That would invalidate linearity since a single linear fac
 be used to prove two linear facts. This is easily solved by adding a constraint
 for the inner loop by checking if the fact pointer is the same as the first one.
 
-\begin{Verbatim}[numbers=left,fontsize=\scriptsize]
+\begin{Verbatim}[numbers=left,fontsize=\codesize]
 for(auto it1(linked_list("add").begin()); it1 != linked_list("add").end(); )
 {
    fact *f1(*it1);
@@ -311,7 +311,7 @@ database contains three facts. The iterators never point to the same fact.
 
 Comprehensions were initially presented in the first rule of the SSSP program.
 
-\begin{Verbatim}
+\begin{Verbatim}[fontsize=\codesize]
 shortest(A, D1, P1), D1 > D2, relax(A, D2, P2)
    -o shortest(A, D2, P2),
    {B, W | !edge(A, B, W) | relax(B, D2 + W, P2 ++ [B])}.
@@ -326,7 +326,7 @@ The example rule does not need to return since it has the highest priority and t
 \texttt{relax} facts derived in the comprehension are all sent to other nodes.
 The code for the rule is shown below:
 
-\begin{Verbatim}[numbers=left,fontsize=\scriptsize]
+\begin{Verbatim}[numbers=left,fontsize=\codesize]
 for(auto it1(linked_list("shortest").begin()); it1 != linked_list("shortest").end(); )
 {
    fact *f1(*it1);
@@ -383,7 +383,7 @@ accumulated for each combination of the sub-rule. After all the combinations are
 inferred, a final head term is derived with the accumulated term. Consider the following
 PageRank rule:
 
-\begin{Verbatim}[fontsize=\footnotesize]
+\begin{Verbatim}[fontsize=\codesize]
 update(A), pagerank(A, OldRank)
       -o [sum => V | B | neighbor-pagerank(A, B, V) | neighbor-pagerank(A, B, V) |
             pagerank(A, damp/P + (1.0 - damp) * V)].
@@ -394,7 +394,7 @@ the PageRank values of the neighbors as seen in the code below. The aggregate
 value is then used to update the second argument of the initial
 \texttt{pagerank} fact.
 
-\begin{Verbatim}[numbers=left,fontsize=\scriptsize]
+\begin{Verbatim}[numbers=left,fontsize=\codesize]
 for(auto it1(linked_list("pagerank").begin()); it1 != linked_list("pagerank").end(); )
 {
    fact *f1(*it1);

@@ -1,8 +1,8 @@
 Now that we have presented the coordination facts for LM, we are now in a
 position to use them in the SSSP program presented before.  The coordinated
 version of the SSSP~(Fig.~\ref{code:shortest_path_program_coord}) uses the
-coordination fact \texttt{set-priority} (line 14) and a global program directive
-to order priorities in ascending order (line 5).
+coordination fact \texttt{set-priority} (line~\ref{line:coord:sssp_set}) and a global program directive
+to order priorities in ascending order (line~\ref{line:coord:sssp_asc}).
 
 When run with one thread, the algorithm behaves like Dijkstra's shortest path
 algorithm~\cite{Dijkstra}. When using multiple threads, each thread will pick
@@ -17,7 +17,7 @@ type route edge(node, node, int).
 type linear shortest(node, int, list int).
 type linear relax(node, int, list int).
 
-\underline{priority @order asc}.
+\underline{priority @order asc}.\label{line:coord:sssp_asc}
 
 shortest(A, +00, []).
 relax(@1, 0, [@1]).
@@ -26,7 +26,7 @@ shortest(A, D1, P1), D1 > D2, relax(A, D2, P2)
    -o shortest(A, D2, P2),
       \{B, W | !edge(A, B, W) |
          relax(B, D2 + W, P2 ++ [B]),
-         \underline{set-priority(B, float(D2 + W))}\}.
+         \underline{set-priority(B, float(D2 + W))}\}.\label{line:coord:sssp_set}
 
 shortest(A, D1, P1), D1 <= D2, relax(A, D2, P2)
    -o shortest(A, D1, P1).
