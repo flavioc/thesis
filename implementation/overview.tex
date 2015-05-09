@@ -7,10 +7,10 @@ of the system, namely, the compiler and virtual machine.
   \centering
   \includegraphics[width=.8\linewidth]{figures/implementation/overview.pdf}
   \caption{Compilation of a LM program into an executable. The compiler
-     transforms a LM program into \texttt{file.cpp}, C++ file with compiled
-     rules, and a \texttt{data} file with the graph structure and axioms. The virtual
+     transforms a LM program into \code{file.cpp}, C++ file with compiled
+     rules, and a \code{data} file with the graph structure and axioms. The virtual
      machine which includes code for managing multithreaded execution and the
-     database of facts is then linked with \texttt{file.cpp} to create a
+     database of facts is then linked with \code{file.cpp} to create a
      standalone executable that can be run in parallel.}
   \label{fig:implementation:overview}
 \end{figure}
@@ -25,13 +25,13 @@ The compiler transforms LM files into C++ code that use the virtual machine
 facilities to implement the program logic.  The compiled code implements the
 inference rules of the program and uses the API of the virtual machine to derive
 and retract facts and to schedule the execution of rules.  The compiler also
-creates a separate file, named \texttt{file.data}, with the program's axioms and
+creates a separate file, named \code{file.data}, with the program's axioms and
 graph structure. The graph structure is reconstructed in parallel once the
 program starts.
 
 To complete the compilation process, we use a C++ compiler to compile the
-virtual machine files and \texttt{file.cpp} into object files that are then
-linked along with \texttt{file.data}. At the end, we have a standalone
+virtual machine files and \code{file.cpp} into object files that are then
+linked along with \code{file.data}. At the end, we have a standalone
 executable that allows the user to input the number of threads to use,
 scheduling strategies (i.e., disable coordination), run time measurement
 facilities and also database printing facilities.
@@ -46,12 +46,12 @@ point computations.
 
 \subsection{Graph Clustering}
 
-The graph structure stored in file \texttt{file.data} is constructed by the
+The graph structure stored in file \code{file.data} is constructed by the
 compiler by analyzing the program's axioms and then ordering the nodes of the
 graph.  In order to distribute computation across threads it is important to
 increase locality of communication, so that a node makes most of its
 communication to neighbor nodes that are being handled by the same thread. The
-graph structure in \texttt{file.data} is written in order to improve locality
+graph structure in \code{file.data} is written in order to improve locality
 and reduce communication between threads.
 
 The compiler analyzes the node address constants (that are prepended by the
@@ -60,7 +60,7 @@ program code, the compiler then optimizes the topology by building an internal
 representation of the graph.  In this phase, each node address $a$ is mapped
 using a function $M(x)$ to a normalized node address $n$. Function $M(x)$ is
 bijective and the domain is the set of all nodes described in the source code.
-The codomain of $M$ is the discrete interval $[0, N[$, where $N$ is the number
+The co-domain of $M$ is the discrete interval $[0, N[$, where $N$ is the number
 of nodes in the graph. The byte-code of a LM program includes all the pairs $(x,
 M(x))$ so that the runtime system can put this information to use.
 
