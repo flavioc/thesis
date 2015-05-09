@@ -5,7 +5,7 @@ players who play in turns.
 The algorithm builds a game tree, where each tree node represents a game state
 and the children represent the possible game moves that can be made by either
 player 1 or player 2.  An evaluation function is used to compute the score of
-the board for each leaf of the tree. A node is a leaf when the game state can no
+the game for each leaf of the tree. A node is a leaf when the game state can no
 longer be expanded. Finally, the algorithm recursively minimizes or maximizes
 the scores of each node. To select the best move for player 1, the algorithm
 picks the move maximized at the root node.
@@ -78,28 +78,28 @@ fun next(P : int) : int = if P = 1 then 2 else 1 end.
 
 play(@0, initial-game, root-player, 0, 1).\label{line:coord:minimax_axiom}
 
-play(A, Game, NextPlayer, LastPlay, Depth),\label{line:coord:minimax_play1}
+play(A, Game, NextPlayer, LastPlay, Depth),\label{line:coord:minimax_play1}\label{line:coord:minimax_play11}
 Score = minimax_score(Game, NextPlayer, root-player), Score > 0
-   -o score(A, Score, LastPlay).
-play(A, Game, NextPlayer, LastPlay, Depth),
+   -o score(A, Score, LastPlay).\label{line:coord:minimax_play12}
+play(A, Game, NextPlayer, LastPlay, Depth),\label{line:coord:minimax_play21}
 0 = minimax_score(Game, NextPlayer, root-player)
-   -o expand(A, [], Game, 0, NextPlayer, LastPlay, Depth).\label{line:coord:minimax_play2}
+   -o expand(A, [], Game, 0, NextPlayer, LastPlay, Depth).\label{line:coord:minimax_play2}\label{line:coord:minimax_play22}
 
-expand(A, Game, [], N, Player, Play, \underline{Depth}), Player = root-player\label{line:coord:minimax_expand1}
-  -o maximize(A, N, -00, 0).
-expand(A, Game, [], N, Player, Play, \underline{Depth}), Player <> root-player
-  -o minimize(A, N, +00, 0).
-expand(A, First, [0 | Xs], N, Player, Play, \underline{Depth}), Depth >= 5
+expand(A, Game, [], N, Player, Play, \underline{Depth}), Player = root-player\label{line:coord:minimax_expand1}\label{line:coord:minimax_rule11}
+   -o maximize(A, N, -00, 0).\label{line:coord:minimax_rule12}
+expand(A, Game, [], N, Player, Play, \underline{Depth}), Player <> root-player\label{line:coord:minimax_rule21}
+   -o minimize(A, N, +00, 0).\label{line:coord:minimax_rule22}
+expand(A, First, [0 | Xs], N, Player, Play, \underline{Depth}), Depth >= 5\label{line:coord:minimax_rule31}
    -o exists B. (\underline{set-static(B)},\label{line:coord:minimax_coord1}
        \underline{set-default-priority(B, float(Depth + 1))},\label{line:coord:minimax_coord2}
-       play(B, Game ++ [P | Xs], next(P), N, \underline{Depth + 1}), parent(B, A).
-       expand(A, First ++ [0], Xs, N + 1, Player, Play, \underline{Depth})).
-expand(A, First, [0 | Xs], N, Player, Play, \underline{Depth}), Depth < 5
+       play(B, Game ++ [P | Xs], next(P), length(First), \underline{Depth + 1}), parent(B, A).
+       expand(A, First ++ [0], Xs, N + 1, Player, Play, \underline{Depth})).\label{line:coord:minimax_rule32}
+expand(A, First, [0 | Xs], N, Player, Play, \underline{Depth}), Depth < 5\label{line:coord:minimax_rule41}
   -o exists B. (\underline{set-default-priority(B, float(Depth + 1))},\label{line:coord:minimax_coord3}
-       play(B, Game ++ [P | Xs], next(P), N, \underline{Depth + 1}), parent(B, A),
-       expand(A, First ++ [0], Xs, N + 1, Player, Play, \underline{Depth})).
-expand(A, First, [C | Xs], N, Player, Play, \underline{Depth}) C <> 0\label{line:coord:minimax_expand11}
-  -o expand(A, First ++ [C], Xs, N, Player, Play, \underline{Depth}).\label{line:coord:minimax_expand2}
+       play(B, Game ++ [P | Xs], next(P), length(First), \underline{Depth + 1}), parent(B, A),
+       expand(A, First ++ [0], Xs, N + 1, Player, Play, \underline{Depth})).\label{line:coord:minimax_rule42}
+expand(A, First, [C | Xs], N, Player, Play, \underline{Depth}) C <> 0\label{line:coord:minimax_expand11}\label{line:coord:minimax_rule51}
+  -o expand(A, First ++ [C], Xs, N, Player, Play, \underline{Depth}).\label{line:coord:minimax_expand2}\label{line:coord:minimax_rule52}
 
 score(A, Score, BestPlay), parent(A, B) -o new-score(B, Score, BestPlay).\label{line:coord:minimax_new}
 
@@ -109,10 +109,10 @@ new-score(A, Score, Play), minimize(A, N, Current, BestPlay), Current <= Score
    -o minimize(A, N - 1, Current, BestPlay).
 minimize(A, 0, Score, BestPlay) -o score(A, Score, BestPlay).\label{line:coord:minimax_minimize2}
 
-new-score(A, Score, Play), maximize(A, N, Current, BestPlay), Current < Score\label{line:coord:minimax_maximize1}
-   -o maximize(A, N - 1, Score, Play).
-new-score(A, Score, Play), minimize(A, N, Current, BestPlay), Current >= Score
-   -o maximize(A, N - 1, Current, BestPlay).
+new-score(A, Score, Play), maximize(A, N, Current, BestPlay), Current < Score\label{line:coord:minimax_maximize1}\label{line:coord:minimax_maximize_rule11}
+   -o maximize(A, N - 1, Score, Play).\label{line:coord:minimax_maximize_rule12}
+new-score(A, Score, Play), minimize(A, N, Current, BestPlay), Current >= Score\label{line:coord:minimax_maximize_rule21}
+   -o maximize(A, N - 1, Current, BestPlay).\label{line:coord:minimax_maximize_rule22}
 maximize(A, 0, Score, BestPlay) -o score(A, Score, BestPlay).\label{line:coord:minimax_maximize2}
 \end{Verbatim}
 \caption{LM code for the MiniMax program.}
@@ -158,3 +158,162 @@ almost 4 times faster than the hand-written sequential C program, while the
 regular version is barely as fast as the same C program. XXX
 
 \subsubsection{Proof Of Correctness}
+
+To prove that the MiniMax code shown in Fig.~\ref{code:coord:minimax} computes
+the best score along with the best possible move that the \code{root-player} can
+make, we have to generalize the proof and inductively prove that each node
+selects the best score depending if its a minimizing or a maximizing node. We
+start with several useful lemmas.
+
+\begin{lemma}[Play Lemma]
+
+If \code{expands(A, FirstGame, RestGame, NumberDescendants, NextPlayer, Play,
+Depth)} then $\exists_n$ where $n$ is the number of available plays that
+\code{NextPlayer} can make on the remaining game state \code{RestGame}.  We also
+create $n$ children $B$ where \code{play(B, Game', OtherPlayer, Play', Depth +
+1)} and \code{parent(B, A)} is true, where \code{OtherPlayer =
+next-player(NextPlayer)}, \code{Play'} is the index of an empty position in
+\code{RestGame} plus the length of \code{FirstGame}, and \code{Game'} represents
+the concatenation of \code{FirstGame} and \code{RestGame} where an empty
+position has been modified. Eventually, \code{expands} disappear and if
+\code{NextPlayer = root-player}, \code{maximize(A, NumberDescendants + Empty,
+mininf, 0)} or \code{minimize(A, NumberDescendants + Empty, maxinf, 0)},
+respectively. The value \code{Empty} indicates the number of empty positions in
+the state \code{RestGame}.
+
+\end{lemma}
+
+\begin{proof}
+By induction on the size of the list \code{RestGame}. There are 5 possible rules.
+
+Rule 1 (lines~\ref{line:coord:minimax_rule11}-\ref{line:coord:minimax_rule12}:
+\code{RestGame = []} thus a \code{maximize} fact is derived as expected.
+
+Rule 2 (lines~\ref{line:coord:minimax_rule21}-\ref{line:coord:minimax_rule22}:
+\code{RestGame = []} thus a \code{minimize} fact is derived as expected.
+
+Rule 3 (lines~\ref{line:coord:minimax_rule31}-\ref{line:coord:minimax_rule32}:
+in this case we have a non-null \code{RestGame} and an empty position on index
+0. As expected, we create a new \code{B} node with the right facts and a new
+\code{expand} fact with a smaller \code{RestGame}. Apply the induction
+hypothesis to get the remaining $n-1$ potential plays for \code{NextPlayer}.
+
+Rule 4 (lines~\ref{line:coord:minimax_rule41}-\ref{line:coord:minimax_rule42}:
+same reasoning as rule 3. Note that the presence of coordination facts do not
+change the proof because they are not used in the rule's bodies.
+
+Rule 5 (lines~\ref{line:coord:minimax_rule51}-\ref{line:coord:minimax_rule52}:
+no free space on the first position of \code{RestGame}. We derive another
+\code{expand} fact with a reduced \code{RestGame} and use the induction
+hypothesis.
+
+\end{proof}
+
+\begin{lemma}[Children Lemma]
+If \code{play(A, Game, NextPlayer, LastPlay, Depth)} then either \code{score(A, Score,
+      LastPlay)} or $\exists_n$ where $n$ is the number of available plays for
+\code{NextPlayer} in \code{Game}, creating $n$ new children $B$ where \code{play(B,
+      Game', OtherPlayer, Play, Depth + 1)} and a \code{maximize(A, N,
+         mininf, 0)} or \code{minimize(A, N, maxinf, 0)} is created if
+         $NextPlayer = root-player$ or not, respectively. \code{Game'} is an
+         updated \code{Game} state where an empty position is played by
+         \code{NextPlayer}.
+\end{lemma}
+\begin{proof}
+
+A linear fact \code{play(A, Game, NextPlayer, LastPlay, Depth)} can only be used
+in either in the first or second rules.
+If the rule in
+lines~\ref{line:coord:minimax_play11}-\ref{line:coord:minimax_play12} executes,
+(\code{minimax\_score} returns a score) it means that \code{Game} is a final
+game state and there's no available plays for \code{NextPlayer}.
+Otherwise, the second rule in
+lines~\ref{line:coord:minimax_play21}-\ref{line:coord:minimax_play22} will
+apply and the Play lemma is used to prove this lemma.
+
+\end{proof}
+
+We now prove that the minimization and maximization rules work given the right
+amount of scores available.
+
+\begin{lemma}[Maximize Lemma]
+Given a fact \code{maximize(A, N, BestScore, BestPlay)} and \code{N} facts
+\code{new-score(A, OtherScore, OtherPlay)}, then we end up with a single
+\code{score(A, BestScore', BestPlay')} where \code{BestScore'} is the
+highest score from \code{BestScore} or \code{OtherScore'}s and
+\code{BestPlay'} is the corresponding play.
+\end{lemma}
+\begin{proof}
+By induction on the number of \code{new-score} facts.
+
+Case 1 (\code{N = 0}): trivial by applying the rule in
+line~\ref{line:coord:minimax_maximize2}.
+
+Case 2 (\code{N > 0}): by picking an arbitrary \code{new-score(A, OtherScore,
+OtherPlay} fact.
+
+\begin{itemize}
+   \item Sub case 2.1
+      (lines~\ref{line:coord:minimax_maximize_rule11}-\ref{line:coord:minimax_maximize_rule12})
+
+      If \code{BestScore < OtherScore} then we derive \code{maximize(A, N-1,
+      OtherScore, OtherPlay)}. Use induction to get the final \code{score} fact.
+
+   \item Sub case 2.2
+      (lines~\ref{line:coord:minimax_maximize_rule21}-\ref{line:coord:minimax_maximize_rule22})
+
+      If \code{BestScore >= OtherScore} then we derive \code{maximize(A, N-1,
+      BestScore, BestPlay)}. Use induction to get the final \code{score} fact.
+
+\end{itemize}
+
+\end{proof}
+
+\begin{lemma}[Minimize Lemma]
+Given a fact \code{minimize(A, N, BestScore, BestPlay)} and \code{N} facts
+\code{new-score(A, OtherScore, OtherPlay)}, then we end up with a single
+\code{score(A, BestScore', BestPlay')} where \code{BestScore'} is the
+lowest score from either \code{BestScore} or \code{OtherScore'}s and
+\code{BestPlay'} is the corresponding play.
+\end{lemma}
+\begin{proof}
+Use the same process used in Maximize Lemma.
+\end{proof}
+
+Finally, we are in a position to prove that a \code{play} fact eventually
+produces a \code{score} fact that indicates the best score and best play for the
+player playing at that node.
+
+\begin{theorem}[Score Theorem]
+For every \code{play(A, Game, NextPlayer, LastPlay, Depth)}, we either
+directly get a \code{score} fact (leaf case) or a recursive alternate maximization or
+minimization (depending if \code{NextPlayer = root-player}, respectively) of
+the children nodes. This max/minization also results in a \code{score(A, Score,
+BestPlay)} fact where \code{Score} is the max/minimum and \code{BestPlay} is the
+corresponding play for that score.
+\end{theorem}
+\begin{proof}
+By applying the Children Lemma and using induction on the number of free
+positions on the state \code{Game}.
+
+Case 1 (no free positions or game is final): direct score.
+
+Case 2 (available positions): $n$ children nodes $B$ with \code{play(B, Game',
+next-player(NextPlayer), X, Play, Depth + 1)}, where \code{Game'} has position
+\code{X} filled up. We apply induction on the \code{play} fact of each child
+\code{B} to get a \code{score(B, Score, Play)}. Since we also derived a
+\code{parent(B, A)} fact, rule in line~\ref{line:coord:minimax_new} eventually
+executes, deriving \code{new-score(A, Score, Play)}.
+
+Since we also derived \code{maximize(A, N, mininf, 0)} (or \code{minimize}), we
+have this maximize fact and $n$ \code{new-score} facts from the $n$ children
+nodes. Applying the Maximize Lemma, we get \code{score(A, BestScore, BestPlay)}.
+
+\end{proof}
+
+\begin{corollary}[MiniMax]
+Starting from a \code{play(@0, initial-game, root-player, 0, 1)}, the fact
+\code{score(A, BestScore, BestPlay)} is eventually derived, where \code{BestPlay} represents the
+best play which player \code{root-player} is able to make that minimizes the possible loss for
+a worst case scenario giving \code{initial-game}.
+\end{corollary}
