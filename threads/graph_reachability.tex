@@ -1,0 +1,252 @@
+Consider the problem of checking if a set of nodes $S$ in a graph $G$ is
+reachable from an arbitrary node $N$. An obvious solution to this problem is to
+start at $N$, gather all the neighbor nodes into a list and then recursively
+visit all those reachable nodes, until $S$ is covered. This reduces to a
+problem of performing a breadth or depth-first search on graph $G$. However,
+this solution is sequential and does not have much concurrency.  An alternative
+solution to the problem is to recursively propagate the search to all neighbors
+and aggregate the results in the node where the search started.  The code for
+this solution is shown in Fig.~\ref{code:threads:reach_simple}.
+
+Each distinct reachability search is represented by a number (\code{Id}) and a
+\code{search} axiom. Associated to each search \code{Id} is a list of nodes to
+reach.  The predicate \code{visited} marks nodes that have been already
+participated in search, while predicate \code{do-search} is used to propagate a
+specific search. The first rule
+(lines~\ref{line:threads:reach_lookup1}-\ref{line:threads:reach_lookup2}) starts
+a particular search by deriving a \code{do-search} and an \code{lookup} fact.
+The \code{lookup} fact is used as an accumulator and is stored in the starting
+node. The third rule
+(lines~\ref{line:threads:reach_visit1}-\ref{line:threads:reach_visit2}) avoids
+visiting the same node twice in the presence of a \code{visited} fact.  This
+visited fact is derived in the next two rules
+(lines~\ref{line:threads:reach_visit_visited1}
+and~\ref{line:threads:reach_visit_visited2}).  If the node where the search is
+being performed is in the set of nodes we want to reach (\code{ToReach}) then we
+remove the node value from the list and propagate the search to the neighbor
+nodes (line~\ref{line:threads:reach_propagate}).  Otherwise, the search is
+propagated but no value is removed from \code{ToReach}.
+
+As an example, consider Fig.~\ref{fig:threads:reach_example}, which shows 2
+reachability checks on a graph with 10 nodes. For instance, the search with
+\code{Id = 0} starts at node \code{@1} and checks if nodes \code{@1}, \code{@2},
+and \code{@3} are reachable from \code{@1}. Since \code{@1} is the starting
+node, \code{1} is immediately removed from the reachable list, including the
+propagated \code{do-search} facts but also the \code{lookup} fact that is stored
+at node \code{@1}. Once \code{do-search} reaches node \code{@3}, the value
+\code{3} is removed from the list and a new \code{do-search} is propagated to
+node \code{@1} (not shown in the figure) and \code{@2}. At the same time, node
+\code{@2} receives the list \code{[2,3]}, removes \code{2} and propagates
+\code{[3]} to node \code{@3} and \code{@1}. Node \code{@1} receives two
+\code{new-lookup} facts, one from \code{@3} and another from \code{@2}, due to
+successful searches and the \code{lookup} fact becomes \code{lookup(@1,0,[],
+[1,2,3])}.
+
+The attentive reader will notice that node \code{@1} already knows that all the
+nodes have been reached and that nodes \code{@7} and \code{@4} will, needlessly,
+continue to check if \code{[2,3]} are reachable. This is an issue that arises
+because the programmer has valued concurrency by increasing redundancy and
+reducing communication between nodes. It would be prohibitly expensive to share
+reachability information between nodes. An alternative solution is to store the
+results of the search on the thread performing the search and then coordinate
+the results with other threads since the number of threads is usually smaller
+than the number of nodes. Before showing how the reachability program is solved
+using thread-based facts, we first present the changes required in the language.
+
+\begin{figure}[ht]
+\begin{center}
+   \includegraphics[width=0.9\linewidth]{figures/threads/reach.pdf}
+\end{center}
+\caption{Performing reachability checks on a graph using nodes \code{@6}
+(\code{Id = 1}) and \code{@1} (\code{Id = 0}). Search with \code{Id = 0} wants
+to reach nodes \code{@1}, \code{@2}, and \code{@3} from node \code{@1}. Since
+\code{@1} is part of the target nodes, the fact \code{do-search}
+propagated to neighbor nodes does not include \code{1}.}
+\label{fig:threads:reach_example}
+\end{figure}
+
+\begin{figure}[h]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\#\&]
+type int id.
+type list int reach-list.
+
+type route edge(node, node).
+type value(node, int).
+type linear search(node, id, reach-list).
+type linear do-search(node, id, node, reach-list).
+type linear lookup(node, id, reach-list, int Val).
+type linear new-lookup(node, id, int Val).
+type linear visited(node, id).
+
+search(A, Id, ToReach)*label#line:threads:reach_lookup1&
+   -o do-search(A, Id, A, ToReach),
+      lookup(A, Id, ToReach, []).*label#line:threads:reach_lookup2&
+
+lookup(A, Id, ToReach, Found), new-lookup(A, Id, Val) // New reachable node found.
+   -o lookup(A, Id, remove(ToReach, Val), [Val | Found]).
+
+do-search(A, Id, Node, ToReach),*label#line:threads:reach_visit1&
+visited(A, Id) // Already visited for this search.
+   -o visited(A, Id). *label#line:threads:reach_visit2&
+
+do-search(A, Id, Node, ToReach),
+!value(A, Val), Val in ToReach // New node was found.
+   -o visited(A, Id),*label#line:threads:reach_visit_visited1&
+      new-lookup(Node, Id, Val),
+      {B | !edge(A, B) | do-search(B, Id, Node, remove(ToReach, Val))}.*label#line:threads:reach_propagate&
+
+do-search(A, Id, Node, ToReach),
+!value(A, Val), ~ Val in ToReach // Not the node we are looking for.
+   -o {B | !edge(A, B) | do-search(B, ID, Node, ToReach)},*label#line:threads:reach_propagate2&
+      visited(A, Id).*label#line:threads:reach_visit_visited2&
+\end{Verbatim}
+
+\caption{LM code to perform reachability checking on a graph.}
+\label{code:threads:reach_simple}
+\end{figure}
+
+\subsection{Language Changes}
+
+The existence of coordination facts such as \code{thread-id} and
+\code{set-thread} brings some awareness about the underlying parallel system,
+however, including the type \code{thread} for predicate arguments, which refers
+to a thread in the system. We introduce the concept of \emph{thread facts},
+which are logical facts stored at the thread level, meaning that, each thread
+is now an entity with its own logical facts. The type \code{thread} is also now
+the type of the first argument of \emph{thread predicates}, indicating that the
+predicate is related and, is to be stored in a specific thread. We also view
+the thread facts as forming a separate graph from the data graph, a graph of
+the processing elements which are operating on the data graph.
+
+
+The introduction of thread facts increases the expressiveness of the system in
+the sense that it is now possible to write inference rules that reason about the
+state of the threads. This creates optimization opportunies since we can now
+write algorithms with global information stored in the thread, while keeping the
+LM language fully declarative. Moreover, threads are now allowed to explicitly
+communicate with each other, and in conjunction with coordination predicates,
+enable the writing of complex scheduling policies.
+
+We discriminate between two new types of inference rules. The first type is the
+\emph{thread rule} and has the form \code{a(T), b(T) -o c(T)}, and can be read
+as: if thread \code{T} has fact \code{a(T)} and \code{b(T)} then derive fact
+\code{c(T)}. The second type is the \emph{mixed rule} and has the form
+\code{a(T), d(N) -o e(N)} and can be read as: if thread \code{T} is executing
+node \code{N} and has the fact \code{a(T)} and node \code{N} has the fact
+\code{d(N)} then derive \code{e(N)} at node \code{N}. Thread rules reason
+solely at the thread level, while the mixed rules allow reasoning about both
+thread and node facts. Logically, the mixed rule uses an extra fact
+\code{running(T, N)}, which indicates that thread \code{T} is currently
+executing node \code{N}. The \code{running} fact is implicitly retracted and
+asserted every time the thread selects a different node for execution. This
+makes our implementation efficient since a thread does not need to look for
+nodes that match mixed rules and it is then the scheduling of the program that
+drives the matching of such rules. Figure~\ref{fig:coord:thread_facts}
+represents a schematic view of the two graph data structures of a program with
+three threads: thread $T1$ is executing node \code{@5}, $T2$ is executing node
+\code{@4}, and $T3$ is executing node \code{@3}. Note that every thread has
+access to its own facts and to the node facts.
+
+\begin{figure}[ht]
+   \includegraphics[width=0.6\linewidth]{figures/threads/threads.pdf}
+
+   \caption{An example program being executed with three threads. Note that each
+      threads has a \code{running} fact that stores the node currently being
+   executed.}
+
+   \label{fig:coord:thread_facts}
+\end{figure}
+
+\subsection{Reachability With Thread Facts}
+
+We know update the graph reachability program presented in
+Fig.~\ref{code:threads:reach_simple} to use thread facts in order to avoid
+needless searches on the graph. The search process is still done concurrently as
+before, but the search state is now stored in each thread, allowing the thread
+to store partial results and coordinate with other threads. The code for the new
+version is shown in Fig.~\ref{code:threads:reach_threads}.
+
+Lines~\ref{line:threads:reacht_start1}-\ref{line:threads:reacht_start2} start
+the search process by assigning a thread \code{Owner} to search \code{Id} using
+the persistent fact \code{\bang thread-list} which contains the list of all
+available threads in the system. Next, in
+line~\ref{line:threads:reacht_threads}, a fact \code{thread-search} is created
+for all threads using a comprehension. We use predicate \code{do-search} to
+propagate the search through the graph and a predicate \code{visited} to mark
+nodes already processed for a specific search.  The two rules in
+lines~\ref{line:threads:reacht_check1}-\ref{line:threads:reacht_check2}
+propagate the search process to the neighbor nodes and check if the current node
+is part of the list of nodes we want to reach.
+
+An interesting property of this version is that each owner thread responsible
+for a search keeps track of the remaining nodes that need to be reached. In
+line~\ref{line:threads:reacht_remove}, we derive \code{remove-thread-search} in
+order to inform owner threads about new reachable nodes. Once an owner thread
+detects that all nodes have been reached (lines
+\ref{line:threads:reacht_reached1}-\ref{line:threads:reacht_reached2}), all the
+other threads will know that and update their search state accordingly
+(lines~\ref{line:threads:reacht_knows1}-\ref{line:threads:reacht_knows2}). When
+every thread knows that all nodes were reached, they will consume
+\code{do-search} facts (lines
+\ref{line:threads:reacht_prune1}-\ref{line:threads:reacht_prune2}), effectively
+pruning the search space.
+
+\begin{figure}[h]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\#\&]
+search(A, Id, ToReach),*label#line:threads:reacht_start1&
+*textbf#!thread-list(T, L)&, Owner = nth(L, Id % @threads) // Allocate search to a thread.
+   -o {T2 | *textbf#!thread(T, T2)& | *textbf#thread-search(T2, Id, ToReach, Owner)&},*label#line:threads:reacht_threads&
+      do-search(A, Id).*label#line:threads:reacht_start2&
+
+*textbf#thread-search(T, Id, [], Owner)&, *label#line:threads:reacht_prune1& // Nothing left to find.
+do-search(A, Id)
+   -o *textbf#thread-search(T, Id, [], Owner)&. *label#line:threads:reacht_prune2&
+
+do-search(A, Id),
+visited(A, Id) // Already visited.
+   -o visited(A, Id).
+
+do-search(A, Id),*label#line:threads:reacht_check1&*label#line:bfs_join1&
+*textbf#thread-search(T, Id, ToReach, Owner)&,*label#line:threads:reacht_join2&
+!value(A, Val), Val in ToReach // New node found.
+   -o *textbf#thread-search(T, Id, remove(ToReach, Val), Owner)&,
+      *textbf#remove-thread-search(Owner, Id, Val)&, // Tell owner thread about it.*label#line:threads:reacht_remove&
+      {B | !edge(A, B) | do-search(B, Id)},
+      visited(A, Id).
+
+do-search(A, Id),
+*textbf#thread-search(T, Id, ToReach, Owner)&,
+!value(A, Val), ~ Val in ToReach // Node is not on the list.
+   -o *textbf#thread-search(T, Id, ToReach, Owner)&,
+      visited(A, Id),
+      {B | !edge(A, B) | do-search(B, Id)}.*label#line:threads:reacht_check2&
+
+*textbf#remove-thread-search(T, Id, Val), thread-search(T, Id, ToReach, Owner)&
+   *textbf#-o thread-search(T, Id, remove(ToReach, Val), Owner),&
+      *textbf#check-results(T, Id).&
+*textbf#check-results(T, Id), thread-search(T, Id, [], Owner)&*label#line:threads:reacht_reached1&
+   *textbf#-o thread-search(A, Id, [], Owner),&
+      *textbf#{B | !other-thread(T, B) | signal-thread(B, Id)}.&*label#line:threads:reacht_reached2&
+ *textbf#check-results(T, Id), thread-search(T, Id, ToReach, Owner), ToReach <> []&
+   *textbf#-o thread-search(T, Id, ToReach, Owner).&
+*textbf#signal-thread(T, Id), thread-search(T, Id, ToReach, Owner)& // Thread knows search is done.*label#line:threads:reacht_knows1&
+   *textbf#-o thread-search(T, Id, [], Owner).& *label#line:threads:reacht_knows2&
+\end{Verbatim}
+\caption{Coordinated version of the reachability checking program. Note
+that \code{@threads} represent the number of threads in the system.}
+\label{code:threads:reach_threads}
+\end{figure}
+
+An alternative implementation could force every thread to share its reached
+nodes to all the other threads in the system. However, this would generate a lot
+of traffic between threads, which would actually make the program perform worse.
+Our final solution is a good trade off since it only forces threads to
+coordinate when pruning can actually happen.
+
+The graph reachability program shows how to introduce complex coordination
+policies between threads by reasoning about the state of each thread. In
+addition, the use of linear logic programming makes it easier to prove
+properties of the program since computation is done by applying controlled
+changes to the state.
+
+\clearpage

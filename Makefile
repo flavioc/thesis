@@ -14,22 +14,16 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex \
 		language.tex logic_foundations.tex \
 		refs.bib thread.tex conclusions.tex \
 		appendix.tex appendix/vm.tex \
-		statement.tex \
-		related_work.tex \
-		abstract.tex \
+		statement.tex related_work.tex abstract.tex \
+		threads/graph_reachability.tex threads/implementation.tex \
 		macros.tex appendix/hld.tex \
-		appendix/fragment.tex \
-		appendix/lld.tex \
+		appendix/fragment.tex appendix/lld.tex \
 		hld/step.tex hld/derivation-agg.tex \
 		lld/step.tex lld/match-p.tex \
-		lld/match-bang-p.tex \
-		lld/der-comp.tex \
-		lld/der-agg.tex \
-		lld/comp-fix.tex \
-		lld/comp-match-p.tex \
-		lld/comp-match-bang-p.tex \
-		lld/comp-cont-c.tex \
-		lld/comp-der.tex \
+		lld/match-bang-p.tex lld/der-comp.tex \
+		lld/der-agg.tex lld/comp-fix.tex \
+		lld/comp-match-p.tex lld/comp-match-bang-p.tex \
+		lld/comp-cont-c.tex lld/comp-der.tex \
 		lld/comp-der-end.tex \
 		lld/comprehensions.tex \
 		lld/agg-match-p.tex lld/agg-match-bang-p.tex lld/agg-match-other.tex \
