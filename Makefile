@@ -19,29 +19,18 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex \
 		threads/key_value.tex implementation/allocation.tex \
 		macros.tex appendix/hld.tex \
 		appendix/fragment.tex appendix/lld.tex \
-		hld/step.tex hld/derivation-agg.tex \
-		lld/step.tex lld/match-p.tex \
+		hld/step.tex hld/derivation-agg.tex lld/step.tex lld/match-p.tex \
 		lld/match-bang-p.tex lld/der-comp.tex \
 		lld/der-agg.tex lld/comp-fix.tex \
 		lld/comp-match-p.tex lld/comp-match-bang-p.tex \
 		lld/comp-cont-c.tex lld/comp-der.tex \
-		lld/comp-der-end.tex \
-		lld/comprehensions.tex \
+		lld/comp-der-end.tex lld/comprehensions.tex \
 		lld/agg-match-p.tex lld/agg-match-bang-p.tex lld/agg-match-other.tex \
-		lld/agg-match-soundness.tex \
-		lld/agg-cont-end.tex \
-		lld/agg-cont-c.tex \
-		lld/agg-cont-p.tex \
-		lld/agg-fix.tex \
-		lld/agg-der.tex \
-		lld/cont-p.tex \
-		lld/cont-bang-p.tex \
-		lld/der-p.tex \
-		lld/der-other.tex \
-		lld/aggregates.tex \
-		lld/soundness.tex \
-		lld/comprehensions_soundness.tex \
-		lld/aggregates_soundness.tex \
+		lld/agg-match-soundness.tex lld/agg-cont-end.tex \
+		lld/agg-cont-c.tex lld/agg-cont-p.tex lld/agg-fix.tex lld/agg-der.tex \
+		lld/cont-p.tex lld/cont-bang-p.tex lld/der-p.tex lld/der-other.tex \
+		lld/aggregates.tex lld/soundness.tex \
+		lld/comprehensions_soundness.tex lld/aggregates_soundness.tex \
 		lld.tex hld.tex sequent_calculus.tex
 	pdflatex thesis.tex
 	bibtex thesis

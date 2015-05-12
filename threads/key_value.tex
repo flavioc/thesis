@@ -37,6 +37,10 @@ approach in order to limit the size of the cache.
 
 \begin{figure}[ht]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\{\}]
+type left(node, node).
+type right(node, node).
+type linear value(node, int Key, string Value).
+type linear replace(node, int Key, string Value).
 type linear cache(thread, node, int).
 type linear cache-size(thread, int).
 
@@ -78,5 +82,3 @@ RKey > Key
 \caption{LM program for performing lookups in a BST with a thread cache.}
 \label{code:threads:btree_lookup_cache}
 \end{figure}
-
-
