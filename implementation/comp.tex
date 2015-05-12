@@ -166,7 +166,7 @@ above, the fact \texttt{shortest(A, D1, P1)} is re-derived in the head. Our
 compiler is able to turn linear loops into persistent loops for linear facts
 that are retracted and then asserted.  The rule is then compiled as follows:
 
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\#\&]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\$\#\&]
 for(auto it1(linked_list("shortest").begin()); it1 != linked_list("shortest").end(); )
 {
    fact *f1(*it1);
@@ -175,7 +175,7 @@ for(auto it1(linked_list("shortest").begin()); it1 != linked_list("shortest").en
       fact *f2(*it2);
       if(f1->get_int(1) <= f2->get_int(1)) {
          it2 = linked_list("relax").erase(it2);
-         goto next;*label#line:implementation:goto&
+         goto next;$label#line:implementation:goto&
       }
       ++it2;
 next: continue;
