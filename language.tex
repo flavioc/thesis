@@ -29,9 +29,9 @@ three basic LM programs.
 
 Fig.~\ref{code:message} shows a second LM program, a message routing program
 that simulates message transmission through a network of nodes.  Predicate
-\texttt{edge/2} represents the connections between nodes, predicate
-\texttt{message/3} contains the message content and the route list, and
-predicate \texttt{processed/2} keeps count of the number of messages routed at
+\code{edge/2} represents the connections between nodes, predicate
+\code{message/3} contains the message content and the route list, and
+predicate \code{processed/2} keeps count of the number of messages routed at
 each node.
 
 \begin{figure}[h!]
@@ -55,29 +55,29 @@ processed(@1, 0). processed(@2, 0). processed(@3, 0). processed(@4, 0).
 message(@1, "hello world", [@3, @4]).*label{line:language:message_message}
 \end{Verbatim}
 \caption{Code for routing messages in a graph. There is only one message ("hello
-world") to route through nodes \texttt{@3} and \texttt{@4}.}
+world") to route through nodes \code{@3} and \code{@4}.}
 \label{code:message}
 \end{figure}
 
 The first rule
 (lines~\ref{line:language:message_first1}-\ref{line:language:message_first2})
-grabs the next node in the route list (third argument of \texttt{message/3}) and
-ensures that a communication edge exists (through \texttt{edge(A,~B)}). We
-increase the number of processed messages by consuming \texttt{processed(A,~N)}
-and deriving \texttt{processed(A,~N+1)}.  When the route list is empty, the
+grabs the next node in the route list (third argument of \code{message/3}) and
+ensures that a communication edge exists (through \code{edge(A,~B)}). We
+increase the number of processed messages by consuming \code{processed(A,~N)}
+and deriving \code{processed(A,~N+1)}.  When the route list is empty, the
 message has reached its destination and thus it is consumed (rule in lines
 \ref{line:language:message_first1}-\ref{line:language:message_first2}).  Note
-that we only need to send one message since there is only one \texttt{message}
+that we only need to send one message since there is only one \code{message}
 axiom (line~\ref{line:language:message_message}).
 
 In Fig.~\ref{fig:message_trace} we present an execution trace of the message
 routing program.  The database is represented as a graph structure where the
-edges represent the \texttt{edge/2} axioms. In Fig.~\ref{fig:message_trace}~(a)
+edges represent the \code{edge/2} axioms. In Fig.~\ref{fig:message_trace}~(a)
 the database is initialized with the program's axioms.  Note that the initial
-\texttt{message/3} fact is instantiated at node \texttt{@1}. After applying rule 1,
+\code{message/3} fact is instantiated at node \code{@1}. After applying rule 1,
 we get the database represented in Fig.~\ref{fig:message_trace}~(b), where
-the message has been derived at node \texttt{@3}. After applying rule 1
-again, the message is then routed to node \texttt{@4}
+the message has been derived at node \code{@3}. After applying rule 1
+again, the message is then routed to node \code{@4}
 (Fig.~\ref{fig:message_trace}~(c)) where it will be consumed
 (Fig.~\ref{fig:message_trace}~(d)).
 
@@ -91,22 +91,22 @@ again, the message is then routed to node \texttt{@4}
         ~
         \begin{subfigure}[b]{0.5\textwidth}
                 \includegraphics[width=\textwidth]{figures/message/message_trace2}
-                \caption{After applying rule 1 at node \texttt{@1}.}
+                \caption{After applying rule 1 at node \code{@1}.}
                 \label{fig:message_trace2}
         \end{subfigure}\\
         \begin{subfigure}[b]{0.5\textwidth}
                 \includegraphics[width=\textwidth]{figures/message/message_trace3}
-                \caption{After applying rule 1 at node \texttt{@3}.}
+                \caption{After applying rule 1 at node \code{@3}.}
                 \label{fig:message_trace3}
         \end{subfigure}%
         ~
         \begin{subfigure}[b]{0.5\textwidth}
                   \includegraphics[width=\textwidth]{figures/message/message_trace4}
-                  \caption{After applying rule 2 (nodes \texttt{@4}).}
+                  \caption{After applying rule 2 (nodes \code{@4}).}
                   \label{fig:message_trace4}
           \end{subfigure}
         \caption{An execution trace for the message program. The message "hello
-        world" travels from node \texttt{@1} to node \texttt{@4}.}\label{fig:message_trace}
+        world" travels from node \code{@1} to node \code{@4}.}\label{fig:message_trace}
 \end{figure}
 
 \subsection{Third Example: Graph Visit}
@@ -130,34 +130,34 @@ unvisited(@1). unvisited(@2). unvisited(@3). unvisited(@4).
 
 visit(@1).*label[line:language:visit_axiom]
 \end{Verbatim}
-  \caption{Visit program. Nodes reachable from node \texttt{@1} will be marked
-     as \texttt{visited}.}
+  \caption{Visit program. Nodes reachable from node \code{@1} will be marked
+     as \code{visited}.}
   \label{code:visit}
 \end{figure}
 \normalsize
 
 Our final example shown in Fig.~\ref{code:visit} presents another complete LM
 program that, for a given graph of nodes, performs a visit to all nodes
-reachable from node \texttt{@1}.  The first rule of the program
+reachable from node \code{@1}.  The first rule of the program
 (lines~\ref{line:language:visit_first1}-\ref{line:language:visit_first2}) visits
-node \texttt{A} for the first time: fact \texttt{visited(A)} is derived and a
+node \code{A} for the first time: fact \code{visited(A)} is derived and a
 \emph{comprehension} construct is derived in order to go through all the edge
-facts and then derive \texttt{visit(B)} for each neighbor \texttt{B}.  The
+facts and then derive \code{visit(B)} for each neighbor \code{B}.  The
 second rule (line~\ref{line:language:visit_second}) is fired when the node is
-already visited more than once: we keep the \texttt{visited} fact and delete
-\texttt{visit/1}. Node \texttt{@1} starts with the \texttt{visit(@1)} fact (line
+already visited more than once: we keep the \code{visited} fact and delete
+\code{visit/1}. Node \code{@1} starts with the \code{visit(@1)} fact (line
 \ref{line:language:visit_axiom}).
 
 Fig.~\ref{fig:exec_trace} shows a possible execution trace for the visit
-program.  After applying the first rule at node \texttt{@1} we get the database
-in Fig~\ref{fig:exec_trace}~(b).  Note that node \texttt{@1} is now visited and
-nodes \texttt{@2} and \texttt{@4} now have the fact \texttt{visit/1}. At this
-point we could either apply rule 1 at node \texttt{@2} or at node \texttt{@4}.
-For this specific trace, we apply the rule at node \texttt{@2}, resulting in
-Fig.~\ref{fig:exec_trace}~(c). Node \texttt{@4} now has 2 \texttt{visit/1}
+program.  After applying the first rule at node \code{@1} we get the database
+in Fig~\ref{fig:exec_trace}~(b).  Note that node \code{@1} is now visited and
+nodes \code{@2} and \code{@4} now have the fact \code{visit/1}. At this
+point we could either apply rule 1 at node \code{@2} or at node \code{@4}.
+For this specific trace, we apply the rule at node \code{@2}, resulting in
+Fig.~\ref{fig:exec_trace}~(c). Node \code{@4} now has 2 \code{visit/1}
 facts, thus we can apply rule 1 followed by rule 2, therefore consuming both
-\texttt{visit/1} facts and deriving \texttt{visited/1}. In addition, we can also
-apply rule 1 at node \texttt{@3} to reach the state of
+\code{visit/1} facts and deriving \code{visited/1}. In addition, we can also
+apply rule 1 at node \code{@3} to reach the state of
 Fig.~\ref{fig:exec_trace}~(d).
 
 \begin{figure}[h]
@@ -171,20 +171,20 @@ Fig.~\ref{fig:exec_trace}~(d).
           %(or a blank line to force the subfigure onto a new line)
         \begin{subfigure}[b]{0.5\textwidth}
                 \includegraphics[width=\textwidth]{figures/visit/trace2}
-                \caption{After applying rule 1 at node \texttt{@1}.}
+                \caption{After applying rule 1 at node \code{@1}.}
                 \label{fig:exec_trace2}
         \end{subfigure}\\
         \begin{subfigure}[b]{0.5\textwidth}
                 \includegraphics[width=\textwidth]{figures/visit/trace3}
-                \caption{After applying rule 1 at node \texttt{@2}.}
+                \caption{After applying rule 1 at node \code{@2}.}
                 \label{fig:exec_trace3}
         \end{subfigure}%
         ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
          %(or a blank line to force the subfigure onto a new line)
         \begin{subfigure}[b]{0.5\textwidth}
                   \includegraphics[width=\textwidth]{figures/visit/trace4}
-                  \caption{After applying rule 1 and 2 (nodes \texttt{@3},
-                        \texttt{@4}).}
+                  \caption{After applying rule 1 and 2 (nodes \code{@3},
+                        \code{@4}).}
                   \label{fig:exec_trace4}
           \end{subfigure}
         \caption{A possible execution trace for the visit program.}\label{fig:exec_trace}
@@ -193,13 +193,13 @@ Fig.~\ref{fig:exec_trace}~(d).
 \subsubsection{Correctness of graph visit}
 
 It is possible to prove that if a graph is connected, then all the nodes will be
-become \texttt{visited}, regardless of the order in which we apply the rules.
+become \code{visited}, regardless of the order in which we apply the rules.
 First, we define what is a visit graph:
 
 \begin{definition}[Visit Graph]
 A visit graph is an ordered pair $G = (N, E)$ comprising a set $N$ of nodes together
 with a set $E$ of edges. Set $E$ contains pairs $(A, B)$ that correspond to
-facts \texttt{\bang edge(A, B)}. For every pair $(A, B) \in E$ there is also a
+facts \code{\bang edge(A, B)}. For every pair $(A, B) \in E$ there is also a
 pair $(B, A) \in E$, representing an undirected edge.
 \end{definition}
 
@@ -207,20 +207,20 @@ To prove the correctness property of the program, we first define the main
 \emph{invariant} of the program:
 
 \begin{invariant}[Node state]
-A node is either \texttt{visited} or \texttt{unvisited}
+A node is either \code{visited} or \code{unvisited}
 \end{invariant}
 \begin{proof}
-Using the axioms we know all nodes start as \texttt{unvisited}.
+Using the axioms we know all nodes start as \code{unvisited}.
 
-Rule 1 changes a node from \texttt{unvisited} to \texttt{visited}, while rule 2
-keeps the node \texttt{visited}, proving the invariant.
+Rule 1 changes a node from \code{unvisited} to \code{visited}, while rule 2
+keeps the node \code{visited}, proving the invariant.
 \end{proof}
 
 With this invariant, it is now possible to classify nodes of the graph $G$
 according to their state:
 
-\begin{definition}[Node sets] \texttt{visited} nodes are contained in set $V$,
-while \texttt{unvisited} nodes are in set $U$. From the node state invariant, we
+\begin{definition}[Node sets] \code{visited} nodes are contained in set $V$,
+while \code{unvisited} nodes are in set $U$. From the node state invariant, we
 know that $V \cup U = N$ and $V \cap U = \emptyset$.
 \end{definition}
 
@@ -241,12 +241,12 @@ In turn, since set membership changes from $U$ to $V$, we now prove the
 following:
 
 \begin{lemma}[Edge visits]
-The program generates at most one \texttt{visit} per directed edge.
+The program generates at most one \code{visit} per directed edge.
 \end{lemma}
 \begin{proof}
 From the visited set invariant, we know that once nodes become members of set $V$,
 they no longer return to set $U$, therefore rule 1 applies once per
-node. This rule generates a \texttt{visit} fact per edge.
+node. This rule generates a \code{visit} fact per edge.
 \end{proof}
 
 In order to prove that all the nodes in the graph are visited, we need to make
@@ -256,7 +256,7 @@ sure that the graph is connected.
 A connected graph is a graph where every pair of nodes has a path between them.
 \end{definition}
 
-Finally, we prove that all nodes will become \texttt{visited}.
+Finally, we prove that all nodes will become \code{visited}.
 
 \begin{theorem}[Graph visit correctness]
 If graph $G$ is connected, set $V$ will eventually include all nodes in $N$,
@@ -266,13 +266,13 @@ while $U = \emptyset$.
 Proof by induction.
 
 \begin{itemize}
-   \item Base case: axiom \texttt{visit(@1)} adds node \texttt{@1} to $V$. By
-   the Edge visits lemma, a \texttt{visit} fact is generate for all edges of
-   \texttt{@1}.
+   \item Base case: axiom \code{visit(@1)} adds node \code{@1} to $V$. By
+   the Edge visits lemma, a \code{visit} fact is generate for all edges of
+   \code{@1}.
    \item Inductive case: assume a set $V'$ and a set $U'$ that contains the
-   \texttt{visited} and \texttt{unvisited} nodes, respectively. Since the graph
+   \code{visited} and \code{unvisited} nodes, respectively. Since the graph
    is connected, there must be a node $a \in V'$ that is connected to a node $b
-   \in U'$. Using the Edge visits lemma, a \texttt{visit(b)} fact is generated,
+   \in U'$. Using the Edge visits lemma, a \code{visit(b)} fact is generated,
    swapping $b$ from $U'$ to $V'$.
 \end{itemize}
 
@@ -325,7 +325,7 @@ Fig.~\ref{code:btree_replace}). Rules without heads are also allowed.
 The body of a rule, $BE$, may contain linear ($L$) and persistent ($P$)
 \emph{fact expressions} and constraints ($C$). Fact expressions are template
 facts that instantiate variables (from facts in the database) such as
-\texttt{visit(A)} in line~\ref{line:language:visit_second} in
+\code{visit(A)} in line~\ref{line:language:visit_second} in
 Fig.~\ref{code:visit}. Variables can be used again in the body for matching and
 also in the head when instantiating facts.  Constraints are boolean expressions
 that must be true in order for the rule to be fired. Constraints use variables
@@ -380,6 +380,20 @@ program. LM has a simple type system that includes the following simples types:
 \emph{node}, \emph{int}, \emph{float}, \emph{string}, \emph{bool}. Recursive
 types such as \emph{list X} and \emph{pair X; Y} are also allowed.
 
+LM allows definition of new type names from simpler types using the declaration
+\code{type simple-type new-type.} in the header of the program. The type
+\code{new-type} can then be used as any other type. Note that LM uses
+\emph{structural equivalence} to check if two types are the same, therefore
+\code{simple-type} and \code{new-type} are type equivalent.
+
+Node subtypes can be introduced using the declaration \code{node subnode.},
+allowing the programmer to use nodes with separate predicates.  The
+\emph{subnode} type becomes a subtype of \emph{node}, that is, $subnode <:
+node$. If axioms are declared using the form \code{f(A)}, where \code{A} is a
+\emph{subnode}, then the axiom is selectively instantiated on nodes with type
+\emph{subnode}. Otherwise, if \code{A} was a \emph{node} then \code{f(A)} would
+be instantiated in every node.
+
 \subsection{Selectors}
 
 When a rule body is instantiated using facts from the database, facts are picked
@@ -396,17 +410,17 @@ as follows:
                               -o picked(A, B, W).
 \end{Verbatim}
 
-In this case, we will order the \texttt{weight} facts by \texttt{W} in ascending
-order and then try to match them. Other operations available are \texttt{max}
-and \texttt{random} (to force no pre-defined order at the implementation level).
+In this case, we will order the \code{weight} facts by \code{W} in ascending
+order and then try to match them. Other operations available are \code{max}
+and \code{random} (to force no pre-defined order at the implementation level).
 
 \subsection{Exists Expression}
 
 Exist constructs ($EE$) are based on the linear logic construct of the same name
 and are used to create new node addresses. We can use the new address to
 instantiate new facts for the new node.  The following example illustrates the
-use of the exists construct, where we derive \texttt{perform-work} at a new node
-\texttt{B}.
+use of the exists construct, where we derive \code{perform-work} at a new node
+\code{B}.
 
 \begin{Verbatim}[fontsize=\codesize]
    work(A, W) -o exists B. (perform-work(B, W)).
@@ -423,9 +437,9 @@ $SB$ is the body of the comprehension and $SH$ is the head.  The body $SB$ is
 used to generate all possible combinations for the head $SH$, according to the
 facts in the database.  We have already seen an example of comprehensions in the
 visit program (Fig.~\ref{code:visit}
-line~\ref{line:language:visit_comprehension}). Here, we match \texttt{!edge(A,
+line~\ref{line:language:visit_comprehension}). Here, we match \code{!edge(A,
 B)} using all the combinations available in the database and for each
-combination we derive \texttt{visit(B)}.
+combination we derive \code{visit(B)}.
 
 \subsection{Aggregates}
 
@@ -451,12 +465,12 @@ count-prices(@1).
 count-prices(A) -o [sum => P | . | price(A, P) | 1 | total(A, P)].
 \end{Verbatim}
 
-By applying the rule, we consume \texttt{count-prices(@1)} and derive the
-aggregate which consumes all the \texttt{price(@1, P)} facts.  These are summed
-and \texttt{total(@1,~12)} is derived. LM provides several aggregate operations,
-including the \texttt{min} (minimum value), \texttt{max} (maximum value),
-\texttt{sum} (add all numbers), \texttt{count} (count combinations) and
-\texttt{collect} (collect items into a list).
+By applying the rule, we consume \code{count-prices(@1)} and derive the
+aggregate which consumes all the \code{price(@1, P)} facts.  These are summed
+and \code{total(@1,~12)} is derived. LM provides several aggregate operations,
+including the \code{min} (minimum value), \code{max} (maximum value),
+\code{sum} (add all numbers), \code{count} (count combinations) and
+\code{collect} (collect items into a list).
 
 \section{Operational Semantics}
 
