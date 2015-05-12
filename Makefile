@@ -2,7 +2,7 @@
 all: thesis.pdf
 
 thesis.pdf: thesis.tex packages.tex	thesis-cover.tex \
-		introduction.tex coordination.tex \
+		introduction.tex coordination.tex language/key_value.tex \
 		language/applications.tex implementation.tex \
 		implementation/node.tex implementation/coord.tex \
 		implementation/overview.tex implementation/comp.tex \
@@ -11,12 +11,12 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex \
 		coordination/types.tex coordination/rationale.tex \
 		coordination/coord_sssp.tex coordination/programs.tex \
 		coordination/minimax.tex coordination/queens.tex \
-		language.tex logic_foundations.tex \
+		language.tex logic_foundations.tex threads/summary.tex \
 		refs.bib thread.tex conclusions.tex \
 		appendix.tex appendix/vm.tex \
 		statement.tex related_work.tex abstract.tex \
 		threads/graph_reachability.tex threads/implementation.tex \
-		implementation/allocation.tex \
+		threads/key_value.tex implementation/allocation.tex \
 		macros.tex appendix/hld.tex \
 		appendix/fragment.tex appendix/lld.tex \
 		hld/step.tex hld/derivation-agg.tex \

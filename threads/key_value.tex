@@ -1,0 +1,82 @@
+In Section~\ref{sec:language:key_value} we have presented an algorithm for
+replacing a key's value in a BST dictionary. To make the program more
+interesting, we consider a sequence of $n$ lookup or replace operations for
+different keys in the BST (which may or may not be repeated). A single lookup or
+replace has worst-case time complexity $\mathcal{O}(h)$ where $h$ is the height
+of the BST, therefore performing $n$ operations takes $\mathcal{O}(h \times n)$
+time.
+
+In order to reduce the execution time of the new program, we can cache the
+search and replace operations so that repeated operations become faster. Instead
+of traversing the entire height of the BST, we look in the cache and send the
+operation immediately to the node where the key is located. Without thread
+facts, we might have cached the results at the root node, however, this is not a
+scalable approach as it would introduce a serious bottleneck.
+
+Figure~\ref{code:threads:btree_lookup_cache} shows the updated BST code with a thread
+cache. We just added two more predicates, \code{cache} and
+\code{cache-size}, that are facts placed in the thread and represent cached
+keys and the total size of the cache, respectively. We also added three new
+rules that handle the following cases:
+
+\begin{enumerate}
+      \item A key is found and is also in the cache
+         (lines~\ref{line:threads:kv_rule1_start}-\ref{line:threads:kv_rule2_end})
+
+      \item A key is found but is not in the cache
+         (lines~\ref{line:threads:kv_rule2_start}-\ref{line:threads:kv_rule2_end});
+
+      \item A key is in the cache, therefore a \code{replace} fact is
+         derived in the target node
+         (lines~\ref{line:threads:kv_rule3_start}-\ref{line:threads:kv_rule3_end}).
+
+\end{enumerate}
+
+Note that it is quite easy to extend the cache mechanism to use an LRU type
+approach in order to limit the size of the cache.
+
+\begin{figure}[ht]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\{\}]
+type linear cache(thread, node, int).
+type linear cache-size(thread, int).
+
+// (1) Key exists and is also in the cache.*label{line:threads:kv_rule1_start}
+replace(A, Key, RValue),
+value(A, Key, Value),
+*textbf{cache(T, A, Key)}
+   -o value(A, Key, RValue).
+      *textbf{cache(T, A, Key)}.*label{line:threads:kv_rule1_end}
+
+// (2) Key exists and is not in the cache.*label{line:threads:kv_rule2_start}
+replace(A, Key, RValue),
+value(A, Key, Value),
+*textbf{cache-size(T, Total)}
+   -o value(A, Key, RValue),
+      *textbf{cache-size(T, Total + 1)},
+      *textbf{cache(T, A, Key)}.*label{line:threads:kv_rule2_end}
+
+// (3) Cached by the thread.*label{line:threads:kv_rule3_start}
+replace(A, RKey, RValue),
+*textbf{cache(T, TargetNode, RKey)}
+   -o replace(TargetNode, RKey, RValue),
+      *textbf{cache(T, TargetNode, RKey)}.*label{line:threads:kv_rule3_end}
+
+replace(A, RKey, RValue),
+value(A, Key, Value),
+!left(A, B),
+RKey < Key
+   -o value(A, Key, Value),
+      replace(B, RKey, RValue). // go left
+
+replace(A, RKey, RValue),
+value(A, Key, Value),
+!right(A, B),
+RKey > Key
+   -o value(A, Key, Value),
+      replace(B, RKey, RValue). // go right
+\end{Verbatim}
+\caption{LM program for performing lookups in a BST with a thread cache.}
+\label{code:threads:btree_lookup_cache}
+\end{figure}
+
+
