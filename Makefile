@@ -3,7 +3,8 @@ all: thesis.pdf
 
 thesis.pdf: thesis.tex packages.tex	thesis-cover.tex \
 		introduction.tex coordination.tex language/key_value.tex \
-		language/applications.tex implementation.tex \
+		language/applications.tex language/related_work.tex \
+		implementation.tex \
 		implementation/node.tex implementation/coord.tex \
 		implementation/overview.tex implementation/comp.tex \
 		implementation/parallelism.tex implementation/locks.tex \
@@ -11,11 +12,11 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex \
 		coordination/types.tex coordination/rationale.tex \
 		coordination/coord_sssp.tex coordination/programs.tex \
 		coordination/minimax.tex coordination/queens.tex \
-		coordination/bp.tex \
+		coordination/bp.tex coordination/related_work.tex \
 		language.tex logic_foundations.tex threads/summary.tex \
 		refs.bib thread.tex conclusions.tex \
 		appendix.tex appendix/vm.tex \
-		statement.tex related_work.tex abstract.tex \
+		statement.tex abstract.tex \
 		threads/graph_reachability.tex threads/implementation.tex \
 		threads/key_value.tex implementation/allocation.tex \
 		threads/powergrid.tex threads/splash-bp.tex \

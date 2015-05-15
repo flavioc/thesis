@@ -13,8 +13,11 @@ implemented using three kinds of data structures:
 
 \begin{itemize}
 
-\item \emph{Trie Data Structures} are used exclusively to store persistent
-   facts. Tries are trees where facts are indexed by common prefix arguments.
+\item \emph{Trie Data Structures} are used to store persistent facts. Tries are
+   trees where facts are indexed by common prefix arguments.
+
+\item \emph{Array Data Structures} are used to store persistent facts that are
+   only derived as axioms and used in rule bodies.
 
 \item \emph{Doubly Linked List Data Structures} are used to store linear facts.
    We use a double linked list because it is a very efficient way to add and

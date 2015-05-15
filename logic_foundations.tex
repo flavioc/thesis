@@ -16,9 +16,36 @@ indefinitely. This is also true in the \emph{constructive} or
 logic} (lacks weakening and contraction) developed by
 Girard~\cite{Girard95logic:its} extends \emph{persistent logic} with linear
 propositions which can be understood as ephemeral resources that can be used
-only once to prove other propositions.  Naturally, linear logic is well
-suited for modeling computing systems that deal with state, of which LM is
-one of them.  Traditional forward-chaining logic programming languages like
+only once to prove other propositions.
+
+Linear logic is well suited for modeling computing systems that deal with state,
+of which LM is one of them.  Due to the resource interpretation of the logic,
+linear logic presents a good basis for programming languages with a structured
+way to manage state. Beyond programming languages, linear logic has also been
+used in game semantics, concurrent programming, knowledge representation,
+narrative generation, etc.
+
+In the context of the Curry-Howard correspondence~\cite{howard:tfatnoc}, linear
+logic has been applied in programming languages as a mechanism to implement
+\emph{linear types}. Linear types or also sometimes known as \emph{uniqueness
+types} are types that force objects to be used exactly once. Surprisingly, such
+types add mutable state to functional languages because they enforce a linear
+view of state, allowing the language to naturally support concurrency,
+input/output and data structure's updates.  Arguably, the most popular language
+that features uniqueness types is the Clean programming
+language~\cite{JFP:1349748}.  Monads~\cite{Wadler:1997:DI:262009.262011}, made
+popular with the Haskell programming language, are another interesting way to
+add state to functional languages. While monads tend to be more powerful than
+linear types, they also ensure equational reasoning in the presence of mutable
+data structures and I/O effects.
+
+Linear logic programming is a different approach than either monads or linear
+types.  While the latter are mechanisms that enhance functional programming with
+state, the former uses state as a foundation, since the program's database is
+both the state and the program, because it drives the computation forward
+through rule application.
+
+Traditional forward-chaining logic programming languages like
 Datalog only use persistent logic, however many ad-hoc
 extensions~\cite{Liu98extendingdatalog,Ludascher95alogical} have been devised
 in to support state updates, but most are extra-logical which makes it harder
