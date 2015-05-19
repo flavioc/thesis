@@ -1,0 +1,114 @@
+\subsection{Graph-Based Programming Models}
+
+Many programming systems model programs as graphs where computation is
+performed.  Some good examples are the Dryad, Pregel, GraphLab, Ligra, Grace and
+Galois systems.
+
+The Dryad system~\cite{Isard:2007:DDD:1272996.1273005} combines computational
+vertices with communication channels (edges) to form a data-flow graph. The
+program is scheduled to run on multiple processors or cores and data is
+partitioned during runtime. Routines that run on computational vertices are
+sequential, with no synchronization.
+
+The Pregel system~\cite{Malewicz:2010:PSL:1807167.1807184} is also graph based,
+although programs have a more strict structure. They must be represented as
+a sequence of iterations where each iteration is composed of computation and
+message passing.  Pregel is specially suited to work on big graphs and to
+scale to large architectures.
+
+GraphLab~\cite{GraphLab2010} is a C++ framework for developing parallel machine
+learning algorithms. While Pregel uses message passing, GraphLab allows nodes to
+have read/write access to different scopes through different concurrent access
+models in order to balance performance and data consistency. While some programs
+only need to access the local node's data, others may need to update edge
+information. Each consistency model will provide different guarantees that are
+better adapted to some algorithms. GraphLab also provides different schedulers
+that dictate the order in which node's are computed.
+
+Ligra~\cite{Shun:2013:LLG:2517327.2442530} is lightweight framework for large scale
+graph processing on a single multicore machine. Ligra exploits the fact that
+most huge graph datasets available today can be made to fit in the main memory
+of commodity servers. Ligra is a simple framework that exposes 
+two main interfaces: \texttt{EdgeMap} and \texttt{VertexMap}. The former applies
+a function to a subset of edges of the graph, while the latter applys a function
+to a subset of vertices. The functions passed as arguments are applied to either
+a single edge or a single vertex and the user must ensure that the function can
+be executed in parallel. The framework allows the use of \emph{Compare-and-Swap}
+instructions when implementing functions in order to avoid race conditions.
+
+Grace~\cite{wang:asynchronous} is another graph-based framework for multicore
+machines. Unlike Ligra, Grace programs are implemented from implemented from the
+point of view of a vertex. Each vertex and edge can be customized with different
+data depending on the target application. By default, programs are executed
+iteratively: for each iteration the vertex program reads incoming messages
+located in the edges, performs computation and sends messages to the outbound
+edges. Since iterative programs require synchronization after each iteration,
+Grace allows the user to relax these constraints and implement customizable
+execution policies by implementing code for describing which vertices are
+allowed to run and in which order. The order is dictated by assigning a
+\emph{scheduling priority value}.
+
+Galois~\cite{Pingali:2011:TPA:1993316.1993501} is a parallel programming model
+with irregular applications based on graphs, trees and sets. A Galois parallel
+algorithm is viewed as a parallel application of an \emph{operator} over an
+irregular data structure which generate \emph{activies} on the data structure.
+Such operator may, for instance, be applied on the
+node of the graph in order to change its data or change the structure of its
+neighborhood, allowing for data structure changes. In Galois, we consider
+\emph{active elements}, which are nodes of the graph where computation needs to
+be performed, the \emph{neighborhood} containing the nodes of the graph required
+to perform an operator, and \emph{ordering} which dictactes the order in which
+operators are applied. From the point of view of the programer, the active
+elements are represented in a worklist, while operators can be implemented on
+top of iterators of the worklist. Galois supports speculative execution by
+allowing operator rollback when an operator requires the use of a node that is
+held by another operator.
+
+\subsubsection{Languages for Sensor Networks}
+
+Sensor nets are another interesting domain for programming languages that deal
+with graph-like networks.  Programming languages such as
+Hood~\cite{Whitehouse:2004:HNA:990064.990079},
+Tinydb~\cite{Madden:2005:TAQ:1061318.1061322} or
+Regiment~\cite{Newton:2007:RMS:1236360.1236422} have been proposed for this
+particular domain, providing support for data collection and aggregation over
+the network.  These systems assume that the network remains static and nodes
+stay in place.
+
+Other languages such as Pleiades~\cite{Kothari:2007:REP:1250734.1250757},
+LDP~\cite{4543691} or Proto~\cite{Beal:2006:IEE:1137236.1137354} go beyond
+static networks and support dynamic reconfiguration. In Pleiades, the
+programmer writes an application from the point of view of the whole
+sensor network and the compiler transforms it into code that can be run on
+each individual node.  LDP is a language derived from a method for
+distributed debugging, that allows it to efficiently detect conditions on
+variably-sized groups of nodes. It is based on the tick model, generating
+a new set of condition matchers throughout the ensemble on each tick.
+Like Pleiades and LDP, Proto also compiles global programs into locally
+executed code.
+
+\subsection{Constraint Handling Rules}
+
+Since LM is a bottom-up linear logic programming language, it also shares
+similarities with Constraint Handling Rules
+(CHR)~\cite{Betz:2005kx,Betz:2013:LBA:2422085.2422086}.  CHR is a concurrent
+committed-choice constraint language used to write constraint solvers. A CHR
+program is a set of rules and a set of constraints. Constraints can be consumed
+or generated during the application of rules.  Unlike LM, in CHR there is no
+concept of rule priorities, but there is an extension to CHR that supports
+them~\cite{DeKoninck:2007:URP:1273920.1273924}.  Finally, there is also a CHR
+extension that adds persistent constraints and it has been proven to be sound
+and complete~\cite{DBLP:journals/corr/abs-1007-3829}.
+
+\subsection{Graph Transformation Systems}
+
+Graph Transformation Systems (GTS)~\cite{Ehrig:2004vn}, commonly used to model
+distributed systems, perform rewriting of graphs through a set of graph
+productions. GTS also introduces concepts of concurrency, where it may be
+possible to apply several transformations at the same time. In principle, it
+should be possible to model LM programs as a graph transformation: we directly
+map the LM graph of nodes to GTS's initial graph and consider logical facts as
+nodes that are connected to LM's nodes. Each LM rule is then a graph production
+that manipulates the node's neighbors (the database) or sends new facts to
+other nodes. On the other hand, it is also possible to embed GTS inside
+CHR~\cite{Raiser:2011:AGT:1972935.1972938}.

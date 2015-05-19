@@ -1,0 +1,15 @@
+Linear logic has been used in the past as a basis for logic-based programming
+languages~\cite{Miller85anoverview}, including bottom-up and top-down
+programming languages. Lolli, a programming language presented
+in~\cite{Hodas94logicprogramming}, is based on a fragment of intuitionistic
+linear logic and proves goals by lazily managing the context of linear resources
+during top-down proof search.  LolliMon~\cite{Lopez:2005:MCL:1069774.1069778} is
+a concurrent linear logic programming language that integrates both bottom-up
+and top-down search, where top-down search is done sequentially but bottom-up
+computations, which are encapsulated inside a monad, can be performed
+concurrently. Programs start by performing top-down search but this can be
+suspended in order to perform bottom-up search. This concurrent bottom-up search
+stops until a fix-point is achieved, after which top-down search is resumed.
+LolliMon is derived from the concurrent logical framework called
+CLF~\cite{Watkins:2004uq,Cervesato02aconcurrent,Watkins03aconcurrent}.                   
+
