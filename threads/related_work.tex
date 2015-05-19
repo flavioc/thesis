@@ -1,0 +1,14 @@
+As already seen in the previous chapter, there are several programming models
+such as Galois~\cite{nguyen11}, Elixir~\cite{Prountzos:2012:ESS:2384616.2384644}
+and Halide~\cite{Ragan-Kelley:2013:HLC:2491956.2462176}
+which allow the programmer to apply different scheduling policies to programs.
+Unfortunately, these models only reason about the data or program being computed
+and not about the parallel architecture.
+
+In the logic programming community, there have been some attempts at exposing a
+low level programming interface in Prolog programs to permit explicit programmer
+control. An example is the proposal by Casas et
+al.~\cite{Casas_towardshigh-level} which exposes execution primitives for
+AND-parallelism, allowing for different scheduling policies. Compared to LM,
+this approach offers a more fine grained control to parallelism but has limited
+support for reasoning about thread state.

@@ -15,6 +15,7 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex \
 		coordination/minimax.tex coordination/queens.tex \
 		coordination/bp.tex coordination/related_work.tex \
 		language.tex logic_foundations.tex threads/summary.tex \
+		threads/related_work.tex \
 		refs.bib thread.tex conclusions.tex \
 		appendix.tex appendix/vm.tex \
 		statement.tex abstract.tex related_work.tex \
