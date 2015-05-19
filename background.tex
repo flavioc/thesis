@@ -2,38 +2,59 @@
 
 \section{Declarative Programming}
 
-Many programming models have been developed in order to make parallel programs
-both easier to write and reason about. The most popular examples of such
-paradigms are \emph{logic programming} and \emph{functional programming}.  In
-logic languages such as Prolog, researchers took advantage of the
+Logic and functional programming languages are a major class of languages called
+declarative programming languages. Logic programming languages are usually based
+on classical logic (such as the \emph{predicate and propositional calculus}) or
+in non-classical logics such as \emph{constructive} or \emph{intuitionistic}
+logic, where the goal is to construct different models of logical truth.  In the
+other hand, functional programming languages are usually based on the
+\emph{lambda calculus}, a model for function application and abstraction. As
+declarative languages, logic and functional programming languages are considered
+to be high-level languages when compared to imperative languages because,
+generally, they allow the programmer to concentrate more on what the problem is,
+rather than telling the computers the steps it needs to do to solve the problem.
+In turn, this allows for a simplified formal reasoning about important program
+properties such as correctness and termination.
+
+\paragraph{Declarative Programming and Parallel Programming}
+
+In logic languages such as Prolog, researchers took advantage of the
 non-determinism of proof-search to evaluate subgoals in parallel with models
-such as \emph{or-parallelism} and
-\emph{and-parallelism}~\cite{Gupta:2001:PEP:504083.504085}.  In functional
+such as \emph{OR-parallelism} and
+\emph{AND-parallelism}~\cite{Gupta:2001:PEP:504083.504085}.  In functional
 languages, the stateless nature of computation allows multiple expressions to
 evaluate safely in parallel.  This has been initially explored in several
 languages, such as NESL~\cite{Blelloch:1996:PPA:227234.227246} or
 Id~\cite{Nikhil93anoverview}, and later implemented in more modern languages
 such as Haskell~\cite{Chakravarty07dataparallel}.
 
-Recently, there has been an increasing interest in declarative and data-centric
-languages. MapReduce~\cite{Dean:2008:MSD:1327452.1327492}, for instance, is a
-popular data-centric programming model that is optimized for large clusters. The
-scheduling and data sharing model is very simple: in the \emph{map phase}, data
-is transformed at each node and the result reduced to a final result in the
-\emph{reduce phase}. In order to facilitate the writing of programs over large
-datasets, SQL-like languages such as
-PigLatin~\cite{Olston:2008:PLN:1376616.1376726} have been developed. PigLatin
-builds on top of MapReduce and allows the programmer to write complex data-flow
-graphs, raising the abstraction and ease of programmability of MapReduce
-programs. An alternative to PigLatin/MapReduce is
-Dryad~\cite{Isard:2007:DDD:1272996.1273005} that allows programmers to design
-arbitrary computation patterns using DAG abstractions. It combines computational
-vertices with communication channels (edges) that are automatically scheduled to
-run on multiple computers/cores.
+\paragraph{Logic Programming}
 
-\section{Logic Programming}
+Logic programming is a programming model based on \emph{proof search}.
 
-\subsection{Origins of LM}
+Prolog~\cite{Colmerauer:1993:BP:154766.155362} is one of the first logic
+programming languages to become available, yet it still one of the most popular
+logic programming language in use today. Prolog is a backwards-chaining logic
+programming language where a program is composed of a set of rules that can be
+activated by inputing a query. Given a query $q(\hat{x})$, a Prolog interpreter
+will work backwards by matching $q(\hat{x})$ against the head of a rule. If
+found, the interpreter will then try to match the body of the rule, recursively,
+until it finds the program axioms (rules without body). If the search procedure
+succeeds, the interpreter finds a valid substitution for the $\hat{x}$
+variables.
+
+Datalog~\cite{Ramakrishnan93asurvey} is a forward-chaining logic programming
+language originally designed for deductive databases. In Datalog, the program is
+composed of a database of facts and a set of rules. Datalog programs first
+populate the database with axioms and then saturate the database using rule
+inference. In Datalog, logical facts are persistent and thus once a fact is
+derived, it cannot be deleted. However, there has been a growing interest in
+integrating linear logic~\cite{girard-87} into bottom-up logic programming,
+allowing for both fact assertion and
+retraction~\cite{Chang03ajudgmental,Lopez:2005:MCL:1069774.1069778,simmons-lla,cruz-iclp14},
+which is one of the topics of this thesis.
+
+\paragraph{Origins of LM}
 
 LM is a direct descendant of Meld, a logic programming language developed by
 Ashley-Rollman et
@@ -60,8 +81,25 @@ traditionally used in deductive databases, but is now being increasingly used in
 other fields such as sensor nets~\cite{Chu:2007:DID:1322263.1322281} and cloud
 computing~\cite{alvaro:boom}.
 
+\paragraph{Data-Centric Languages}
 
-\subsection{Provability}
+Recently, there has been an increasing interest in declarative data-centric
+languages. MapReduce~\cite{Dean:2008:MSD:1327452.1327492}, for instance, is a
+popular data-centric programming model that is optimized for large clusters. The
+scheduling and data sharing model is very simple: in the \emph{map phase}, data
+is transformed at each node and the result reduced to a final result in the
+\emph{reduce phase}. In order to facilitate the writing of programs over large
+datasets, SQL-like languages such as
+PigLatin~\cite{Olston:2008:PLN:1376616.1376726} have been developed. PigLatin
+builds on top of MapReduce and allows the programmer to write complex data-flow
+graphs, raising the abstraction and ease of programmability of MapReduce
+programs. An alternative to PigLatin/MapReduce is
+Dryad~\cite{Isard:2007:DDD:1272996.1273005} that allows programmers to design
+arbitrary computation patterns using DAG abstractions. It combines computational
+vertices with communication channels (edges) that are automatically scheduled to
+run on multiple computers/cores.
+
+\section{Provability}
 
 Many techniques and formal systems have been devised to help reason about
 parallel programs.  One such example is the

@@ -18,7 +18,7 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex \
 		threads/related_work.tex \
 		refs.bib thread.tex conclusions.tex \
 		appendix.tex appendix/vm.tex \
-		statement.tex abstract.tex related_work.tex \
+		statement.tex abstract.tex background.tex \
 		threads/graph_reachability.tex threads/implementation.tex \
 		threads/key_value.tex implementation/allocation.tex \
 		threads/powergrid.tex threads/splash-bp.tex \
