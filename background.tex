@@ -16,43 +16,129 @@ rather than telling the computers the steps it needs to do to solve the problem.
 In turn, this allows for a simplified formal reasoning about important program
 properties such as correctness and termination.
 
-\paragraph{Declarative Programming and Parallel Programming}
-
-In logic languages such as Prolog, researchers took advantage of the
-non-determinism of proof-search to evaluate subgoals in parallel with models
-such as \emph{OR-parallelism} and
-\emph{AND-parallelism}~\cite{Gupta:2001:PEP:504083.504085}.  In functional
-languages, the stateless nature of computation allows multiple expressions to
-evaluate safely in parallel.  This has been initially explored in several
-languages, such as NESL~\cite{Blelloch:1996:PPA:227234.227246} or
-Id~\cite{Nikhil93anoverview}, and later implemented in more modern languages
-such as Haskell~\cite{Chakravarty07dataparallel}.
-
 \paragraph{Logic Programming}
 
-Logic programming is a programming model based on \emph{proof search}.
+Logical systems define their own meaning of truth and a set of rules that
+manipulate truth in order to create proofs inside the system.  For instance, the
+system of \emph{propositional logic} contains the \emph{modus ponens} rule,
+where truth is manipulated as follows: if $P$ implies $Q$ and $P$ is known to be
+true, therefore $Q$ must also be true. If we know that ``it is raining'' and
+that ``if it is raining then the grass is wet'', we can prove that ``the grass
+wet'' by using the \emph{modus ponens} rule.
+
+Logic programming arises when the proof search strategy in a logical system is
+fixed. In the case of propositional logic, we can devise the following
+programming model:
+
+\begin{itemize}
+   \item A set $R$ of implications of the form ``$P$ implies $Q$'' represents the
+      program;
+   \item A set of atomic truths $D$ of the form ``$P$'' represents the database of
+      known truths;
+   \item Proof search is done by applying implications in $R$ using the truth
+      stored in $D$ and adding new truths from the application of \emph{modus
+      ponens} into $D$.
+\end{itemize}
+
+This particular proof search mechanism is called \emph{forward-chaining} logic
+programming, since it starts from the \emph{axioms} (the initial truths) and
+then uses inference rules (\emph{modus ponens}) to accumulate more truth. The
+proof search may then stop if the search has found a particular proposition to
+be true or if it is not possible to derive any more truths, which is called
+\emph{quiescence}.
+
+An alternative proof search strategy is \emph{backward-chaining} logic
+programming. In this style of programming, we want to know if a particular
+proposition is true and then work backwards using the inference rules. For
+instance, consider the implications: (1) ``if the it is raining then the grass
+is wet'' and (2) ``if the weather forecast for today is rain then it is raining''
+and the proposition (3) ``the weather forecast for today is rain''. If we want
+to know if (4) ``the grass is wet'', we select the implication (1) and attempt to prove
+``it is raining'' since it is required by (1) to prove (4), the goal
+proposition. Next, the goal proposition becomes ``it is raining'' and the
+conclusion of implication (2) matches and thus we have to prove ``the weather
+forecast for today is rain'', which can be proved immediately using axiom (3).
 
 Prolog~\cite{Colmerauer:1993:BP:154766.155362} is one of the first logic
 programming languages to become available, yet it still one of the most popular
-logic programming language in use today. Prolog is a backwards-chaining logic
-programming language where a program is composed of a set of rules that can be
-activated by inputing a query. Given a query $q(\hat{x})$, a Prolog interpreter
-will work backwards by matching $q(\hat{x})$ against the head of a rule. If
-found, the interpreter will then try to match the body of the rule, recursively,
-until it finds the program axioms (rules without body). If the search procedure
-succeeds, the interpreter finds a valid substitution for the $\hat{x}$
-variables.
+logic programming language in use today. Prolog is based on \emph{First Order
+Logic}, a logical system that extends propositional logic with predicates and
+variables. Prolog is a backward-chaining logic programming language where a
+program is composed of a set of rules that can be activated by inputing a query.
+Given a query $q(\hat{x})$, a Prolog interpreter will work backwards by matching
+$q(\hat{x})$ against the head of a rule. If found, the interpreter will then try
+to match the body of the rule, recursively, until it finds the program axioms
+(rules without body). If the search procedure succeeds, the interpreter finds a
+valid substitution for the $\hat{x}$ variables.
 
-Datalog~\cite{Ramakrishnan93asurvey} is a forward-chaining logic programming
-language originally designed for deductive databases. In Datalog, the program is
-composed of a database of facts and a set of rules. Datalog programs first
-populate the database with axioms and then saturate the database using rule
-inference. In Datalog, logical facts are persistent and thus once a fact is
+Datalog~\cite{Ramakrishnan93asurvey,Ullman:1990:PDK:533142} is a
+forward-chaining logic programming language originally designed for deductive
+databases. Datalog has been traditionally used in deductive databases, but is
+now being increasingly used in other fields such as sensor
+nets~\cite{Chu:2007:DID:1322263.1322281}, cloud computing~\cite{alvaro:boom},
+and social networks~\cite{Seo:2013:DSD:2556549.2556572}.  In Datalog, the
+program is composed of a database of facts and a set of rules.  Datalog programs
+first populate the database with axioms and then saturate the database using
+rule inference. In Datalog, logical facts are persistent and thus once a fact is
 derived, it cannot be deleted. However, there has been a growing interest in
 integrating linear logic~\cite{girard-87} into bottom-up logic programming,
 allowing for both fact assertion and
 retraction~\cite{Chang03ajudgmental,Lopez:2005:MCL:1069774.1069778,simmons-lla,cruz-iclp14},
 which is one of the topics of this thesis.
+
+\paragraph{Declarative Programming and Parallel Programming}
+
+In functional programming languages, the \emph{side-effect free} nature of
+computation allows multiple expressions to evaluate safely in
+parallel~\cite{Loidl:2003}. This so called \emph{implicit parallelism} has been
+implemented in languages such as Id~\cite{Nikhil93anoverview} and
+SISAL~\cite{gaudiot2001sisal} with relative success but this kind of parallelism
+remains elusive in the functional programming community since practical
+functional programs have a higher level of granularity, which makes it harder
+for a compiler to schedule computations efficiently~\cite{haskell_tutorial}.
+
+Alternative approaches such as \emph{semi-explicit
+parallelism}~\cite{Marlow:2010}, \emph{nested data
+parallelism}~\cite{Blelloch:1996:PPA:227234.227246}, and \emph{software
+transactional memory} have shown to be more effective in practice. In
+semi-explicit parallelism, the programmer uses an API to tell the runtime system
+which computations should be carried out in parallel, reducing the granularity
+problem found in implicit parallelism. These parallel
+computations are called \emph{sparked computations} and express the possibility
+of performing speculative computations which are going to be needed in the
+future. In a sense, sparked computations can be seen as \emph{lazy
+futures}~\cite{Baker:1977}.
+
+This has been initially explored in several languages, such as
+NESL~\cite{Blelloch:1996:PPA:227234.227246} or Id~\cite{Nikhil93anoverview}, and
+later implemented in more modern languages such as
+Haskell~\cite{Chakravarty07dataparallel}.
+
+In logic programming languages such as Prolog, researchers took advantage of the
+non-determinism of proof-search to evaluate subgoals in parallel. The most
+famous models are \emph{OR-parallelism} and
+\emph{AND-parallelism}~\cite{Gupta:2001:PEP:504083.504085}. When performing
+proof search with two implications of the form ``$P$ implies $Q$'' and ``$R$
+implies $Q$'' then we have OR-parallelism because proof search can select ``$P$
+implies $Q$'' and try to prove $P$ but also select ``$R$ implies $Q$'' and prove
+$R$. In AND-parallelism, there is an implication of the form ``$P$ and $R$
+implies $Q$'' then to prove $Q$, it is possible to prove $P$ and $Q$ at the same
+time. AND-parallelism becomes more complicated when $P$ and $Q$ actually depend
+on each other, that is, if $P = \mathtt{prop}_1(X)$ and $R = \mathtt{prop}_2(X,
+Y)$ then the variable $X$ must be the same in the two predicates. This issue
+does not arise in OR-parallelism, however AND-parallelism may be better when
+rules are more deterministic (less options).
+
+In Datalog programs, parallelism arises naturally because new logical facts may
+activate multiple inference rules and thus generate more
+facts~\cite{Ganguly:1990:FPP:93597.98724,Seib:1991:PDP:113413.113435,Wolfson:1988:DPL:971701.50242}.
+A trivial parallelization can be done by splitting the rules among processing
+units, however this may require sharing of logical facts depending on the rule
+partitioning~\cite{Wolfson:1988:DPL:971701.50242}. Another alternative is to
+partition the logical facts among the
+machines~\cite{183073,Loo-condie-garofalakis-p2}, where rules are restricted in
+order to facilitate fact partitioning and communication. The LM language
+presented in this thesis follows this particular approach.
 
 \paragraph{Origins of LM}
 
@@ -75,11 +161,8 @@ sensing facts.
 Meld was inspired in the P2 system~\cite{Loo-condie-garofalakis-p2}, which
 includes a logic programming language called NDlog for writing network
 algorithms declaratively. Many ideas about state management were already present
-in NDlog.  NDlog is essentially a Datalog~\cite{Ullman:1990:PDK:533142} based
-language with a few extensions for declarative networking. Datalog has been
-traditionally used in deductive databases, but is now being increasingly used in
-other fields such as sensor nets~\cite{Chu:2007:DID:1322263.1322281} and cloud
-computing~\cite{alvaro:boom}.
+in NDlog.  NDlog is essentially a Datalog based language with a few extensions
+for declarative networking.
 
 \paragraph{Data-Centric Languages}
 

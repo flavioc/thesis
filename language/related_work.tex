@@ -1,8 +1,8 @@
 \subsection{Graph-Based Programming Models}
 
 Many programming systems model programs as graphs where computation is
-performed.  Some good examples are the Dryad, Pregel, GraphLab, Ligra, Grace and
-Galois systems.
+performed. Some good examples are the Dryad, Pregel, GraphLab, Ligra, Grace,
+Galois and SociaLite systems.
 
 The Dryad system~\cite{Isard:2007:DDD:1272996.1273005} combines computational
 vertices with communication channels (edges) to form a data-flow graph. The
@@ -63,6 +63,16 @@ elements are represented in a worklist, while operators can be implemented on
 top of iterators of the worklist. Galois supports speculative execution by
 allowing operator rollback when an operator requires the use of a node that is
 held by another operator.
+
+SociaLite~\cite{Seo:2013:DSD:2556549.2556572} is a Datalog-based language for
+writing algorithms for social-network analysis. SociaLite takes Datalog programs
+and compiles them to run on distributed architectures. The language places some
+restrictions on rules in order to make distribution possible, however, the
+programmer is free to tell the system how to shard database's facts. Like LM, these
+restrictions deal with the first argument of each fact, however, the first
+argument is not related to the problem at hand but is instead related to fact
+distribution, allowing for programmers to optimize message sending across
+machines.
 
 \subsubsection{Languages for Sensor Networks}
 
