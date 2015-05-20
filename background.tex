@@ -6,14 +6,14 @@ Logic and functional programming languages are a major class of languages called
 declarative programming languages. Logic programming languages are usually based
 on classical logic (such as the \emph{predicate and propositional calculus}) or
 in non-classical logics such as \emph{constructive} or \emph{intuitionistic}
-logic, where the goal is to construct different models of logical truth.  In the
-other hand, functional programming languages are usually based on the
-\emph{lambda calculus}, a model for function application and abstraction. As
-declarative languages, logic and functional programming languages are considered
-to be high-level languages when compared to imperative languages because,
-generally, they allow the programmer to concentrate more on what the problem is,
-rather than telling the computers the steps it needs to do to solve the problem.
-In turn, this allows for a simplified formal reasoning about important program
+logic, where the goal is to construct different models of logical truth.
+Functional programming languages are usually based on the \emph{lambda
+calculus}, a model for function application and abstraction. As declarative
+languages, logic and functional programming languages are considered to be
+high-level languages when compared to imperative languages because, generally,
+they allow the programmer to concentrate more on what the problem is, rather
+than telling the computers the steps it needs to do to solve the problem.  In
+turn, this allows for a simplified formal reasoning about important program
 properties such as correctness and termination.
 
 \paragraph{Logic Programming}
@@ -86,33 +86,48 @@ allowing for both fact assertion and
 retraction~\cite{Chang03ajudgmental,Lopez:2005:MCL:1069774.1069778,simmons-lla,cruz-iclp14},
 which is one of the topics of this thesis.
 
-\paragraph{Declarative Programming and Parallel Programming}
+\paragraph{Functional Programming and Parallel Programming}
 
 In functional programming languages, the \emph{side-effect free} nature of
 computation allows multiple expressions to evaluate safely in
 parallel~\cite{Loidl:2003}. This so called \emph{implicit parallelism} has been
 implemented in languages such as Id~\cite{Nikhil93anoverview} and
-SISAL~\cite{gaudiot2001sisal} with relative success but this kind of parallelism
-remains elusive in the functional programming community since practical
+SISAL~\cite{gaudiot2001sisal} with relative success, however this kind of parallelism
+still remains elusive in the functional programming community since practical
 functional programs have a higher level of granularity, which makes it harder
 for a compiler to schedule computations efficiently~\cite{haskell_tutorial}.
 
 Alternative approaches such as \emph{semi-explicit
-parallelism}~\cite{Marlow:2010}, \emph{nested data
-parallelism}~\cite{Blelloch:1996:PPA:227234.227246}, and \emph{software
-transactional memory} have shown to be more effective in practice. In
-semi-explicit parallelism, the programmer uses an API to tell the runtime system
-which computations should be carried out in parallel, reducing the granularity
-problem found in implicit parallelism. These parallel
-computations are called \emph{sparked computations} and express the possibility
-of performing speculative computations which are going to be needed in the
-future. In a sense, sparked computations can be seen as \emph{lazy
-futures}~\cite{Baker:1977}.
+parallelism}~\cite{Marlow:2010}, \emph{data
+parallelism}~\cite{Blelloch:1996:PPA:227234.227246}, and \emph{explicit
+parallelism}~\cite{harris2005composable} have shown to be more
+effective in practice.
 
-This has been initially explored in several languages, such as
-NESL~\cite{Blelloch:1996:PPA:227234.227246} or Id~\cite{Nikhil93anoverview}, and
-later implemented in more modern languages such as
-Haskell~\cite{Chakravarty07dataparallel}.
+In semi-explicit parallelism, the programmer uses an API to tell the runtime
+system which computations should be carried out in parallel, reducing the
+granularity problem found in implicit parallelism. These parallel computations
+are called \emph{sparked computations} and express the possibility of performing
+speculative computations which are going to be needed in the future. In a sense,
+sparked computations can be seen as \emph{lazy futures}~\cite{Baker:1977}.
+
+Data parallelism attempts to partition data among a set of processing units and
+then apply the same operation on the data.  In \emph{flat data parallelism}, the
+data is flat and is easily partitioned.  However, functional code is composable
+with many recursive data manipulation operations. In the NESL
+language~\cite{Blelloch:1996:PPA:227234.227246}, a new compiler transform was
+proposed that could take a program using \emph{nested data parallelism} and turn
+it into a program using flat data parallelism, which is much easier to
+parallelize. This approach has been later implemented in more modern languages
+such as Haskell~\cite{Chakravarty07dataparallel}. The main advantage of this
+approach is that it remains true to the original goal of implicit parallelism.
+
+Finally, functional programs also allow the explicit creation of threads and
+communication using mechanisms such as \emph{software transactional memory},
+which allows the programmer to share variables and state between threads.
+Unfortunately, this approach suffers from the same problems seen in imperative
+programs.
+
+\paragraph{Logic Programming and Parallel Programming}
 
 In logic programming languages such as Prolog, researchers took advantage of the
 non-determinism of proof-search to evaluate subgoals in parallel. The most
