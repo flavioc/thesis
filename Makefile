@@ -17,7 +17,7 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex \
 		language.tex logic_foundations.tex threads/summary.tex \
 		threads/related_work.tex background/parallel_programming.tex \
 		refs.bib thread.tex conclusions.tex \
-		appendix.tex appendix/vm.tex \
+		appendix.tex appendix/vm.tex threads/modeling.tex \
 		statement.tex abstract.tex background.tex \
 		threads/graph_reachability.tex threads/implementation.tex \
 		threads/key_value.tex implementation/allocation.tex \

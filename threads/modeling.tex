@@ -1,0 +1,96 @@
+\subsection{Scheduling}
+
+\begin{figure}[h!]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\#\&]
+type linear running(thread, node). type linear inactive(node).
+type linear priority(node, float). type linear default-priority(node, float).
+type linear available-work(node, bool).
+type linear active(thread).  type linear idle(thread).
+type linear owner(node, thread).
+
+owner(A, T). // Initially node assignment.
+available-work(A, true). // All nodes have available work.
+
+active(T). // All threads are active.
+
+node-fact(A, X, Y),
+other-fact(A, X, B),
+priority(A, PA), priority(B, PB),
+owner(B, TB), running(T, A),
+available-work(B, _)
+   -o remote-fact(B), local-fact(A),
+      owner(B, TB), running(T, A),
+      priority(A, PA), priority(B, PB),
+      available-work(B, true).
+
+active(T), running(T, A), priority(A, Prio),
+default-priority(A, DefPrio), available-work(A, T),
+   -o inactive(A), priority(A, DefPrio),
+      default-priority(A, DefPrio),
+      available-work(A, false), idle(T).
+
+[max => Prio |
+   idle(T), owner(A, T),
+   priority(A, Prio), available-work(A, true)]
+   -o active(T), owner(A, T),
+      running(T, A), available-work(A, true),
+      priority(A, Prio).
+
+idle(T), !other-thread(T, Other)
+owner(A, Other), inactive(A),
+available-work(A, true)
+   -o idle(T), owner(A, T),
+      inactive(A), available-work(A, true).
+\end{Verbatim}
+\caption{Modeling the operational semantics as a LM program.}
+\label{code:threads:modeling}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\#\&]
+type linear static(node).  type linear moving(node).
+type linear set-priority(node, float).
+type linear set-default-priority(node, float).
+type linear just-moved(node). type linear move-to-thread(node, thread).
+
+moving(A). // All nodes can be stolen.
+inactive(A). // Nodes are not being processed initially.
+
+// Priority facts.
+priority(A, initial-priority).
+default-priority(A, initial-priority).
+
+schedule-next(A), running(T, A)
+   -o running(T, A), set-priority(A, +00).
+
+running(T, A), set-priority(A, P1),
+priority(A, P2), P2 < P1
+   -o running(T, A), priority(A, P1).
+
+running(T, A), set-priority(A, P1),
+priority(A, P2), P2 >= P1
+   -o running(T, A), priority(A, P2).
+
+running(T, A), set-default-priority(A, P1),
+default-priority(A, P2), P2 < P1
+   -o running(T, A), default-priority(A, P1).
+
+running(T, A), set-default-priority(A, P1),
+default-priority(A, P2), P2 >= P1
+   -o running(T, A), default-priority(A, P2).
+
+running(T, A), set-thread(A, T),
+available-work(A, _)
+   -o available-work(A, true),
+      move-to-thread(A, T).
+
+move-to-thread(A, T2),
+running(T, A), owner(A, T),
+moving(A), active(T)
+   -o idle(T), inactive(A),
+      owner(A, T2), static(A),
+      just-moved(A).
+\end{Verbatim}
+\caption{Modeling the operational semantics as a LM program.}
+\label{code:threads:modeling}
+\end{figure}
