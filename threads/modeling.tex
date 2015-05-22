@@ -1,4 +1,50 @@
-\subsection{Scheduling}
+The introduction of thread-based facts allows for explicit parallelism in a
+language that is purely implicit. This introduces issues when attempting the
+prove the correctness of programs because the behavior of threads and the
+scheduling strategy is now also part of the program logic. Some of this behavior
+is hidden from the programs because it is part of how coordination facts and
+thread scheduling works on the virtual machine.
+
+Consider the SBP program where we need to prove that the graph is correctly
+partitioned into regions. To accomplish this, we need to know that the VM
+initially randomly nodes to threads so that the code in
+lines~\ref{line:threads:splash_part1}-\ref{line:threads:splash_part2} in
+Fig.~\ref{code:threads:sbp} that performs the region-based partitioning actually
+makes sense. Moreover, the behavior of coordination facts \code{set-thread} and
+\code{just-moved} need to be part of the entire proof.
+
+Fortunately, since linear logic is the foundation of LM, it is possible to model
+the semantics of LM by using LM rules. In Chapter~\ref{chapter:implementation},
+we have seen that threads and nodes transition between different states during
+execution and we are going to model that. We define the following node
+facts:
+
+\begin{itemize}
+
+   \item \code{inactive(node A)}: Fact present on nodes that are not currently
+      running on a thread. Facts \code{running(T, A)} and \code{inactive(A)} are
+      mutually exclusive.
+
+   \item \code{owner(node A, thread T)}: Fact that indicates the current thread
+      \code{T} that currently owns node \code{A}.
+
+   \item \code{available-work(node A, bool F)}: Fact that indicates if node
+      \code{A} has new facts to be processed.
+
+\end{itemize}
+
+In terms of thread facts we have the following:
+
+\begin{itemize}
+   \item \code{active(thread T)}: Fact exists if thread \code{T} is currently
+      active.
+
+   \item \code{idle(thread T)}: Fact exists if thread \code{T} is currently
+      idle. Facts \code{idle(T)} and \code{active(T)} are mutually exclusive.
+\end{itemize}
+
+Figure~\ref{code:threads:modeling} presents how the operational semantics for a
+given LM program is modeled using the LM language itself.
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\#\&]
@@ -13,6 +59,7 @@ available-work(A, true). // All nodes have available work.
 
 active(T). // All threads are active.
 
+// Program rules go here.
 node-fact(A, X, Y),
 other-fact(A, X, B),
 priority(A, PA), priority(B, PB),
@@ -23,12 +70,14 @@ available-work(B, _)
       priority(A, PA), priority(B, PB),
       available-work(B, true).
 
+// Node switching has lower priority.
 active(T), running(T, A), priority(A, Prio),
 default-priority(A, DefPrio), available-work(A, T),
    -o inactive(A), priority(A, DefPrio),
       default-priority(A, DefPrio),
       available-work(A, false), idle(T).
 
+// Select next node to be processed.
 [max => Prio |
    idle(T), owner(A, T),
    priority(A, Prio), available-work(A, true)]
@@ -36,6 +85,7 @@ default-priority(A, DefPrio), available-work(A, T),
       running(T, A), available-work(A, true),
       priority(A, Prio).
 
+// Attempt to steal a node.
 idle(T), !other-thread(T, Other)
 owner(A, Other), inactive(A),
 available-work(A, true)
@@ -45,6 +95,9 @@ available-work(A, true)
 \caption{Modeling the operational semantics as a LM program.}
 \label{code:threads:modeling}
 \end{figure}
+
+
+\subsection{Scheduling}
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\#\&]
@@ -91,6 +144,6 @@ moving(A), active(T)
       owner(A, T2), static(A),
       just-moved(A).
 \end{Verbatim}
-\caption{Modeling the operational semantics as a LM program.}
-\label{code:threads:modeling}
+\caption{Modeling the operational semantics for coordination facts as a LM program.}
+\label{code:threads:modeling_scheduling}
 \end{figure}

@@ -30,16 +30,18 @@ scheduling decisions of the system:
    \item \code{stop-program()}: Immediately stops the execution of the whole program.
 \end{itemize}
 
-LM provides the sensing fact \code{priority(node A, float P)} in order to sense
-the priority \texttt{P} of node \texttt{A}. Sensing facts can only be used in
-the body of rules and are exempt from the constraint that forces every fact used
-in the body to have the same first argument. Also note that when sensing facts
-are used to prove new facts, they are re-derived automatically. All the
-coordination facts are linear and are consumed when used in the body of a rule.
-The system creates the necessary code to re-derive them without programmer
-interaction. Likewise, \texttt{set-priority} and \texttt{set-default-priority}
-update the value of \texttt{priority} facts by retracting and re-asserting them
-but this is done automatically by the runtime system.
+LM provides the sensing facts \code{priority(node A, float P)} and
+\code{default-priority(node A, float DP)} in order to provide the priority
+\code{P} or the default priority \code{DP} of node \code{A}, respectively.
+Sensing facts can only be used in the body of rules and are exempt from the
+constraint that forces every fact used in the body to have the same first
+argument. Also note that when sensing facts are used to prove new facts, they
+are re-derived automatically. All the coordination facts are linear and are
+consumed when used in the body of a rule.  The system creates the necessary code
+to re-derive them without programmer interaction. Likewise,
+\texttt{set-priority} and \texttt{set-default-priority} update the value of
+\texttt{priority} facts by retracting and re-asserting them but this is done
+automatically by the runtime system.
 
 The priorities assigned to nodes are respected on a thread basis, therefore a
 thread will always pick the highest priority node on its sub-graph but not the
