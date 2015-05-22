@@ -5,19 +5,16 @@ scheduling strategy is now also part of the program logic. Some of this behavior
 is hidden from the programs because it is part of how coordination facts and
 thread scheduling works on the virtual machine.
 
-Consider the SBP program where we need to prove that the graph is correctly
-partitioned into regions. To accomplish this, we need to know that the VM
-initially randomly nodes to threads so that the code in
-lines~\ref{line:threads:splash_part1}-\ref{line:threads:splash_part2} in
-Fig.~\ref{code:threads:sbp} that performs the region-based partitioning actually
-makes sense. Moreover, the behavior of coordination facts \code{set-thread} and
-\code{just-moved} need to be part of the entire proof.
-
-Fortunately, since linear logic is the foundation of LM, it is possible to model
-the semantics of LM by using LM rules. In Chapter~\ref{chapter:implementation},
-we have seen that threads and nodes transition between different states during
-execution and we are going to model that. We define the following node
-facts:
+Consider the SBP program in Fig.~\ref{code:threads:sbp} where in
+lines~\ref{line:threads:splash_part1}-\ref{line:threads:splash_part2} the graph
+of nodes is partitioned into regions. In order to prove the correct
+partitioning, we need to know how the VM initially randomly nodes to threads and
+also how coordination facts \code{set-thread} and \code{just-moved} are used by
+the VM.  Fortunately, since linear logic is the foundation of LM, it is possible
+to model the semantics of LM by using LM rules. In
+Chapter~\ref{chapter:implementation}, we have seen that threads and nodes
+transition between different states during execution and we are going to model
+that. We define the following node facts:
 
 \begin{itemize}
 
@@ -44,53 +41,57 @@ In terms of thread facts we have the following:
 \end{itemize}
 
 Figure~\ref{code:threads:modeling} presents how the operational semantics for a
-given LM program is modeled using the LM language itself.
+given LM program is modeled using the LM language itself. First, we define the
+initial axioms: \code{owner(A, T)} on line~\ref{line:threads:model_owner}, which
+assigns a node to a thread; \code{available-work(A, F)} on
+line~\ref{line:threads:model_available}, where \code{F = true} if node \code{A}
+has axioms, otherwise \code{F = false}; and \code{active(T)} on
+line~\ref{line:threads:model_active} to mark each thread as \emph{active}.
+Each program rule is then translated as shown in
+lines~\ref{line:threads:model_rule1}-\ref{line:threads:model_rule2}
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\#\&]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\#\&]
 type linear running(thread, node). type linear inactive(node).
 type linear priority(node, float). type linear default-priority(node, float).
 type linear available-work(node, bool).
 type linear active(thread).  type linear idle(thread).
 type linear owner(node, thread).
 
-owner(A, T). // Initially node assignment.
-available-work(A, true). // All nodes have available work.
+owner(A, T). // Initially node assignment.\label#line:threads:model_owner&
+available-work(A, F). // Some nodes have available work.\label#line:threads:model_available&
+active(T). // All threads are active.\label#line:threads:model_active&
 
-active(T). // All threads are active.
-
-// Program rules go here.
-node-fact(A, X, Y),
-other-fact(A, X, B),
-priority(A, PA), priority(B, PB),
+// Program rules go here.\label#line:threads:model_rule1&
+\underline#node-fact(A, Y)&,
+\underline#other-fact(A, B)&,
 owner(B, TB), running(T, A),
 available-work(B, _)
-   -o remote-fact(B), local-fact(A),
+   -o \underline#remote-fact(B)&, \underline#local-fact(A)&,
       owner(B, TB), running(T, A),
-      priority(A, PA), priority(B, PB),
-      available-work(B, true).
+      available-work(B, true).\label#line:threads:model_rule2&
 
-// Node switching has lower priority.
+// Switching to another node.\label#line:threads:model_drop_node1&
 active(T), running(T, A), priority(A, Prio),
-default-priority(A, DefPrio), available-work(A, T),
+default-priority(A, DefPrio), available-work(A, T)
    -o inactive(A), priority(A, DefPrio),
       default-priority(A, DefPrio),
-      available-work(A, false), idle(T).
+      available-work(A, false), idle(T).\label#line:threads:model_drop_node2&
 
-// Select next node to be processed.
+// Select next node to be processed.\label#line:threads:model_next_node1&
 [max => Prio |
    idle(T), owner(A, T),
    priority(A, Prio), available-work(A, true)]
    -o active(T), owner(A, T),
       running(T, A), available-work(A, true),
-      priority(A, Prio).
+      priority(A, Prio).\label#line:threads:model_next_node2&
 
-// Attempt to steal a node.
+// Attempt to steal a node.\label#line:threads:model_steal1&
 idle(T), !other-thread(T, Other)
 owner(A, Other), inactive(A),
 available-work(A, true)
    -o idle(T), owner(A, T),
-      inactive(A), available-work(A, true).
+      inactive(A), available-work(A, true).\label#line:threads:model_steal2&
 \end{Verbatim}
 \caption{Modeling the operational semantics as a LM program.}
 \label{code:threads:modeling}
@@ -113,36 +114,31 @@ inactive(A). // Nodes are not being processed initially.
 priority(A, initial-priority).
 default-priority(A, initial-priority).
 
-schedule-next(A), running(T, A)
-   -o running(T, A), set-priority(A, +00).
+schedule-next(A) -o set-priority(A, +00).
 
-running(T, A), set-priority(A, P1),
-priority(A, P2), P2 < P1
-   -o running(T, A), priority(A, P1).
+set-priority(A, P1), priority(A, P2), P2 < P1
+   -o priority(A, P1).
 
-running(T, A), set-priority(A, P1),
-priority(A, P2), P2 >= P1
-   -o running(T, A), priority(A, P2).
+set-priority(A, P1), priority(A, P2), P2 >= P1
+   -o priority(A, P2).
 
-running(T, A), set-default-priority(A, P1),
-default-priority(A, P2), P2 < P1
-   -o running(T, A), default-priority(A, P1).
+set-default-priority(A, P1), default-priority(A, P2), P2 < P1
+   -o default-priority(A, P1).
 
-running(T, A), set-default-priority(A, P1),
-default-priority(A, P2), P2 >= P1
-   -o running(T, A), default-priority(A, P2).
+set-default-priority(A, P1), default-priority(A, P2), P2 >= P1
+   -o default-priority(A, P2).
 
 running(T, A), set-thread(A, T),
-available-work(A, _)
+available-work(A, _), moving(A)
    -o available-work(A, true),
-      move-to-thread(A, T).
-
-move-to-thread(A, T2),
-running(T, A), owner(A, T),
-moving(A), active(T)
-   -o idle(T), inactive(A),
-      owner(A, T2), static(A),
+      inactive(A), static(A),
       just-moved(A).
+
+inactive(A), set-thread(A, T),
+owner(A, TOld), static(A),
+available-work(A, _)
+   -o static(A), owner(A, T), just-moved(A),
+      available-work(A, true).
 \end{Verbatim}
 \caption{Modeling the operational semantics for coordination facts as a LM program.}
 \label{code:threads:modeling_scheduling}
