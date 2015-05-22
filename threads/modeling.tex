@@ -41,14 +41,39 @@ In terms of thread facts we have the following:
 \end{itemize}
 
 Figure~\ref{code:threads:modeling} presents how the operational semantics for a
-given LM program is modeled using the LM language itself. First, we define the
-initial axioms: \code{owner(A, T)} on line~\ref{line:threads:model_owner}, which
-assigns a node to a thread; \code{available-work(A, F)} on
-line~\ref{line:threads:model_available}, where \code{F = true} if node \code{A}
-has axioms, otherwise \code{F = false}; and \code{active(T)} on
-line~\ref{line:threads:model_active} to mark each thread as \emph{active}.
+given LM program is modeled using the LM language itself.
+
+First, we define the initial axioms: \code{owner(A, T)} on
+line~\ref{line:threads:model_owner}, which assigns a node to a thread;
+\code{available-work(A, F)} on line~\ref{line:threads:model_available}, where
+\code{F = true} if node \code{A} has axioms, otherwise \code{F = false}; and
+\code{active(T)} on line~\ref{line:threads:model_active} to mark each thread as
+\emph{active}.
+
 Each program rule is then translated as shown in
-lines~\ref{line:threads:model_rule1}-\ref{line:threads:model_rule2}
+lines~\ref{line:threads:model_rule1}-\ref{line:threads:model_rule2}. The
+original rule was \code{node-fact(A, Y), other-fact(A, B) -o remote-fact(B),
+local-fact(A)}, so we have a local derivation of \code{local-fact(A)} and a
+remote-derivation of \code{remote-fact(B)}. In the translation, we update
+\code{available-work} of node \code{B} to \code{true} because there is a new
+derivation for \code{B}. The fact \code{running(T, A)} is used to ensure that
+thread \code{T} is running on thread \code{A}.
+
+After all the program rules are translated, we have the rule in
+lines~\ref{line:threads:model_drop_node1}-\ref{line:threads:model_drop_node2}
+which forces thread \code{T} to stop running on node \code{A}. Here, we use the
+coordination fact \code{default-priority} to update the priority of node
+\code{A}. The thread's state switches to \code{idle(T)}, while the node's state
+changes to \code{inactive(A)}. Note that this rule must appear after the
+program's rules because the rule priorities are exploited in order to force
+thread \code{T} to derive all the candidate rules for \code{A}.
+
+If a thread is idle, then it is able to derive the rule in
+lines~\ref{line:threads:model_next_node1}-\ref{line:threads:model_next_node2} in
+order to select another node for execution. We use a \code{max} selector to
+select the node \code{A} with the highest priority \code{Prio}. If there is such
+node, the node changes to \code{running(T, A)} and thread \code{T} changes to
+\code{active(T)}.
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\#\&]
@@ -65,10 +90,9 @@ active(T). // All threads are active.\label#line:threads:model_active&
 // Program rules go here.\label#line:threads:model_rule1&
 \underline#node-fact(A, Y)&,
 \underline#other-fact(A, B)&,
-owner(B, TB), running(T, A),
-available-work(B, _)
+running(T, A), available-work(B, _)
    -o \underline#remote-fact(B)&, \underline#local-fact(A)&,
-      owner(B, TB), running(T, A),
+      running(T, A),
       available-work(B, true).\label#line:threads:model_rule2&
 
 // Switching to another node.\label#line:threads:model_drop_node1&
@@ -83,7 +107,7 @@ default-priority(A, DefPrio), available-work(A, T)
    idle(T), owner(A, T),
    priority(A, Prio), available-work(A, true)]
    -o active(T), owner(A, T),
-      running(T, A), available-work(A, true),
+      running(T, A), available-work(A, false),
       priority(A, Prio).\label#line:threads:model_next_node2&
 
 // Attempt to steal a node.\label#line:threads:model_steal1&
