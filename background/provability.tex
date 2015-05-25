@@ -1,0 +1,36 @@
+Many techniques and formal systems have been devised to help reason about
+parallel programs.  One such example is the
+Owicki-Gries~\cite{Owicki:1976:VPP:360051.360224} deductive system for proving
+properties about imperative parallel programs (deadlock detection, termination,
+etc). It extends Hoare logic~\cite{Hoare:1969} with a stronger set axioms such
+as parallel execution, critical section and auxiliary variables. The formal
+system can be successfully used in small imperative programs, although using it
+on languages such as C is difficult since these do not restrict the use of
+shared variables.
+
+Some formal systems do not build on top of a known programming paradigm, but
+instead create an entirely new formal system for describing concurrent systems.
+Process calculus such as $\pi$-calculus~\cite{Milner:1999:CMS:329902} is a good
+example of this.  The $\pi$-calculus describes the interactions between
+processes through the use of channels for communication. Interestingly, channels
+can also be transmitted as messages, allowing for changes in the network of
+processes.  Given two processes, $\pi$-calculus is able to prove that they
+behave the same through the use of bi-simulation equivalence.
+
+Mobile UNITY~\cite{Roman97anintroduction} is a proof logic designed for
+applications with \emph{mobility} of processes. The basic UNITY~\cite{UNITY}
+model assumes that statements could be executed non-deterministically in order
+to create parallelism. Mobile UNITY extends UNITY by adding locations to
+processes and removing the nondeterministic aspect from local processes.
+Processes can then communicate or move between locations.
+
+The Meld language, as a logic programming language, has been used to produce
+proofs of correctness. Meld program code is amenable to mechanized analysis via
+theorem checkers such as Twelf~\cite{twelf}, a logic system designed for
+analyzing program logics and logic program implementations. For instance, a
+meta-module based shape planner program was proven to be
+correct~\cite{dewey-iros08,ashley-rollman-iclp09} under the assumption that
+actions derived by the program are always successfully applied in the outside
+world.  While the fault tolerance aspect is lax, the planner will always reach
+the target shape in finite time. The sketch of the proof is presented in Dewey
+et al.~\cite{dewey-iros08}

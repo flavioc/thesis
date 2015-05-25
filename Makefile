@@ -16,6 +16,7 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex \
 		coordination/bp.tex coordination/related_work.tex \
 		language.tex logic_foundations.tex threads/summary.tex \
 		threads/related_work.tex background/parallel_programming.tex \
+		background/declarative.tex background/provability.tex \
 		refs.bib thread.tex conclusions.tex \
 		appendix.tex appendix/vm.tex threads/modeling.tex \
 		statement.tex abstract.tex background.tex \
