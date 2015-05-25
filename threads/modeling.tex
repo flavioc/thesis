@@ -1,20 +1,20 @@
 The introduction of thread-based facts allows for explicit parallelism in a
-language that is purely implicit. This introduces issues when attempting the
+language that is purely implicit. This introduces issues when attempting to
 prove the correctness of programs because the behavior of threads and the
 scheduling strategy is now also part of the program logic. Some of this behavior
-is hidden from the programs because it is part of how coordination facts and
-thread scheduling works on the virtual machine.
+is hidden from programs because it is part of how coordination facts and thread
+scheduling works on the virtual machine.
 
 Consider the SBP program in Fig.~\ref{code:threads:sbp} where in
 lines~\ref{line:threads:splash_part1}-\ref{line:threads:splash_part2} the graph
 of nodes is partitioned into regions. In order to prove the correct
-partitioning, we need to know how the VM initially randomly nodes to threads and
-also how coordination facts \code{set-thread} and \code{just-moved} are used by
-the VM.  Fortunately, since linear logic is the foundation of LM, it is possible
-to model the semantics of LM by using LM rules. In
+partitioning, we need to know how the VM initially randomly assigns nodes to
+threads and also how coordination facts \code{set-thread} and \code{just-moved}
+are used by the VM.  Fortunately, since linear logic is the foundation of LM, it
+is possible to model the semantics of LM by using LM rules. In
 Chapter~\ref{chapter:implementation}, we have seen that threads and nodes
-transition between different states during execution and we are going to model
-that. We define the following node facts:
+transition between different states during execution and thus we are going to
+model that. We first define the following node facts:
 
 \begin{itemize}
 
@@ -51,16 +51,19 @@ line~\ref{line:threads:model_owner}, which assigns a node to a thread;
 \emph{active}; and \code{moving(A)} on line~\ref{line:threads:model_moving} so
 that all nodes can move between threads.
 
-Each program rule is then translated as shown in
+Each program rule is translated as shown in
 lines~\ref{line:threads:model_rule1}-\ref{line:threads:model_rule2}. The
 original rule was \code{node-fact(A, Y), other-fact(A, B) -o remote-fact(B),
 local-fact(A)}, so we have a local derivation of \code{local-fact(A)} and a
 remote-derivation of \code{remote-fact(B)}. In the translation, we update
 \code{available-work} of node \code{B} to \code{true} because there is a new
 derivation for \code{B}. The fact \code{running(T, A)} is used to ensure that
-thread \code{T} is running on node \code{A}.
+thread \code{T} is running on node \code{A}. Note that for thread rules we do
+not need to use \code{running(T, A)} on the rule's bodies and the thread running
+the rule does not even need to have \code{active(T)}. This enforces the
+non-deterministic semantics for thread rules.
 
-After all the program rules are translated, we have the rule in
+After the program rules are translated, we have the rule in
 lines~\ref{line:threads:model_drop_node1}-\ref{line:threads:model_drop_node2}
 which forces thread \code{T} to stop running on node \code{A}. Here, we use the
 coordination fact \code{default-priority} to update the priority of node
@@ -144,13 +147,12 @@ rules in LM programs.
 We start with the axiom~\code{priority(A, initial-priority)} and
 \code{default-priority(A, initial-priority)}
 (lines~\ref{line:threads:model_prio} and~\ref{line:threads:model_defprio}) to
-define the initial priorities of nodes.
-
-In line~\ref{line:threads:model_snext} we have the rule for the
-\code{schedule-next} coordination fact, which simply re-derives a
-\code{set-priority} but with an infinite priority. Fact \code{set-priority} is
-processed in lines~\ref{line:threads:model_set1}-\ref{line:threads:model_set2}
-by updating the priority values in the \code{priority} facts. As explained in
+define the initial priorities of nodes. In line~\ref{line:threads:model_snext}
+we have the rule for the \code{schedule-next} coordination fact, which simply
+re-derives a \code{set-priority} but with an infinite priority. Fact
+\code{set-priority} is processed in
+lines~\ref{line:threads:model_set1}-\ref{line:threads:model_set2} by updating
+the priority values in the \code{priority} facts. As explained in
 Chapter~\ref{chapter:coordination}, only higher priorities are taken into
 account.
 
@@ -163,9 +165,8 @@ simply updated to the new thread.
 
 Note that the rules for updating the coordination sensing facts do not require
 the \code{running} predicate in the rule's body, therefore it should not matter
-which threads does the update as long as it is done. In the VM, the update is
-always done by thread that derives the coordination fact for efficiency
-purposes.
+which thread does the update as long as it is done. In the VM, the update is
+always done by thread that derives the coordination fact for efficiency reasons.
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\#\&]
