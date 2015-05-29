@@ -1,0 +1,113 @@
+In this section, we evaluate the performance and scalability of the VM. The main
+goals of this evaluation are as follows:
+
+\begin{itemize}
+   \item Compare the performance of LM programs against hand-written
+      imperative C++ programs;
+   \item Evaluate the scalability of said LM programs when using up to 20 cores
+      concurrently;
+   \item Understand the impact and effectiveness of our dynamic indexing
+      algorithm and its indexing data structures used for logical facts (namely,
+      hash tables);
+   \item Understand the impact of the thread allocator and fact allocator on scalability and
+      multicore performance;
+\end{itemize}
+
+For our experimental setup, we used a computer with a 24 (4x6) Core AMD
+Opteron(tm) Processor 8425 HE $@$ 800 MHz with 64 GBytes of RAM memory running
+the Linux Kernel 3.15.10-201.fc20.x86\_64. The C++ compiler used is the GCC
+4.8.3 (g++) with the following \code{CXXFLAGS} flags: \code{-O3 -std=c++11
+-march=x86-64}.  All experiments were executed 3 times and the running times
+were averaged.
+
+\subsection{Performance}
+
+To understand the absolute performance of LM programs, we measured their
+``sequential'' performance using a single thread of execution against
+hand-written sequential C++ programs. Arguably, compiled C/C++ programs are a
+good standard for understanding the baseline performance of new language
+runtimes, since compiled C/C++ programs tend to come up on top on several
+popular programming language benchmarksi~\cite{language_benchmarks}.
+Furthermore, the performance of sequential C++ programs is a better baseline for
+measuring the scalability of LM since these programs are sequential and thus
+provide a better baseline than the ``sequential'' run time of LM programs,
+which includes extra code for managing synchronization between multiple
+(inexistent) threads.
+
+In order to make our comparison more interesting, we also provide comparisons to
+the Python language and other relevant systems. Python is a \emph{scripting}
+programming language that is much slower than compiled C/C++ programs and thus
+is a good upper-bound in terms of performance.
+
+The goal of the evaluation is to understand the effectiveness of our compilation
+strategy and the effectiveness of our dynamic indexing algorithms, including the
+data structures (hash tables) which are used to store index logical facts. The
+LM programs used in the experiments are the following:
+
+\begin{itemize}
+   \item Multiple Single Shortest Distance (MSSD): a program that computes the
+      shortest distance from a subset of nodes of the graph to the all the nodes
+      in the graph. A modified version is presented in
+      Section~\ref{section:coord:rationale}.
+
+   \item N-Queens: the classic puzzle for placing queens on a chess board so
+      that no two queens threaten each other. Program is explained in
+      Section~\ref{section:coord:nqueens}.
+
+   \item Belief Propagation: a machine learning to denoise images. Program is
+      explained in Section~\ref{sec:coordination:bp}.
+
+    \item Heat Transfer: an asynchronous program that performs transfer of heat
+       between nodes. Program is explained in Section~\ref{section:coord:ht}.
+
+    \item MiniMax: the AI algorithm for selecting the best player move in a
+       Tic-Tac-Toe game. The initial board was augmented in order to provide a
+       longer running benchmark. Program is presented in
+       Section~\ref{section:coord:minimax}.
+\end{itemize}
+
+\begin{table}[h!]
+\begin{center}
+    \begin{tabular}{c || c | c | c | c | c}
+    \textbf{Program} & \textbf{Size} & \textbf{C Time} (s) & \textbf{Compiled} & \textbf{Interpreted}
+    & \textbf{Other} \\ \hline \hline
+    \multirow{3}{*}{Shortest Path} & US Airports & 0.1 & 3.9 & 13.9 & 13.3 (python) \\
+                                   & OCLinks & 0.4 & 5.6 & 14.2 & 11.2 (python) \\
+                                   & Powergrid & 0.9 & 3.5 & 11.3 & 10.6
+                                   (python) \\ \hline
+    \multirow{4}{*}{N-Queens} & 11 & 0.2 & 1.4 & 3.9 & 20.8 (python) \\
+                              & 12 & 1.3 & 3.2 & 5.3 & 24.1 (python) \\
+                              & 13 & 7.8 & 3.8 & 6.6 & 26.0 (python) \\
+                              & 14 & 49 & 4.5 & 8.9 & 28.0 (python) \\ \hline
+    \multirow{4}{*}{Belief Propagation} & 50 & 2.8 & 1.3 & 1.4 & 1.1 (GL) \\
+                                        & 200 & 51 & 1.3 & 1.4 & 1.1 (GL) \\
+                                        & 300 & 141 & 1.3 & 1.4 & 1.1 (GL) \\
+                                        & 400 & 180 & 1.3 & 1.4 & 1.1 (GL) \\
+                                        \hline
+    \multirow{2}{*}{Heat Transfer} & 80 & 7.3 & 4.6 & 9.9 & - \\
+                                   & 120 & 32 & 5.3 & 10.5 & - \\ \hline
+
+  MiniMax & - & 7.3 & 3.2 & 7.1 & 9.3 (python) \\
+    \end{tabular}
+\end{center}
+
+\caption{Experimental results comparing different programs against hand-written
+   versions in C. For the C versions, we show the execution time in seconds
+   (column \textbf{C Time} (s)). For the other approaches, we show the overhead
+   ratio compared with the corresponding C version.  The overhead numbers
+   (\textbf{lower is better}) are computed by dividing the execution time of the
+approach on that column by the execution time of the similar hand-written
+version in C.}
+
+\label{fig:table_results}
+    %\vspace*{-0.7cm}
+\end{table}
+
+\subsubsection{Indexing Evaluation}
+
+\subsubsection{Fact Allocator Evaluation}
+
+\subsection{Scalability}
+
+\subsubsection{Thread Allocator Evaluation}
+

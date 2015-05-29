@@ -2,7 +2,7 @@
 The last decade has seen a priority shift for processor manufactures. If clock
 frequency was once the main metric for performance, today computing power is
 measured in number of cores in a single chip.  For software developers and
-computer scientists, once focused in developing sequential programs, newer
+computer scientists, once focused on developing sequential programs, newer
 hardware usually meant faster programs without any change to the source code.
 Today, the free lunch is over. Multicore processors are now forcing the
 development of new software methodologies that take advantage of increasing
@@ -69,15 +69,14 @@ explicit programmer control and opportunities for optimization that arise with
 stateful programs.  We introduce the concept of \emph{coordination facts}, which
 are logical facts used for scheduling and data partitioning purposes.
 Coordination facts can be split into \emph{action facts} and \emph{sensing
-facts}, a concept already present in the original Meld. Coordination facts
-allow the programmer to declaratively reason about the state of computation
-and the state of the runtime system in order to perform scheduling and data
-partitioning decisions. In turn, these decisions allow the programmer to
-reduce program run time, increase data locality, improve partitioning and
-parallel scalability in a declarative fashion. Since coordination facts are
-semantically equivalent to computation and a first class entity of Linear
-Meld, we are able to reason about the coordination even in the presence of
-coordination.
+facts}, a concept already present in the original Meld. Coordination facts allow
+the programmer to declaratively reason about the state of computation and the
+state of the runtime system in order to perform scheduling and data partitioning
+decisions. In turn, these decisions allow the programmer to reduce program run
+time, increase data locality, improve partitioning and parallel scalability in a
+declarative fashion. Since coordination facts are semantically equivalent to
+computation and a first class entity of LM, it is still possible to reason about
+programs even in the presence of coordination.
 
 Our goal with LM is to efficiently execute provably correct logical graph-based
 programs on multicore machines and then improve their execution with

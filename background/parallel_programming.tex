@@ -1,14 +1,14 @@
-Most software applications are developed using an \emph{imperative model} where
-there is a sequence of steps that the processor must do and a \emph{memory area}
-where the processor stores and retrieves data during the course of execution.
-The increase of clock frequency on single-core processors during the last
-decades, has allowed applications using the imperative model to run faster
-without any changes in the source code. Today, processor manufactures are now
-focusing on increasing the number of cores per processor due to the stalling of
-clock frequencies. This exposes the disadvantages of the imperative model since
-it does not take advantage of multiple processing cores. Imperative models are
-also unsuitable for distributed applications that need to be run in a cluster of
-computers because the processors in the cluster do not share the same memory
+Most software applications are developed using an \emph{sequential imperative
+model} where there is a sequence of steps that the processor must do and a
+\emph{memory area} where the processor stores and retrieves data during the
+course of execution.  The increase of clock frequency on single-core processors
+during the last decades has allowed applications using the imperative model to
+run faster without any changes in the source code. Today, processor manufactures
+are now focusing on increasing the number of cores per processor due to the
+stalling of clock frequencies. This exposes the disadvantages of the imperative
+model since it does not take advantage of multiple processing cores. This model
+is also unsuitable for distributed applications that need to be run in a cluster
+of computers because the processors in the cluster do not share the same memory
 area and require communication to coordinate computation.
 
 Different programming models have been suggested to solve the limitations of the

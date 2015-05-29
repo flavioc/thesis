@@ -8,7 +8,7 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex \
 		implementation/node.tex implementation/coord.tex \
 		implementation/overview.tex implementation/comp.tex \
 		implementation/parallelism.tex implementation/locks.tex \
-		implementation/related_work.tex \
+		implementation/related_work.tex implementation/evaluation.tex \
 		coordination/partitioning.tex coordination/scheduling.tex \
 		coordination/types.tex coordination/rationale.tex \
 		coordination/coord_sssp.tex coordination/programs.tex \
@@ -38,10 +38,7 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex \
 		lld/aggregates.tex lld/soundness.tex \
 		lld/comprehensions_soundness.tex lld/aggregates_soundness.tex \
 		lld.tex hld.tex sequent_calculus.tex
-	pdflatex thesis.tex
-	bibtex thesis
-	pdflatex thesis.tex
-	pdflatex thesis.tex
+	latexmk -pdf thesis.tex
 
 language.tex: figures/btree/btree_trace1.pdf figures/btree/btree_trace2.pdf \
 	figures/btree/btree_trace3.pdf figures/btree/btree_trace4.pdf \
