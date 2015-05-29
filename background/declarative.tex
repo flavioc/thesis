@@ -9,8 +9,9 @@ models, logic and functional programming languages are considered to be
 high-level languages when compared to languages based on the imperative model
 because, generally, they allow the programmer to concentrate more on what the
 problem is, rather than telling the computer the steps it needs to solve the
-problem. In turn, formal reasoning is simplified, allowing the programmer to
-prove interesting properties about programs such as correctness and termination.
+problem. In turn, formal reasoning is performed at a higher level and does not
+have to deal with low level parallel programming constructs such as locks or
+message passing.
 
 \paragraph{Logic Programming}
 
@@ -39,7 +40,7 @@ programming model:
 \end{itemize}
 
 This particular proof search mechanism is called \emph{forward-chaining} logic
-programming, since it starts from the \emph{axioms} (the initial truths) and
+programming, since it starts from the initial facts and
 then uses inference rules (\emph{modus ponens}) to accumulate more truth. The
 proof search may then stop if the search has found a particular proposition to
 be true or if it is not possible to derive any more truths, which we call
@@ -67,7 +68,8 @@ variables. Prolog is a backward-chaining logic programming language where a
 program is composed of a set of rules that can be activated by inputing a query.
 Given a query $q(\hat{x})$, a Prolog interpreter will work backwards by matching
 $q(\hat{x})$ against the head of a rule. If found, the interpreter will then try
-to match the body of the rule, recursively, until it finds the program axioms.
+to match the body of the rule, recursively, until it finds the program base
+facts.
 If the search procedure succeeds, the interpreter finds a valid substitution for
 the $\hat{x}$ variables.
 
@@ -78,7 +80,7 @@ now being increasingly used in other fields such as sensor
 nets~\cite{Chu:2007:DID:1322263.1322281}, cloud computing~\cite{alvaro:boom},
 and social networks~\cite{Seo:2013:DSD:2556549.2556572}.  In Datalog, the
 program is composed of a database of facts and a set of rules.  Datalog programs
-first populate the database with axioms and then saturate the database using
+first populate the database with the starting facts and then saturate the database using
 rule inference. In Datalog, logical facts are persistent and once a fact is
 derived, it cannot be deleted. However, there has been a growing interest in
 integrating linear logic~\cite{girard-87} into bottom-up logic programming,
@@ -88,7 +90,7 @@ which is one of the topics of this thesis.
 
 \paragraph{Functional Programming and Parallel Programming}
 
-In functional programming languages, the \emph{side-effect free} nature of
+In pure functional programming languages, the \emph{side-effect free} nature of
 computation allows multiple expressions to evaluate safely in
 parallel~\cite{Loidl:2003}. This so called \emph{implicit parallelism} has been
 implemented in languages such as Id~\cite{Nikhil93anoverview} and
@@ -165,13 +167,13 @@ of the Claytronics project~\cite{goldstein-computer05}. Meld is a language
 suited for programming massively dynamic distributed systems made of modular
 robots. While mutable state is not supported by Meld, Meld performs \emph{state
 management} on the persistent facts by keeping a consistent database of facts
-whenever there is a change in the axioms. If an axiom is no longer true,
+whenever there is a change in the starting facts. If an axiom is no longer true,
 everything derived from that axiom is retracted. Likewise, when a fact becomes
 true, the database is immediately updated to take the new logical fact into
 account. To take advantage of these state management facilities, Meld supports
-\emph{sensing} and \emph{action} facts. Sensing facts are axioms derived from
-the state of the world (e.g., temperature, new neighbor node) and action facts
-are facts that have an effect on the world (e.g., move), changing the underlying
+\emph{sensing} and \emph{action} facts. Sensing facts are facts derived from the
+state of the world (e.g., temperature, new neighbor node) and action facts are
+facts that have an effect on the world (e.g., move), changing the underlying
 sensing facts.
 
 Meld was inspired in the P2 system~\cite{Loo-condie-garofalakis-p2}, which
