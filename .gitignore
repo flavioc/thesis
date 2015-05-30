@@ -22,3 +22,5 @@ thesis.pdf
 *.swp
 *.loe
 tags
+*.fls
+thesis.fdb_latexmk
