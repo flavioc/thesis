@@ -8,7 +8,7 @@ the third argument represents the weight of the edge.  The program computes the
 shortest distance from node \code{@1} to all other nodes in the graph. Every
 node has a \code{shortest} fact that is improved with new \code{relax} facts.
 Lines~\ref{line:coord:sssp_axioms1}-\ref{line:coord:sssp_axioms2} declare the
-axioms of the program: \code{edge} facts describe the graph; \code{shortest(A,
+initial facts of the program: \code{edge} facts describe the graph; \code{shortest(A,
 +00, [])} is the initial shortest distance (infinity) for all nodes; and
 \code{relax(@1, 0, [@1])} starts the algorithm by setting the distance from
 \code{@1} to \code{@1} to be 0.

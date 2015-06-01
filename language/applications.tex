@@ -268,8 +268,8 @@ Each page/node has a single \texttt{pagerank(A, Value, Iteration)} and:
 
 \begin{proof}
 
-All axioms validate the 3 conditions of the variant. Note that the third
-condition is also validated by the axioms, although not all axioms are shown in
+All initial facts validate the 3 conditions of the variant. Note that the third
+condition is also validated by the initial facts, although not all facts are shown in
 the code.
 
 In relation to rule application:
@@ -354,7 +354,7 @@ All \texttt{new-neighbor-rank(A, B, V, I)} facts are generated from a correspond
 the current pagerank.
 \end{invariant}
 \begin{proof}
-No axioms to prove.
+No initial facts to prove.
 
 \begin{itemize}
    \item Rule 3: true, new fact is generated.
@@ -369,7 +369,7 @@ is the same or less than the current iteration of the corresponding
 \texttt{pagerank}.
 \end{invariant}
 \begin{proof}
-By analyzing axioms and rules.
+By analyzing initial facts and rules.
 
 Axioms: true.
 
@@ -388,7 +388,7 @@ of an asynchronous pagerank computation.
 \end{theorem}
 \begin{proof}
 
-Using the program axioms, we start with the same pagerank value for all nodes.
+Using the program initial facts, we start with the same pagerank value for all nodes.
 The \texttt{\bang outbound(A, B, W)} fact forms a $n \times n$ square matrix (number
 of nodes) and is the so-called "Google Matrix".  All the initial pagerank values
 can be seen as a vector that adds up to $1$.

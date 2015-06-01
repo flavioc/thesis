@@ -43,10 +43,10 @@ In terms of thread facts we have the following:
 Figure~\ref{code:threads:modeling} presents how the operational semantics for a
 given LM program is modeled using the LM language itself.
 
-First, we define the initial axioms: \code{owner(A, T)} on
+First, we define the initial facts: \code{owner(A, T)} on
 line~\ref{line:threads:model_owner}, which assigns a node to a thread;
 \code{available-work(A, F)} on line~\ref{line:threads:model_available}, where
-\code{F = true} if node \code{A} has axioms, otherwise \code{F = false};
+\code{F = true} if node \code{A} has initial facts, otherwise \code{F = false};
 \code{active(T)} on line~\ref{line:threads:model_active} to mark each thread as
 \emph{active}; and \code{moving(A)} on line~\ref{line:threads:model_moving} so
 that all nodes can move between threads.

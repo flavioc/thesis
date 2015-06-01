@@ -2,7 +2,7 @@
 Linear Meld (LM) is a \emph{forward chaining} logic programming language in the
 style of Datalog~\cite{Ullman:1990:PDK:533142}. The program is defined as a
 \emph{database of facts} and a set of \emph{derivation rules}.  Initially, we
-populate the database with the program's axioms and then determine which
+populate the database with the program's initial facts and then determine which
 derivation rules can be applied by using the current database. Once a rule is
 applied, we derive new facts, which are then added to the database.  If a rule
 uses linear facts, they are consumed and thus deleted from the database.  The
@@ -72,13 +72,13 @@ axiom (line~\ref{line:language:message_message}).
 
 In Fig.~\ref{fig:message_trace} we present an execution trace of the message
 routing program.  The database is represented as a graph structure where the
-edges represent the \code{edge/2} axioms. In Fig.~\ref{fig:message_trace}~(a)
-the database is initialized with the program's axioms.  Note that the initial
-\code{message/3} fact is instantiated at node \code{@1}. After applying rule 1,
-we get the database represented in Fig.~\ref{fig:message_trace}~(b), where
-the message has been derived at node \code{@3}. After applying rule 1
-again, the message is then routed to node \code{@4}
-(Fig.~\ref{fig:message_trace}~(c)) where it will be consumed
+edges represent the \code{edge/2} initial facts. In
+Fig.~\ref{fig:message_trace}~(a) the database is initialized with the program's
+initial facts. Note that the initial \code{message/3} fact is instantiated at node
+\code{@1}. After applying rule 1, we get the database represented in
+Fig.~\ref{fig:message_trace}~(b), where the message has been derived at node
+\code{@3}. After applying rule 1 again, the message is then routed to node
+\code{@4} (Fig.~\ref{fig:message_trace}~(c)) where it will be consumed
 (Fig.~\ref{fig:message_trace}~(d)).
 
 \begin{figure}[h]
@@ -118,13 +118,13 @@ type linear visit(node).
 type linear unvisited(node).
 type linear visited(node).
 
-// the program rules*label[line:language:visit_first1]
+// The program rules*label[line:language:visit_first1]
 visit(A), unvisited(A) -o
    visited(A), {B | !edge(A, B) | visit(B)}.*label[line:language:visit_first2]*label[line:language:visit_comprehension]
 
 visit(A), visited(A) -o visited(A).*label[line:language:visit_second]
 
-// axioms: the input data
+// Initial facts: the input data
 !edge(@1, @2). !edge(@2, @3). !edge(@1, @4). !edge(@2, @4).
 unvisited(@1). unvisited(@2). unvisited(@3). unvisited(@4).
 
@@ -210,7 +210,7 @@ To prove the correctness property of the program, we first define the main
 A node is either \code{visited} or \code{unvisited}
 \end{invariant}
 \begin{proof}
-Using the axioms we know all nodes start as \code{unvisited}.
+Using the initial facts we know all nodes start as \code{unvisited}.
 
 Rule 1 changes a node from \code{unvisited} to \code{visited}, while rule 2
 keeps the node \code{visited}, proving the invariant.
@@ -318,7 +318,7 @@ Table~\ref{tbl:ast} shows the abstract syntax for rules in LM.  A LM program
 $Prog$ consists of a list of derivation rules $\Sigma$ and a database $D$.  Each
 derivation rule $R$ can be written as $BE \lolli HE$ where $BE$ is the body of a
 rule and $HE$ is the head. Rules without bodies are allowed in LM and they are
-called \textit{axioms}
+called \emph{initial facts}
 (lines~\ref{line:language:dict_axioms1}-\ref{line:language:dict_axioms2} in
 Fig.~\ref{code:btree_replace}). Rules without heads are also allowed.
 
@@ -355,7 +355,7 @@ program shown in Fig.~\ref{code:visit}:
 \mathtt{visited}(A)
 \end{align}
 
-Finally, axioms are represented using an empty body:
+Finally, initial facts are represented using an empty body:
 
 \nopagebreak
 
@@ -389,7 +389,7 @@ LM allows definition of new type names from simpler types using the declaration
 Node subtypes can be introduced using the declaration \code{node subnode.},
 allowing the programmer to use nodes with separate predicates.  The
 \emph{subnode} type becomes a subtype of \emph{node}, that is, $subnode <:
-node$. If axioms are declared using the form \code{f(A)}, where \code{A} is a
+node$. If initial facts are declared using the form \code{f(A)}, where \code{A} is a
 \emph{subnode}, then the axiom is selectively instantiated on nodes with type
 \emph{subnode}. Otherwise, if \code{A} was a \emph{node} then \code{f(A)} would
 be instantiated in every node.

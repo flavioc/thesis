@@ -66,7 +66,7 @@ includes the nodes owned by the thread (the dotted arrows represent the edges
 between nodes) and a \emph{Work Queue}, which contains \emph{active nodes},
 i.e., nodes that have new facts to process, and can be implemented as a simple
 linked list. Initially, the \emph{Work Queue} is filled with all the nodes of
-the thread in order to derive the axioms.
+the thread in order to derive the initial facts.
 Figure~\ref{fig:implementation:vm_overview} also illustrates the internal
 structure layout of a node, which includes: the database of linear facts
 (\emph{Linear DB}); the database of persistent facts (\emph{Persistent DB}); the

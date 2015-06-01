@@ -71,7 +71,7 @@ from the same node (in this particular case, \texttt{A}), but the head of the
 rule may derive facts in other nodes (e.g., the second and third rules) because
 a node variable was instantiated in the body of the rule. Moreover, persistent
 facts used in the body of the rule are not deleted after rule application - only
-linear facts are. The axioms of this program are presented in
+linear facts are. The initial facts of this program are presented in
 lines~\ref{line:language:dict_axioms1}-\ref{line:language:dict_axioms2} and they
 describe the initial binary tree configuration, including keys and values.  The
 axiom \texttt{update(@0, 6, "x")} instantiated at the root node \texttt{@3}
@@ -80,7 +80,7 @@ manifests the intent to change the value of key 6 to 7.
 Fig.~\ref{fig:btree_trace} represents the trace of the algorithm. The program
 database is partitioned by the seven nodes using the first argument of each
 fact. In Fig.~\ref{fig:btree_trace}~(a), we present the database filled with the
-program's axioms. Next, we follow the right branch using rule 3 since $6 > 3$
+program's initial facts. Next, we follow the right branch using rule 3 since $6 > 3$
 (Fig.~\ref{fig:btree_trace}~(b)).  We use the same rule again in
 Fig.~\ref{fig:btree_trace}~(c) where we finally reach the key 6. Here, we apply
 rule 1 and \texttt{value(@6, 6, "g")} is updated to \texttt{value(@6, 6, "x")}.

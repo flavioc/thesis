@@ -8,7 +8,7 @@ of the system, namely, the compiler and virtual machine.
   \includegraphics[width=.75\linewidth]{figures/implementation/overview.pdf}
   \caption{Compilation of a LM program into an executable. The compiler
      transforms a LM program into \code{file.cpp}, C++ file with compiled
-     rules, and a \code{data} file with the graph structure and axioms. The virtual
+     rules, and a \code{data} file with the graph structure and initial facts. The virtual
      machine which includes code for managing multithreaded execution and the
      database of facts is then linked with \code{file.cpp} to create a
      standalone executable that can be run in parallel.}
@@ -25,9 +25,9 @@ The compiler transforms LM files into C++ code that use the virtual machine
 facilities to implement the program logic.  The compiled code implements the
 inference rules of the program and uses the API of the virtual machine to derive
 and retract facts and to schedule the execution of rules.  The compiler also
-creates a separate file, named \code{file.data}, with the program's axioms and
-graph structure. The graph structure is reconstructed in parallel once the
-program starts.
+creates a separate file, named \code{file.data}, with the program's initial
+facts and graph structure. The graph structure is reconstructed in parallel once
+the program starts.
 
 To complete the compilation process, we use a C++ compiler to compile the
 virtual machine files and \code{file.cpp} into object files that are then
@@ -48,15 +48,15 @@ point computations.
 \subsection{Graph Clustering}
 
 The graph structure stored in file \code{file.data} is constructed by the
-compiler by analyzing the program's axioms and then ordering the nodes of the
-graph.  In order to distribute computation across threads it is important to
+compiler by analyzing the program's initial facts and then ordering the nodes of
+the graph.  In order to distribute computation across threads it is important to
 increase locality of communication, so that a node makes most of its
 communication to neighbor nodes that are being handled by the same thread. The
-graph structure in \code{file.data} is written in order to improve locality
-and reduce communication between threads.
+graph structure in \code{file.data} is written in order to improve locality and
+reduce communication between threads.
 
 The compiler analyzes the node address constants (that are prepended by the
-symbol @) and the axioms of the program. After parsing and type-checking the
+symbol @) and the initial facts of the program. After parsing and type-checking the
 program code, the compiler then optimizes the topology by building an internal
 representation of the graph.  In this phase, each node address $a$ is mapped
 using a function $M(x)$ to a normalized node address $n$. Function $M(x)$ is
