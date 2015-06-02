@@ -1,0 +1,15 @@
+belief-propagation-50 c 2808
+belief-propagation-200 c 46218
+belief-propagation-300 c 102149
+belief-propagation-400 c 185689
+new-heat-transfer-80 c 2376
+new-heat-transfer-120 c 5544
+min-max-tictactoe c 1
+8queens-11 c 1
+8queens-12 c 1
+8queens-13 c 1
+8queens-14 c 1
+shortest-usairports500 c 8045
+shortest-oclinks c 27261
+shortest-uspowergrid c 153801
+shortest-email c 174870

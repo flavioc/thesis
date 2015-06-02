@@ -1,6 +1,6 @@
 
 EXPERIMENT_FILES := experiments/absolute/runtime.tex \
-	experiments/mem/mem.tex
+	experiments/mem/mem.tex experiments/mem/c-mem.tex
 
 all: thesis.pdf
 
@@ -62,6 +62,11 @@ experiments/mem/mem.tex: experiments/lib.py experiments/mem/table.py \
 	experiments/mem/mem.csv
 	$(RE) experiments/mem/table.py \
 				  experiments/mem/mem.csv > experiments/mem/mem.tex
+
+experiments/mem/c-mem.tex: experiments/lib.py experiments/mem/c-table.py \
+	experiments/mem/c-mem.csv
+	$(RE) experiments/mem/c-table.py \
+					experiments/mem/c-mem.csv > experiments/mem/c-mem.tex
 
 clean:
 	rm -f thesis.pdf *.bbl *.blg *.log *.lot \
