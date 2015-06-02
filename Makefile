@@ -1,4 +1,7 @@
 
+EXPERIMENT_FILES := experiments/absolute/runtime.tex \
+	experiments/mem/mem.tex
+
 all: thesis.pdf
 
 thesis.pdf: thesis.tex packages.tex	thesis-cover.tex \
@@ -37,7 +40,8 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex \
 		lld/cont-p.tex lld/cont-bang-p.tex lld/der-p.tex lld/der-other.tex \
 		lld/aggregates.tex lld/soundness.tex \
 		lld/comprehensions_soundness.tex lld/aggregates_soundness.tex \
-		lld.tex hld.tex sequent_calculus.tex
+		lld.tex hld.tex sequent_calculus.tex \
+		$(EXPERIMENT_FILES)
 	latexmk -pdf thesis.tex
 
 language.tex: figures/btree/btree_trace1.pdf figures/btree/btree_trace2.pdf \
@@ -46,6 +50,18 @@ language.tex: figures/btree/btree_trace1.pdf figures/btree/btree_trace2.pdf \
 	figures/message/message_trace3.pdf figures/message/message_trace4.pdf \
 	figures/visit/trace1.pdf figures/visit/trace2.pdf \
 	figures/visit/trace3.pdf figures/visit/trace4.pdf
+
+RE := PYTHONPATH=$(PWD)/experiments:$(PYTHONPATH) python
+
+experiments/absolute/runtime.tex: experiments/lib.py experiments/absolute/table.py \
+	experiments/absolute/runtime.csv
+	$(RE) experiments/absolute/table.py \
+				  experiments/absolute/runtime.csv > experiments/absolute/runtime.tex
+
+experiments/mem/mem.tex: experiments/lib.py experiments/mem/table.py \
+	experiments/mem/mem.csv
+	$(RE) experiments/mem/table.py \
+				  experiments/mem/mem.csv > experiments/mem/mem.tex
 
 clean:
 	rm -f thesis.pdf *.bbl *.blg *.log *.lot \

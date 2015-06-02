@@ -24,3 +24,4 @@ thesis.pdf
 tags
 *.fls
 thesis.fdb_latexmk
+*.pyc
