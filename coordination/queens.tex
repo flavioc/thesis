@@ -37,10 +37,10 @@ lines~\ref{line:coord:queens_rdiag1}-\ref{line:coord:queens_rdiag2}).
 If there is any conflict, we do not derive anything and for that we use the
 language expression \code{1}
 (lines~\ref{line:coord:queens_empty1},~\ref{line:coord:queens_empty2}
-and~\ref{line:coord:queens_empty3}), which corresponds to an empty rule head. If
-there are no conflicts, this means that it is possible to add a queen to the
-current state (line~\ref{line:coord:queens_add}). The fact \code{send-down/2} is
-used to either complete the computation of a valid state
+and~\ref{line:coord:queens_empty3}). If there are no conflicts, this means that
+it is possible to add a queen to the current state
+(line~\ref{line:coord:queens_add}). The fact \code{send-down/2} is used to
+either complete the computation of a valid state
 (lines~\ref{line:coord:queens_complete1}-\ref{line:coord:queens_complete2}) or
 to propagate the state to the row below
 (lines~\ref{line:coord:queens_down1}-\ref{line:coord:queens_down2}) as shown in

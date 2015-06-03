@@ -6,6 +6,7 @@ all: thesis.pdf
 
 thesis.pdf: thesis.tex packages.tex	thesis-cover.tex ack.tex \
 		introduction.tex coordination.tex language/key_value.tex \
+		language/message_routing.tex language/graph_visit.tex \
 		language/applications.tex language/related_work.tex \
 		implementation.tex logic/related_work.tex \
 		implementation/node.tex implementation/coord.tex \

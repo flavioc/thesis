@@ -41,20 +41,16 @@ replace(@0, 6, "x").*label{line:language:dict_axioms2}
 \label{code:btree_replace}
 \end{figure}
 
-Our first example, shown in Fig.~\ref{code:btree_replace}, implements the key
+Our second example, shown in Fig.~\ref{code:btree_replace}, implements the key
 update operation for a binary tree search~(BST) represented as a key/value
 dictionary. Each LM node represents a binary tree node. We first declare all the
-predicates
-(lines~\ref{line:language:dict_header1}-\ref{line:language:dict_header2}), which
-represent the kinds of facts we are going to use. Note that the first argument
-of every predicate must be typed as \texttt{node} because the first argument
-indicates where the node lives in the graph. Predicates \texttt{left/2} and
-\texttt{right/2} are persistent while \texttt{value/3} and \texttt{replace/3}
-are linear. Persistent predicates are preceded with a \texttt{!} symbol in LM
-rules for improved readability. Linear predicate \texttt{value/3} assigns a
-key/value pair to a node that can be updated later.  The \texttt{replace/3}
-linear predicate represents an update operation where the key in the second
-argument will be updated to the value in the third argument.
+predicates in
+lines~\ref{line:language:dict_header1}-\ref{line:language:dict_header2}.
+Linear
+predicate \texttt{value/3} assigns a key/value pair to a node that can be
+updated later.  The \texttt{replace/3} linear predicate represents an update
+operation where the key in the second argument will be updated to the value in
+the third argument.
 
 The algorithm uses three rules for the three possible cases of updating a key's
 value: the first rule
@@ -66,12 +62,8 @@ recursively picks the left branch for the update operation by deleting
 \texttt{replace(A, RKey, RValue)} and re-deriving it at node \texttt{B}; and the
 third rule
 (lines~\ref{line:language:dict_third1}-\ref{line:language:dict_third2}) picks
-the right branch. Note that in all the rules, the body of each rule uses facts
-from the same node (in this particular case, \texttt{A}), but the head of the
-rule may derive facts in other nodes (e.g., the second and third rules) because
-a node variable was instantiated in the body of the rule. Moreover, persistent
-facts used in the body of the rule are not deleted after rule application - only
-linear facts are. The initial facts of this program are presented in
+the right branch.
+The initial facts of this program are presented in
 lines~\ref{line:language:dict_axioms1}-\ref{line:language:dict_axioms2} and they
 describe the initial binary tree configuration, including keys and values.  The
 axiom \texttt{update(@0, 6, "x")} instantiated at the root node \texttt{@3}

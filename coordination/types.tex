@@ -18,13 +18,12 @@ logic.
 
 \emph{Coordination facts} allow the programmer to change how the run time
 schedules nodes and how it partitions the nodes among threads of execution.
-Coordination facts can be used in either the body of the rule, the head of the
-rule or both.  This allows scheduling and partition decisions to be made based
-on the state of the program and on the state of the underlying machine.  In this
-fashion, we keep the language declarative because we reason logically about the
-state of execution, without the need to introduce extra-logical operators into
-the language that would introduce significant issues when proving properties
-about programs.
+Coordination facts can be used in either in the LHS, RHS or both.  This allows
+scheduling and partition decisions to be made based on the state of the program
+and on the state of the underlying machine.  In this fashion, we keep the
+language declarative because we reason logically about the state of execution,
+without the need to introduce extra-logical operators into the language that
+would introduce significant issues when proving properties about programs.
 
 Coordination facts are further classified into two kinds of facts:
 \emph{sensing} and \emph{action} facts. Sensing facts are used to sense

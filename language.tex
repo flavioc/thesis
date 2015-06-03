@@ -22,7 +22,7 @@ fact that is in another node.
 In order to understand how LM programs are written, we now present and discuss
 three basic LM programs.
 
-\subsection{First Example: Message Routing}
+\subsection{First Example: Message Routing}\label{section:language:message}
 \input{language/message_routing}
 
 \subsection{Second Example: Key/Value Dictionary}\label{sec:language:key_value}
@@ -68,28 +68,28 @@ three basic LM programs.
 
 Table~\ref{tbl:ast} shows the abstract syntax for rules in LM.  A LM program
 $Prog$ consists of a list of derivation rules $\Sigma$ and a database $D$.  Each
-derivation rule $R$ can be written as $BE \lolli HE$ where $BE$ is the body of a
-rule and $HE$ is the head. Rules without bodies are allowed in LM and they are
-called \emph{initial facts}
+derivation rule $R$ can be written as $LHS \lolli RHS$ with the meaning
+described in Section~\ref{section:language:message}.  Rules without an LHS are
+allowed in LM and they are called \emph{initial facts}
 (lines~\ref{line:language:dict_axioms1}-\ref{line:language:dict_axioms2} in
-Fig.~\ref{code:btree_replace}). Rules without heads are also allowed.
+Fig.~\ref{code:btree_replace}). Rules without an RHS are also allowed.
 
-The body of a rule, $BE$, may contain linear ($L$) and persistent ($P$)
-\emph{fact expressions} and constraints ($C$). Fact expressions are template
+The LHS of a rule, $LHS$, may contain linear ($L$) and persistent ($P$)
+\emph{atomic propositions} and constraints ($C$). Atomic propositions are template
 facts that instantiate variables (from facts in the database) such as
 \code{visit(A)} in line~\ref{line:language:visit_second} in
-Fig.~\ref{code:visit}. Variables can be used again in the body for matching and
-also in the head when instantiating facts.  Constraints are boolean expressions
+Fig.~\ref{code:visit}. Variables can be used again in the LHS for matching and
+also in the RHS when instantiating facts.  Constraints are boolean expressions
 that must be true in order for the rule to be fired. Constraints use variables
 from fact expressions and are built using a small functional language that
 includes mathematical operations, boolean operations, external functions and
 literal values.
 
-The head of a rule, $HE$, contains linear ($L$) and persistent ($P$) \emph{fact
-templates} which are uninstantiated facts and will derive new facts. The head
-can also have \emph{exists expressions} ($EE$), \emph{comprehensions} ($CE$)
-and \emph{aggregates} ($AE$). All those expressions may use all the variables
-instantiated in the body.
+The RHS of a rule, $LHS$, contains linear ($L$) and persistent ($P$)
+\emph{atomic propositions} which are uninstantiated facts. The RHS can also have
+\emph{exists expressions} ($EE$), \emph{comprehensions} ($CE$) and
+\emph{aggregates} ($AE$). All those expressions may use all the variables
+instantiated in the rule's LHS.
 
 \subsubsection{Graph visit using abstract syntax}\label{visit:ast}
 
@@ -107,7 +107,7 @@ program shown in Fig.~\ref{code:visit}:
 \mathtt{visited}(A)
 \end{align}
 
-Finally, initial facts are represented using an empty body:
+Finally, initial facts are represented using an empty LHS:
 
 \nopagebreak
 
@@ -148,12 +148,12 @@ be instantiated in every node.
 
 \subsection{Selectors}
 
-When a rule body is instantiated using facts from the database, facts are picked
+When a rule's LHS is instantiated using facts from the database, facts are picked
 non-deterministically. While our system uses an implementation dependent order
 for efficiency reasons, sometimes it is important to sort facts by one of the
 arguments because linearity imposes commitment during rule derivation. The
-abstract syntax for this construct is $\selector{S}{y}{BE}{HE}$, where $S$ is
-the selection operation and $y$ is the variable in the body $BE$ that represents
+abstract syntax for this construct is $\selector{S}{y}{LHS}{RHS}$, where $S$ is
+the selection operation and $y$ is the variable in $LHS$ that represents
 the value to be selected according to $S$. An example using concrete syntax is
 as follows:
 
@@ -185,13 +185,12 @@ facts depending on the contents of the database. To solve this particular need,
 we created the concept of comprehensions, which are sub-rules that are applied
 with all possible combinations of facts from the database. In a comprehension
 $\comprehension{\widehat{x}}{SB}{SH}$, $\widehat{x}$ is a list of variables,
-$SB$ is the body of the comprehension and $SH$ is the head.  The body $SB$ is
-used to generate all possible combinations for the head $SH$, according to the
-facts in the database.  We have already seen an example of comprehensions in the
-visit program (Fig.~\ref{code:visit}
-line~\ref{line:language:visit_comprehension}). Here, we match \code{!edge(A,
-B)} using all the combinations available in the database and for each
-combination we derive \code{visit(B)}.
+$SB$ is the LHS of the comprehension and $SH$ is the RHS. $SB$ is used to
+generate all possible combinations for $SH$, according to the facts in the
+database.  We have already seen an example of comprehensions in the visit
+program (Fig.~\ref{code:visit} line~\ref{line:language:visit_comprehension}).
+Here, we match \code{!edge(A, B)} using all the combinations available in the
+database and for each combination we derive \code{visit(B)}.
 
 \subsection{Aggregates}
 
@@ -200,11 +199,11 @@ into a single fact.  In LM we have aggregates ($AE$), a special kind of sub-rule
 that works very similarly to comprehensions.  In the abstract syntax
 $\aggregate{A}{y}{\widehat{x}}{SB}{SH_1}{SH_2}$, $A$ is the aggregate operation,
 $\widehat{x}$ is the list of variables introduced in $BE$, $SH_1$ and $SH_2$
-and $y$ is the variable in the body $SB$ that represents the values to be
+and $y$ is the variable in the $SB$ that represents the values to be
 aggregated using $A$. Like comprehensions, we use $\widehat{x}$ to try all
 the combinations of $SB$, but, in addition to deriving $SH_1$ for each
 combination, we aggregate the values represented by $y$ into a new $y$
-variable that is used inside the head $SH_2$.
+variable that is used inside the RHS $SH_2$.
 
 To better understand aggregates, let's consider a database with the following
 facts and a rule:
@@ -227,14 +226,14 @@ including the \code{min} (minimum value), \code{max} (maximum value),
 \section{Operational Semantics}
 
 As said before, the first argument of every predicate must be typed as a
-\emph{node}.  For distribution purposes, the body of all derivation rules can
-only use facts from the same node in order to avoid concurrency issues.
-However, the facts in the head may refer to other nodes, as long as those nodes
-are instantiated in the body of the rule.  We drew some inspiration from the
-Linda system~\cite{linda} mentioned early on, where the tuple space contains
-the data and is used by the processors to communicate and do computation.  This
-differs from imperative languages, since in those languages data and computation
-are two separate entities.
+\emph{node}.  For distribution purposes, the LHS of all rules can only use facts
+from the same node in order to avoid concurrency issues. However, the facts in
+the rule's RHS may refer to other nodes, as long as those nodes are instantiated
+in the LHS. We drew some inspiration from the Linda system~\cite{linda}
+mentioned early on, where the tuple space contains the data and is used by the
+processors to communicate and do computation.  This differs from imperative
+languages, since in those languages data and computation are two separate
+entities.
 
 The execution is performed at the node level and happens non-deterministically
 (i.e., any node can be picked to run). This means that the programmer cannot

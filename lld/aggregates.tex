@@ -2,7 +2,7 @@ The most intricate part of the derivation process is processing comprehensions
 and aggregates. For both of them, we need to perform as many derivations as the
 database allows, therefore we need to deterministically check the contents of
 the database until no more derivations are possible.  The matching process is
-then similar to the process used for matching the body of the rule presented in
+then similar to the process used for matching a rule's LHS as presented in
 Section~\ref{sec:lld_body_match}, however we use two continuation stacks,
 $\lstack{C}$ and $\lstack{P}$. In $\lstack{P}$, we put all the initial
 persistent frames and in $\lstack{C}$ we put the first linear frame and then
@@ -13,7 +13,7 @@ them by removing all the frames in $\lstack{C}$ pushed after the first linear
 continuation frame.  If we tried to use those frames, we would assumed that the
 linear facts used by the other frames were still in the database, but that is
 not true because they have been consumed during the first application of the
-comprehension.  For example, if the body is $\bang \mathtt{a(X)} \otimes
+comprehension.  For example, if the LHS is $\bang \mathtt{a(X)} \otimes
 \mathtt{b(X)} \otimes \mathtt{c(X)}$ and the continuation stack has three frames
 (one per fact), we cannot backtrack to the frame of $\mathtt{c(X)}$ because, at
 that point, the matching process was assuming that the previous \texttt{b(X)}
@@ -43,14 +43,14 @@ created for \code{\bang edge(1, B)} which includes two \code{edge} facts and
 \code{\bang edge(1, 2)} is selected to continue the process. Since \code{B = 2},
 the frame for \code{neighbor-pagerank(1, 2, Val)} includes only
 \code{neighbor-pagerank(1, 2, 0.5)} which completes the first application of the
-aggregate and the same linear fact is re-derived using the first aggregate head.
-Computation then proceeds by backtracking to the first linear frame, the frame
-of \code{neighbor-pagerank(1, 2, Val)}, but there are no more available
+aggregate and the same linear fact is re-derived using the first aggregate's
+RHS.  Computation then proceeds by backtracking to the first linear frame, the
+frame of \code{neighbor-pagerank(1, 2, Val)}, but there are no more available
 candidates, therefore the frame is removed and the next candidate \code{\bang
 edge(1, 3)} of frame \code{\bang edge(1, B)} is selected. Here, a frame is
 created for \code{B = 3} with \code{neighbor-pagerank(1, 3, 0.5)} and the second
 application of the aggregate is completed. The process backtracks again twice
-but now there are no more candidates and the second aggregate head derives
+but now there are no more candidates and the second aggregate's RHS derives
 \code{sum-ranks(1, 1.0)} because \code{V = 0.5 + 0.5}, completing the aggregate
 computation.
 
@@ -69,21 +69,22 @@ $\matstatea{\Delta_N}{\lstack{C};
    \lstack{P}}{\Gamma}{\Delta}{\Omega}{\Delta' \rightarrow \Omega'}{\Sigma}$
 
 \begin{enumerate}
-   \item[$\Omega_N$] ordered list of remaining terms of the head of the rule to
-   be derived;
+
+   \item[$\Omega_N$] ordered list of remaining terms of the rule's RHS to be
+      derived;
 
    \item[$\Delta_N$] multi-set of linear facts that were still available after
-   matching the body of the rule and all the previous aggregates. Note that
-   $\Delta, \Xi = \Delta_N$;
+      matching the rule's LHS and all the previous aggregates. Note that
+      $\Delta, \Xi = \Delta_N$;
 
    \item[$\Xi$] multi-set of linear facts used during the matching process of
-   the body of the rule and all the previous aggregates;
+      the rule's LHS and all the previous aggregates;
 
    \item[$\Gamma_{1}$] set of persistent facts derived up to this point in the
-   head of the rule;
+   rule's RHS;
 
    \item[$\Delta_{1}$] multi-set of linear facts derived up to this point in
-   the head of the rule;
+   the rule's RHS;
 
    \item[$\Delta'$] multi-set of linear facts consumed up to this point;
 
@@ -115,7 +116,7 @@ current variable bindings.
 \subsubsection{Linear fact expressions}
 
 The following two transitions deal with the case when there is a linear
-fact expression in the body of the aggregate.
+fact expression in the aggregates' LHS.
 
 \input{lld/agg-match-p}
 
@@ -126,14 +127,14 @@ ones.
 
 \input{lld/agg-match-bang-p}
 
-\subsubsection{Deconstruct body}
+\subsubsection{LHS Deconstruction}
 
 \input{lld/agg-match-other}
 
 
 \subsubsection{Successful match}
 
-When the aggregate body finally matches, we retrieve the term for variable $x$
+When the aggregate's LHS finally matches, we retrieve the term for variable $x$
 (the aggregate variable) and add it to the list $\Sigma$.
 
 \input{lld/agg-match-end}
@@ -148,17 +149,22 @@ $\fixstatea{\Delta}{\Xi; \Delta'}{\lstack{C};
    \lstack{P}}{\Gamma}{\Sigma}$, where:
 
 \begin{enumerate}
-   \item[$\Omega_N$] ordered list of remaining terms of the head of the rule to
-   be derived;
+
+   \item[$\Omega_N$] ordered list of remaining terms of the rule's RHS to be
+      derived;
+
    \item[$\Delta$] multi-set of linear facts that were still available after
-   matching the body of the rule and the body of the aggregate;
+   matching the rule's LHS and the aggregate's LHS;
    \item[$\Xi$] multi-set of linear facts used during the matching process of
-   the body of the rule and all the previous aggregates;
-   \item[$\Delta'$] multi-set of linear facts consumed by the aggregate body;
-   \item[$\Gamma_{1}$] set of persistent facts derived by the head of the rule
-   and all the previous aggregates;
-   \item[$\Delta_{1}$] multi-set of linear facts derived by the head of the
-   rule and all the previous aggregates;
+   the rule's LHS and all the previous aggregates;
+   \item[$\Delta'$] multi-set of linear facts consumed by the aggregate's LHS;
+
+   \item[$\Gamma_{1}$] set of persistent facts derived by the rule's RHS and all
+      the previous aggregates;
+
+   \item[$\Delta_{1}$] multi-set of linear facts derived by the rule's RHS and
+      all the previous aggregates;
+
    \item[$\m{agg}$] the current aggregate;
    \item[$\Sigma$] list of accumulated values;
    \item[$\lstack{C}, \lstack{P}$] continuation stacks for the comprehension;
@@ -182,16 +188,21 @@ has the form
 $\contstatea{\Delta_N}{\lstack{C} ; \lstack{P}}{\Gamma}{\Sigma}$, where:
 
 \begin{enumerate}
-   \item[$\Omega_N$] ordered list of remaining terms of the head of the rule to
-   be derived;
+
+   \item[$\Omega_N$] ordered list of remaining terms of the rule's RHS to be
+      derived;
+
    \item[$\Delta_N$] multi-set of linear facts that were still available after
-   matching the body of the rule and the body of the aggregate;
+   matching the rule's LHS and the aggregate's LHS;
    \item[$\Xi$] multi-set of linear facts used during the matching process of
-   the body of the rule and all the previous aggregates;
-   \item[$\Gamma_{1}$] set of persistent facts derived by the head of the rule
-   and all the previous aggregates;
-   \item[$\Delta_{1}$] multi-set of linear facts derived by the head of the
-   rule and all the previous aggregates;
+   the rule's LHS and all the previous aggregates;
+
+   \item[$\Gamma_{1}$] set of persistent facts derived by the rule's RHS and all
+      the previous aggregates;
+
+   \item[$\Delta_{1}$] multi-set of linear facts derived by the rule's RHS and
+      all the previous aggregates;
+
    \item[$\m{agg}$] the current aggregate;
    \item[$\Sigma$] list of accumulated values.
    \item[$\lstack{C}, \lstack{P}$] continuation stacks for the comprehension;
@@ -215,29 +226,35 @@ continuation frames are persistent.
 \paragraph{Aggregate done}
 
 If both the $\lstack{C}$ and $\lstack{P}$ stacks are empty, backtracking is
-impossible and the aggregate is done. The final head of the aggregate is then
-derived along with the rest of the rule's head.
+impossible and the aggregate is done. The final aggregate's RHS is then derived
+along with the rest of the rule's RHS.
 
 \input{lld/agg-cont-end}
 
 \subsubsection{Aggregate Derivation}
 
-After updating the continuation stacks, the subhead of the aggregate is derived.
+After updating the continuation stacks, the first aggregate's RHS is derived.
 The derivation state has the form
 $\derstatea{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\Sigma}{\lstack{C};
-   \lstack{P}}{\Omega}$, where:
+\lstack{P}}{\Omega}$, where:
 
 \begin{enumerate}
-   \item[$\Omega_N$] ordered list of remaining terms of the head of the rule to
-   be derived;
+
+   \item[$\Omega_N$] ordered list of remaining terms of the rule's RHS to be
+      derived;
+
    \item[$\Delta$] multi-set of remaining linear facts that can be used for
    the next aggregate applications.
-   \item[$\Xi$] multi-set of linear facts consumed both by the body of the rule
-   and previous aggregate applications;
-   \item[$\Gamma_1$] set of persistent facts derived by the head of the rule,
-   previous aggregates and current derivation;
-   \item[$\Delta_1$] multi-set of linear facts derived by the head of the rule,
-   previous aggregates and current derivation;
+
+   \item[$\Xi$] multi-set of linear facts consumed both by the rule's LHS and
+      previous aggregate applications;
+
+   \item[$\Gamma_1$] set of persistent facts derived by the rule's RHS, previous
+      aggregates and current derivation;
+
+   \item[$\Delta_1$] multi-set of linear facts derived by the rule's RHS,
+      previous aggregates and current derivation;
+
    \item[$\m{agg}$] current aggregate symbol;
    \item[$\Sigma$] accumulated list of values of the aggregate;
    \item[$\lstack{C}, \lstack{P}$] new continuation stacks;

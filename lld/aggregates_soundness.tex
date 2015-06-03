@@ -1,12 +1,12 @@
 
-Proving that deriving an aggregate in LLD is sound in relation to HLD is
-built from 4 results: (1) proving that matching the body of the aggregate is
-sound in relation to HLD; (2) proving that updating the continuation stacks
-makes them suitable for use in the next aggregate applications; (3) proving
-that deriving the head of the aggregate is sound in relation to HLD; (4)
-proving that we can apply as many aggregates as the database allows.
+Proving that deriving an aggregate in LLD is sound in relation to HLD is built
+from 4 results: (1) proving that matching the aggregate's LHS is sound in
+relation to HLD; (2) proving that updating the continuation stacks makes them
+suitable for use in the next aggregate applications; (3) proving that deriving
+the aggregate's RHS is sound in relation to HLD; (4) proving that we can
+apply as many aggregates as the database allows.
 
-\begin{lemma}[Aggregate body match]\label{thm:aggregate_body_match}
+\begin{lemma}[Aggregate LHS match]\label{thm:aggregate_body_match}
 Consider an aggregate $\m{agg}$, where $\Pi(\m{agg}) = \forall_{\widehat{v}, \Sigma'}.
    (\defstwo{agg}{\widehat{v}}{\Sigma'} \lolli ((\lambda x. C x)\Sigma' \with (\forall_{\widehat{x}, \sigma}.
                                                 (A \lolli B \otimes
@@ -124,8 +124,8 @@ Invert the assumption and then apply Theorem~\ref{thm:agg_from_update_to_derivat
 
 We have just seen that after a single aggregate application, we add a value $V$
 to the $\Sigma$ context and that the continuation stacks are now valid.
-Now, we need to prove that deriving the head of the
-aggregate is sound in relation to HLD by using the new stacks.
+Now, we need to prove that deriving the aggregate's RHS
+is sound in relation to HLD by using the new stacks.
 
 \begin{theorem}[Aggregate derivation soundness]\label{thm:aggregate_derivation}
 If $\derstatea{\Delta_N}{\Xi_N}{\Gamma_{N1}}{\Delta_{N1}}{\Sigma}{\lstack{C}; \lstack{P}}{\Omega_1,

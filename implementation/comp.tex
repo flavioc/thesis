@@ -77,21 +77,20 @@ for(auto it1(linked_list("shortest").begin()); it1 != linked_list("shortest").en
 }
 \end{Verbatim}
 
-
-The compilation algorithm iterates through the fact expressions in the body of
-the rule and creates nested loops to try all the possible combinations of facts.
-For this rule, all the pairs of facts \texttt{shortest} and \texttt{relax} must
-be matched until the constraint \texttt{D1 <= D2} is true. First, an iterator
-for \texttt{shortest} is created that will loop through all \texttt{shortest}
-facts in the list. Inside the loop, a nested iterator is created for predicate
+The compilation algorithm iterates through the fact expressions in rule's LHS
+and creates nested loops to try all the possible combinations of facts.  For
+this rule, all the pairs of facts \texttt{shortest} and \texttt{relax} must be
+matched until the constraint \texttt{D1 <= D2} is true. First, an iterator for
+\texttt{shortest} is created that will loop through all \texttt{shortest} facts
+in the list. Inside the loop, a nested iterator is created for predicate
 \texttt{relax}. This inner loop includes a check for the \texttt{D1 <= D2}
 constraint. If the constraint expression is true then the rule matches and a new
 \texttt{shortest} fact is derived and two used linear facts are retracted by
 erasing the iterators from the linked lists. Note that after the rule is
 derived, the code must return since there is a higher priority rule that may be
 triggered with the new \texttt{shortest} fact (see
-Fig.~\ref{code:shortest_path_program}). This enforces the priority semantics
-of the language.
+Fig.~\ref{code:shortest_path_program}). This enforces the priority semantics of
+the language.
     
 If the constraint had failed, another \texttt{relax} fact would have been tried
 by incrementing \texttt{it2}. Likewise, if the current \texttt{f1} fact fails
@@ -140,7 +139,7 @@ by incrementing \texttt{it1}.
 \end{figure}
 
 Figure~\ref{alg:compile_rule} presents the algorithm for compiling rules into
-C++ code.  First we split the body of the rule into fact expressions and
+C++ code. First, we split the rule's RHS into atomic propositions and
 constraints. Fact expressions map directly to iterators while fact constraints
 map to \emph{if} expressions. A possible compilation strategy is to first
 compile all the fact expressions and then compile the constraints. However, this
@@ -150,10 +149,9 @@ the constraint are all included in the already compiled fact expressions. The
 order in which fact expressions are selected for compilation does not interfer
 with the correctness of the compiled code, thus our compiler selects the fact
 expressions ($RemoveBestFactExpr$) by their potential to activate constraints,
-therefore avoiding undesirable database lookups. If two fact
-expressions have the same number of new constraints, then the
-compiler always picks the persistent fact expression since
-persistent facts are not deleted.
+therefore avoiding undesirable database lookups. If two fact expressions have
+the same number of new constraints, then the compiler always picks the
+persistent fact expression since persistent facts are not deleted.
 
 Derivation of new facts belonging to the local node implies adding the new fact
 to the local node data structure. Facts that belong to other nodes are sent
@@ -162,8 +160,8 @@ using an appropriate runtime API.
 \subsection{Persistence Checking}
 
 Not all linear facts need to be deleted. For instance, in the compiled rule
-above, the fact \texttt{shortest(A, D1, P1)} is re-derived in the head. Our
-compiler is able to turn linear loops into persistent loops for linear facts
+above, the fact \texttt{shortest(A, D1, P1)} is re-derived in the rule's RHS.
+Our compiler is able to turn linear loops into persistent loops for linear facts
 that are retracted and then asserted.  The rule is then compiled as follows:
 
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\$\#\&]
@@ -356,15 +354,13 @@ next: continue;
 \end{Verbatim}
 
 Special care must be taken when the comprehension's sub-rule uses the same
-predicates that are derived by the main rule.
-Rule inference must be atomic in the sense that after a rule matches, the
-comprehensions in the head of the rule can use the facts that were present
-before the body of the rule was matched.
-Consider a rule with $n$ comprehensions or aggregates, where $CB_i$ and $CH_i$
-is the body and head of the comprehension/aggregate, respectively, and $H$
-represents the fact templates found in the head of the rule.
-The formula used by the compiler to detect conflicts between predicates is the
-following:
+predicates that are derived by the main rule.  Rule inference must be atomic in
+the sense that after a rule matches, the comprehensions in the rule's RHS can
+use the facts that were present before the rule was matched.  Consider a rule
+with $n$ comprehensions or aggregates, where $CB_i$ and $CH_i$ is the LHS and
+RHS of the comprehension/aggregate, respectively, and $H$ represents the atomic
+propositions found in rule's RHS. The formula used by the compiler to detect
+conflicts between predicates is the following:
 
 \[
 \bigcup^{n}_i[CB_i \cap H] \cup \bigcup^{n}_i [CB_i \cap \bigcup^{n}_j[CH_j]]
@@ -380,8 +376,8 @@ can be fully optimized.
 
 Aggregates are similar to comprehensions. They are also sub-rules but a value is
 accumulated for each combination of the sub-rule. After all the combinations are
-inferred, a final head term is derived with the accumulated term. Consider the following
-PageRank rule:
+inferred, a final RHS term is derived with the accumulated term. Consider the
+following PageRank rule:
 
 \begin{Verbatim}[fontsize=\codesize]
 update(A), pagerank(A, OldRank)
@@ -406,9 +402,9 @@ for(auto it1(linked_list("pagerank").begin()); it1 != linked_list("pagerank").en
             linked_list("neighbor-pagerank").end(); ) {
          fact *f3(*it3);
          acc += f3->get_float(2);
-         ++it3; // the sub-rule has no head since neighbor-pagerank is re-derived
+         ++it3; // the sub-rule has no RHS since neighbor-pagerank is re-derived
       }
-      // head of the aggregate
+      // RHS of the aggregate
       f1->set_float(1, damp / P + (1.0 - damp) * V);
       goto next;
    }
@@ -420,13 +416,13 @@ next: continue;
 \subsection{Coordination Directives}
 
 Coordination directives are compiled in two different ways, depending on whether
-they appear in the body or in the head of the rule. Coordination facts in the
-body are compiled into code that inspects the state of the virtual machine. For
-example, the fact \texttt{priority} will inspect the target node, retrieve the
-current priority and assign the priority to a variable.  Coordination facts in
-the head of the rule are also implemented as API commands of the virtual
-machine instead of being added to the database as facts. Semantically, action
-facts are like any other. However, since they are immediately used by the
-machine, there is no need to store them in the database, therefore avoiding
-unnecessary allocations and deallocations.
+they appear in the LHS or RHS of the rule.  Coordination facts in the LHS are
+compiled into code that inspects the state of the virtual machine. For example,
+the fact \texttt{priority} will inspect the target node, retrieve the current
+priority and assign the priority to a variable.  Coordination facts in the RHS
+are also implemented as API commands of the virtual machine instead of being
+added to the database as facts. Semantically, action facts are like any other.
+However, since they are immediately used by the machine, there is no need to
+store them in the database, therefore avoiding unnecessary allocations and
+deallocations.
 

@@ -34,12 +34,12 @@ fashion.
 \subsection{Step}\label{sec:step_hld}
 
 Operationally, LM proceeds in \emph{steps}. A step happens at some node $i$ and
-proceeds by picking one rule to apply, matching the body of the rule against the
+proceeds by picking one rule to apply, matching the rule's LHS against the
 database, removing all those facts from the database and then deriving all the
-constructs in the head of the rule. We assume the existence of $n$ nodes in the
+constructs in the rule's RHS. We assume the existence of $n$ nodes in the
 program and that $\Gamma$ and $\Delta$ are split into $\Gamma_1, \dotsc,
-\Gamma_n$ and $\Delta_1, \dotsc, \Delta_n$ respectively. After each
-step, the database of each fact is updated accordingly.
+\Gamma_n$ and $\Delta_1, \dotsc, \Delta_n$ respectively. After each step, the
+database of each fact is updated accordingly.
 
 Steps are defined as $\stepz \Gamma; \Delta; \Phi \Longrightarrow \Gamma';
 \Delta'$, where $\Gamma'$ and $\Delta'$ are the new database contexts. The step
@@ -61,16 +61,16 @@ priority, therefore a rule is picked non-deterministically.
 The judgment $\az{\Gamma}{\Delta}{\Pi}{A \lolli B}{\outsem}$ applies the
 derivation rule $A \lolli B$. To do this, it splits the $\Delta$ context into
 $\Delta_1$ and $\Delta_2$, namely the set of linear resources consumed to match
-the body of the rule ($\Delta_1$) and the remaining linear facts ($\Delta_2$).
-Again, the set of resources needed to match the body of the rule is guessed. LLD
-semantics will deterministically calculate $\Delta_1$.
+the rule's LHS ($\Delta_1$) and the remaining linear facts ($\Delta_2$).  Again,
+the set of resources needed to match the rule's LHS. LLD semantics will
+deterministically calculate $\Delta_1$.
 
 \input{hld/application}
 
 \subsection{Match}
 
 The $\mz{\Gamma}{\Delta}{C}$ judgment uses the right ($R$) rules of the sequent
-calculus in order to match (prove) the body $C$ using $\Gamma$ and $\Delta$. We
+calculus in order to match (prove) the term $C$ using $\Gamma$ and $\Delta$. We
 must consume all the linear facts in the multi-set $\Delta$ when matching $C$.
 The context $\Gamma$ may be used to match persistent terms in $C$ but such facts
 are never consumed since they are persistent.
@@ -79,8 +79,8 @@ are never consumed since they are persistent.
 
 \subsection{Derivation}
 
-After successfully matching the body of the rule, we next derive the head of the
-rule. The derivation judgment has the form
+After successfully matching a rule's LHS, we next derive the RHS.  The
+derivation judgment has the form
 $\dz{\Gamma}{\Pi}{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\Omega}{\outsem}$ with the
 following meaning:
 
@@ -95,7 +95,7 @@ following meaning:
    consumed;
 
    \item[$\Xi$] the multi-set of linear resources that have been consumed while
-   matching the body of the rule, matching comprehensions or aggregates;
+   matching the rule's LHS, matching comprehensions or aggregates;
 
    \item[$\Gamma_1$] the multi-set of persistent facts that have been derived
    using the current rule;
@@ -103,9 +103,10 @@ following meaning:
    \item[$\Delta_1$] the multi-set of linear facts that have been derived using
    the current rule;
 
-   \item[$\Omega$] an ordered list contain the terms of the head of rule that
-   still need to be derived. We start with the head of the rule $B$ that is
-   continuously deconstructed to derive all the facts of the rule;
+
+   \item[$\Omega$] an ordered list which contains the terms of the rule's RHS
+      that still need to be derived. We start with $B$ that is continuously
+      deconstructed to derive all the facts of the rule;
 
    \item[$\outsem$] the output contexts, including consumed facts and derived
    persistent and linear facts.

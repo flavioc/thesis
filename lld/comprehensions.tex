@@ -2,7 +2,7 @@ The most intricate part of the derivation process is processing comprehensions
 and aggregates. For both of them, we need to perform as many derivations as the
 database allows, therefore we need to deterministically check the contents of
 the database until no more derivations are possible.  The matching process is
-then similar to the process used for matching the body of the rule presented in
+then similar to the process used for matching the rule's LHS presented in
 Section~\ref{sec:lld_body_match}, however we use two continuation stacks,
 $\lstack{C}$ and $\lstack{P}$. In $\lstack{P}$, we put all the initial
 persistent frames and in $\lstack{C}$ we put the first linear frame and then
@@ -13,7 +13,7 @@ the frames in $\lstack{C}$ pushed after the first linear continuation frame.  If
 to use those frames, we would assumed that the linear facts used by the other
 frames were still in the database, but that is not true because they have been
 consumed during the first application of the comprehension.  For example, if the
-body is $\bang \mathtt{a(X)} \otimes \mathtt{b(X)} \otimes \mathtt{c(X)}$ and
+LHS is $\bang \mathtt{a(X)} \otimes \mathtt{b(X)} \otimes \mathtt{c(X)}$ and
 the continuation stack has three frames (one per fact), we cannot backtrack to
 the frame of $\mathtt{c(X)}$ because, at that point, the matching process was
 assuming that the previous \texttt{b(X)} linear fact was still available.
@@ -31,13 +31,14 @@ as follows:
    matching process;
 
    \item[$\Xi_N$] multi-set of linear facts used during the matching process of
-   the body of the rule and all the previous comprehensions;
+   the rule's LHS and all the previous comprehensions;
+
 
    \item[$\Gamma_{N1}$] set of persistent facts derived up to this point in the
-   head of the rule;
+      rule's RHS;
 
    \item[$\Delta_{N1}$] multi-set of linear facts derived up to this point in
-   the head of the rule;
+   the rule's RHS;
 
    \item[$\Xi$] multi-set of linear facts consumed up to this point;
 
@@ -50,11 +51,12 @@ as follows:
    \item[$\lstack{P}$] initial part of the continuation stack with only persistent
    frames;
 
-   \item[$\Omega_N$] ordered list of remaining terms of the head of the rule to
-   be derived;
+
+   \item[$\Omega_N$] ordered list of remaining terms of the rule's RHS to be
+      derived;
 
    \item[$\Delta_N$] multi-set of linear facts that were still available after
-   matching the body of the rule and all the previous comprehensions. Note that
+   matching the rule's LHS and all the previous comprehensions. Note that
    $\Delta, \Xi = \Delta_N$.
 
 \end{enumerate}
@@ -62,7 +64,7 @@ as follows:
 \subsubsection{Linear fact expressions}
 
 The following five inference rules deal with the case when there is a linear
-fact expression in the body of the comprehension.
+fact expression in the comprehension's LHS.
 
 \input{lld/comp-match-p}
 
@@ -73,18 +75,18 @@ previous ones.
 
 \input{lld/comp-match-bang-p}
 
-\subsubsection{Deconstruct body}
+\subsubsection{LHS Deconstruction}
 
-The inference rules for deconstructing the body of the comprehension, including
-the connectives $\otimes$ and $\one$, are shown next.
+The inference rules for deconstructing the comprehension's LHS, including the
+connectives $\otimes$ and $\one$, are shown next.
 
 \input{lld/comp-match-other}
 
 \subsubsection{Successful match}
 
 Finally, when there is no more terms to match, we initiate the process of the
-updating the continuation stack with $\fix{AB}$ followed by deriving the head of the
-comprehension.
+updating the continuation stack with $\fix{AB}$ followed by deriving the
+comprehension's RHS.
 
 \input{lld/comp-match-end}
 
@@ -100,19 +102,26 @@ the comprehension.  The judgment that updates the stack has the form $\fix{AB}
 \begin{enumerate}
    \item[$\Delta$] multi-set of linear facts remaining after matching the last
    comprehension;
+
    \item[$\Xi_N$] multi-set of linear facts used during the matching process of
-   the body of the rule and all the previous comprehensions;
-   \item[$\Gamma_{N1}$] set of persistent facts derived by the head of the rule
-   and all the previous comprehensions;
-   \item[$\Delta_{N1}$] multi-set of linear facts derived by the head of the
-   rule and all the previous comprehensions;
+      the rule's LHS and all the previous comprehensions;
+
+   \item[$\Gamma_{N1}$] set of persistent facts derived by the rule's RHS and
+      all the previous comprehensions;
+
+   \item[$\Delta_{N1}$] multi-set of linear facts derived by the rule's RHS and
+      all the previous comprehensions;
+
    \item[$\Xi$] multi-set of linear facts consumed by the previous application
    of the comprehension;
    \item[$\lstack{C}, \lstack{P}$] continuation stacks for the comprehension;
-   \item[$\Omega_N$] ordered list of remaining terms of the head of the rule to
-   be derived;
+
+   \item[$\Omega_N$] ordered list of remaining terms of the rule's RHS to be
+      derived;
+
    \item[$\Delta_N$] multi-set of linear facts that were still available after
-   matching the body of the rule and all the previous comprehensions.
+   matching the rule's LHS and all the previous comprehensions.
+
 \end{enumerate}
 
 \subsubsection{Remove linear continuation frames}
@@ -143,17 +152,24 @@ form $\contc{AB} \Gamma; \Delta_N; \Xi_N; \Delta_{N1}; \lstack{C}; \lstack{P}; \
 \rightarrow \outsem$, where:
 
 \begin{enumerate}
+
    \item[$\Delta_N$] multi-set of linear facts still available after matching
-   the body of the rule;
-   \item[$\Xi_N$] multi-set of linear facts used to match the body of the rule
-   and all the previous comprehensions;
-   \item[$\Gamma_{N1}$] set of persistent facts derived by the head of the rule
-   and all the previous comprehensions;
-   \item[$\Delta_{N1}$] multi-set of linear facts derived by the head of the
-   rule and all the previous comprehensions;
+      the rule's LHS;
+
+   \item[$\Xi_N$] multi-set of linear facts used to match the rule's LHS and all
+      the previous comprehensions;
+
+   \item[$\Gamma_{N1}$] set of persistent facts derived by the rule's RHS and
+      all the previous comprehensions;
+
+   \item[$\Delta_{N1}$] multi-set of linear facts derived by the rule's RHS and
+      all the previous comprehensions;
+
    \item[$\lstack{C}, \lstack{P}$] continuation stacks;
-   \item[$\Omega_N$] ordered list of remaining terms of the head of the rule to
-   be derived.
+
+   \item[$\Omega_N$] ordered list of remaining terms of the rule's RHS to be
+      derived.
+
 \end{enumerate}
 
 \paragraph{Using the $\lstack{C}$ stack}
@@ -172,30 +188,37 @@ continuation frames are persistent.
 
 \paragraph{Comprehension done}
 
-If both the $\lstack{C}$ and $\lstack{P}$ stacks are empty, backtracking is impossible and the
-comprehension is done. The remaining head terms in $\Omega$ are then derived
+If both the $\lstack{C}$ and $\lstack{P}$ stacks are empty, backtracking is
+impossible and the comprehension is done. The remaining rule's RHS terms in
+$\Omega$ are then derived
 
 \input{lld/comp-cont-end}
 
 \subsubsection{Comprehension Derivation}
 
-After updating the continuation stacks, the head of the comprehension is
-derived. The judgment has the form $\dc{AB} \Gamma; \Gamma_N; \Xi_N; \Gamma_1; \Delta_1;
+After updating the continuation stacks, the comprehension's LHS is derived. The
+judgment has the form $\dc{AB} \Gamma; \Gamma_N; \Xi_N; \Gamma_1; \Delta_1;
 \Omega; \lstack{C}; \lstack{P}; \Omega_N; \Delta_N \rightarrow \outsem$, where:
 
 \begin{enumerate}
    \item[$\Delta_N$] multi-set of remaining linear facts that can be used for
    the next comprehension applications.
-   \item[$\Xi_N$] multi-set of linear facts consumed both by the body of the rule
-   and previous comprehension applications;
-   \item[$\Gamma_1$] set of persistent facts derived by the head of the rule,
-   previous comprehensions and current derivation;
-   \item[$\Delta_1$] multi-set of linear facts derived by the head of the rule,
-   previous comprehensions and current derivation;
+
+   \item[$\Xi_N$] multi-set of linear facts consumed both by the rule's LHS and
+      previous comprehension applications;
+
+   \item[$\Gamma_1$] set of persistent facts derived by the rule's RHS, previous
+      comprehensions and current derivation;
+
+   \item[$\Delta_1$] multi-set of linear facts derived by the rule's RHS,
+      previous comprehensions and current derivation;
+
    \item[$\Omega$] ordered list of terms to derive;
    \item[$\lstack{C}, \lstack{P}$] new continuation stacks;
-   \item[$\Omega_N$] ordered list of remaining terms of the head of the rule to
-   be derived;
+
+   \item[$\Omega_N$] ordered list of remaining terms of the rule's RHS to be
+      derived;
+
 \end{enumerate}
 
 \input{lld/comp-der}

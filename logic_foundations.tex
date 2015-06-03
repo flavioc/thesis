@@ -76,12 +76,12 @@ persistent, then the rule would make no sense, because the node would be
     Connective                   & Description                                      & LM Syntax                                  & LM Place     & LM Example                                  \\ \hline \hline
     $\emph{fact}(\hat{x})$       & Linear facts.                                    & $fact(\hat{x})$                               & Body or Head    & \texttt{path(A, P)}                            \\ \hline
     $\bang \emph{fact}(\hat{x})$ & Persistent facts.                                & $\bang fact(\hat{x})$                         & Body or Head    & \texttt{$\bang$edge(X, Y, W)}                  \\ \hline
-    $1$                          & Represents rules with an empty head.             & $1$                                           & Head            & \texttt{1}                                     \\ \hline
+    $1$                          & Represents rules with an empty RHS.             & $1$                                           & Head            & \texttt{1}                                     \\ \hline
     $A \otimes B$                & Connect two expressions.                         & $A, B$                                        & Body and Head   & \texttt{path(A, P), edge(A, B, W)}             \\ \hline
     $\forall x. A$               & To represent variables defined inside the rule.  & Please see $A \lolli B$                       & Rule            & \texttt{path(A, B) $\lolli$ reachable(A, B)}   \\ \hline
     $\exists x. A$               & Instantiates new node variables.  & $\existsc{\widehat{x}}{B}$                  & Head            & \texttt{exists A.(path(A, P))}                 \\ \hline
     $A \lolli B$                 & $\lolli$ means "linearly implies".               & $A \lolli B$                                  & Rule            & \texttt{path(A, B) $\lolli$ reachable(A, B)}   \\
-                                 & $A$ is the body and $B$ is the head.             &                                               &                 &                                                \\ \hline
+                                 & $A$ is the rule's LHS and $B$ is the RHS.             &                                               &                 &                                                \\ \hline
     $\defsz{comp}$               & For comprehensions
     ($\widehat{V}$ is empty).  & $\comprehension{\widehat{x}}{A}{B}$  & Head            & \texttt{\{B | !edge(A, B) | visit(B)\}}        \\
                                  & For aggregates ($\widehat{V}$ accumulates).          &                                               &                 &                                                \\ \hline

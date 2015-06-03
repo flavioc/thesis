@@ -1,12 +1,12 @@
 
 Proving that deriving a comprehension in LLD is sound in relation to HLD is
-built from 4 results: (1) proving that matching the body of a comprehension is
-sound in relation to HLD; (2) proving that updating the continuation stacks
-makes them suitable for use in the next comprehension applications; (3) proving
-that deriving the head of the comprehension is sound in relation to HLD; (4)
-proving that we can apply as many comprehensions as the database allows.
+built from 4 results: (1) proving that matching the comprehension's LHS is sound
+in relation to HLD; (2) proving that updating the continuation stacks makes them
+suitable for use in the next comprehension applications; (3) proving that
+deriving the comprehension's RHS is sound in relation to HLD; (4) proving that
+we can apply as many comprehensions as the database allows.
 
-\begin{lemma}[Comprehension body match]\label{thm:comprehension_body_match}
+\begin{lemma}[Comprehension LHS match]\label{thm:comprehension_body_match}
 Given a comprehension $AB = \compsz{A}{B}$, consider a triplet $T = A; \Gamma;
 \Delta_{N}$ and a context $\Delta_{N} = \Delta_1, \Delta_2, \Xi$.
 
@@ -57,11 +57,11 @@ $\lstack{P}$ are well-formed in relation to $T$ then either:
 \end{itemize}
 \end{lemma}
 
-Proving that matching the body of a comprehension is sound in relation to HLD
+Proving that matching the comprehension's LHS is sound in relation to HLD
 follows the structure of the Lemma~\ref{thm:body_match}. The lemma uses mutual
-induction on the recursive judgments $\mc{AB}$and $\contc{AB}$and considers the three
-possible results of matching: failure, success with no backtracking and success
-with backtracking.
+induction on the recursive judgments $\mc{AB}$and $\contc{AB}$and considers the
+three possible results of matching: failure, success with no backtracking and
+success with backtracking.
 
 In order to apply a comprehension again, we need to reuse the continuation
 stacks. However, in order to use $\lstack{C}$ and $\lstack{P}$ safely, we need
@@ -110,8 +110,8 @@ $\lstack{P'}$.
 \end{proof}
 
 
-Now we prove that a match of a comprehension's body implies the start of a
-derivation of the comprehension's head with correct continuation stacks. Note
+Now we prove that a match of a comprehension's LHS implies the start of a
+derivation of the comprehension's RHS with correct continuation stacks. Note
 that $\Omega = \cdot$ in $\matchlldc$, so there is nothing left to match.
 
 \begin{corollary}[Match to derivation]\label{thm:match_to_derivation}
@@ -139,7 +139,7 @@ Invert the assumption and then apply Theorem~\ref{thm:from_update_to_derivation}
 
 \paragraph{Comprehension Derivation}
 
-We also need to prove that deriving the head of a comprehension is sound in
+We also need to prove that deriving the comprehension's RHS is sound in
 relation to HLD.  With the results of the next theorem we can reuse the
 continuation stacks to start the comprehension process all over again, but now
 with a non-empty continuation stack.

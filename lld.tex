@@ -6,8 +6,9 @@ the following:
 
    \item Match rules by priority order;
 
-   \item Determine the set of linear facts needed to match either the body of
-   the rule or the body of comprehensions/aggregates without guessing;
+
+   \item Determine the set of linear facts needed to match either the rule's LHS
+      or the LHS of comprehensions/aggregates without guessing;
 
    \item Apply as many comprehensions as the database allows.
 
@@ -126,7 +127,7 @@ structured as $\matstate{A \lolli
       \Omega'}$, where:
 
 \begin{description}
-   \item[$A \lolli B$] rule being matched: $A$ is the body and $B$ the head;
+   \item[$A \lolli B$] rule being matched: $A$ is the rule's LHS and $B$ the RHS;
 
    \item[$\rulestk$] rule continuation to be used if the current rule fails.
    Contains the original $\Delta_N$ and the rest of the rules $\Phi$;
@@ -137,7 +138,7 @@ structured as $\matstate{A \lolli
    \item[$\Delta$] multi-set of linear facts still available to complete the
    matching process;
 
-   \item[$\Omega$] ordered list of deconstructed head terms to match;
+   \item[$\Omega$] ordered list of deconstructed RHS terms to match;
 
    \item[$\Delta'$] multi-set of linear facts from the original $\Delta_N$ that
    were already consumed ($\Delta', \Delta = \Delta_N$);
@@ -151,13 +152,12 @@ structured as $\matstate{A \lolli
 
 Not shown in the matching state is the context $\Psi$ that maps variables to
 values. At the start of matching, the $\widehat{x}$ variables are set as
-\emph{undefined}. The terms to match are then d
-Matching then uses facts from $\Delta$ and $\Gamma$ to match the terms
-of the body of the rule represented as $\Omega$. During the process
+\emph{undefined}. Matching then uses facts from $\Delta$ and $\Gamma$ to match
+the terms of the rule's LHS represented as $\Omega$. During the process
 continuation frames are pushed into $\lstack{C}$ and if the matching process
-fails, we use $\lstack{C}$ to restore the process using different
-candidate facts. New facts also update the variables in the $\Psi$ context by
-assigning them concrete values.
+fails, we use $\lstack{C}$ to restore the process using different candidate
+facts. New facts also update the variables in the $\Psi$ context by assigning
+them concrete values.
 
 \subsubsection{Linear fact expression}
 
@@ -189,8 +189,8 @@ transitions but they deal with the persistent context $\Gamma$.
 
 \subsubsection{Other expressions}
 
-Finally, we have the transitions that deconstruct the other body terms and a
-final transition to initiate the derivation of head due to a successful match.
+Finally, we have the transitions that deconstruct the other LHS terms and a
+final transition to initiate the RHS derivation.
 
 \input{lld/match-other}
 
@@ -205,7 +205,7 @@ B}{\rulestk}{\lstack{C}}{\Gamma}$, where:
    \item[$A \lolli B$] the rule being matched;
    \item[$\rulestk$] next available rules if the current rule does not match;
    the rule continuation;
-   \item[$\lstack{C}$] the continuation stack for matching body $A$;
+   \item[$\lstack{C}$] the continuation stack for matching $A$;
 \end{description}
 
 \subsubsection{Linear continuation frames}
@@ -234,10 +234,11 @@ the next inference rule in $\Phi$.
 
 \subsection{Derivation}
 
-Once the list of terms $\Omega$ of the body is exhausted, we derive the head of
-rule.  The derivation state simply iterates over $B$, the head of the rule, and
-derives terms into the corresponding new contexts. The state is represented as
-$\derstatex{\Gamma}{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\Omega}$ with the following meaning:
+Once the list of terms $\Omega$ of the LHS is exhausted, we derive the rule's
+RHS. The derivation state simply iterates over $B$, the rule's RHS, and derives
+terms into the corresponding new contexts. The state is represented as
+$\derstatex{\Gamma}{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\Omega}$ with the following
+meaning:
 
 \begin{enumerate}
    \item[$\Gamma$] set of persistent facts;
@@ -261,9 +262,9 @@ When deriving either $p$ or $\bang p$ we have the following two inference rules:
 
 \input{lld/der-p}
 
-\subsubsection{Deconstruct head}
+\subsubsection{RHS Deconstruction}
 
-The following two inference rules deconstruct the head list $\Omega$ from terms
+The following two inference rules deconstruct the RHS list $\Omega$ from terms
 created using either $\one$ or $\otimes$.
 
 \input{lld/der-other}
@@ -272,7 +273,7 @@ created using either $\one$ or $\otimes$.
 
 We also have a transition for aggregates. The aggregate starts with a set of
 values $\widehat{V}$ and an accumulator initialized as $\cdot$. The second state
-initiates the matching process of the body $A$ of the aggregate (explained in
+initiates the matching process of the LHS $A$ of the aggregate (explained in
 the next section).
 
 \input{lld/der-agg}
