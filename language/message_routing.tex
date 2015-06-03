@@ -56,11 +56,12 @@ was instantiated in the LHS.
 
 The first rule
 (lines~\ref{line:language:message_first1}-\ref{line:language:message_first2})
-grabs the next node in the route list (third argument of \code{message}) and
-ensures that a communication edge exists (through \code{edge(A,~B)}). We
-increase the number of processed messages by consuming \code{processed(A,~N)}
-and deriving \code{processed(A,~N~+~1)}.  When the route list is empty, the
-message has reached its destination and thus it is consumed (rule in lines
+grabs the head node in the route list (third argument of \code{message}) using
+the syntax \code{[B | L]} and ensures that a communication edge exists (through
+\code{edge(A,~B)}). We increase the number of processed messages by consuming
+\code{processed(A,~N)} and deriving \code{processed(A,~N~+~1)}.  When the route
+list is empty, the message has reached its destination and thus it is consumed
+(rule in lines
 \ref{line:language:message_first1}-\ref{line:language:message_first2}).
 
 The initial facts of the program are declared in

@@ -187,7 +187,7 @@ while the \texttt{shortest} facts remain untouched. In the SSSP program, each
 node has one \texttt{shortest} fact and this compiled code simply filters out
 the \texttt{relax} facts with the distances that are equal or greater than the
 current best distance. Note that now have a \emph{goto statement}
-(line~\ref{line:implementation:goto}) that is executed when the rule is fired.
+(line~\ref{line:implementation:goto}) that is executed when the rule is derived.
 In this case, since no new \texttt{shortest} fact was derived, we can avoid
 returning to enforce rule priorities and we can continue to try to fire the rule
 as many times as possible.

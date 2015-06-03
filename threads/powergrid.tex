@@ -119,8 +119,8 @@ The program starts with the rule in
 lines~\ref{line:threads:pgt_start1}-\ref{line:threads:pgt_start2} by moving
 generators to their corresponding threads using \code{set-thread}. Once the
 generator is executing on the proper thread, the rule in
-lines~\ref{line:threads:pgt_moved1}-\ref{line:threads:pgt_moved2} is fired with
-the \code{just-moved} coordination fact and the state of the thread is
+lines~\ref{line:threads:pgt_moved1}-\ref{line:threads:pgt_moved2} is derived
+with the \code{just-moved} coordination fact and the state of the thread is
 initialized.  Consumers connect with the thread's generators with the rule in
 lines~\ref{line:threads:pgt_con1}-\ref{line:threads:pgt_con2} by selecting the
 first generator with enough power and then updating the state of the thread.

@@ -2,6 +2,10 @@
 EXPERIMENT_FILES := experiments/absolute/runtime.tex \
 	experiments/mem/mem.tex experiments/mem/c-mem.tex
 
+FIGURES := $(wildcard figures/btree/btree_trace*.pdf) \
+	$(wildcard figures/message/message_trace*.pdf) \
+	$(wildcard figures/visit/trace*.pdf)
+
 all: thesis.pdf
 
 thesis.pdf: thesis.tex packages.tex	thesis-cover.tex ack.tex \
@@ -42,7 +46,8 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex ack.tex \
 		lld/aggregates.tex lld/soundness.tex \
 		lld/comprehensions_soundness.tex lld/aggregates_soundness.tex \
 		lld.tex hld.tex sequent_calculus.tex \
-		$(EXPERIMENT_FILES)
+		$(EXPERIMENT_FILES) \
+		$(FIGURES)
 	latexmk -pdf thesis.tex
 
 language.tex: figures/btree/btree_trace1.pdf figures/btree/btree_trace2.pdf \

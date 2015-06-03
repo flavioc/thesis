@@ -72,18 +72,18 @@ derivation rule $R$ can be written as $LHS \lolli RHS$ with the meaning
 described in Section~\ref{section:language:message}.  Rules without an LHS are
 allowed in LM and they are called \emph{initial facts}
 (lines~\ref{line:language:dict_axioms1}-\ref{line:language:dict_axioms2} in
-Fig.~\ref{code:btree_replace}). Rules without an RHS are also allowed.
+Fig.~\ref{code:language:btree_replace}). Rules without an RHS are also allowed.
 
 The LHS of a rule, $LHS$, may contain linear ($L$) and persistent ($P$)
-\emph{atomic propositions} and constraints ($C$). Atomic propositions are template
-facts that instantiate variables (from facts in the database) such as
+\emph{atomic propositions} and constraints ($C$). Atomic propositions are
+template facts that instantiate variables (from facts in the database) such as
 \code{visit(A)} in line~\ref{line:language:visit_second} in
-Fig.~\ref{code:visit}. Variables can be used again in the LHS for matching and
-also in the RHS when instantiating facts.  Constraints are boolean expressions
-that must be true in order for the rule to be fired. Constraints use variables
-from fact expressions and are built using a small functional language that
-includes mathematical operations, boolean operations, external functions and
-literal values.
+Fig.~\ref{code:language:visit}. Variables can be used again in the LHS for
+matching and also in the RHS when instantiating facts.  Constraints are boolean
+expressions that must be true in order for the rule to be derived. Constraints
+use variables from fact expressions and are built using a small functional
+language that includes mathematical operations, boolean operations, external
+functions and literal values.
 
 The RHS of a rule, $LHS$, contains linear ($L$) and persistent ($P$)
 \emph{atomic propositions} which are uninstantiated facts. The RHS can also have
@@ -95,7 +95,7 @@ instantiated in the rule's LHS.
 
 In order to show how programs are represented using the abstract syntax
 presented in Table~\ref{tbl:ast}, we present the 2 rules in the graph visit
-program shown in Fig.~\ref{code:visit}:
+program shown in Fig.~\ref{code:language:visit}:
 
 \nopagebreak
 
@@ -188,9 +188,10 @@ $\comprehension{\widehat{x}}{SB}{SH}$, $\widehat{x}$ is a list of variables,
 $SB$ is the LHS of the comprehension and $SH$ is the RHS. $SB$ is used to
 generate all possible combinations for $SH$, according to the facts in the
 database.  We have already seen an example of comprehensions in the visit
-program (Fig.~\ref{code:visit} line~\ref{line:language:visit_comprehension}).
-Here, we match \code{!edge(A, B)} using all the combinations available in the
-database and for each combination we derive \code{visit(B)}.
+program (Fig.~\ref{code:language:visit}
+line~\ref{line:language:visit_comprehension}).  Here, we match \code{!edge(A,
+B)} using all the combinations available in the database and for each
+combination we derive \code{visit(B)}.
 
 \subsection{Aggregates}
 

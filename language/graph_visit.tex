@@ -20,23 +20,23 @@ visit(@1).*label[line:language:visit_axiom]
 \end{Verbatim}
   \caption{Visit program. Nodes reachable from node \code{@1} will be marked
      as \code{visited}.}
-  \label{code:visit}
+  \label{code:language:visit}
 \end{figure}
 
-Our final example shown in Fig.~\ref{code:visit} presents another complete LM
-program that, for a given graph of nodes, performs a visit to all nodes
-reachable from node \code{@1}.  The first rule of the program
+Our final example shown in Fig.~\ref{code:language:visit} presents another
+complete LM program that, for a given graph of nodes, performs a visit to all
+nodes reachable from node \code{@1}.  The first rule of the program
 (lines~\ref{line:language:visit_first1}-\ref{line:language:visit_first2}) visits
 node \code{A} for the first time: fact \code{visited(A)} is derived and a
 \emph{comprehension} construct is derived in order to go through all the edge
-facts and then derive \code{visit(B)} for each neighbor \code{B}.  The
-second rule (line~\ref{line:language:visit_second}) is fired when the node is
-already visited more than once: we keep the \code{visited} fact and delete
+facts and then derive \code{visit(B)} for each neighbor \code{B}.  The second
+rule (line~\ref{line:language:visit_second}) is derived when the node is already
+visited more than once: we keep the \code{visited} fact and delete
 \code{visit/1}. Node \code{@1} starts with the \code{visit(@1)} fact (line
 \ref{line:language:visit_axiom}).
 
 Fig.~\ref{fig:exec_trace} shows a possible execution trace for the visit
-program.  After applying the first rule at node \code{@1} we get the database
+program. After applying the first rule at node \code{@1} we get the database
 in Fig~\ref{fig:exec_trace}~(b).  Note that node \code{@1} is now visited and
 nodes \code{@2} and \code{@4} now have the fact \code{visit/1}. At this
 point we could either apply rule 1 at node \code{@2} or at node \code{@4}.

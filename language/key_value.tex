@@ -38,17 +38,17 @@ value(@6, 6, "g").
 replace(@0, 6, "x").*label{line:language:dict_axioms2}
 \end{Verbatim}
 \caption{LM program for replacing a key's value in a BST dictionary.}
-\label{code:btree_replace}
+\label{code:language:btree_replace}
 \end{figure}
 
-Our second example, shown in Fig.~\ref{code:btree_replace}, implements the key
-update operation for a binary tree search~(BST) represented as a key/value
-dictionary. Each LM node represents a binary tree node. We first declare all the
-predicates in
+Our second example, shown in Fig.~\ref{code:language:btree_replace}, implements
+the key update operation for a binary tree search~(BST) represented as a
+key/value dictionary. Each LM node represents a binary tree node. We first
+declare all the predicates in
 lines~\ref{line:language:dict_header1}-\ref{line:language:dict_header2}.  Linear
 predicate \code{value} assigns a key/value pair to a node that can be updated
-later. The \code{replace} linear predicate represents an update operation
-where the key in the second argument will be updated to the value in the third
+later. The \code{replace} linear predicate represents an update operation where
+the key in the second argument will be updated to the value in the third
 argument.
 
 The algorithm uses three rules for the three possible cases of updating a key's
@@ -68,12 +68,12 @@ describe the initial binary tree configuration, including keys and values.  The
 axiom \code{replace(@0, 6, "x")} instantiated at the root node \code{@3}
 manifests the intent to change the value of key 6 to 7.
 
-Fig.~\ref{fig:btree_trace} represents the trace of the algorithm. The program
+Figure~\ref{fig:language:btree_trace} represents the trace of the algorithm. The program
 database is partitioned by the seven nodes using the first argument of each
-fact. In Fig.~\ref{fig:btree_trace}~(a), we present the database filled with the
+fact. In Fig.~\ref{fig:language:btree_trace}~(a), we present the database filled with the
 program's initial facts. Next, we follow the right branch using rule 3 since $6
-> 3$ (Fig.~\ref{fig:btree_trace}~(b)).  We use the same rule again in
-Fig.~\ref{fig:btree_trace}~(c) where we finally reach the key 6. Here, we apply
+> 3$ (Fig.~\ref{fig:language:btree_trace}~(b)).  We use the same rule again in
+Fig.~\ref{fig:language:btree_trace}~(c) where we finally reach the key 6. Here, we apply
 rule 1 and \code{value(@6, 6, "g")} is updated to \code{value(@6, 6, "x")}.
 
 \begin{figure}[h]
@@ -82,33 +82,36 @@ rule 1 and \code{value(@6, 6, "g")} is updated to \code{value(@6, 6, "x")}.
                 \includegraphics[width=\textwidth]{figures/btree/btree_trace1}
                 \caption{Initial database. Replace axiom instantiated at the
                    \code{@3} root node.}
-                \label{fig:btree_trace1}
+                \label{fig:language:btree_trace1}
         \end{subfigure}%
         ~
         \begin{subfigure}[b]{0.5\textwidth}
                 \includegraphics[width=\textwidth]{figures/btree/btree_trace2}
-                \caption{After applying rule 3 at node \code{@3}. Replace fact
-                   sent to node \code{@5}.}
-                \label{fig:btree_trace2}
+
+                \caption{After applying rule 3 at node \code{@3}. The
+                \code{replace} fact is \emph{sent} (or derived at) to node
+                \code{@5}.}
+
+                \label{fig:language:btree_trace2}
         \end{subfigure}\\
         \begin{subfigure}[b]{0.5\textwidth}
                 \includegraphics[width=\textwidth]{figures/btree/btree_trace3}
                 \caption{After applying rule 3 at node \code{@5}. Replace fact
                    reaches node \code{@6}.}
-                \label{fig:btree_trace3}
+                \label{fig:language:btree_trace3}
         \end{subfigure}%
         ~
         \begin{subfigure}[b]{0.5\textwidth}
                   \includegraphics[width=\textwidth]{figures/btree/btree_trace4}
                   \caption{After applying rule 1 at node \code{@6}. Value of key 6 has changed to 7.}
-                  \label{fig:btree_trace4}
+                  \label{fig:language:btree_trace4}
           \end{subfigure}
         \caption{An execution trace for the binary tree dictionary
            algorithm. The first argument of each fact was dropped and the
-           address of the node was placed beside it.}\label{fig:btree_trace}
+           address of the node was placed beside it.}\label{fig:language:btree_trace}
 \end{figure}
 
 The present example offers many opportunies for concurrency. If we have multiple
-\code{replace/3} facts on different nodes, we can perform multiple value updates
+\code{replace} facts on different nodes, we can perform multiple value updates
 at the same time without introducing any kind of database inconsistency.
 
