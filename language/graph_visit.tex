@@ -1,0 +1,168 @@
+
+\begin{figure}[h!]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\[\]]
+type route edge(node, node).
+type linear visit(node).
+type linear unvisited(node).
+type linear visited(node).
+
+// The program rules*label[line:language:visit_first1]
+visit(A), unvisited(A) -o
+   visited(A), {B | !edge(A, B) | visit(B)}.*label[line:language:visit_first2]*label[line:language:visit_comprehension]
+
+visit(A), visited(A) -o visited(A).*label[line:language:visit_second]
+
+// Initial facts: the input data
+!edge(@1, @2). !edge(@2, @3). !edge(@1, @4). !edge(@2, @4).
+unvisited(@1). unvisited(@2). unvisited(@3). unvisited(@4).
+
+visit(@1).*label[line:language:visit_axiom]
+\end{Verbatim}
+  \caption{Visit program. Nodes reachable from node \code{@1} will be marked
+     as \code{visited}.}
+  \label{code:visit}
+\end{figure}
+
+Our final example shown in Fig.~\ref{code:visit} presents another complete LM
+program that, for a given graph of nodes, performs a visit to all nodes
+reachable from node \code{@1}.  The first rule of the program
+(lines~\ref{line:language:visit_first1}-\ref{line:language:visit_first2}) visits
+node \code{A} for the first time: fact \code{visited(A)} is derived and a
+\emph{comprehension} construct is derived in order to go through all the edge
+facts and then derive \code{visit(B)} for each neighbor \code{B}.  The
+second rule (line~\ref{line:language:visit_second}) is fired when the node is
+already visited more than once: we keep the \code{visited} fact and delete
+\code{visit/1}. Node \code{@1} starts with the \code{visit(@1)} fact (line
+\ref{line:language:visit_axiom}).
+
+Fig.~\ref{fig:exec_trace} shows a possible execution trace for the visit
+program.  After applying the first rule at node \code{@1} we get the database
+in Fig~\ref{fig:exec_trace}~(b).  Note that node \code{@1} is now visited and
+nodes \code{@2} and \code{@4} now have the fact \code{visit/1}. At this
+point we could either apply rule 1 at node \code{@2} or at node \code{@4}.
+For this specific trace, we apply the rule at node \code{@2}, resulting in
+Fig.~\ref{fig:exec_trace}~(c). Node \code{@4} now has 2 \code{visit/1}
+facts, thus we can apply rule 1 followed by rule 2, therefore consuming both
+\code{visit/1} facts and deriving \code{visited/1}. In addition, we can also
+apply rule 1 at node \code{@3} to reach the state of
+Fig.~\ref{fig:exec_trace}~(d).
+
+\begin{figure}[h]
+        \centering
+        \begin{subfigure}[b]{0.45\textwidth}
+                \includegraphics[width=\textwidth]{figures/visit/trace1}
+                \caption{Initial database.}
+                \label{fig:exec_trace1}
+        \end{subfigure}%
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.45\textwidth}
+                \includegraphics[width=\textwidth]{figures/visit/trace2}
+                \caption{After applying rule 1 at node \code{@1}.}
+                \label{fig:exec_trace2}
+        \end{subfigure}\\
+        \begin{subfigure}[b]{0.45\textwidth}
+                \includegraphics[width=\textwidth]{figures/visit/trace3}
+                \caption{After applying rule 1 at node \code{@2}.}
+                \label{fig:exec_trace3}
+        \end{subfigure}%
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+         %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.45\textwidth}
+                  \includegraphics[width=\textwidth]{figures/visit/trace4}
+                  \caption{After applying rule 1 and 2 (nodes \code{@3},
+                        \code{@4}).}
+                  \label{fig:exec_trace4}
+          \end{subfigure}
+        \caption{A possible execution trace for the visit program.}\label{fig:exec_trace}
+\end{figure}
+
+\subsubsection{Correctness of graph visit}
+
+It is possible to prove that if a graph is connected, then all the nodes will be
+become \code{visited}, regardless of the order in which we apply the rules.
+First, we define what is a visit graph:
+
+\begin{definition}[Visit Graph]
+A visit graph is an ordered pair $G = (N, E)$ comprising a set $N$ of nodes together
+with a set $E$ of edges. Set $E$ contains pairs $(A, B)$ that correspond to
+facts \code{\bang edge(A, B)}. For every pair $(A, B) \in E$ there is also a
+pair $(B, A) \in E$, representing an undirected edge.
+\end{definition}
+
+To prove the correctness property of the program, we first define the main
+\emph{invariant} of the program:
+
+\begin{invariant}[Node state]
+A node is either \code{visited} or \code{unvisited}
+\end{invariant}
+\begin{proof}
+Using the initial facts we know all nodes start as \code{unvisited}.
+
+Rule 1 changes a node from \code{unvisited} to \code{visited}, while rule 2
+keeps the node \code{visited}, proving the invariant.
+\end{proof}
+
+With this invariant, it is now possible to classify nodes of the graph $G$
+according to their state:
+
+\begin{definition}[Node sets] \code{visited} nodes are contained in set $V$,
+while \code{unvisited} nodes are in set $U$. From the node state invariant, we
+know that $V \cup U = N$ and $V \cap U = \emptyset$.
+\end{definition}
+
+We can now prove an important lemma about sets $V$ and $U$:
+
+\begin{invariant}[Visited set]
+Visited set $V$ always increases or stays the same size. The inverse is true for
+set $U$.
+\end{invariant}
+\begin{proof}
+Initially, $V = \emptyset$ and $U = N$.
+
+By rule 1, $V$ increases by 1 while $U$ decreases by 1. With rule 2, set
+membership remains unchanged.
+\end{proof}
+
+In turn, since set membership changes from $U$ to $V$, we now prove the
+following:
+
+\begin{lemma}[Edge visits]
+The program generates at most one \code{visit} per directed edge.
+\end{lemma}
+\begin{proof}
+From the visited set invariant, we know that once nodes become members of set $V$,
+they no longer return to set $U$, therefore rule 1 applies once per
+node. This rule generates a \code{visit} fact per edge.
+\end{proof}
+
+In order to prove that all the nodes in the graph are visited, we need to make
+sure that the graph is connected.
+
+\begin{definition}[Connected graph]
+A connected graph is a graph where every pair of nodes has a path between them.
+\end{definition}
+
+Finally, we prove that all nodes will become \code{visited}.
+
+\begin{theorem}[Graph visit correctness]
+If graph $G$ is connected, set $V$ will eventually include all nodes in $N$,
+while $U = \emptyset$.
+\end{theorem}
+\begin{proof}
+Proof by induction.
+
+\begin{itemize}
+   \item Base case: axiom \code{visit(@1)} adds node \code{@1} to $V$. By
+   the Edge visits lemma, a \code{visit} fact is generate for all edges of
+   \code{@1}.
+   \item Inductive case: assume a set $V'$ and a set $U'$ that contains the
+   \code{visited} and \code{unvisited} nodes, respectively. Since the graph
+   is connected, there must be a node $a \in V'$ that is connected to a node $b
+   \in U'$. Using the Edge visits lemma, a \code{visit(b)} fact is generated,
+   swapping $b$ from $U'$ to $V'$.
+\end{itemize}
+
+Eventually, set $V$ will include all nodes in $N$.
+\end{proof}
+

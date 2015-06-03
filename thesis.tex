@@ -32,7 +32,6 @@
 \newtheorem{corollary}{Corollary}
 \newtheorem{definition}{Definition}
 \newtheorem{lemma}{Lemma}
-%\newtheorem{theorem}{Theorem}
 \declaretheorem{theorem}
 \newtheorem{invariant}{Invariant}
 \AtBeginEnvironment{theorem}{\parindent0pt}
@@ -43,19 +42,19 @@
 
 % Provides a draft mark at the top of the document. 
 \draftstamp{\today}{}
+\thispagestyle{empty}
 
-\begin{document} 
+\begin{document}
+
 \include{thesis-cover}
-%\include{cmu-cover}
-\pagestyle{plain} % for toc, was empty
+\thispagestyle{empty}
+\clearpage
 
-%% Obviously, it's probably a good idea to break the various sections of your thesis
-%% into different files and input them into this file...
-
+\frontmatter
 \input{abstract}
 
 \begin{acknowledgments}
-My advisor is cool.
+\input{ack}
 \end{acknowledgments}
 
 \tableofcontents
@@ -86,6 +85,7 @@ My advisor is cool.
 %
 % Other than that, just make it look good...
 
+\mainmatter
 \chapter{Introduction}
 \input{introduction}
 

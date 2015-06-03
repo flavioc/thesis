@@ -4,7 +4,7 @@ EXPERIMENT_FILES := experiments/absolute/runtime.tex \
 
 all: thesis.pdf
 
-thesis.pdf: thesis.tex packages.tex	thesis-cover.tex \
+thesis.pdf: thesis.tex packages.tex	thesis-cover.tex ack.tex \
 		introduction.tex coordination.tex language/key_value.tex \
 		language/applications.tex language/related_work.tex \
 		implementation.tex logic/related_work.tex \
