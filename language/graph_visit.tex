@@ -14,8 +14,8 @@ visit(A), visited(A) -o visited(A).*label[line:language:visit_second]
 
 // Initial facts: the input data
 !edge(@1, @2). !edge(@2, @3). !edge(@1, @4). !edge(@2, @4).
+!edge(@2, @1). !edge(@3, @2). !edge(@4, @1). !edge(@4, @2).
 unvisited(@1). unvisited(@2). unvisited(@3). unvisited(@4).
-
 visit(@1).*label[line:language:visit_axiom]
 \end{Verbatim}
   \caption{Visit program. Nodes reachable from node \code{@1} will be marked
@@ -32,20 +32,19 @@ node \code{A} for the first time: fact \code{visited(A)} is derived and a
 facts and then derive \code{visit(B)} for each neighbor \code{B}.  The second
 rule (line~\ref{line:language:visit_second}) is derived when the node is already
 visited more than once: we keep the \code{visited} fact and delete
-\code{visit/1}. Node \code{@1} starts with the \code{visit(@1)} fact (line
+\code{visit}. Node \code{@1} starts with the \code{visit(@1)} fact (line
 \ref{line:language:visit_axiom}).
 
 Fig.~\ref{fig:exec_trace} shows a possible execution trace for the visit
-program. After applying the first rule at node \code{@1} we get the database
-in Fig~\ref{fig:exec_trace}~(b).  Note that node \code{@1} is now visited and
-nodes \code{@2} and \code{@4} now have the fact \code{visit/1}. At this
-point we could either apply rule 1 at node \code{@2} or at node \code{@4}.
-For this specific trace, we apply the rule at node \code{@2}, resulting in
-Fig.~\ref{fig:exec_trace}~(c). Node \code{@4} now has 2 \code{visit/1}
-facts, thus we can apply rule 1 followed by rule 2, therefore consuming both
-\code{visit/1} facts and deriving \code{visited/1}. In addition, we can also
-apply rule 1 at node \code{@3} to reach the state of
-Fig.~\ref{fig:exec_trace}~(d).
+program. After applying the first rule at node \code{@1} we get the database in
+Fig~\ref{fig:exec_trace}~(b).  Note that node \code{@1} is now visited and nodes
+\code{@2} and \code{@4} now have the fact \code{visit}. At this point we could
+either apply rule 1 at node \code{@2} or at node \code{@4}.  For this specific
+trace, we apply the rule at node \code{@2}, resulting in
+Fig.~\ref{fig:exec_trace}~(c). Node \code{@4} now has 2 \code{visit} facts, thus
+we can apply rule 1 followed by rule 2, therefore consuming both \code{visit}
+facts and deriving \code{visited}. In addition, we can also apply rule 1 at node
+\code{@3} to reach the state of Fig.~\ref{fig:exec_trace}~(d).
 
 \begin{figure}[h]
         \centering
@@ -74,16 +73,20 @@ Fig.~\ref{fig:exec_trace}~(d).
                         \code{@4}).}
                   \label{fig:exec_trace4}
           \end{subfigure}
-        \caption{A possible execution trace for the visit program.}\label{fig:exec_trace}
+        \caption{A possible execution trace for the visit
+           program. Note that the \code{edge} facts were omitted for simplicity.}
+        \label{fig:exec_trace}
 \end{figure}
 
 \subsubsection{Correctness of graph visit}
 
-It is possible to prove that if a graph is connected, then all the nodes will be
-become \code{visited}, regardless of the order in which we apply the rules.
-First, we define what is a visit graph:
+The goal of introducing higher-level declarative languages is to facilitate
+reasoning about the properties of a program. In the case of the visit program,
+the most important goal is to prove that, if the graph is connected, then all
+the nodes will become \code{visited}, regardless of the order in which we apply
+the rules. First, we define what is a visit graph:
 
-\begin{definition}[Visit Graph]
+\begin{definition}[Visit graph]
 A visit graph is an ordered pair $G = (N, E)$ comprising a set $N$ of nodes together
 with a set $E$ of edges. Set $E$ contains pairs $(A, B)$ that correspond to
 facts \code{\bang edge(A, B)}. For every pair $(A, B) \in E$ there is also a
@@ -94,17 +97,19 @@ To prove the correctness property of the program, we first define the main
 \emph{invariant} of the program:
 
 \begin{invariant}[Node state]
-A node is either \code{visited} or \code{unvisited}
+A node is either \code{visited} or \code{unvisited} but not both.
 \end{invariant}
 \begin{proof}
-Using the initial facts we know all nodes start as \code{unvisited}.
+From the initial facts we check if all nodes start as \code{unvisited}. This is
+true for the example presented in this section.
 
 Rule 1 changes a node from \code{unvisited} to \code{visited}, while rule 2
 keeps the node \code{visited}, proving the invariant.
 \end{proof}
 
-With this invariant, it is now possible to classify nodes of the graph $G$
-according to their state:
+Invariants are conditions that never change, no matter which rules are derived
+during execution. With this invariant, it is now possible to classify nodes of
+the graph $G$ according to their state:
 
 \begin{definition}[Node sets] \code{visited} nodes are contained in set $V$,
 while \code{unvisited} nodes are in set $U$. From the node state invariant, we
@@ -114,8 +119,10 @@ know that $V \cup U = N$ and $V \cap U = \emptyset$.
 We can now prove an important lemma about sets $V$ and $U$:
 
 \begin{invariant}[Visited set]
-Visited set $V$ always increases or stays the same size. The inverse is true for
-set $U$.
+
+After each rule derivation, visited set $V$ always increases or stays the same
+size. The inverse is true for set $U$.
+
 \end{invariant}
 \begin{proof}
 Initially, $V = \emptyset$ and $U = N$.
@@ -128,12 +135,14 @@ In turn, since set membership changes from $U$ to $V$, we now prove the
 following:
 
 \begin{lemma}[Edge visits]
-The program generates at most one \code{visit} per directed edge.
+The program generates at most one \code{visit} per directed edge and for a node
+$a \in N$ that receives a \code{visit} fact, then for all $b \in N$ where $(a,
+b) \in E$, exactly one \code{visit} fact is generated at $b$.
 \end{lemma}
 \begin{proof}
 From the visited set invariant, we know that once nodes become members of set $V$,
 they no longer return to set $U$, therefore rule 1 applies once per
-node. This rule generates a \code{visit} fact per edge.
+node. This rule generates a \code{visit} fact per neighbor node.
 \end{proof}
 
 In order to prove that all the nodes in the graph are visited, we need to make

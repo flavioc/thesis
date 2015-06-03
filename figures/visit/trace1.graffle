@@ -298,8 +298,8 @@
 			<integer>10</integer>
 			<key>Points</key>
 			<array>
-				<string>{269.03965901346936, 74.816380295598975}</string>
-				<string>{109.23385947738494, 164.08824586319406}</string>
+				<string>{269.04039908450318, 74.816764744231648}</string>
+				<string>{109.2364630494926, 164.09042513560132}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -311,7 +311,7 @@
 				<key>stroke</key>
 				<dict>
 					<key>HeadArrow</key>
-					<string>FilledArrow</string>
+					<string>0</string>
 					<key>Legacy</key>
 					<true/>
 					<key>LineType</key>
@@ -340,8 +340,8 @@
 			<integer>9</integer>
 			<key>Points</key>
 			<array>
-				<string>{313.81132834992195, 84.796243628578765}</string>
-				<string>{313.45113147993493, 151.11351045300933}</string>
+				<string>{313.81098147860934, 84.796243045157965}</string>
+				<string>{313.45012918600776, 151.11350785739273}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -353,7 +353,7 @@
 				<key>stroke</key>
 				<dict>
 					<key>HeadArrow</key>
-					<string>FilledArrow</string>
+					<string>0</string>
 					<key>Legacy</key>
 					<true/>
 					<key>LineType</key>
@@ -382,8 +382,8 @@
 			<integer>8</integer>
 			<key>Points</key>
 			<array>
-				<string>{71.427609076130693, 90.852203372918581}</string>
-				<string>{70.297670068582519, 151.11620618378041}</string>
+				<string>{71.427893597755244, 90.852206515203747}</string>
+				<string>{70.29837126805441, 151.11621246885008}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -395,7 +395,7 @@
 				<key>stroke</key>
 				<dict>
 					<key>HeadArrow</key>
-					<string>FilledArrow</string>
+					<string>0</string>
 					<key>Legacy</key>
 					<true/>
 					<key>LineType</key>
@@ -425,7 +425,7 @@
 			<key>Points</key>
 			<array>
 				<string>{125.89846609960981, 49.699218999999999}</string>
-				<string>{249.04293827050765, 49.699218999999999}</string>
+				<string>{249.04293827050768, 49.699218999999999}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -437,7 +437,7 @@
 				<key>stroke</key>
 				<dict>
 					<key>HeadArrow</key>
-					<string>FilledArrow</string>
+					<string>0</string>
 					<key>Legacy</key>
 					<true/>
 					<key>LineType</key>
@@ -463,8 +463,6 @@
 			<dict>
 				<key>Font</key>
 				<string>Helvetica</string>
-				<key>Size</key>
-				<real>15</real>
 			</dict>
 			<key>ID</key>
 			<integer>6</integer>
@@ -485,26 +483,28 @@
 			</dict>
 			<key>Text</key>
 			<dict>
+				<key>Pad</key>
+				<integer>0</integer>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1343\cocoasubrtf160
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1347\cocoasubrtf570
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;}
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
-\f0\fs30 \cf0 unvisited()}</string>
+\f0\fs32 \cf0 unvisited()}</string>
+				<key>VerticalPad</key>
+				<integer>0</integer>
 			</dict>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{263.62006000000002, 152.61328}, {99.28125, 50.832031000000001}}</string>
+			<string>{{263.62006000000002, 152.61328000000003}, {99.28125, 67.194335999999907}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
 			<dict>
 				<key>Font</key>
 				<string>Helvetica</string>
-				<key>Size</key>
-				<real>15</real>
 			</dict>
 			<key>ID</key>
 			<integer>5</integer>
@@ -525,13 +525,17 @@
 			</dict>
 			<key>Text</key>
 			<dict>
+				<key>Pad</key>
+				<integer>0</integer>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1343\cocoasubrtf160
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1347\cocoasubrtf570
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;}
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
-\f0\fs30 \cf0 unvisited()}</string>
+\f0\fs32 \cf0 unvisited()}</string>
+				<key>VerticalPad</key>
+				<integer>0</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -543,8 +547,6 @@
 			<dict>
 				<key>Font</key>
 				<string>Helvetica</string>
-				<key>Size</key>
-				<real>15</real>
 			</dict>
 			<key>ID</key>
 			<integer>4</integer>
@@ -565,15 +567,17 @@
 			</dict>
 			<key>Text</key>
 			<dict>
+				<key>Pad</key>
+				<integer>0</integer>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1343\cocoasubrtf160
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1347\cocoasubrtf570
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;}
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
-\f0\fs30 \cf0 !edge(@3)\
-!edge(@4)\
-unvisited()}</string>
+\f0\fs32 \cf0 unvisited()}</string>
+				<key>VerticalPad</key>
+				<integer>0</integer>
 			</dict>
 		</dict>
 		<dict>
@@ -585,8 +589,6 @@ unvisited()}</string>
 			<dict>
 				<key>Font</key>
 				<string>Helvetica-Bold</string>
-				<key>Size</key>
-				<real>15</real>
 			</dict>
 			<key>ID</key>
 			<integer>3</integer>
@@ -607,18 +609,20 @@ unvisited()}</string>
 			</dict>
 			<key>Text</key>
 			<dict>
+				<key>Pad</key>
+				<integer>0</integer>
 				<key>Text</key>
 				<string>{\rtf1\ansi\ansicpg1252\cocoartf1347\cocoasubrtf570
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
-\f0\fs30 \cf0 !edge(@2)\
-!edge(@4)\
-unvisited()\
+\f0\fs32 \cf0 unvisited()\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \b \cf2 visit()}</string>
+				<key>VerticalPad</key>
+				<integer>0</integer>
 			</dict>
 		</dict>
 	</array>
@@ -671,7 +675,7 @@ unvisited()\
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2015-06-03 21:28:24 +0000</string>
+	<string>2015-06-03 21:42:04 +0000</string>
 	<key>Modifier</key>
 	<string>Flávio Cruz</string>
 	<key>NotesVisible</key>
@@ -747,7 +751,7 @@ unvisited()\
 		<key>Expanded_Canvases</key>
 		<array/>
 		<key>Frame</key>
-		<string>{{337, 328}, {989, 495}}</string>
+		<string>{{337, 370}, {989, 495}}</string>
 		<key>ShowInfo</key>
 		<true/>
 		<key>ShowRuler</key>

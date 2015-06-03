@@ -95,8 +95,8 @@ second-phase(T, [A, B | Next]), running(T, A)
 
    \item[Tree building]: Tree building starts after the rule in lines
       \ref{line:threads:splash_building1}-\ref{line:threads:splash_building2} is
-      derived. Since the thread always picks the higher priority node, we start by
-      adding that node to the list that represents the tree. In lines
+      derived. Since the thread always picks the higher priority node, we start
+      by adding that node to the list that represents the tree. In lines
       \ref{line:threads:splash_agg1}-\ref{line:threads:splash_agg2}, we use an
       aggregate to gather all the neighbor nodes that have a positive priority
       (due to a new belief update) and are in the same thread. Nodes are
