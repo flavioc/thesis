@@ -18,7 +18,7 @@ try: gl = expsets["graphlab"]
 except: gl = None
 
 print "\\begin{tabular}{c | c || c | c | c} \\hline"
-print "\t\\textbf{Program} & \\textbf{Size} & \\textbf{C Time} (s) & \\textbf{LM} & \\textbf{Other} \\\\ \\hline \\hline"
+print "\t\\textbf{Program} & \\textbf{Size} & \\textbf{C++ Time} (s) & \\textbf{LM} & \\textbf{Other} \\\\ \\hline \\hline"
 
 for name in threaded.experiment_names():
    datasets = threaded.experiment_datasets_for(name)
