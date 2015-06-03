@@ -45,63 +45,62 @@ Our second example, shown in Fig.~\ref{code:btree_replace}, implements the key
 update operation for a binary tree search~(BST) represented as a key/value
 dictionary. Each LM node represents a binary tree node. We first declare all the
 predicates in
-lines~\ref{line:language:dict_header1}-\ref{line:language:dict_header2}.
-Linear
-predicate \texttt{value/3} assigns a key/value pair to a node that can be
-updated later.  The \texttt{replace/3} linear predicate represents an update
-operation where the key in the second argument will be updated to the value in
-the third argument.
+lines~\ref{line:language:dict_header1}-\ref{line:language:dict_header2}.  Linear
+predicate \code{value} assigns a key/value pair to a node that can be updated
+later. The \code{replace} linear predicate represents an update operation
+where the key in the second argument will be updated to the value in the third
+argument.
 
 The algorithm uses three rules for the three possible cases of updating a key's
 value: the first rule
 (lines~\ref{line:language:dict_first1}-\ref{line:language:dict_first2}) performs
-the update by removing \texttt{replace(A, K, New)} and \texttt{value(A, K, Old)}
-and deriving \texttt{value(A, K, New)}; the second rule
+the update by removing \code{replace(A, K, New)} and \code{value(A, K, Old)}
+and deriving \code{value(A, K, New)}; the second rule
 (lines~\ref{line:language:dict_second1}-\ref{line:language:dict_second2})
 recursively picks the left branch for the update operation by deleting
-\texttt{replace(A, RKey, RValue)} and re-deriving it at node \texttt{B}; and the
+\code{replace(A, RKey, RValue)} and re-deriving it at node \code{B}; and the
 third rule
 (lines~\ref{line:language:dict_third1}-\ref{line:language:dict_third2}) picks
 the right branch.
 The initial facts of this program are presented in
 lines~\ref{line:language:dict_axioms1}-\ref{line:language:dict_axioms2} and they
 describe the initial binary tree configuration, including keys and values.  The
-axiom \texttt{update(@0, 6, "x")} instantiated at the root node \texttt{@3}
+axiom \code{replace(@0, 6, "x")} instantiated at the root node \code{@3}
 manifests the intent to change the value of key 6 to 7.
 
 Fig.~\ref{fig:btree_trace} represents the trace of the algorithm. The program
 database is partitioned by the seven nodes using the first argument of each
 fact. In Fig.~\ref{fig:btree_trace}~(a), we present the database filled with the
-program's initial facts. Next, we follow the right branch using rule 3 since $6 > 3$
-(Fig.~\ref{fig:btree_trace}~(b)).  We use the same rule again in
+program's initial facts. Next, we follow the right branch using rule 3 since $6
+> 3$ (Fig.~\ref{fig:btree_trace}~(b)).  We use the same rule again in
 Fig.~\ref{fig:btree_trace}~(c) where we finally reach the key 6. Here, we apply
-rule 1 and \texttt{value(@6, 6, "g")} is updated to \texttt{value(@6, 6, "x")}.
+rule 1 and \code{value(@6, 6, "g")} is updated to \code{value(@6, 6, "x")}.
 
 \begin{figure}[h]
         \centering
         \begin{subfigure}[b]{0.5\textwidth}
                 \includegraphics[width=\textwidth]{figures/btree/btree_trace1}
                 \caption{Initial database. Replace axiom instantiated at the
-                   \texttt{@3} root node.}
+                   \code{@3} root node.}
                 \label{fig:btree_trace1}
         \end{subfigure}%
         ~
         \begin{subfigure}[b]{0.5\textwidth}
                 \includegraphics[width=\textwidth]{figures/btree/btree_trace2}
-                \caption{After applying rule 3 at node \texttt{@3}. Replace fact
-                   sent to node \texttt{@5}.}
+                \caption{After applying rule 3 at node \code{@3}. Replace fact
+                   sent to node \code{@5}.}
                 \label{fig:btree_trace2}
         \end{subfigure}\\
         \begin{subfigure}[b]{0.5\textwidth}
                 \includegraphics[width=\textwidth]{figures/btree/btree_trace3}
-                \caption{After applying rule 3 at node \texttt{@5}. Replace fact
-                   reaches node \texttt{@6}.}
+                \caption{After applying rule 3 at node \code{@5}. Replace fact
+                   reaches node \code{@6}.}
                 \label{fig:btree_trace3}
         \end{subfigure}%
         ~
         \begin{subfigure}[b]{0.5\textwidth}
                   \includegraphics[width=\textwidth]{figures/btree/btree_trace4}
-                  \caption{After applying rule 1 at node \texttt{@6}. Value of key 6 has changed to 7.}
+                  \caption{After applying rule 1 at node \code{@6}. Value of key 6 has changed to 7.}
                   \label{fig:btree_trace4}
           \end{subfigure}
         \caption{An execution trace for the binary tree dictionary
@@ -110,6 +109,6 @@ rule 1 and \texttt{value(@6, 6, "g")} is updated to \texttt{value(@6, 6, "x")}.
 \end{figure}
 
 The present example offers many opportunies for concurrency. If we have multiple
-\texttt{replace/3} facts on different nodes, we can perform multiple value
-updates at the same time without introducing any kind of database inconsistency.
+\code{replace/3} facts on different nodes, we can perform multiple value updates
+at the same time without introducing any kind of database inconsistency.
 
