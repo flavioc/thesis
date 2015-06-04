@@ -60,7 +60,7 @@
 				<key>Color</key>
 				<dict>
 					<key>b</key>
-					<string>0</string>
+					<string>1</string>
 					<key>g</key>
 					<string>0</string>
 					<key>r</key>
@@ -96,12 +96,12 @@
 				<key>Align</key>
 				<integer>0</integer>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1343\cocoasubrtf160
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1347\cocoasubrtf570
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720
 
-\f0\fs44 \cf0 @3}</string>
+\f0\fs44 \cf2 @3}</string>
 			</dict>
 			<key>Wrap</key>
 			<string>NO</string>
@@ -120,7 +120,7 @@
 				<key>Color</key>
 				<dict>
 					<key>b</key>
-					<string>0</string>
+					<string>1</string>
 					<key>g</key>
 					<string>0</string>
 					<key>r</key>
@@ -156,12 +156,12 @@
 				<key>Align</key>
 				<integer>0</integer>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1343\cocoasubrtf160
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1347\cocoasubrtf570
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720
 
-\f0\fs44 \cf0 @4}</string>
+\f0\fs44 \cf2 @4}</string>
 			</dict>
 			<key>Wrap</key>
 			<string>NO</string>
@@ -180,7 +180,7 @@
 				<key>Color</key>
 				<dict>
 					<key>b</key>
-					<string>0</string>
+					<string>1</string>
 					<key>g</key>
 					<string>0</string>
 					<key>r</key>
@@ -216,12 +216,12 @@
 				<key>Align</key>
 				<integer>0</integer>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1343\cocoasubrtf160
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1347\cocoasubrtf570
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720
 
-\f0\fs44 \cf0 @2}</string>
+\f0\fs44 \cf2 @2}</string>
 			</dict>
 			<key>Wrap</key>
 			<string>NO</string>
@@ -240,7 +240,7 @@
 				<key>Color</key>
 				<dict>
 					<key>b</key>
-					<string>0</string>
+					<string>1</string>
 					<key>g</key>
 					<string>0</string>
 					<key>r</key>
@@ -276,12 +276,12 @@
 				<key>Align</key>
 				<integer>0</integer>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1343\cocoasubrtf160
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1347\cocoasubrtf570
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720
 
-\f0\fs44 \cf0 @1}</string>
+\f0\fs44 \cf2 @1}</string>
 			</dict>
 			<key>Wrap</key>
 			<string>NO</string>
@@ -298,8 +298,8 @@
 			<integer>83</integer>
 			<key>Points</key>
 			<array>
-				<string>{271.00604296608805, 71.308621589241497}</string>
-				<string>{108.91843103776991, 165.65754440283126}</string>
+				<string>{271.87029169854947, 70.805555615377202}</string>
+				<string>{108.05418720262448, 166.16061377183328}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -340,8 +340,8 @@
 			<integer>82</integer>
 			<key>Points</key>
 			<array>
-				<string>{314.97141949339135, 80.796399687822941}</string>
-				<string>{314.90989524081215, 151.51170947879103}</string>
+				<string>{314.97234282436432, 79.79640007969509}</string>
+				<string>{314.90919219326025, 152.51170916552934}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -382,8 +382,8 @@
 			<integer>81</integer>
 			<key>Points</key>
 			<array>
-				<string>{72.458952645382922, 86.852542764877427}</string>
-				<string>{71.247982658422146, 154.17341001021884}</string>
+				<string>{72.449963107151547, 87.352461924479201}</string>
+				<string>{71.230005481803872, 155.17324832923319}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -394,6 +394,15 @@
 				</dict>
 				<key>stroke</key>
 				<dict>
+					<key>Color</key>
+					<dict>
+						<key>b</key>
+						<string>0</string>
+						<key>g</key>
+						<string>0</string>
+						<key>r</key>
+						<string>1</string>
+					</dict>
 					<key>HeadArrow</key>
 					<string>0</string>
 					<key>Legacy</key>
@@ -424,8 +433,8 @@
 			<integer>80</integer>
 			<key>Points</key>
 			<array>
-				<string>{126.89846609960982, 45.699218999999999}</string>
-				<string>{250.04293827050765, 45.699218999999999}</string>
+				<string>{127.39846609960982, 45.699218999999999}</string>
+				<string>{251.0429382705077, 45.699218999999999}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -436,6 +445,15 @@
 				</dict>
 				<key>stroke</key>
 				<dict>
+					<key>Color</key>
+					<dict>
+						<key>b</key>
+						<string>0</string>
+						<key>g</key>
+						<string>0</string>
+						<key>r</key>
+						<string>1</string>
+					</dict>
 					<key>HeadArrow</key>
 					<string>0</string>
 					<key>Legacy</key>
@@ -477,18 +495,13 @@
 					<key>Draws</key>
 					<string>NO</string>
 				</dict>
-				<key>stroke</key>
-				<dict>
-					<key>Width</key>
-					<real>3</real>
-				</dict>
 			</dict>
 			<key>Text</key>
 			<dict>
 				<key>Text</key>
 				<string>{\rtf1\ansi\ansicpg1252\cocoartf1347\cocoasubrtf570
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;\red0\green0\blue255;}
+{\colortbl;\red255\green255\blue255;\red128\green0\blue128;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\fs30 \cf0 unvisited()\
@@ -519,11 +532,6 @@
 				<dict>
 					<key>Draws</key>
 					<string>NO</string>
-				</dict>
-				<key>stroke</key>
-				<dict>
-					<key>Width</key>
-					<real>3</real>
 				</dict>
 			</dict>
 			<key>Text</key>
@@ -560,18 +568,13 @@
 					<key>Draws</key>
 					<string>NO</string>
 				</dict>
-				<key>stroke</key>
-				<dict>
-					<key>Width</key>
-					<real>3</real>
-				</dict>
 			</dict>
 			<key>Text</key>
 			<dict>
 				<key>Text</key>
 				<string>{\rtf1\ansi\ansicpg1252\cocoartf1347\cocoasubrtf570
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;\red0\green0\blue255;}
+{\colortbl;\red255\green255\blue255;\red128\green0\blue128;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\fs30 \cf0 unvisited()\
@@ -605,8 +608,17 @@
 				</dict>
 				<key>stroke</key>
 				<dict>
+					<key>Color</key>
+					<dict>
+						<key>b</key>
+						<string>0</string>
+						<key>g</key>
+						<string>0</string>
+						<key>r</key>
+						<string>1</string>
+					</dict>
 					<key>Width</key>
-					<real>3</real>
+					<real>4</real>
 				</dict>
 			</dict>
 			<key>Text</key>
@@ -614,7 +626,7 @@
 				<key>Text</key>
 				<string>{\rtf1\ansi\ansicpg1252\cocoartf1347\cocoasubrtf570
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;\red0\green0\blue255;}
+{\colortbl;\red255\green255\blue255;\red128\green0\blue128;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \f0\b\fs30 \cf2 visited()}</string>
@@ -670,7 +682,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2015-06-03 21:43:10 +0000</string>
+	<string>2015-06-04 18:40:25 +0000</string>
 	<key>Modifier</key>
 	<string>Flávio Cruz</string>
 	<key>NotesVisible</key>
@@ -746,7 +758,7 @@
 		<key>Expanded_Canvases</key>
 		<array/>
 		<key>Frame</key>
-		<string>{{158, 128}, {932, 614}}</string>
+		<string>{{290, 221}, {932, 614}}</string>
 		<key>ShowInfo</key>
 		<true/>
 		<key>ShowRuler</key>

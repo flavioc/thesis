@@ -26,8 +26,12 @@ generators. Figure~\ref{code:threads:powergrid} shows the LM code for this
 solution. Consumer and generators node types are declared in
 lines~\ref{line:threads:pg_decl1}-\ref{line:threads:pg_decl2} using the
 \code{node} declaration, allowing us to have different predicates for consumers
-and predicates. Initially, all consumers start with a \code{reconnect} axiom
-that is used in
+and predicates. The \code{generator} and \code{consumer} types become a subtype
+of \emph{node}, that is, $consumer <: node$ and $generator <: node$.  These
+subtypes allow us to declare initial facts that only apply to either the
+\code{consumer} or \code{generator} subtype.
+
+All consumers start with a \code{reconnect} axiom that is used in
 lines~\ref{line:threads:pg_connect1}-\ref{line:threads:pg_connect2} in order to
 randomly select a generator from list \code{L}. Afterwards, the generator
 receives a \code{connect} fact which is used in

@@ -4,7 +4,9 @@ EXPERIMENT_FILES := experiments/absolute/runtime.tex \
 
 FIGURES := $(wildcard figures/btree/btree_trace*.pdf) \
 	$(wildcard figures/message/message_trace*.pdf) \
-	$(wildcard figures/visit/trace*.pdf)
+	$(wildcard figures/visit/trace*.pdf) \
+	$(wildcard figures/sssp/coord*.pdf) \
+	$(wildcard figures/sssp/shortest.pdf)
 
 all: thesis.pdf
 

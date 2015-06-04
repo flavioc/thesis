@@ -67,23 +67,32 @@ The RHS of a rule, $RHS$, contains linear ($L$) and persistent ($P$)
 instantiated in the rule's LHS and are explained in detail in
 Section~\ref{section:language:expressions}.
 
-\subsubsection{Graph visit using abstract syntax}\label{visit:ast}
+\subsubsection{Graph visit using the abstract syntax}\label{visit:ast}
 
-In order to show how programs are represented using the abstract syntax
-presented in Table~\ref{tbl:language:ast}, we present the 2 rules in the graph
-visit program shown in Fig.~\ref{code:language:visit}:
+Consider the two rules in the graph visit program shown in
+Fig.~\ref{code:language:visit}:
+
+\nopagebreak
+
+\begin{Verbatim}[fontsize=\codesize]
+visit(A), unvisited(A) -o visited(A), {B | !edge(A, B) -o visit(B)}.
+
+visit(A), visited(A) -o visited(A).
+\end{Verbatim}
+
+To translate the rules to the abstract syntax, we have to de-sugar the code and
+introduce the variable \code{A}, that is not explicitly quantified, as follows:
 
 \nopagebreak
 
 \begin{align}
 \forall_A. \mathtt{visit}(A), \; \mathtt{unvisited}(A) \lolli & \;
-\mathtt{visited}(A), \; \{ B; \; \bang \mathtt{edge}(A, B); \;
-\mathtt{visit}(B)\}\\
+\mathtt{visited}(A), \; \comprehension{B}{\mathtt{edge}(A, B)}{\mathtt{visit}(B)}\\
 \forall_A. \mathtt{visit}(A), \; \mathtt{visited}(A) \lolli & \;
 \mathtt{visited}(A)
 \end{align}
 
-Finally, initial facts are represented using an empty LHS:
+Finally, initial facts are represented as a rule where the LHS is $\one$:
 
 \nopagebreak
 
@@ -92,11 +101,11 @@ Finally, initial facts are represented using an empty LHS:
 \one \lolli & \bang \mathtt{edge}(@2, @3) \\
 \one \lolli & \bang \mathtt{edge}(@1, @4) \\
 \one \lolli & \bang \mathtt{edge}(@2, @4) \\
-\one \lolli & \bang \mathtt{unvisited}(@1)  \\
-\one \lolli & \bang \mathtt{unvisited}(@2) \\
-\one \lolli & \bang \mathtt{unvisited}(@3) \\
-\one \lolli & \bang \mathtt{unvisited}(@4) \\
-\one \lolli & \bang \mathtt{visit}(@1)
+\one \lolli & \mathtt{unvisited}(@1)  \\
+\one \lolli & \mathtt{unvisited}(@2) \\
+\one \lolli & \mathtt{unvisited}(@3) \\
+\one \lolli & \mathtt{unvisited}(@4) \\
+\one \lolli & \mathtt{visit}(@1)
 \end{align}
 
 \subsection{Predicates And Facts}
@@ -105,22 +114,16 @@ Each fact is an association between a \emph{predicate} and a tuple of values. A
 predicate is a pair with a name and a tuple of types (the argument types). LM
 rules are type-checked using the predicate declarations in the header of the
 program. LM has a simple type system that includes the following simples types:
-\emph{node}, \emph{int}, \emph{float}, \emph{string}, \emph{bool}. Recursive
-types such as \emph{list X} and \emph{pair X; Y} are also allowed.
+\emph{node}, \emph{int}, \emph{float}, \emph{string}, \emph{bool}. The following
+structured types are also supported: \emph{list} $X$, for lists of type $X$;
+\emph{struct} $X_1, \ldots, X_n$, for composite values made of $n$ elements; and
+\emph{array} $X$, for arrays of type $X$.
 
 LM allows definition of new type names from simpler types using the declaration
-\code{type simple-type new-type.} in the header of the program. The type
+\code{type simple-type new-type} in the header of the program. The type
 \code{new-type} can then be used as any other type. Note that LM uses
 \emph{structural equivalence} to check if two types are the same, therefore
 \code{simple-type} and \code{new-type} are type equivalent.
-
-Node subtypes can be introduced using the declaration \code{node subnode.},
-allowing the programmer to use nodes with separate predicates.  The
-\emph{subnode} type becomes a subtype of \emph{node}, that is, $subnode <:
-node$. If initial facts are declared using the form \code{f(A)}, where \code{A} is a
-\emph{subnode}, then the axiom is selectively instantiated on nodes with type
-\emph{subnode}. Otherwise, if \code{A} was a \emph{node} then \code{f(A)} would
-be instantiated in every node.
 
 \subsection{RHS Expressions}\label{section:language:expressions}
 
@@ -168,14 +171,19 @@ Sometimes we need to consume a linear fact and then immediately generate several
 facts depending on the contents of the database. To solve this particular need,
 we created the concept of comprehensions, which are sub-rules that are applied
 with all possible combinations of facts from the database. In a comprehension
-$\comprehension{\widehat{x}}{SLHS}{SRHS}$, $\widehat{x}$ is a list of variables,
-$SLHS$ is the comprehension's left-hand side and $SRHS$ is the right-hand side.
-$SLHS$ is used to generate all possible combinations for $SRHS$, according to
-the facts in the database. We have already seen an example of comprehensions in
-the visit program (Fig.~\ref{code:language:visit}
-line~\ref{line:language:visit_comprehension}). Here, we match \code{!edge(A, B)}
-using all the combinations available in the database and for each combination we
-derive \code{visit(B)}.
+$\comprehension{\widehat{x}}{SLHS}{SRHS}$, $\widehat{x}$ is a list of variables
+in the scope of $SLHS$ and $SRHS$, $SLHS$ is the comprehension's left-hand side
+and $SRHS$ is the right-hand side. $SLHS$ is used to generate all possible
+combinations for $SRHS$, according to the facts in the database. We have already
+seen an example of comprehensions in the visit program
+(Fig.~\ref{code:language:visit} line~\ref{line:language:visit_comprehension}):
+
+\begin{Verbatim}[fontsize=\codesize,commandchars=\*\#\&]
+visit(A), unvisited(A) -o visited(A), *textbf#{B | !edge(A, B) -o visit(B)}&.
+\end{Verbatim}
+
+We match \code{!edge(A, B)} using all the combinations available in the database
+and for each combination we derive \code{visit(B)}.
 
 \subsubsection{Aggregates}
 
@@ -190,33 +198,35 @@ combinations of $SLHS$, but, in addition to deriving $SRHS_1$ for each
 combination, we aggregate the values represented by $y$ into a new $y$ variable
 that is used to derive $SRHS_2$.
 
-To better understand aggregates, let's consider a database with the following
-facts and a rule:
+To better understand aggregates, let's consider the following rule from the
+PageRank program presented in Section~\ref{section:language:pagerank}:
 
 \begin{Verbatim}[fontsize=\codesize]
-price(@1, 3).
-price(@1, 4).
-price(@1, 5).
-count-prices(@1).
-count-prices(A) -o [sum => P; . | price(A, P) -o 1 -> total(A, P)].
+update(A),
+!numInbound(A, T)
+   -o [sum => V; B, W, Val, Iter | neighbor-pagerank(A, B, Val, Iter), V =
+         Val/float(T) -o neighbor-pagerank(A, B, Val, Iter) -> sum-ranks(A, V)].
 \end{Verbatim}
 
-By applying the rule, we consume \code{count-prices(@1)} and derive the
-aggregate which consumes all the \code{price(@1, P)} facts.  These are summed
-and \code{total(@1,~12)} is derived. LM provides several aggregate operations,
-including the \code{min} (minimum value), \code{max} (maximum value),
-\code{sum} (add all numbers), \code{count} (count combinations) and
-\code{collect} (collect items into a list).
+The rule aggregates the PageRank values \code{Val} by iterating over
+\code{neighbor-pagerank(A, B, Val, Iter)} (the $SLHS$) and then re-deriving the
+fact present in $SRHS_1$ using \code{neighbor-pagerank(A, B, Val, Iter)}. Once all
+values are inspected, the atomic proposition \code{sum-ranks(A, V)} present in
+$SRHS_2$ is derived once with \code{V} that represents the sum of all the
+neighbor values. LM provides several aggregate operations, including the
+\code{min} (minimum value), \code{max} (maximum value), \code{sum} (add all
+numbers), \code{count} (count combinations) and \code{collect} (collect items
+into a list).
 
 \section{Operational Semantics}
 
 As said before, the first argument of every predicate must be typed as a
 \emph{node}.  For distribution purposes, the LHS of all rules can only use facts
-from the same node in order to avoid concurrency issues. However, the facts in
+from the same node in order to make concurrency possible. However, the facts in
 the rule's RHS may refer to other nodes, as long as those nodes are instantiated
 in the LHS. We drew some inspiration from the Linda system~\cite{linda}
 mentioned early on, where the tuple space contains the data and is used by the
-processors to communicate and do computation.  This differs from imperative
+processors to communicate and perform computation. This differs from imperative
 languages, since in those languages data and computation are two separate
 entities.
 
@@ -231,9 +241,9 @@ many nodes concurrently.
 
 Each rule in LM has a defined priority that is inferred from its position in the
 source file.  Rules at the beginning of the file have higher priority. At the
-node level, we consider all the new facts that have been not consider before to
-create a priority queue of \emph{candidate rules}.  The queue of candidate rules
-is then applied (by priority) and updated as new facts are derived or consumed.
-Section~\ref{sec:implementation:rule_engine} gives details in how our
+node level, we consider all the new facts that have not been considered before
+to create a priority queue of \emph{candidate rules}. The queue of candidate
+rules is then applied (by priority) and updated as new facts are derived or
+consumed.  Section~\ref{sec:implementation:rule_engine} gives details in how our
 implementation manages the set of candidate rules.
 
