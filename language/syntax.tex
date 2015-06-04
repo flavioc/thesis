@@ -1,8 +1,10 @@
 Table~\ref{tbl:language:ast} shows the abstract syntax for rules in LM.  A LM
 program $Prog$ consists of a list of derivation rules $\Sigma$ and a database
-$D$.  Each derivation rule $R$ can be written as $LHS \lolli RHS$ with the
-meaning described in Section~\ref{section:language:message}.  Rules without an
-LHS are allowed in LM and they are called \emph{initial facts}
+$D$. A database fact $l(\hat{t})$ is an association between a predicate $l$ and
+a list of literals $\hat{t}$. Each derivation rule $R$ can be written as $LHS
+\lolli RHS$ with the meaning described in
+Section~\ref{section:language:message}.  Rules without an LHS are allowed in LM
+and they are called \emph{initial facts}
 (lines~\ref{line:language:dict_axioms1}-\ref{line:language:dict_axioms2} in
 Fig.~\ref{code:language:btree_replace}).
 
@@ -39,6 +41,10 @@ Fig.~\ref{code:language:btree_replace}).
   
   Known Linear Facts & $\Delta$ & $::=$ & $\cdot \; \sop \; \Delta, l(\hat{t})$ \\
   Known Persistent Facts & $\Gamma$ & $::=$ & $\cdot \; \sop \; \Gamma, \bang p(\hat{t})$ \\
+
+  Literal List & $\hat{t}$ & $::=$ & $\cdot \; \sop \; t, \hat{t}$ \\
+  Term List & $\hat{x}$ & $::=$ & $\cdot \; \sop \; x, \hat{x} \; \sop \; t, \hat{x}$ \\
+  Literal & $t$ & $::=$ & $\m{number}(N) \; \sop \; \m{node}(N) \; \sop \; \m{list}(\hat{t}) \; \sop \ldots$ \\
 \end{tabular}
 \caption{Core abstract syntax of LM.}\label{tbl:language:ast}
 \end{table}
@@ -120,18 +126,16 @@ be instantiated in every node.
 
 \subsubsection{Selectors}
 
-When a rule's LHS is instantiated using facts from the database, facts are picked
-non-deterministically. While our system uses an implementation dependent order
-for efficiency reasons, sometimes it is important to sort facts by one of the
-arguments because linearity imposes commitment during rule derivation. The
-abstract syntax for this construct is $\selector{S}{y}{LHS}{RHS}$, where $S$ is
-the selection operation and $y$ is the variable in $LHS$ that represents
-the value to be selected according to $S$. An example using concrete syntax is
-as follows:
+When a rule's LHS is instantiated using facts from the database, facts are
+picked non-deterministically. While our system uses an implementation dependent
+order for efficiency reasons, sometimes it is important to sort facts by one of
+the arguments. The abstract syntax for this construct is
+$\selector{S}{y}{LHS}{RHS}$, where $S$ is the selection operation and $y$ is the
+variable in $LHS$ that represents the value to be selected according to $S$. An
+example using concrete syntax is as follows:
 
 \begin{Verbatim}[fontsize=\codesize]
-[min => W | !edge(A, B), weight(A, B, W)]
-                              -o picked(A, B, W).
+[min => W | !edge(A, B), weight(A, B, W)] -o picked(A, B, W).
 \end{Verbatim}
 
 In this case, we order the \code{weight} facts by \code{W} in ascending order
@@ -140,15 +144,23 @@ and then try to match them. Other operations available are \code{max} and
 
 \subsubsection{Exists Expression}
 
-Exist constructs ($EE$) are based on the linear logic construct of the same name
-and are used to create new node addresses. We can use the new address to
-instantiate new facts for the new node.  The following example illustrates the
-use of the exists construct, where we derive \code{perform-work} at a new node
-\code{B}.
+Exists constructs ($EE$) are based on the linear logic construct of the same name
+and are used to create fresh node addresses. We can use the new address to
+instantiate new facts for the new node. As an example, consider the implementation of the
+insertion operation for the key/value dictionary described in
+Fig.~\ref{code:language:btree_replace}:
 
 \begin{Verbatim}[fontsize=\codesize]
-work(A, W) -o exists B. (perform-work(B, W)).
+insert(A, IKey, IValue),
+value(A, Key, Value),
+IKey < Key
+   -o value(A, Key, Value),
+      exists B. (value(B, IKey, IValue), !left(A, B)).
 \end{Verbatim}
+
+The exists construct is used to create the left node of node \code{A} that
+contains \code{value(B, IKey, IValue)} (the newly inserted key/value pair) and
+the persistent fact \code{!left(A, B)} that connects \code{A} to \code{B}.
 
 \subsubsection{Comprehensions}
 
