@@ -10,14 +10,14 @@ with an accumulator.
 The second rule of the program
 (lines~\ref{line:language:spagerank_second1}-\ref{line:language:spagerank_second2})
 propagates a newly computed pagerank value to all neighbors. The fact
-\texttt{neighbor-pagerank} informs the neighbor node about the pagerank value of
-node \texttt{A} for iteration \texttt{Iter + 1}. For every iteration, each node
-will accumulate the all the \texttt{neighbor-pagerank} facts into the
-\texttt{accumulator} fact (lines
+\code{neighbor-pagerank} informs the neighbor node about the pagerank value of
+node \code{A} for iteration \code{Iter + 1}. For every iteration, each node
+will accumulate the all the \code{neighbor-pagerank} facts into the
+\code{accumulator} fact (lines
 \ref{line:language:spagerank_fourth1}-\ref{line:language:spagerank_fourth2}).
 When all inbound neighbor pagerank values are accumulated, the third rule
 (lines~\ref{line:language:spagerank_third1}-\ref{line:language:spagerank_third2})
-is derived and a pagerank value is generated for iteration \texttt{Iter}.
+is derived and a pagerank value is generated for iteration \code{Iter}.
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\[\]]
@@ -56,19 +56,19 @@ neighbor-pagerank(A, B, V, Iter), accumulator(A, Acc, T, Iter)\label[line:langua
 
 \subsubsection{Asynchronous PageRank}
 
-We also have an asynchronous version of the algorithm that trades correctness
-with convergence speed since it does not synchronize between iterations.
+We also have an asynchronous version of the algorithm that trades precision for
+convergence speed since it does not synchronize between iterations.
 Figure~\ref{language:code:async_pagerank} shows the LM code for this particular
 version, where two major differences can be observed: (1) there is a linear fact
-\texttt{neighbor-pagerank} containing the most up-to-date pagerank value of a
-neighbor node; (2) a new \texttt{update} fact that forces the node to re-compute
-its pagerank by processing the currently available \texttt{neighbor-pagerank}
+\code{neighbor-pagerank} containing the most up-to-date pagerank value of a
+neighbor node; (2) a new \code{update} fact that forces the node to re-compute
+its pagerank by processing the currently available \code{neighbor-pagerank}
 facts. Rules in
 lines~\ref{line:language:apagerank_update1}-\ref{line:language:apagerank_update2}
-update the \texttt{neighbor-pagerank} values, while rule in
+update the \code{neighbor-pagerank} values, while rule in
 lines~\ref{line:language:apagerank_new1}-\ref{line:language:apagerank_new2}
 asynchronously update the current pagerank value. This last rule derives
-multiple \texttt{new-neighbor-rank} that is used to inform the neighbor about
+multiple \code{new-neighbor-rank} that is used to inform the neighbor about
 the new pagerank value.
 
 \begin{figure}[h!]
@@ -117,18 +117,18 @@ update(A),\label#line:language:apagerank_new1&
 \subsubsection{Proof of correctness}
 
 To build the proof of correctness, we must again prove several program
-invariants. This will help us prove that this partifcular program is similar to
+invariants. This will help us prove that this particular program corresponds to
 a computation on a nonnegative matrix of of unit spectral radius, which has been
-proven that it converges~\cite{DBLP:journals/corr/abs-cs-0606047,
+proven to converge~\cite{DBLP:journals/corr/abs-cs-0606047,
 Lubachevsky:1986:CAA:4904.4801}.
 
 \begin{invariant}[Page Invariant]
-Each page/node has a single \texttt{pagerank(A, Value, Iteration)} and:
+Each page/node has a single \code{pagerank(A, Value, Iteration)} and:
 \begin{itemize}
-   \item For each outbound link, a single \texttt{\bang outbound(A, B, W)}.
-   \item For each inbound link, a single \texttt{neighbor-pagerank(A, B, V, Iter)}.
-   \item For each \texttt{\bang outbound(A, B, W)}, a \texttt{neighbor-pagerank(A,
-      B, V, Iter}.
+   \item For each outbound link, a single \code{\bang outbound(A, B, W)}.
+   \item For each inbound link, a single \code{neighbor-pagerank(A, B, V, Iter)}.
+   \item For each \code{\bang outbound(A, B, W)}, a
+      \code{neighbor-pagerank(A, B, V, Iter)}.
 \end{itemize}
 \end{invariant}
 
@@ -143,80 +143,82 @@ In relation to rule application:
 \begin{itemize}
    \item Rule 1: inbound link re-derived.
    \item Rule 2: inbound link re-derived.
-   \item Rule 3: \texttt{pagerank/2} re-derived.
+   \item Rule 3: \code{pagerank/2} re-derived.
    \item Rule 4: Nothing happens.
    \item Rule 5: inbound links re-derived in the comprehension.
 \end{itemize}
 \end{proof}
 
 \begin{lemma}[Neighbor rank lemma]
-Given a fact \texttt{neighbor-pagerank(A, B, V, Iter)} and a set of facts
-\texttt{new-neighbor-rank(A, B, New, Iter2)}, we end up with a single
-\texttt{neighbor-pagerank(A, B, V', Iter')}, where \texttt{Iter} is the greater of
-\texttt{Iter} or all of \texttt{Iter2'}.
+
+Given a fact \code{neighbor-pagerank(A, B, V, Iter)} and a set of facts
+\code{new-neighbor-rank(A, B, New, Iter2)}, we end up with a single
+\code{neighbor-pagerank(A, B, V', Iter')}, where \code{Iter} is the greater of
+\code{Iter} and \code{Iter2'}.
+
 \end{lemma}
 \begin{proof}
-By induction on the number of \texttt{new-neighbor-rank} facts.
+By induction on the number of \code{new-neighbor-rank} facts.
 
-Base case: \texttt{neighbor-pagerank} remains.
+Base case: \code{neighbor-pagerank} remains.
 
-Inductive case: given one \texttt{new-neighbor-rank} fact:
+Inductive case: given one \code{new-neighbor-rank} fact:
 
 \begin{itemize}
-   \item Rule 1: the new iteration is older and thus \texttt{neighbor-pagerank}
+   \item Rule 1: the new iteration is older and thus \code{neighbor-pagerank}
    is replaced. By applying induction, we know that we will select either the
    new best iteration or a better iteration from the remaining set of
-   \texttt{new-neighbor-rank} facts.
+   \code{new-neighbor-rank} facts.
    \item Rule 2: the new iteration is not older and we keep the old
-   \texttt{neighbor-pagerank} fact. By induction, we select the best from either
+   \code{neighbor-pagerank} fact. By induction, we select the best from either
    the current iteration or some other (from the set).
 \end{itemize}
 \end{proof}
 
 \begin{lemma}[Update lemma]
-Given at least 1 \texttt{update/1} fact, rule 7 will run.
+Given at least 1 \code{update/1} fact, rule 7 will run.
 \end{lemma}
 \begin{proof}
-By induction on the number of \texttt{update} facts.
+By induction on the number of \code{update} facts.
 
 Base case: rule 5 will run.
 
 Inductive case: rule 4 will run first because it has a higher priority, reducing
-the number of \texttt{update} facts by one. By induction, we know that by
-using the remaining \texttt{update} facts, rule 7 will run.
+the number of \code{update} facts by one. By induction, we know that by
+using the remaining \code{update} facts, rule 7 will run.
 \end{proof}
 
 \begin{lemma}[Pagerank update lemma]
-(1) Given at least one \texttt{update} fact, the \texttt{pagerank(A, $V_{I}$,
-I)} fact will be updated to become \texttt{pagerank(A, $V_{I + 1}$, I +
-1)}, where \texttt{$V_{I + 1} = damping / P + (1.0 - damping)\sum_{B,
+(1) Given at least one \code{update} fact, the \code{pagerank(A, $V_{I}$,
+I)} fact will be updated to become \code{pagerank(A, $V_{I + 1}$, I +
+1)}, where \code{$V_{I + 1} = damping / P + (1.0 - damping)\sum_{B,
 I} (W_{B} \times  N_{I,B})$}.
 
-where $W_B = 1.0/T$ ($T$ from \texttt{\bang numInbound(A, $T$)})
-and $N_{I,B}$ from \texttt{neighbor-pagerank(A, B, $N_{I, B}$, $I$)}.
+where $W_B = 1.0/T$ ($T$ from \code{\bang numInbound(A, $T$)})
+and $N_{I,B}$ from \code{neighbor-pagerank(A, B, $N_{I, B}$, $I$)}.
 
-(2) For all \texttt{B} outbound nodes (represented using \texttt{\bang outbound(A, B,
-W)}, a \texttt{new-neighbor-rank(B, A, $V_{I+1}$, $I + 1$)} is generated.
+(2) For all \code{B} outbound nodes (represented using \code{\bang outbound(A, B,
+W)}, a \code{new-neighbor-rank(B, A, $V_{I+1}$, $I + 1$)} is generated.
 
-(3) For all \texttt{B} outbound nodes (represented using \texttt{\bang outbound(A, B,
-W)}), a \texttt{update(B)} is generated if 
+(3) For all \code{B} outbound nodes (represented using \code{\bang outbound(A, B,
+W)}), a \code{update(B)} is generated if 
 $fabs(V_{I + 1} - V_{I}) \times W > bound$.
 \end{lemma}
 \begin{proof}
 Using the Update lemma, rule 5 will necessarily run.
 
-It derives \texttt{sum-ranks(A, $\sum_{B, I} (W_B \times N_{I,B})$)} and
+It derives \code{sum-ranks(A, $\sum_{B, I} (W_B \times N_{I,B})$)} and
 fulfills (3).
 
-\texttt{sum-ranks/2} will necessarily fire rule 6,
-computing $V_{I+1}$ and updating \texttt{pagerank}. (2) and (3) are fulfilled
+\code{sum-ranks/2} will necessarily fire rule 6,
+computing $V_{I+1}$ and updating \code{pagerank}. (2) and (3) are fulfilled
 through the comprehension of rule 6.
 \end{proof}
 
 \begin{invariant}[New neighbor rank equality]
-All \texttt{new-neighbor-rank(A, B, V, I)} facts are generated from a corresponding
-\texttt{pagerank(B, V, I)} fact, therefore the iteration of any
-\texttt{new-neighbor-rank} is at least the same or less than the iteration of
+All \code{new-neighbor-rank(A, B, V, I)} facts are generated from a corresponding
+\code{pagerank(B, V, I)} fact, therefore the iteration of any
+\code{new-neighbor-rank} is at least the same or less than the iteration of
 the current pagerank.
 \end{invariant}
 \begin{proof}
@@ -229,10 +231,10 @@ No initial facts to prove.
 \end{proof}
 
 \begin{invariant}[Neighbor rank equality]
-All \texttt{neighbor-pagerank(A, B, V, I)} facts have one corresponding
-\texttt{pagerank(B, V, I)} fact and the iteration of the \texttt{neighbor-pagerank}
+All \code{neighbor-pagerank(A, B, V, I)} facts have one corresponding
+\code{pagerank(B, V, I)} fact and the iteration of the \code{neighbor-pagerank}
 is the same or less than the current iteration of the corresponding
-\texttt{pagerank}.
+\code{pagerank}.
 \end{invariant}
 \begin{proof}
 By analyzing initial facts and rules.
@@ -242,26 +244,26 @@ Axioms: true.
 Rule cases:
 
 \begin{itemize}
-   \item Rule 1: uses \texttt{new-neighbor-rank} fact (use new neighbor rank
+   \item Rule 1: uses \code{new-neighbor-rank} fact (use new neighbor rank
          equality invariant).
    \item Rule 2: same fact is re-derived.
 \end{itemize}
 \end{proof}
 
 \begin{theorem}[Pagerank convergence]
-The program will compute the pagerank of all nodes that is within \texttt{bound} error
+The program will compute the pagerank of all nodes that is within \code{bound} error
 of an asynchronous pagerank computation.
 \end{theorem}
 \begin{proof}
 
 Using the program initial facts, we start with the same pagerank value for all nodes.
-The \texttt{\bang outbound(A, B, W)} fact forms a $n \times n$ square matrix (number
+The \code{\bang outbound(A, B, W)} fact forms a $n \times n$ square matrix (number
 of nodes) and is the so-called "Google Matrix".  All the initial pagerank values
 can be seen as a vector that adds up to $1$.
 
 The pagerank computation from the "Pagerank update lemma" computes $V_{I + 1} =
-damping / P + (1.0 - damping)\sum_{B, I'} (W_{B} \times N_{I',B})$, where $I' <=
-I$
+damping / P + (1.0 - damping)\sum_{B, I'} (W_{B} \times N_{I',B})$, where $I'
+\leq I$
 (from Neighbor rank equality invariant).
 
 Consider that each node contains a column $G_i$ of the Google matrix. The
@@ -272,7 +274,7 @@ $V_{I + 1} = G_i fix([N_{I_1, B_1}, ..., N_{I_p, B_p}])$ \hfill (1) \\
 
 
 Where $p$ is the number of inbound links and $N_{I_j, B_j}$ is the value of
-the \texttt{neighbor-pagerank(A, $B_j$, $N_{I_j, B_j}$, $I_j$)}. The $fix()$
+the \code{neighbor-pagerank(A, $B_j$, $N_{I_j, B_j}$, $I_j$)}. The $fix()$
 function takes the neighbor vector and expands it with zeros corresponding to
 nodes that are not inbound links.
 
@@ -280,28 +282,29 @@ From~\cite{DBLP:journals/corr/abs-cs-0606047, Lubachevsky:1986:CAA:4904.4801} we
 know that equation (1) will improve (converge) the pagerank value, given that some new
 neighbor pagerank values are sent to node $i$ and by the fact that $G_i$ is a
 nonnegative matrix of unit spectral radius. Let's use induction by assuming that there
-is at least one \texttt{update/1} fact that
+is at least one \code{update/1} fact that
 schedules a node to improve its pagerank. We want to prove that such fact will
 not only improve the node's pagerank but also the pagerank vector.
-If the pagerank vector is now close enough (within \texttt{bound}), then the
+If the pagerank vector is now close enough (within \code{bound}), then the
 program will terminate.
 
 \begin{itemize}
-   \item Base case: Since we have an \texttt{update} fact as an axiom, rule 7
-   will compute a new pagerank (Pagerank update lemma) for all nodes that is
-   improved (from equation (1)). From these updates, a new \texttt{update}
-   fact is generated that correspond to nodes that have inbound links from the
-   source node and need to update their pagerank. These \texttt{update} facts
-   may not be generated if the pagerank vector is close enough to its real
-   value.
+
+   \item Base case: since we have an \code{update} fact as an axiom, rule 7 will
+      compute a new pagerank (Pagerank update lemma) for all nodes that is
+      improved (from equation (1)). From these updates, a new \code{update} fact
+      is generated that correspond to nodes that have inbound links from the
+      source node and need to update their pagerank. These \code{update} facts
+      may not be generated if the pagerank vector is close enough to its real
+      value.
 
    \item The induction hypothesis tells us that there is at least one node that
-   has an \texttt{update} fact. From pagerank update lemma, this
-   generates \texttt{new-neighbor-rank} facts if the new value differs
-   significantly from the older value. When this happens and using the ``Neighbor
-   rank lemma'', the target node will update its \texttt{neighbor-pagerank} fact
-   with the newest iteration and then execute a valid pagerank computation that
-   brings the pagerank vector close to its solution.
+      has an \code{update} fact. From pagerank update lemma, this generates
+      \code{new-neighbor-rank} facts if the new value differs significantly from
+      the older value. When this happens and using the ``Neighbor rank lemma'',
+      the target node will update its \code{neighbor-pagerank} fact with the
+      newest iteration and then execute a valid pagerank computation that brings
+      the pagerank vector close to its solution.
 
 \end{itemize}
 
