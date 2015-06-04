@@ -82,9 +82,9 @@ we use \code{neighbor-belief/3} facts, where the second argument is the neighbor
 address and the third argument is the belief value.
 
 The last two rules (lines~\ref{line:coord:bp_last1}-\ref{line:coord:bp_last2})
-update the belief value of a node. An \code{update/1} fact starts the process.
+update the belief value of a node. An \code{update} fact starts the process.
 The first rule (lines~\ref{line:coord:bp_update}) simply consumes redundant
-\code{update/1} facts and the second rule
+\code{update} facts and the second rule
 (lines~\ref{line:coord:bp_update1}-\ref{line:coord:bp_update2}) performs the
 belief update by aggregating all the neighbor belief values. The aggregate in
 lines~\ref{line:coord:bp_agg1}-\ref{line:coord:bp_agg2} also derives copies of

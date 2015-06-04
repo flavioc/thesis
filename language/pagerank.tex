@@ -143,7 +143,7 @@ In relation to rule application:
 \begin{itemize}
    \item Rule 1: inbound link re-derived.
    \item Rule 2: inbound link re-derived.
-   \item Rule 3: \code{pagerank/2} re-derived.
+   \item Rule 3: \code{pagerank} re-derived.
    \item Rule 4: Nothing happens.
    \item Rule 5: inbound links re-derived in the comprehension.
 \end{itemize}
@@ -176,7 +176,7 @@ Inductive case: given one \code{new-neighbor-rank} fact:
 \end{proof}
 
 \begin{lemma}[Update lemma]
-Given at least 1 \code{update/1} fact, rule 7 will run.
+Given at least 1 \code{update} fact, rule 7 will run.
 \end{lemma}
 \begin{proof}
 By induction on the number of \code{update} facts.
@@ -210,7 +210,7 @@ Using the Update lemma, rule 5 will necessarily run.
 It derives \code{sum-ranks(A, $\sum_{B, I} (W_B \times N_{I,B})$)} and
 fulfills (3).
 
-\code{sum-ranks/2} will necessarily fire rule 6,
+\code{sum-ranks} will necessarily fire rule 6,
 computing $V_{I+1}$ and updating \code{pagerank}. (2) and (3) are fulfilled
 through the comprehension of rule 6.
 \end{proof}
@@ -282,7 +282,7 @@ From~\cite{DBLP:journals/corr/abs-cs-0606047, Lubachevsky:1986:CAA:4904.4801} we
 know that equation (1) will improve (converge) the pagerank value, given that some new
 neighbor pagerank values are sent to node $i$ and by the fact that $G_i$ is a
 nonnegative matrix of unit spectral radius. Let's use induction by assuming that there
-is at least one \code{update/1} fact that
+is at least one \code{update} fact that
 schedules a node to improve its pagerank. We want to prove that such fact will
 not only improve the node's pagerank but also the pagerank vector.
 If the pagerank vector is now close enough (within \code{bound}), then the
