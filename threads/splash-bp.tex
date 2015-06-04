@@ -64,8 +64,8 @@ start-tree(T),*label{line:threads:splash_building1} priority(A, P), P > 0.0 *hfi
    -o priority(A, P), expand-tree(T, [A], []).*label{line:threads:splash_building2}
 expand-tree(T, [A | All], Next)
    -o thread-id(A, Id),
-      [collect => L | !edge(A, L), ~ L in All, ~ L in Next,*label{line:threads:splash_agg1} priority(L, P), P > 0.0,
-         thread-id(L, Id2), Id1 = Id2 | priority(L, P), thread-id(L, Id2) |
+      [collect => L ; | !edge(A, L), ~ L in All, ~ L in Next,*label{line:threads:splash_agg1} priority(L, P), P > 0.0,
+         thread-id(L, Id2), Id1 = Id2 -o priority(L, P), thread-id(L, Id2) ->
          new-tree(T, [A | All],
             if len(All) + 1 >= maxnodes then [] else Next ++ L end)].*label{line:threads:splash_agg2}*label{line:threads:splash_next}
 

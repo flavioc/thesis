@@ -10,6 +10,7 @@ all: thesis.pdf
 
 thesis.pdf: thesis.tex packages.tex	thesis-cover.tex ack.tex \
 		introduction.tex coordination.tex language/key_value.tex \
+		language/syntax.tex language/pagerank.tex language/quicksort.tex \
 		language/message_routing.tex language/graph_visit.tex \
 		language/applications.tex language/related_work.tex \
 		implementation.tex logic/related_work.tex \
@@ -18,6 +19,7 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex ack.tex \
 		implementation/parallelism.tex implementation/locks.tex \
 		implementation/related_work.tex implementation/evaluation.tex \
 		coordination/partitioning.tex coordination/scheduling.tex \
+		coordination/ht.tex \
 		coordination/types.tex coordination/rationale.tex \
 		coordination/coord_sssp.tex coordination/programs.tex \
 		coordination/minimax.tex coordination/queens.tex \

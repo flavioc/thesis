@@ -84,9 +84,9 @@ type linear final-state(node, state).
 propagate-right(@0, []).*label#line:coord:queens_axiom&
 
 propagate-left(A, State)
-  -o {L | !left(A, L), L <> A | propagate-left(L, State)}, new-state(A, State).
+  -o {L | !left(A, L), L <> A -o propagate-left(L, State)}, new-state(A, State).
 propagate-right(A, State)*label#line:coord:queens_propr1&
-  -o {R | !right(A, R), R <> A | propagate-right(R, State)}, new-state(A, State).*label#line:coord:queens_propr2&
+  -o {R | !right(A, R), R <> A -o propagate-right(R, State)}, new-state(A, State).*label#line:coord:queens_propr2&
 
 new-state(A, State), !coord(A, X, Y) -o test-y(A, Y, State, State).
 
@@ -117,8 +117,8 @@ test-diag-right(A, X, Y, [X1, Y1 | RestState], State), X <> X1 || Y <> Y1
 send-down(A, State), !coord(A, size - 1, _)*label#line:coord:queens_complete1&
   -o final-state(A, State).*label#line:coord:queens_complete2&
 send-down(A, State), !coord(A, CX, _), CX <> size - 1*label#line:coord:queens_down1&
-  -o {B | !down-right(A, B), B <> A | propagate-right(B, State)},
-     {B | !down-left(A, B), B <> A | propagate-left(B, State)}.*label#line:coord:queens_down2&
+  -o {B | !down-right(A, B), B <> A -o propagate-right(B, State)},
+     {B | !down-left(A, B), B <> A -o propagate-left(B, State)}.*label#line:coord:queens_down2&
 \end{Verbatim}
   \caption{N-Queens problem solved in LM.}
   \label{code:coordination:nqueens}

@@ -1,0 +1,151 @@
+The Quick-Sort algorithm is a divide and conquer sorting algorithm that works by
+splitting a list of items into two sublists and then recursively sorting the two
+sublists. To split the list, we pick a pivot element and put the items that are
+smaller than the pivot into the first sublist and items greater than the pivot
+into the second list.
+
+The Quick-Sort algorithm is interesting because it does not map immediately to
+the graph-based model of LM. Our approach considers that the program starts with
+a single node where the initial list is located. Then the list is split as usual
+and two nodes are created that will recursively sort the sublists.
+Interestingly, this creates a tree that will look similar to a call tree in a
+functional programming language.
+
+Fig.~\ref{language:code:quicksort} presents the code for the quick-sort
+algorithm in LM. For each sublist to sort, we start with a \code{down} fact
+that must be (eventually) transformed into an \code{up} fact, where the
+sublist in the \code{up} fact is sorted.  In line~\ref{line:language:qs_axiom}
+we start with the initial list at node \code{@0}. If the list has a small
+number of items, then
+lines~\ref{line:language:qs_small1}-\ref{line:language:qs_small2} will
+immediately sort it, otherwise the rule in line~\ref{line:language:qs_complex} is applied.  \code{split}
+first splits the list using the pivot \code{Pivot} using rules in
+lines~\ref{line:language:qs_split1}-\ref{line:language:qs_split2}.
+When there is nothing more to split, the rule in
+lines~\ref{line:language:qs_exists1}-\ref{line:language:qs_exists2} uses an
+exists construct to create nodes \code{B} and \code{C}. The sublists are
+then sent to nodes \code{B} and \code{C} using \code{down} facts.  Note,
+however, that \code{back} facts are also derived and are going to be used to
+send the sorted list back to the parent using the rule in
+line~\ref{line:language:qs_back}.
+
+When the sublists are finally sorted, two \code{sorted} facts are derived that
+must be matched against \code{waitpivot} in the rule in
+lines~\ref{line:language:qs_sorted1}-\ref{line:language:qs_sorted2}. The sorted
+sublists are appended and then an \code{up} fact is finally derived
+(line~\ref{line:language:qs_up}).
+
+\begin{figure}[h!]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\{\}]
+type route back(node, node).
+type linear down(node, list int).
+type linear up(node, list int).
+type linear sorted(node, node, list int).
+type linear split(node, int list int, list int, list int).
+type linear waitpivot(node, int, node, node).
+
+down(@0, tosort).*label{line:language:qs_axiom}
+
+down(A, []) -o up(A, []).*label{line:language:qs_small1}
+down(A, [X]) -o up(A, [X]).
+down(A, [X, Y]), X < Y -o up(A, [X, Y]).
+down(A, [X, Y]), X >= Y -o up(A, [Y, X]).*label{line:language:qs_small2}
+down(A, [Pivot | Xs]) -o split(A, Pivot, Xs, [], []).*label{line:language:qs_complex}
+
+split(A, Pivot, [], Smaller, Greater) -o*label{line:language:qs_exists1}
+   exists B, C. (back(B, A), back(C, A),
+                 down(B, Smaller), down(C, Greater), waitpivot(A, Pivot, B, C)).*label{line:language:qs_exists2}
+
+split(A, Pivot, [X | Xs], Smaller, Greater), X <= Pivot*label{line:language:qs_split1}
+   -o split(A, Pivot, Xs, [Y | Smaller], Greater).
+split(A, Pivot, [X | Xs], Smaller, Greater), X > Pivot
+   -o split(A, Pivot, Xs, Smaller, [Y | Greater]).*label{line:language:qs_split2}
+   
+waitpivot(A, Pivot, NodeSmaller, NodeGreater),*label{line:language:qs_sorted1}
+sorted(A, NodeSmaller, Smaller),
+sorted(A, NodeGreater, Greater)
+   -o up(A, Smaller ++ [Pivot | Greater]).*label{line:language:qs_sorted2}*label{line:language:qs_up} // Append the lists.
+
+up(A, L), back(A, B) -o sorted(B, A, L).*label{line:language:qs_back}
+\end{Verbatim}
+  \caption{Quick-Sort program written in LM.}
+  \label{language:code:quicksort}
+\end{figure}
+
+The Quick-Sort program shows that it is possible for applications to manipulate
+and change the structure of the graph during run time. This is possible with the
+use of the exists operator, which allows the programmer to create new nodes
+where facts can be derived. In the case of the Quick-Sort, it allows the program
+to create a tree of nodes where sorting can take place concurrently.
+
+\subsubsection{Proof of correctness}
+
+The proof of correctness for Quick-Sort will follow a different style than what
+we have done up to this point. Instead of proving invariants, we prove what
+happens to the database given the presence of some logical facts.
+
+\begin{lemma}[Split lemma]
+
+If fact \code{split(A, Pivot, L, Small, Great)} exists then it will be
+consumed and \code{split(A, Pivot, [], Small' ++ Small, Great' ++ Great)} will
+be derived, where elements of \code{Small'} are \code{<=} \code{Pivot} and
+elements of \code{Great'} are \code{> Pivot}.
+
+\end{lemma}
+\begin{proof}
+By induction on the size of \code{L}.
+\end{proof}
+
+\begin{theorem}[Sort theorem]
+If fact \code{down(A, L)} exists then it will be consumed and a \code{up(A,
+L')} fact will be derived, where \code{L'} is the sorted list.
+\end{theorem}
+\begin{proof}
+By induction on the size of \code{L}.
+
+The base cases are proven trivially.
+
+In the inductive case we have:
+\begin{Verbatim}[fontsize=\codesize]
+down(A, [Pivot | Xs]) -o split(A, Pivot, Xs, [], []).
+\end{Verbatim}
+
+We necessarily derive \code{split(A, Pivot, Xs, [], [])}. Using the split
+lemma we get \code{split(A, Pivot, Smaller, Greater)}. With this linear fact
+we can only use the rule:
+
+\begin{Verbatim}[fontsize=\codesize]
+split(A, Pivot, [], Smaller, Greater) -o
+   exists B, C. (back(B, A), back(C, A),
+                 down(B, Smaller), down(C, Greater), waitpivot(A, Pivot, B, C)).
+\end{Verbatim}
+
+We derive \code{back(B, A)}, \code{back(C, A)}, \code{down(B, Smaller)},
+\code{down(C, Greater)} and \code{waitpivot(A, Pivot, B, C)}. We know that
+\code{Smaller} and \code{Greater} are both smaller (in size) than
+\code{L}, so, if we use the induction hypothesis, we get \code{up(B,
+Smaller')} and \code{up(C, Greater')}.  These last two facts will be applied
+using the following rule:
+
+\begin{Verbatim}[fontsize=\codesize]
+up(A, L), back(A, B) -o sorted(B, A, L).
+\end{Verbatim}
+
+Generating \code{sorted(A, B, Smaller')} and \code{sorted(A, C, Greater')}.
+Furthermore, we can use the only rule that accepts \code{sorted} and
+\code{waitpivot} facts:
+
+\begin{Verbatim}[fontsize=\codesize]
+waitpivot(A, Pivot, NodeSmaller, NodeGreater),
+sorted(A, NodeSmaller, Smaller),
+sorted(A, NodeGreater, Greater)
+   -o up(A, Smaller ++ [Pivot | Greater]). // Append the lists.
+\end{Verbatim}
+
+Returning \code{up(A, Smaller' ++ [Pivot | Greater'])}.  We know that
+\code{Smaller' ++ [Pivot | Greater']} is sorted since \code{Small'} contains the
+sorted list of elements \code{<= Pivot} and \code{Greater'} the elements \code{>
+Pivot}.
+
+\end{proof}
+

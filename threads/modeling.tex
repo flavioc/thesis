@@ -59,7 +59,7 @@ remote-derivation of \code{remote-fact(B)}. In the translation, we update
 \code{available-work} of node \code{B} to \code{true} because there is a new
 derivation for \code{B}. The fact \code{running(T, A)} is used to ensure that
 thread \code{T} is running on node \code{A}. Note that for thread rules we do
-not need to use \code{running(T, A)} on the rule's bodies and the thread running
+not need to use \code{running(T, A)} on the rule's LHS and the thread running
 the rule does not even need to have \code{active(T)}. This enforces the
 non-deterministic semantics for thread rules.
 

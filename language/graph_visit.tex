@@ -8,7 +8,7 @@ type linear visited(node).
 
 // The program rules*label[line:language:visit_first1]
 visit(A), unvisited(A) -o
-   visited(A), {B | !edge(A, B) | visit(B)}.*label[line:language:visit_first2]*label[line:language:visit_comprehension]
+   visited(A), {B | !edge(A, B) -o visit(B)}.*label[line:language:visit_first2]*label[line:language:visit_comprehension]
 
 visit(A), visited(A) -o visited(A).*label[line:language:visit_second]
 

@@ -27,7 +27,7 @@ relax(@1, 0, [@1]).*label#line:coord:sssp_axioms2&
 
 shortest(A, D1, P1), D1 > D2, relax(A, D2, P2)*label#line:coord:sssp_first1&
    -o shortest(A, D2, P2),
-      {B, W | !edge(A, B, W) | relax(B, D2 + W, P2 ++ [B])}.*label#line:coord:sssp_first2&
+      {B, W | !edge(A, B, W) -o relax(B, D2 + W, P2 ++ [B])}.*label#line:coord:sssp_first2&
 
 shortest(A, D1, P1), D1 <= D2, relax(A, D2, P2)*label#line:coord:sssp_second1&
    -o shortest(A, D1, P1).*label#line:coord:sssp_second2&

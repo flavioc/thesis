@@ -93,7 +93,7 @@ do-search(A, Id, Node, ToReach),
 !value(A, Val), Val in ToReach // New node was found.
    -o visited(A, Id),*label#line:threads:reach_visit_visited1&
       new-lookup(Node, Id, Val),
-      {B | !edge(A, B) | do-search(B, Id, Node, remove(ToReach, Val))}.*label#line:threads:reach_propagate&
+      {B | !edge(A, B) -o do-search(B, Id, Node, remove(ToReach, Val))}.*label#line:threads:reach_propagate&
 
 do-search(A, Id, Node, ToReach),
 !value(A, Val), ~ Val in ToReach // Not the node we are looking for.
@@ -195,7 +195,7 @@ pruning the search space.
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\#\&]
 search(A, Id, ToReach),*label#line:threads:reacht_start1&
 *textbf#!thread-list(T, L)&, Owner = nth(L, Id % @threads) // Allocate search to a thread.
-   -o {T2 | *textbf#!thread(T, T2)& | *textbf#thread-search(T2, Id, ToReach, Owner)&},*label#line:threads:reacht_threads&
+   -o {T2 | *textbf#!thread(T, T2)& -o *textbf#thread-search(T2, Id, ToReach, Owner)&},*label#line:threads:reacht_threads&
       do-search(A, Id).*label#line:threads:reacht_start2&
 
 *textbf#thread-search(T, Id, [], Owner)&, *label#line:threads:reacht_prune1& // Nothing left to find.
@@ -211,7 +211,7 @@ do-search(A, Id),*label#line:threads:reacht_check1&*label#line:bfs_join1&
 !value(A, Val), Val in ToReach // New node found.
    -o *textbf#thread-search(T, Id, remove(ToReach, Val), Owner)&,
       *textbf#remove-thread-search(Owner, Id, Val)&, // Tell owner thread about it.*label#line:threads:reacht_remove&
-      {B | !edge(A, B) | do-search(B, Id)},
+      {B | !edge(A, B) -o do-search(B, Id)},
       visited(A, Id).
 
 do-search(A, Id),
@@ -219,14 +219,14 @@ do-search(A, Id),
 !value(A, Val), ~ Val in ToReach // Node is not on the list.
    -o *textbf#thread-search(T, Id, ToReach, Owner)&,
       visited(A, Id),
-      {B | !edge(A, B) | do-search(B, Id)}.*label#line:threads:reacht_check2&
+      {B | !edge(A, B) -o do-search(B, Id)}.*label#line:threads:reacht_check2&
 
 *textbf#remove-thread-search(T, Id, Val), thread-search(T, Id, ToReach, Owner)&
    *textbf#-o thread-search(T, Id, remove(ToReach, Val), Owner),&
       *textbf#check-results(T, Id).&
 *textbf#check-results(T, Id), thread-search(T, Id, [], Owner)&*label#line:threads:reacht_reached1&
    *textbf#-o thread-search(A, Id, [], Owner),&
-      *textbf#{B | !other-thread(T, B) | signal-thread(B, Id)}.&*label#line:threads:reacht_reached2&
+      *textbf#{B | !other-thread(T, B) -o signal-thread(B, Id)}.&*label#line:threads:reacht_reached2&
  *textbf#check-results(T, Id), thread-search(T, Id, ToReach, Owner), ToReach <> []&
    *textbf#-o thread-search(T, Id, ToReach, Owner).&
 *textbf#signal-thread(T, Id), thread-search(T, Id, ToReach, Owner)& // Thread knows search is done.*label#line:threads:reacht_knows1&

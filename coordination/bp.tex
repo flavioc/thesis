@@ -63,9 +63,9 @@ update(A), update(A) -o update(A).*label{line:coord:bp_update}
 update(A),
 !potential(A, Potential),
 belief(A, MyBelief)
-   -o [custom addfloats Potential => Belief | B, Belief |*label{line:coord:bp_agg1}
-         neighbor-belief(A, B, Belief) |
-         neighbor-belief-old(A, B, Belief), neighbor-belief(A, B, Belief) |
+   -o [custom addfloats Potential => Belief; B, Belief |*label{line:coord:bp_agg1}
+         neighbor-belief(A, B, Belief) -o
+         neighbor-belief-old(A, B, Belief), neighbor-belief(A, B, Belief) ->
          Normalized = normalizestruct(Belief),
          update-messages(A, Normalized), belief(A, Normalized)].*label{line:coord:bp_last2}*label{line:coord:bp_update2}*label{line:coord:bp_agg2}
 \end{Verbatim}
