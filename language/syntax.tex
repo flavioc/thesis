@@ -244,6 +244,20 @@ source file.  Rules at the beginning of the file have higher priority. At the
 node level, we consider all the new facts that have not been considered before
 to create a priority queue of \emph{candidate rules}. The queue of candidate
 rules is then applied (by priority) and updated as new facts are derived or
-consumed.  Section~\ref{sec:implementation:rule_engine} gives details in how our
-implementation manages the set of candidate rules.
+consumed. As an example, consider the following three rules:
+
+\begin{Verbatim}[fontsize=\codesize]
+f(A), g(A) -o f(A).
+
+h(A) -o g(A).
+
+g(A) -o 1.
+\end{Verbatim}
+
+If the database contains the facts \code{h(@1)} and \code{f(@1)}, then the
+second rule is applied, deriving \code{g(@1)} and retracting \code{h(@1)}. Next,
+the first and third rules are candidate rules, but since the first rule has
+higher priority, it is applied immediately, resulting in a database with a
+single fact \code{f(@1)}.  Section~\ref{sec:implementation:rule_engine} gives
+details in how our implementation manages the set of candidate rules.
 

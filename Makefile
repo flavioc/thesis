@@ -21,7 +21,7 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex ack.tex \
 		implementation/parallelism.tex implementation/locks.tex \
 		implementation/related_work.tex implementation/evaluation.tex \
 		coordination/partitioning.tex coordination/scheduling.tex \
-		coordination/ht.tex \
+		coordination/ht.tex language/bipartite.tex \
 		coordination/types.tex coordination/rationale.tex \
 		coordination/coord_sssp.tex coordination/programs.tex \
 		coordination/minimax.tex coordination/queens.tex \

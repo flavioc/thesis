@@ -20,7 +20,7 @@ When all inbound neighbor pagerank values are accumulated, the third rule
 is derived and a pagerank value is generated for iteration \texttt{Iter}.
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\[\]]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\[\]]
 type outbound(node, node, float).
 type linear pagerank(node, float, int).
 type numInbound(node, int).
@@ -34,21 +34,21 @@ const pages = @world. // number of pages in the graph.
 
 start(A).
 
-start(A), !numInbound(A, T)*label[line:language:spagerank_first1]
-   -o accumulator(A, 0.0, T, 1), pagerank(A, 1.0 / float(pages), 0).*label[line:language:spagerank_first2]
+start(A), !numInbound(A, T)\label[line:language:spagerank_first1]
+   -o accumulator(A, 0.0, T, 1), pagerank(A, 1.0 / float(pages), 0).\label[line:language:spagerank_first2]
 
-pagerank(A, V, Iter), // propagate new pagerank value*label[line:language:spagerank_second1]
+pagerank(A, V, Iter), // propagate new pagerank value\label[line:language:spagerank_second1]
 Iter < iterations
-   -o {B, W | !outbound(A, B, W) -o neighbor-pagerank(B, A, V * W, Iter + 1)}.*label[line:language:spagerank_second2]
+   -o {B, W | !outbound(A, B, W) -o neighbor-pagerank(B, A, V * W, Iter + 1)}.\label[line:language:spagerank_second2]
 
-accumulator(A, Acc, 0, Iter), // new pagerank*label[line:language:spagerank_third1]
+accumulator(A, Acc, 0, Iter), // new pagerank\label[line:language:spagerank_third1]
 !numInbound(A, T),
 V = damping + (1.0 - damping) * Acc,
 Iter <= iterations
-   -o pagerank(A, V, Iter), accumulator(A, 0.0, T, Iter + 1).*label[line:language:spagerank_third2]
+   -o pagerank(A, V, Iter), accumulator(A, 0.0, T, Iter + 1).\label[line:language:spagerank_third2]
 	
-neighbor-pagerank(A, B, V, Iter), accumulator(A, Acc, T, Iter)*label[line:language:spagerank_fourth1]
-   -o accumulator(A, Acc + V, T - 1, Iter).*label[line:language:spagerank_fourth2]
+neighbor-pagerank(A, B, V, Iter), accumulator(A, Acc, T, Iter)\label[line:language:spagerank_fourth1]
+   -o accumulator(A, Acc + V, T - 1, Iter).\label[line:language:spagerank_fourth2]
 \end{Verbatim}
 \caption{Synchronous PageRank program.}
 \label{language:code:pagerank}
@@ -72,7 +72,7 @@ multiple \texttt{new-neighbor-rank} that is used to inform the neighbor about
 the new pagerank value.
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\#\&]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\#\&]
 type outbound(node, node, float).
 type linear pagerank(node, float, int).
 type numInbound(node, int).
@@ -85,7 +85,7 @@ pagerank(A, 1.0 / float(pages), 0).
 update(A).
 neighbor-pagerank(A, B, 1.0 / float(pages), 0). // pagerank of B is ...
 
-// save incoming pagerank value.*label#line:language:apagerank_update1&
+// save incoming pagerank value.\label#line:language:apagerank_update1&
 new-neighbor-rank(A, B, New, Iteration),
 neighbor-pagerank(A, B, Old, OldIteration),
 Iteration > OldIteration
@@ -93,7 +93,7 @@ Iteration > OldIteration
 new-neighbor-rank(A, B, New, Iteration),
 neighbor-pagerank(A, B, Old, OldIteration),
 Iteration <= OldIteration
-   -o neighbor-pagerank(A, B, Old, OldIteration).*label#line:language:apagerank_update2&
+   -o neighbor-pagerank(A, B, Old, OldIteration).\label#line:language:apagerank_update2&
 
 sum-ranks(A, Acc),
 NewRank = damping/float(pages) + (1.0 - damping) * Acc,
@@ -105,10 +105,10 @@ pagerank(A, OldRank, Iteration)
 
 update(A), update(A) -o update(A).
 
-update(A),*label#line:language:apagerank_new1&
+update(A),\label#line:language:apagerank_new1&
 !numInbound(A, T)
    -o [sum => V; B, W, Val, Iter | neighbor-pagerank(A, B, Val, Iter),
-         V = Val/float(T) -o neighbor-pagerank(A, B, Val, Iter) -> sum-ranks(A, V)].*label#line:language:apagerank_new2&
+         V = Val/float(T) -o neighbor-pagerank(A, B, Val, Iter) -> sum-ranks(A, V)].\label#line:language:apagerank_new2&
 \end{Verbatim}
 \caption{Asynchronous PageRank program.}
 \label{language:code:async_pagerank}

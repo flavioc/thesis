@@ -1,0 +1,122 @@
+The problem of checking if a graph is bipartite can be seen as a 2-color graph
+coloring problem.  The code for this algorithm is shown in
+Fig.~\ref{language:code:bichecking}. All nodes in the graph start as
+\texttt{uncolored}, because they do not have a color yet. The axiom
+\texttt{visit(@1, 1)} is instantiated at node \texttt{@1}
+(line~\ref{line:language:bc_axiom}) in order to color it with color 1.
+
+If a node is \texttt{uncolored} and needs to be marked with a color \texttt{P}
+then the rule in
+lines~\ref{line:language:bc_first1}-\ref{line:language:bc_first2} is applied. We
+consume the \texttt{uncolored} fact and derive a \texttt{colored(A, P)} to
+effectively color the node with \texttt{P}. We also derive \texttt{visit(B,
+next(P))} in neighbor nodes to color them with the other color. 
+
+The coloring can fail if a node is already colored with a color \texttt{P} and
+needs to be colored with a different color (line~\ref{line:language:bc_third})
+or if it has already failed (line~\ref{line:language:bc_fourth}).
+
+\begin{figure}[h!]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\[\]]
+type route edge(node, node).
+type linear visit(node, int).
+type linear uncolored(node).
+type linear colored(node, int).
+type linear fail(node).
+
+fun next(int X) : int = if X <> 1 then 1 else 2 end.
+
+visit(@1, 1).*label[line:language:bc_axiom]
+
+visit(A, P), uncolored(A)*label[line:language:bc_first1]
+   -o {B | !edge(A, B) -o visit(B, next(P))},
+      colored(A, P).*label[line:language:bc_first2]
+
+visit(A, P), colored(A, P) -o colored(A, P).*label[line:language:bc_second]
+visit(A, P1), colored(A, P2), P1 <> P2 -o fail(A).*label[line:language:bc_third]
+visit(A, P), fail(A) -o fail(A).*label[line:language:bc_fourth]
+\end{Verbatim}
+  \caption{Bipartiteness Checking program.}
+  \label{language:code:bichecking}
+\end{figure}
+
+\subsubsection{Proof of correctness}
+
+In order to show that the code in Fig.~\ref{language:code:bichecking} works as
+intended, we first setup some invariants that hold throughout the execution of
+the program. Assume that the set of nodes in the graph is represented as $N$.
+
+\begin{invariant}[Node state]
+Set of nodes $N$ is partitioned into 4 different states that represent the 4
+possible states that a node can be in, namely:
+
+\begin{itemize}
+   \item $U$ (\texttt{uncolored} nodes)
+   \item $F$ (\texttt{fail} nodes)
+   \item $C_{true}$ (\texttt{colored(A, 1)} nodes)
+   \item $C_{false}$ (\texttt{colored(A, 2)} nodes)
+\end{itemize}
+\end{invariant}
+\begin{proof}
+Initially, all nodes start in set $U$. All the 4 rules of the programs either
+keep the node in the same set or exchange the node with another set.
+\end{proof}
+
+A bipartite graph is one where in every edge $a \leftrightarrow b$, there is a
+valid assignment that makes $a$ member of set $C_{true}$ or $C_{false}$ and node
+$b$ member of either $C_{false}$ or $C_{true}$ respectively.
+
+\begin{variant}[Bipartiteness
+   Convergence]\label{language:lemma:bipartite_convergence}
+   We now reason from the application of the program rules. After each
+   application of an inference rule, one of the following will happen:
+
+   \begin{itemize}
+      \item Set $U$ will decrease and set $C_{true}$ or $C_{false}$ will
+         increase, with a potential increase in the number of \texttt{visit}
+         facts.
+      \item Set $C_{true}$ or $C_{false}$ will stay the same, while the number
+         of \texttt{visit} facts will be reduced.
+
+      \item Set $C_{true}$ or $C_{false}$ will decrease and set $F$ will
+         increase, while the number of \texttt{visit} facts will be reduced.
+
+      \item Set $F$ will stay the same, while the number of \texttt{visit} facts
+         decreases.
+   \end{itemize}
+
+\end{variant}
+\begin{proof}
+Directly from the rules.
+\end{proof}
+
+From this variant, it can be inferred that set $U$ never increases in size
+and in a node transition from \texttt{uncolored} to \texttt{colored}, the
+database may increase in size. For every other rule application, the database of
+facts always decreases. This also means that the program will eventually
+terminate, since it is limited by the number of \texttt{visit} facts that can be
+generated.
+
+\begin{theorem}[Bipartiteness Correctness]
+If the graph is connected and bipartite then the nodes will be partitioned into
+sets $C_{true}$ and $C_{false}$, while sets $F$ and $U$ are empty.
+\end{theorem}
+\begin{proof}
+   By induction, we prove that uncolored nodes become part of either $C_{true}$
+   and $C_{false}$ and, if there is an edge between nodes in the two sets then
+   they have different colors.
+
+   In the base case, we start with empty sets but node \texttt{@1} is made
+   member of $C_{true}$. Rule 1 sends \texttt{visit} facts to the neighbors of
+   \texttt{@1}, forcing them to be members of $C_{false}$.
+
+   In the inductive case, we have sets $C'_{true}$ and $C'_{false}$ with some
+   nodes already colored. From Lemma~\ref{language:lemma:bipartite_convergence},
+   we know that $U$ always decreases. Since the graph is bipartite, events 3 and
+   4 never happen since there is a possible partitioning of nodes. With event 1,
+   we have set $C_{true} = C'_{true}, n$, (or $C_{false}$) where $n$ is the
+   node and with event 2, the sets remain the same. Since the graph is
+   connected, every node will be colored, therefore event 1 will happen for
+   every node of the graph.
+\end{proof}
+
