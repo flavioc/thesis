@@ -1,5 +1,20 @@
 The asynchronous version of the PageRank algorithm trades precision for
 convergence speed since it does not synchronize between iterations.
+The formulation is similar to the formulation presented in
+Equation~\ref{eq:language:pagerank}:
+
+\begin{align}
+x_{i}(t + 1) = G_{i} [x_{0}(t^{i}_{0}(t)), \cdots, x_{n}(t^{i}_{n}(t)]^{T}\label{eq:appendix:pagerank_async}
+\end{align}
+
+The major difference is that now we multiply $G_{i}$ (the row of inbound links
+for page $i$) with a transposed vector with PageRank values that are necessarily
+not from iteration $t$. The expression $t^{i}_{j}(t)$ refers to the iteration
+before $t$ when the page $i$ received the PageRank value of page $j$. The value
+$x_{j}(t^{i}_{j}(t))$ then refers to the most up-to-date PageRank value of $j$
+received at page $i$ that is going to be used to compute the PageRank value of
+$i$ at $t + 1$.
+
 Figure~\ref{language:code:async_pagerank} shows the LM code for this particular
 version, where two major differences can be observed: (1) there is a linear fact
 \code{neighbor-pagerank} containing the most up-to-date PageRank value of a
@@ -217,7 +232,9 @@ $V_{I + 1} = G_i fix([N_{I_1, B_1}, ..., N_{I_p, B_p}])$ \hfill (1) \\
 Where $p$ is the number of inbound links and $N_{I_j, B_j}$ is the value of
 the \code{neighbor-pagerank(A, $B_j$, $N_{I_j, B_j}$, $I_j$)}. The $fix()$
 function takes the neighbor vector and expands it with zeros corresponding to
-nodes that are not inbound links.
+nodes that are not inbound links. This is the expected formulation for
+the asynchronous PageRank computation~\cite{DBLP:journals/corr/abs-cs-0606047}
+as shown in~\ref{eq:appendix:pagerank_async}.
 
 From~\cite{DBLP:journals/corr/abs-cs-0606047, Lubachevsky:1986:CAA:4904.4801} we
 know that equation (1) will improve (converge) the PageRank value, given that some new

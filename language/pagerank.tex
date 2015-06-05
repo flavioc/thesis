@@ -22,17 +22,28 @@ pages):
 The PageRank vector $x$ of size $1 \times n$ is the solution to the following
 linear system:
 
-\[
-   x = G x
-\]
+\begin{align}
+x = G x
+\end{align}
 
 To solve this problem, it is possible to use an iterative method by starting
 with an initial vector $x(0)$ where all pages start with the same value (that
 adds up to 1) and then perform the following computation:
 
-\[
-   x(t + 1) = G x(t)
-\]
+\begin{align}
+x(t + 1) = G x(t)
+\end{align}
+
+In order to distribute this calculation, we have the following formula for page
+$i$:
+
+\begin{align}
+x_{i}(t + 1) = G_{i} x(t)\label{eq:language:pagerank}
+\end{align}
+
+Where $G_{i}$ is the row of the $G$ matrix that corresponds to the inbound links
+of page $i$. Note that we also do not need to have the complete $x(t)$ vector
+most elements of $G_{i}$ are $0$.
 
 The code for this iterative computation is shown in
 Fig.~\ref{language:code:pagerank} and starts by declaring six predicates,
