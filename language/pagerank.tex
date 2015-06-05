@@ -1,31 +1,67 @@
 PageRank~\cite{Page:2001:MNR} is a well known graph algorithm that is used to
-compute the relative relevance of web pages.  The code for a synchronous version
-of the algorithm is shown in Fig.~\ref{language:code:pagerank} and starts by
-declaring six predicates, namely: \code{outbound}, to declare outbound links
-where to third argument is a weight that depends on the number of outbounds
-links for the source page; \code{numInbound}, with the number of inbound links;
-\code{pagerank}, to represent the PageRank of a page; \code{accumulator}, to
-accumulate the incoming neighbor's PageRank values; \code{neighbor-pagerank}, to
-represent an incoming PageRank value; and \code{start} to initialize a node.
-Since this program is asynchronous, the PageRank values of all nodes must be
-computed before the next PageRank is computed.
+compute the relative relevance of web pages. The standard formulation of the
+PageRank algorithm uses three $n \times n$ matrices (where $n$ is the number of
+pages):
+
+\begin{itemize}
+
+   \item An adjacency matrix $A$, where $A_{ij}$ is $1$ if page $i$ has an
+      outgoing link to $j$;
+
+   \item A transition matrix $P$, where $P_{ij} = A_{ij}/deg(i)$ and $\deg(i)$
+      is the number of outgoing links for page $i$;
+
+   \item A \scare{Google matrix} $G$, where $G = \alpha P + (1-\alpha)I$, where
+      $\alpha$ is the \emph{damping factor} and $I$ is a $n \times n$ matrix
+      where $I_{ij}$ is $1$. The damping factor is the probablity of a user
+      jumping to a random page instead of following the links of the current
+      page.
+
+\end{itemize}
+
+The PageRank vector $x$ of size $1 \times n$ is the solution to the following
+linear system:
+
+\[
+   x = G x
+\]
+
+To solve this problem, it is possible to use an iterative method by starting
+with an initial vector $x(0)$ where all pages start with the same value (that
+adds up to 1) and then perform the following computation:
+
+\[
+   x(t + 1) = G x(t)
+\]
+
+The code for this iterative computation is shown in
+Fig.~\ref{language:code:pagerank} and starts by declaring six predicates,
+namely: \code{outbound}, to declare outbound links where the third argument
+represents a value in the transition matrix $P$; \code{numInbound}, with the
+number of inbound links; \code{pagerank}, to represent the PageRank of a page;
+\code{accumulator}, to accumulate the incoming neighbor's PageRank values;
+\code{neighbor-pagerank}, to represent an incoming PageRank value; and
+\code{start} to initialize a node.  Since this program is asynchronous, the
+PageRank values of all nodes must be computed before the next PageRank is
+computed.
 
 We use constant definitions provided by LM
 (lines~\ref{line:language:spagerank_const1}-\ref{line:language:spagerank_const2})
 to refer to constant values used throughout the program. The \code{damping}
-constant is the \emph{damping factor} used in the PageRank calculations and
-refers to the probability of jumping to a random page instead of following the
-links of a page. The constant \code{iterations} reads the number of iterations
-to execute from the program's input arguments and \code{pages} is assigned to
-\code{@world}, a special constant that evaluates to the number of nodes in the
-program (in this case, the number of pages).
+constant is the damping factor $\alpha$ used in the PageRank calculations. The
+constant \code{iterations} reads the number of iterations to execute from the
+program's input arguments and \code{pages} is assigned to \code{@world}, a
+special constant that evaluates to the number of nodes in the program (in this
+case, the number of pages).
 
-The initial pagerank is the same for every page and is initialized in the first
-rule (lines
+The initial PageRank representing $x_i(0)$ is initialized in the first rule
+(lines
 \ref{line:language:spagerank_first1}-\ref{line:language:spagerank_first2}) along
-with the accumulator.  The second rule of the program
+with the accumulator. All the initial PageRank values form the initial $x(0)$
+vector. The second rule of the program
 (lines~\ref{line:language:spagerank_second1}-\ref{line:language:spagerank_second2})
-propagates a newly computed pagerank value to all neighbors. The fact
+propagates a newly computed pagerank value to all neighbors and represents a
+step in the iterative method for a column in the $G$ matrix. The fact
 \code{neighbor-pagerank} informs the neighbor node about the pagerank value of
 node \code{A} for iteration \code{Iter + 1}. For every iteration, each node will
 accumulate the all the \code{neighbor-pagerank} facts into the
