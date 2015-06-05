@@ -11,22 +11,22 @@ and two nodes are created that will recursively sort the sublists.
 Interestingly, this creates a tree that will look similar to a call tree in a
 functional programming language.
 
-Fig.~\ref{language:code:quicksort} presents the code for the quick-sort
-algorithm in LM. For each sublist to sort, we start with a \code{down} fact
-that must be (eventually) transformed into an \code{up} fact, where the
-sublist in the \code{up} fact is sorted.  In line~\ref{line:language:qs_axiom}
-we start with the initial list at node \code{@0}. If the list has a small
-number of items, then
-lines~\ref{line:language:qs_small1}-\ref{line:language:qs_small2} will
-immediately sort it, otherwise the rule in line~\ref{line:language:qs_complex} is applied.  \code{split}
-first splits the list using the pivot \code{Pivot} using rules in
-lines~\ref{line:language:qs_split1}-\ref{line:language:qs_split2}.
-When there is nothing more to split, the rule in
+Figure~\ref{language:code:quicksort} presents the code for the quick-sort
+algorithm in LM. For each sublist to sort, we start with a \code{down} fact that
+must be (eventually) transformed into an \code{up} fact, where the sublist in
+the \code{up} fact is sorted.  In line~\ref{line:language:qs_axiom} we start
+with the initial list at node \code{@0}. If the list has a small number of
+items, then lines~\ref{line:language:qs_small1}-\ref{line:language:qs_small2}
+will immediately sort it, otherwise the rule in
+line~\ref{line:language:qs_complex} is applied.  \code{split} first splits the
+list using the pivot \code{Pivot} using rules in
+lines~\ref{line:language:qs_split1}-\ref{line:language:qs_split2}.  When there
+is nothing more to split, the rule in
 lines~\ref{line:language:qs_exists1}-\ref{line:language:qs_exists2} uses an
-exists construct to create nodes \code{B} and \code{C}. The sublists are
-then sent to nodes \code{B} and \code{C} using \code{down} facts.  Note,
-however, that \code{back} facts are also derived and are going to be used to
-send the sorted list back to the parent using the rule in
+exists construct to create nodes \code{B} and \code{C}. The sublists are then
+sent to nodes \code{B} and \code{C} using \code{down} facts.  Note, however,
+that \code{back} facts are also derived and are going to be used to send the
+sorted list back to the parent using the rule in
 line~\ref{line:language:qs_back}.
 
 When the sublists are finally sorted, two \code{sorted} facts are derived that
@@ -86,10 +86,10 @@ happens to the database given the presence of some logical facts.
 
 \begin{lemma}[Split lemma]
 
-If fact \code{split(A, Pivot, L, Small, Great)} exists then it will be
-consumed and \code{split(A, Pivot, [], Small' ++ Small, Great' ++ Great)} will
-be derived, where elements of \code{Small'} are \code{<=} \code{Pivot} and
-elements of \code{Great'} are \code{> Pivot}.
+If fact \code{split(A, Pivot, L, Small, Great)} exists then it will be consumed
+and \code{split(A, Pivot, [], Small' ++ Small, Great' ++ Great)} will be
+derived, where elements of \code{Small'} are \code{<=} \code{Pivot} and elements
+of \code{Great'} are \code{> Pivot}.
 
 \end{lemma}
 \begin{proof}

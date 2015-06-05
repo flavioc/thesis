@@ -1,20 +1,21 @@
 The problem of checking if a graph is bipartite can be seen as a 2-color graph
-coloring problem.  The code for this algorithm is shown in
-Fig.~\ref{language:code:bichecking}. All nodes in the graph start as
-\code{uncolored}, because they do not have a color yet. The axiom
-\code{visit(@1, 1)} is instantiated at node \code{@1}
-(line~\ref{line:language:bc_axiom}) in order to color it with color 1.
+coloring problem. The code for this algorithm is shown in
+Fig.~\ref{language:code:bichecking}. The code declares five predicates, namely:
+\code{edge}, to specify the structure of the graph; \code{uncolored}, to mark
+nodes as uncolored; \code{colored}, to mark as colores; \code{fail}, to mark an
+invalid bipartite graph; and \code{visit} to perform the coloring of the graph.
+Initially, all nodes in the graph start as \code{uncolored}, because they do not
+have a color yet. The axiom \code{visit(@1, 1)} is instantiated at node
+\code{@1} (line~\ref{line:language:bc_axiom}) in order to color it with color 1.
 
-If a node is \code{uncolored} and needs to be marked with a color \code{P}
-then the rule in
-lines~\ref{line:language:bc_first1}-\ref{line:language:bc_first2} is applied. We
-consume the \code{uncolored} fact and derive a \code{colored(A, P)} to
-effectively color the node with \code{P}. We also derive \code{visit(B,
-next(P))} in neighbor nodes to color them with the other color. 
-
-The coloring can fail if a node is already colored with a color \code{P} and
-needs to be colored with a different color (line~\ref{line:language:bc_third})
-or if it has already failed (line~\ref{line:language:bc_fourth}).
+If a node is \code{uncolored} and needs to be marked with a color \code{P} then
+the rule in lines~\ref{line:language:bc_first1}-\ref{line:language:bc_first2} is
+applied. We consume the \code{uncolored} fact and derive a \code{colored(A, P)}
+to effectively color the node with \code{P}. We also derive \code{visit(B,
+next(P))} in neighbor nodes to color them with the other color.  The coloring
+can fail if a node is already colored with a color \code{P} and needs to be
+colored with a different color (line~\ref{line:language:bc_third}) or if it has
+already failed (line~\ref{line:language:bc_fourth}).
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\[\]]
