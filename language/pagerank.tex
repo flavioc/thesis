@@ -60,16 +60,16 @@ The initial PageRank representing $x_i(0)$ is initialized in the first rule
 with the accumulator. All the initial PageRank values form the initial $x(0)$
 vector. The second rule of the program
 (lines~\ref{line:language:spagerank_second1}-\ref{line:language:spagerank_second2})
-propagates a newly computed pagerank value to all neighbors and represents a
+propagates a newly computed PageRank value to all neighbors and represents a
 step in the iterative method for a column in the $G$ matrix. The fact
-\code{neighbor-pagerank} informs the neighbor node about the pagerank value of
+\code{neighbor-pagerank} informs the neighbor node about the PageRank value of
 node \code{A} for iteration \code{Iter + 1}. For every iteration, each node will
 accumulate the all the \code{neighbor-pagerank} facts into the
 \code{accumulator} fact (lines
 \ref{line:language:spagerank_fourth1}-\ref{line:language:spagerank_fourth2}).
-When all inbound neighbor pagerank values are accumulated, the third rule
+When all inbound neighbor PageRank values are accumulated, the third rule
 (lines~\ref{line:language:spagerank_third1}-\ref{line:language:spagerank_third2})
-is derived and a pagerank value is generated for iteration \code{Iter}.
+is derived and a PageRank value is generated for iteration \code{Iter}.
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\[\]]

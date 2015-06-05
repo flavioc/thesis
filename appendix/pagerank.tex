@@ -2,16 +2,16 @@ The asynchronous version of the PageRank algorithm trades precision for
 convergence speed since it does not synchronize between iterations.
 Figure~\ref{language:code:async_pagerank} shows the LM code for this particular
 version, where two major differences can be observed: (1) there is a linear fact
-\code{neighbor-pagerank} containing the most up-to-date pagerank value of a
+\code{neighbor-pagerank} containing the most up-to-date PageRank value of a
 neighbor node; (2) a new \code{update} fact that forces the node to re-compute
-its pagerank by processing the currently available \code{neighbor-pagerank}
+its PageRank by processing the currently available \code{neighbor-pagerank}
 facts. Rules in
 lines~\ref{line:language:apagerank_update1}-\ref{line:language:apagerank_update2}
 update the \code{neighbor-pagerank} values, while rule in
 lines~\ref{line:language:apagerank_new1}-\ref{line:language:apagerank_new2}
-asynchronously update the current pagerank value. This last rule derives
+asynchronously update the current PageRank value. This last rule derives
 multiple \code{new-neighbor-rank} that is used to inform the neighbor about the
-new pagerank value.
+new PageRank value.
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\#\&]
@@ -161,7 +161,7 @@ through the comprehension of rule 6.
 All \code{new-neighbor-rank(A, B, V, I)} facts are generated from a corresponding
 \code{pagerank(B, V, I)} fact, therefore the iteration of any
 \code{new-neighbor-rank} is at least the same or less than the iteration of
-the current pagerank.
+the current PageRank.
 \end{invariant}
 \begin{proof}
 No initial facts to prove.
@@ -193,22 +193,22 @@ Rule cases:
 \end{proof}
 
 \begin{theorem}[Pagerank convergence]
-The program will compute the pagerank of all nodes that is within \code{bound} error
-of an asynchronous pagerank computation.
+The program will compute the PageRank of all nodes that is within \code{bound} error
+of an asynchronous PageRank computation.
 \end{theorem}
 \begin{proof}
 
-Using the program initial facts, we start with the same pagerank value for all
+Using the program initial facts, we start with the same PageRank value for all
 nodes.  The \code{\bang outbound(A, B, W)} fact forms the $n \times n$ square
-matrix (number of nodes) and is the Google Matrix.  All the initial pagerank
+matrix (number of nodes) and is the Google Matrix.  All the initial PageRank
 values can be seen as a vector that adds up to $1$.
 
-The pagerank computation from the "Pagerank update lemma" computes $V_{I + 1} =
+The PageRank computation from the "Pagerank update lemma" computes $V_{I + 1} =
 damping / P + (1.0 - damping)\sum_{B, I'} (W_{B} \times N_{I',B})$, where $I'
 \leq I$ (from Neighbor rank equality invariant).
 
 Consider that each node contains a column $G_i$ of the Google matrix. The
-pagerank computation can then be represented as: \newline
+PageRank computation can then be represented as: \newline
 
 
 $V_{I + 1} = G_i fix([N_{I_1, B_1}, ..., N_{I_p, B_p}])$ \hfill (1) \\
@@ -220,32 +220,32 @@ function takes the neighbor vector and expands it with zeros corresponding to
 nodes that are not inbound links.
 
 From~\cite{DBLP:journals/corr/abs-cs-0606047, Lubachevsky:1986:CAA:4904.4801} we
-know that equation (1) will improve (converge) the pagerank value, given that some new
-neighbor pagerank values are sent to node $i$ and by the fact that $G_i$ is a
+know that equation (1) will improve (converge) the PageRank value, given that some new
+neighbor PageRank values are sent to node $i$ and by the fact that $G_i$ is a
 nonnegative matrix of unit spectral radius. Let's use induction by assuming that there
 is at least one \code{update} fact that
-schedules a node to improve its pagerank. We want to prove that such fact will
-not only improve the node's pagerank but also the pagerank vector.
-If the pagerank vector is now close enough (within \code{bound}), then the
+schedules a node to improve its PageRank. We want to prove that such fact will
+not only improve the node's PageRank but also the PageRank vector.
+If the PageRank vector is now close enough (within \code{bound}), then the
 program will terminate.
 
 \begin{itemize}
 
    \item Base case: since we have an \code{update} fact as an axiom, rule 7 will
-      compute a new pagerank (Pagerank update lemma) for all nodes that is
+      compute a new PageRank (Pagerank update lemma) for all nodes that is
       improved (from equation (1)). From these updates, a new \code{update} fact
       is generated that correspond to nodes that have inbound links from the
-      source node and need to update their pagerank. These \code{update} facts
-      may not be generated if the pagerank vector is close enough to its real
+      source node and need to update their PageRank. These \code{update} facts
+      may not be generated if the PageRank vector is close enough to its real
       value.
 
    \item The induction hypothesis tells us that there is at least one node that
-      has an \code{update} fact. From pagerank update lemma, this generates
+      has an \code{update} fact. From PagePank update lemma, this generates
       \code{new-neighbor-rank} facts if the new value differs significantly from
       the older value. When this happens and using the ``Neighbor rank lemma'',
       the target node will update its \code{neighbor-pagerank} fact with the
-      newest iteration and then execute a valid pagerank computation that brings
-      the pagerank vector close to its solution.
+      newest iteration and then execute a valid PageRank computation that brings
+      the PageRank vector close to its solution.
 
 \end{itemize}
 
