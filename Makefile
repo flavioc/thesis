@@ -35,8 +35,8 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex ack.tex \
 		threads/graph_reachability.tex threads/implementation.tex \
 		threads/key_value.tex implementation/allocation.tex \
 		threads/powergrid.tex threads/splash-bp.tex \
-		macros.tex appendix/hld.tex \
-		appendix/fragment.tex appendix/lld.tex \
+		macros.tex appendix/hld.tex appendix/further_examples.tex \
+		appendix/fragment.tex appendix/lld.tex appendix/pagerank.tex \
 		hld/step.tex hld/derivation-agg.tex lld/step.tex lld/match-p.tex \
 		lld/match-bang-p.tex lld/der-comp.tex \
 		lld/der-agg.tex lld/comp-fix.tex \
