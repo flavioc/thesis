@@ -8,12 +8,22 @@ links for the source page; \code{numInbound}, with the number of inbound links;
 accumulate the incoming neighbor's PageRank values; \code{neighbor-pagerank}, to
 represent an incoming PageRank value; and \code{start} to initialize a node.
 Since this program is asynchronous, the PageRank values of all nodes must be
-computed before the next PageRank is computed. The initial pagerank is the same
-for every page and is initialized in the first rule (lines
-\ref{line:language:spagerank_first1}-\ref{line:language:spagerank_first2}) along
-with the accumulator.
+computed before the next PageRank is computed.
 
-The second rule of the program
+We use constant definitions provided by LM
+(lines~\ref{line:language:spagerank_const1}-\ref{line:language:spagerank_const2})
+to refer to constant values used throughout the program. The \code{damping}
+constant is the \emph{damping factor} used in the PageRank calculations and
+refers to the probability of jumping to a random page instead of following the
+links of a page. The constant \code{iterations} reads the number of iterations
+to execute from the program's input arguments and \code{pages} is assigned to
+\code{@world}, a special constant that evaluates to the number of nodes in the
+program (in this case, the number of pages).
+
+The initial pagerank is the same for every page and is initialized in the first
+rule (lines
+\ref{line:language:spagerank_first1}-\ref{line:language:spagerank_first2}) along
+with the accumulator.  The second rule of the program
 (lines~\ref{line:language:spagerank_second1}-\ref{line:language:spagerank_second2})
 propagates a newly computed pagerank value to all neighbors. The fact
 \code{neighbor-pagerank} informs the neighbor node about the pagerank value of
@@ -34,9 +44,9 @@ type linear accumulator(node, float Acc, int Left, int Iteration).
 type linear neighbor-pagerank(node, node Neighbor, float Rank, int Iteration).
 type linear start(node).
 
-const damping = 0.85. // probability of user following a link in the current page.
+const damping = 0.85. // probability of user following a link in the current page.\label[line:language:spagerank_const1]
 const iterations = str2int(@arg1). // iterations to compute.
-const pages = @world. // number of pages in the graph.
+const pages = @world. // number of pages in the graph.\label[line:language:spagerank_const2]
 
 start(A).
 
