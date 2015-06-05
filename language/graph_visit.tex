@@ -23,16 +23,16 @@ visit(@1).*label[line:language:visit_axiom]
   \label{code:language:visit}
 \end{figure}
 
-Our final example shown in Fig.~\ref{code:language:visit} presents another
+Our third example shown in Fig.~\ref{code:language:visit} presents another
 complete LM program that, for a given graph of nodes, performs a visit to all
-nodes reachable from node \code{@1}.  The first rule of the program
+nodes reachable from node \code{@1}. The first rule of the program
 (lines~\ref{line:language:visit_first1}-\ref{line:language:visit_first2}) visits
 node \code{A} for the first time: fact \code{visited(A)} is derived and a
 \emph{comprehension} construct is derived in order to go through all the edge
-facts and then derive \code{visit(B)} for each neighbor \code{B}.  The second
-rule (line~\ref{line:language:visit_second}) is derived when the node is already
-visited more than once: we keep the \code{visited} fact and delete
-\code{visit}. Node \code{@1} starts with the \code{visit(@1)} fact (line
+facts and then derive \code{visit(B)} at each neighbor node \code{B}. The second
+rule of the program (line~\ref{line:language:visit_second}) is derived when the
+node is already visited more than once: we keep the \code{visited} fact and
+delete \code{visit}. Node \code{@1} starts with the \code{visit(@1)} fact (line
 \ref{line:language:visit_axiom}).
 
 Fig.~\ref{fig:exec_trace} shows a possible execution trace for the visit
@@ -78,7 +78,17 @@ facts and deriving \code{visited}. In addition, we can also apply rule 1 at node
         \label{fig:exec_trace}
 \end{figure}
 
-\subsubsection{Correctness of graph visit}
+The graph visit has the potential to have plenty of concurrency. Once the visit
+starts from the initial node, it rapidly expands to other nodes, allowing
+several nodes to derive rules concurrently. At some point, the amount of
+concurrency is reduced because more and more nodes have been visited. The level
+of concurrency also depends on the structure of the graph. In the worst case, if
+the graph is a chain of nodes then the program becomes effectively sequential.
+In the best case, if the graph densily connected (each node connects to most
+nodes in the graph), then it is possible to run the program on most nodes at the
+same time.
+
+\subsubsection{Proof of correctness}
 
 The goal of introducing higher-level declarative languages is to facilitate
 reasoning about the properties of a program. In the case of the visit program,

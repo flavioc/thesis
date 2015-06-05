@@ -115,3 +115,11 @@ where it will be consumed (Fig.~\ref{fig:message_trace}~(d)).
         world" travels from node \code{@1} to node \code{@4}.}\label{fig:message_trace}
 \end{figure}
 
+The attentive reader will wonder how much concurrency is available in this
+particular routing implementation. For a single message, there is not much
+concurrency because the message follows a pre-determined path and it travels
+from node to node. However, concurrency arises when the program needs to route
+multiple messages. The amount of concurrency is then dependent on the messages
+routing lists being non-overlapping. If messages travel in different paths, then
+there is more concurrency because more nodes are routing messages at the same
+time.

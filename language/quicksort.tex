@@ -78,6 +78,19 @@ use of the exists construct, which allows the programmer to create new nodes
 where facts can be derived. In the case of the Quick-Sort, it allows the program
 to create a tree of nodes where sorting can take place concurrently.
 
+The amount of concurrency available in the Quick-Sort program depends on the
+quality of the selected pivot. If the pivot splits the list in equal parts, then
+there is more concurrency because it is now possible to work on the two halfs of
+the list concurrently and those halfs have the same size. If a bad pivot is
+selected, then we may end up in situations where the pivot is the smallest (or
+largest) element of the list, splitting the list into an empty list and a list
+with $n-2$ elements. It is clear that the amount work required the sort the
+empty list is much smaller than the work required to sort the larger list.
+Repeatly choosing a bad pivot will effectly turn Quick-Sort into a sequential
+algorithm. This is not suprising since it is directly related to the
+Quick-Sort's average and worst case complexity, $\mathcal{O}(n \log{n})$ and
+$\mathcal{O}(n^2)$, respectively.
+
 \subsubsection{Proof of correctness}
 
 The proof of correctness for Quick-Sort will follow a different style than what

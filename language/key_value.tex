@@ -55,14 +55,18 @@ child nodes of each BST node.
 The algorithm uses three rules for the three possible cases of updating a key's
 value: the first rule
 (lines~\ref{line:language:dict_first1}-\ref{line:language:dict_first2}) performs
-the update by removing \code{replace(A, K, New)} and \code{value(A, K, Old)}
-and deriving \code{value(A, K, New)}; the second rule
+the update by removing \code{replace(A, K, New)} and \code{value(A, K, Old)} and
+deriving \code{value(A, K, New)}; the second rule
 (lines~\ref{line:language:dict_second1}-\ref{line:language:dict_second2})
 recursively picks the left branch for the update operation by deleting
 \code{replace(A, RKey, RValue)} and re-deriving it at node \code{B}; and the
 third rule
 (lines~\ref{line:language:dict_third1}-\ref{line:language:dict_third2}) picks
-the right branch.
+the right branch. The derivation of \code{replace} facts on node \code{B} can
+also be seen as a implicit \emph{message passing} from \code{A} to \code{B},
+since \code{B} is a different node than \code{A} and the LHS of each rule can
+only manipulate facts from the same node.
+
 The initial facts of this program are presented in
 lines~\ref{line:language:dict_axioms1}-\ref{line:language:dict_axioms2} and they
 describe the initial binary tree configuration, including keys and values.  The
@@ -112,7 +116,10 @@ rule 1 and \code{value(@6, 6, "g")} is updated to \code{value(@6, 6, "x")}.
            address of the node was placed beside it.}\label{fig:language:btree_trace}
 \end{figure}
 
-The present example offers many opportunies for concurrency. If we have multiple
-\code{replace} facts on different nodes, we can perform multiple value updates
-at the same time without introducing any kind of database inconsistency.
-
+Like the key/value example shown in the previous section, the amount of
+concurrency present in this example, depends on the number of \code{replace}
+facts. If there are many \code{replace} operations to perform on different parts
+of the BST, then there is more concurrency. On the other hand, if only a few BST
+nodes are being updated, then concurrency is reduced. Interestingly enough, this
+is the same behavior that one would expect from an parallel implementation of
+the BST data structure in an imperative language.

@@ -60,6 +60,14 @@ neighbor-pagerank(A, B, V, Iter), accumulator(A, Acc, T, Iter)\label[line:langua
 \label{language:code:pagerank}
 \end{figure}
 
+The synchronous version of the PageRank algorithm has a fairly high level of
+concurrency. First, the program starts on all nodes of the graph, which makes
+the program trivial to parallelize. However, because this is a synchronous
+algorithm, there is a need to synchronize because there is a data dependency
+between PageRank iterations. Furthermore, nodes can only compute their next
+iteration after they receive all the neighbor's PageRank values from the
+previous iteration.
+
 \subsubsection{Asynchronous PageRank}
 
 We also have an asynchronous version of the algorithm that trades precision for
