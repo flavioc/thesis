@@ -108,23 +108,6 @@ Finally, initial facts are represented as a rule where the LHS is $\one$:
 \one \lolli & \mathtt{visit}(@1)
 \end{align}
 
-\subsection{Predicates And Facts}
-
-Each fact is an association between a \emph{predicate} and a tuple of values. A
-predicate is a pair with a name and a tuple of types (the argument types). LM
-rules are type-checked using the predicate declarations in the header of the
-program. LM has a simple type system that includes the following simples types:
-\emph{node}, \emph{int}, \emph{float}, \emph{string}, \emph{bool}. The following
-structured types are also supported: \emph{list} $X$, for lists of type $X$;
-\emph{struct} $X_1, \ldots, X_n$, for composite values made of $n$ elements; and
-\emph{array} $X$, for arrays of type $X$.
-
-LM allows definition of new type names from simpler types using the declaration
-\code{type simple-type new-type} in the header of the program. The type
-\code{new-type} can then be used as any other type. Note that LM uses
-\emph{structural equivalence} to check if two types are the same, therefore
-\code{simple-type} and \code{new-type} are type equivalent.
-
 \subsection{RHS Expressions}\label{section:language:expressions}
 
 \subsubsection{Selectors}
@@ -217,6 +200,46 @@ neighbor values. LM provides several aggregate operations, including the
 \code{min} (minimum value), \code{max} (maximum value), \code{sum} (add all
 numbers), \code{count} (count combinations) and \code{collect} (collect items
 into a list).
+
+\section{Types and Locality}
+
+Each fact is an association between a \emph{predicate} and a tuple of values. A
+predicate is a pair with a name and a tuple of types (the argument types). LM
+rules are type-checked using the predicate declarations in the header of the
+program. LM has a simple type system that includes the following simples types:
+\emph{node}, \emph{int}, \emph{float}, \emph{string}, \emph{bool}. The following
+structured types are also supported: \emph{list} $X$, for lists of type $X$;
+\emph{struct} $X_1, \ldots, X_n$, for composite values made of $n$ elements; and
+\emph{array} $X$, for arrays of type $X$.
+
+LM allows definition of new type names from simpler types using the declaration
+\code{type simple-type new-type} in the header of the program. The type
+\code{new-type} can then be used as any other type. Note that LM uses
+\emph{structural equivalence} to check if two types are the same, therefore
+\code{simple-type} and \code{new-type} are type equivalent.
+
+Type checking LM programs is straightforward due to its simple type system and
+mandatory predicate declarations. For each rule, the variables found in the LHS
+are mapped to types based on their use on atomic proposition arguments. Some
+constraints of the form \code{X = expression} that force an equality between
+\code{X} and \code{expression} may actually represent an assignment of
+\code{expression} to a variable \code{X} since \code{X} may not be used in any
+proposition argument. In this case, all the variables in \code{expression} must
+be typed or else \code{X} becomes an \emph{undefined variable}. Variables in the
+rule's RHS must be defined in the LHS, because otherwise derived facts would not
+be \emph{ground}, that is, some arguments would be undefined or uncomputable.
+For the comprehensions and aggregates, the type checking rules are identical,
+however the LHS of each construct must document the variables in scope using the
+$\hat{x}$ argument. If a variable is introduced in the LHS that is not in
+$\hat{x}$, type checking will fail.
+
+Another important part of type checking is \emph{locality checking}. The first
+argument of each atomic proposition in the LHS must use the same variable in
+order to enforce locality and allow concurrency. This \emph{home variable} is
+always typed as a \emph{node} and represents a node in the program's graph. In
+the rule's RHS, other home variables are allowed, as long as they are defined
+variables. For comprehensions and aggregates, the LHS must use the same home
+argument as the rule's LHS.
 
 \section{Operational Semantics}
 
