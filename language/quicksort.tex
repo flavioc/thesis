@@ -37,7 +37,7 @@ sublists are appended and then an \code{up} fact is finally derived
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\{\}]
-type route back(node, node).
+type linear back(node, node).
 type linear down(node, list int).
 type linear up(node, list int).
 type linear sorted(node, node, list int).
@@ -74,7 +74,7 @@ up(A, L), back(A, B) -o sorted(B, A, L).*label{line:language:qs_back}
 
 The Quick-Sort program shows that it is possible for applications to manipulate
 and change the structure of the graph during run time. This is possible with the
-use of the exists operator, which allows the programmer to create new nodes
+use of the exists construct, which allows the programmer to create new nodes
 where facts can be derived. In the case of the Quick-Sort, it allows the program
 to create a tree of nodes where sorting can take place concurrently.
 
@@ -110,9 +110,9 @@ In the inductive case we have:
 down(A, [Pivot | Xs]) -o split(A, Pivot, Xs, [], []).
 \end{Verbatim}
 
-We necessarily derive \code{split(A, Pivot, Xs, [], [])}. Using the split
-lemma we get \code{split(A, Pivot, Smaller, Greater)}. With this linear fact
-we can only use the rule:
+We necessarily derive \code{split(A, Pivot, Xs, [], [])}. Using the split lemma
+we get \code{split(A, Pivot, [], Smaller, Greater)}. With this linear fact we
+can only use the rule:
 
 \begin{Verbatim}[fontsize=\codesize]
 split(A, Pivot, [], Smaller, Greater) -o
@@ -121,11 +121,12 @@ split(A, Pivot, [], Smaller, Greater) -o
 \end{Verbatim}
 
 We derive \code{back(B, A)}, \code{back(C, A)}, \code{down(B, Smaller)},
-\code{down(C, Greater)} and \code{waitpivot(A, Pivot, B, C)}. We know that
-\code{Smaller} and \code{Greater} are both smaller (in size) than
-\code{L}, so, if we use the induction hypothesis, we get \code{up(B,
-Smaller')} and \code{up(C, Greater')}.  These last two facts will be applied
-using the following rule:
+\code{down(C, Greater)} and \code{waitpivot(A, Pivot, B, C)}. The semantics of
+LM ensure that \code{B} and \code{C} are fresh node addresses, therefore those
+new facts will be derived on nodes with no facts. We know that \code{Smaller}
+and \code{Greater} are both smaller (in size) than \code{L}, so, if we use the
+induction hypothesis, we get \code{up(B, Smaller')} and \code{up(C, Greater')}.
+These last two facts will be applied using the following rule:
 
 \begin{Verbatim}[fontsize=\codesize]
 up(A, L), back(A, B) -o sorted(B, A, L).

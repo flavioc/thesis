@@ -256,15 +256,14 @@ of an asynchronous pagerank computation.
 \end{theorem}
 \begin{proof}
 
-Using the program initial facts, we start with the same pagerank value for all nodes.
-The \code{\bang outbound(A, B, W)} fact forms a $n \times n$ square matrix (number
-of nodes) and is the so-called "Google Matrix".  All the initial pagerank values
-can be seen as a vector that adds up to $1$.
+Using the program initial facts, we start with the same pagerank value for all
+nodes.  The \code{\bang outbound(A, B, W)} fact forms a $n \times n$ square
+matrix (number of nodes) and is the so-called \scare{Google Matrix}.  All the
+initial pagerank values can be seen as a vector that adds up to $1$.
 
 The pagerank computation from the "Pagerank update lemma" computes $V_{I + 1} =
 damping / P + (1.0 - damping)\sum_{B, I'} (W_{B} \times N_{I',B})$, where $I'
-\leq I$
-(from Neighbor rank equality invariant).
+\leq I$ (from Neighbor rank equality invariant).
 
 Consider that each node contains a column $G_i$ of the Google matrix. The
 pagerank computation can then be represented as: \newline

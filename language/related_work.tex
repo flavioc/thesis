@@ -51,18 +51,18 @@ allowed to run and in which order. The order is dictated by assigning a
 Galois~\cite{Pingali:2011:TPA:1993316.1993501} is a parallel programming model
 with irregular applications based on graphs, trees and sets. A Galois parallel
 algorithm is viewed as a parallel application of an \emph{operator} over an
-irregular data structure which generate \emph{activies} on the data structure.
-Such operator may, for instance, be applied on the
-node of the graph in order to change its data or change the structure of its
-neighborhood, allowing for data structure changes. In Galois, we consider
-\emph{active elements}, which are nodes of the graph where computation needs to
-be performed, the \emph{neighborhood} containing the nodes of the graph required
-to perform an operator, and \emph{ordering} which dictactes the order in which
-operators are applied. From the point of view of the programer, the active
-elements are represented in a worklist, while operators can be implemented on
-top of iterators of the worklist. Galois supports speculative execution by
-allowing operator rollback when an operator requires the use of a node that is
-held by another operator.
+irregular data structure which generate \emph{activities} on the data structure.
+Such operator may, for instance, be applied on the node of the graph in order to
+change its data or change the structure of its neighborhood, allowing for data
+structure changes. In Galois, we consider \emph{active elements}, which are
+nodes of the graph where computation needs to be performed, the
+\emph{neighborhood} containing the nodes of the graph required to perform an
+operator, and \emph{ordering} which dictates the order in which operators are
+applied. From the point of view of the programmer, the active elements are
+represented in a worklist, while operators can be implemented on top of
+iterators of the worklist. Galois supports speculative execution by allowing
+operator rollback when an operator requires the use of a node that is held by
+another operator.
 
 SociaLite~\cite{Seo:2013:DSD:2556549.2556572} is a Datalog-based language for
 writing algorithms for social-network analysis. SociaLite takes Datalog programs
@@ -108,7 +108,8 @@ or generated during the application of rules.  Unlike LM, in CHR there is no
 concept of rule priorities, but there is an extension to CHR that supports
 them~\cite{DeKoninck:2007:URP:1273920.1273924}.  Finally, there is also a CHR
 extension that adds persistent constraints and it has been proven to be sound
-and complete~\cite{DBLP:journals/corr/abs-1007-3829}.
+and complete~\cite{DBLP:journals/corr/abs-1007-3829} in relation to the standard
+formulation of CHR.
 
 \subsection{Graph Transformation Systems}
 

@@ -10,11 +10,10 @@ Fig.~\ref{code:shortest_path_program}, \texttt{relax} and \texttt{shortest} are
 all computation facts.
 
 Structural facts describe information about the connections between the nodes in
-the graph.  In the example of Fig.~\ref{code:shortest_path_program},
-\texttt{edge} facts are structural since the corresponding \texttt{edge}
-predicate is marked as a \texttt{route} predicate. Note that structural facts
-can also be seen as computation facts since they are heavily used in the program
-logic.
+the graph. In the example of Fig.~\ref{code:shortest_path_program},
+\texttt{edge} facts are structural since the corresponding \texttt{edge} is used
+for communication between nodes.  Note that structural facts can also be seen as
+computation facts since they are heavily used in the program logic.
 
 \emph{Coordination facts} allow the programmer to change how the run time
 schedules nodes and how it partitions the nodes among threads of execution.
