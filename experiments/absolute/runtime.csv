@@ -23,6 +23,7 @@ shortest-usairports500 python 8978
 shortest-oclinks python 37980
 shortest-uspowergrid python 122233
 shortest-email python 133967
+
 belief-propagation-50 th1 4632 3783 4525 -> 4313
 belief-propagation-200 th1 69357 68887 69773 -> 69339
 belief-propagation-300 th1 182046 187250 186169 -> 185155
@@ -38,6 +39,7 @@ shortest-usairports500 th1 3124 3125 3122 -> 3123
 shortest-oclinks th1 15814 15816 15672 -> 15767
 shortest-uspowergrid th1 24605 24497 24623 -> 24575
 shortest-email th1 18707 18629 18643 -> 18659
+
 belief-propagation-50 graphlab 3417
 belief-propagation-200 graphlab 61738
 belief-propagation-300 graphlab 169793

@@ -1,6 +1,7 @@
 
 EXPERIMENT_FILES := experiments/absolute/runtime.tex \
-	experiments/mem/mem.tex experiments/mem/c-mem.tex
+	experiments/mem/mem.tex experiments/mem/c-mem.tex \
+	experiments/absolute/compare.tex
 
 FIGURES := $(wildcard figures/btree/btree_trace*.pdf) \
 	$(wildcard figures/message/message_trace*.pdf) \
@@ -77,6 +78,12 @@ experiments/mem/c-mem.tex: experiments/lib.py experiments/mem/c-table.py \
 	experiments/mem/c-mem.csv
 	$(RE) experiments/mem/c-table.py \
 					experiments/mem/c-mem.csv > experiments/mem/c-mem.tex
+
+experiments/absolute/compare.tex: experiments/lib.py experiments/absolute/compare.py \
+	experiments/absolute/unoptimized.csv experiments/absolute/runtime.csv
+	$(RE) experiments/absolute/compare.py \
+		experiments/absolute/runtime.csv experiments/absolute/unoptimized.csv > \
+		experiments/absolute/compare.tex
 
 clean:
 	rm -f thesis.pdf *.bbl *.blg *.log *.lot \

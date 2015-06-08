@@ -230,9 +230,27 @@ usage increases significantly when using larger boards. On the positive side,
 the average memory usage per fact remains the same for all data sets. In respect
 to the C++ program, it is expected that it should consume almost no memory
 because it uses the stack to compute the problem solutions.
-\subsubsection{Indexing evaluation}
 
-\subsubsection{Fact allocator evaluation}
+\subsubsection{Indexing and data structures}
+
+We now evaluate the impact of our dynamic indexing algorithm and related data
+structures such as the hash table and array data structure. For this, we have
+rerun the previous experiments and compared the results against the optimized
+version.
+
+\begin{table}[ht]
+   \begin{center}
+      \input{experiments/absolute/compare}
+   \end{center}
+   \caption{Measuring the impact of dynamic indexing and related database data
+      structures. Column \textbf{Run Time} shows the slow down ratio of the
+      unoptimized version (large numbers means unoptimized version is slower).
+      Column \textbf{Average Memory} is the result of dividing the average
+      memory of the optimized version by the unoptimized version (large numbers
+      indicate that more memory is needed when using indexing mechanisms).}
+   \label{table:implementation:compare_absolute}
+\end{table}
+
 
 \subsection{Scalability}
 
