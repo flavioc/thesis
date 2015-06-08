@@ -586,7 +586,7 @@ def read_mem_experiment_set(filename):
    expsets = {}
    with open(filename, "r") as fp:
       for line in fp:
-         line = line.rstrip("\n")
+         line = line.rstrip("\n").lstrip(" ").rstrip(" ")
          if line == "": continue
          if line.startswith("#") or line.startswith(";"): continue
          vec = line.split(" ")

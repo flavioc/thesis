@@ -80,9 +80,10 @@ experiments/mem/c-mem.tex: experiments/lib.py experiments/mem/c-table.py \
 					experiments/mem/c-mem.csv > experiments/mem/c-mem.tex
 
 experiments/absolute/compare.tex: experiments/lib.py experiments/absolute/compare.py \
-	experiments/absolute/unoptimized.csv experiments/absolute/runtime.csv
+	experiments/mem/unoptimized-mem.csv experiments/absolute/runtime.csv
 	$(RE) experiments/absolute/compare.py \
-		experiments/absolute/runtime.csv experiments/absolute/unoptimized.csv > \
+		experiments/absolute/runtime.csv experiments/absolute/unoptimized.csv \
+		experiments/mem/mem.csv experiments/mem/unoptimized-mem.csv > \
 		experiments/absolute/compare.tex
 
 clean:

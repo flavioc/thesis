@@ -1,14 +1,14 @@
-Most software applications are developed using an \emph{sequential imperative
+Most software applications are developed using a \emph{sequential imperative
 model} where there is a sequence of steps that the processor must do and a
 \emph{memory area} where the processor stores and retrieves data during the
 course of execution.  The increase of clock frequency on single-core processors
 during the last decades has allowed applications using the imperative model to
-run faster without any changes in the source code. Today, processor manufactures
-are now focusing on increasing the number of cores per processor due to the
-stalling of clock frequencies. This exposes the disadvantages of the imperative
-model since it does not take advantage of multiple processing cores. This model
-is also unsuitable for distributed applications that need to be run in a cluster
-of computers because the processors in the cluster do not share the same memory
+run faster without any changes in the source code. Today, due to the stalling of
+clock frequencies, processor manufacturers are focusing on increasing the number
+of cores per processor, but this is useless to the imperative model since it
+does not take advantage of multiple processing cores. This model is also
+unsuitable for distributed applications that need to be run in a cluster of
+computers because the processors in the cluster do not share the same memory
 area and require communication to coordinate computation.
 
 Different programming models have been suggested to solve the limitations of the
@@ -25,31 +25,33 @@ advantage of parallelism.  Still, this particular solution has limited
 applicability because important parallelization opportunities are available at a
 different, higher, level of abstraction.
 
+In \emph{imperative parallel programming}, imperative applications are modified
+using new concurrency or communication constructs that allow the programmer to
+explicitly exploit parallelism. It is required that the programmer writes code
+to efficiently split computation among processing units and allow sharing of
+data between processing units. In contrast to high-level parallel programming,
+imperative parallel programming is more low-level because the programmer needs
+to deal with the finer details of parallelism.
+
 The second proposed solution includes \emph{declarative parallel programming} or
-,\emph{high-level parallel progrmaming} which are declarative programming models
+\emph{high-level parallel progrmaming} which are declarative programming models
 that completely abandon the imperative model and introduce new programming
-models that are easier to parallelize. We delve on these topics in the next
-section.
+models that are easier to parallelize. Our work in this thesis uses this
+particular approach. We delve on these topics in
+Section~\ref{section:background:declarative}.
 
-Finally, we have \emph{imperative parallel programming} where imperative
-applications are modified using new concurrency or communication constructs that
-allow the programmer to explicitly exploit parallelism. It is required that the
-programmer writes code to efficiently split computation among processing units
-and allow sharing of data between processing units. In contrast to high-level
-parallel programming, imperative parallel programming is more low-level because
-the programmer needs to deal with the finer details of parallelism.
+\subsection{Imperative Parallel Programming Models}
 
-Exploiting parallelism using parallel programming is known to be hard since it
+Exploiting parallelism using imperative programming is known to be hard since it
 is difficult to coordinate processing units effectively and without bugs. The
 very nature of parallel execution means increased non-determinism during
-execution which leads to many possible code interleavings that the programmer
-needs to be aware of. Furthermore, many well-known imperative algorithms are not
-trivially parallelizable and require complete new approaches to run in a
-scalable fashion. Moreover, non-determinism of execution makes it hard to prove
-properties of the program because the simpler assumptions of the imperative
-model no longer hold under the new programming model.
+execution which leads to execution interweavings that the programmer needs to be
+aware of. Furthermore, many well-known imperative algorithms are not trivially
+parallelizable and require complete new approaches to run in a scalable fashion.
+Moreover, non-determinism of execution makes it hard to prove properties of the
+program because the simpler assumptions of the imperative model no longer hold
+under the new programming model.
 
-\subsection{Main Programming Models}
 
 Parallelism has been traditionally classified into two classes: \emph{data
 parallelism} and \emph{task parallelism}. In data parallelism, the data is
@@ -66,27 +68,28 @@ to implement a \emph{scheduler} that efficiently assigns tasks to processing
 units and is able to \emph{balance} the load among those units. A scheduler may
 use a \emph{centralized strategy} where there is a \emph{master} processing unit
 that makes work distribution decisions or the scheduler uses a \emph{distributed
-strategy} where each processing unit is able to perform \emph{work
-stealing}~\cite{Blumofe:1999} on other units to improve load balance.
+strategy} where each processing unit is able to perform \emph{work stealing} or
+\emph{work sharing}~\cite{Blumofe:1999} on other units to improve load balance.
 
-We now describe the main parallel programming models available for writing
+In terms of communication and synchronization between the available processing
+units, there are two main parallel programming models available for writing
 parallel programs.
 
-\paragraph{Shared Memory and Threads}
+\paragraph{Shared Memory Model}
 
 We mentioned before that the imperative model uses a memory area to store and
 retrieve data. The \emph{shared memory model}~\cite{Mellor-Crummey:1991} makes
-use of this area to allow communication between \emph{threads}, which are
-processing units that have their own execution flow but share the same memory
-area. The existence of a shared memory area makes it easier to share data
-between threads, however, the access to data accessed by multiple threads needs
-to be protected, otherwise the data may become inconsistent. Many constructs
-are available to ensure \emph{mutual exclusion} such as
+use of this area to allow communication between \emph{workers}, processes or
+threads, which are processing units that have their own execution flow but share
+the same memory area. The existence of a shared memory area makes it easier to
+share data between workers, however, the access to data accessed by multiple
+workers needs to be protected, otherwise the data may become inconsistent. Many
+constructs are available to ensure \emph{mutual exclusion} such as
 \emph{locks}~\cite{Silberschatz:2008}, \emph{semaphores}~\cite{Dijkstra:2002},
 \emph{mutexes}~\cite{Silberschatz:2008}, and \emph{condition
 variables}~\cite{Hoare:1974}.
 
-\paragraph{Message Passing}
+\paragraph{Message Passing Model}
 
 In the \emph{message passing} model, processing units do not share the same
 memory area. Instead, processing units send messages to each other to coordinate
@@ -96,7 +99,7 @@ message processing is more costly than shared memory area due to extra work
 required to send and serialize messages.  The most well known framework for
 message passing is the Message Passing Interface~(MPI~)~\cite{Forum:1994}.
 
-Message passing is also used as foundation to implement higher level parallel
+Message passing is also used as a foundation to implement higher level parallel
 programming models such as \emph{Remote Procedure
 Call}~(RPC)~\cite{Birrell:1984}, which makes it possible to seamlessly call a
 procedure which is executed remotely, removing the need for explicit message
