@@ -8,20 +8,26 @@ synchronization issues.
 
 The databases of facts must be implemented efficiently because during matching
 of rules we need to restrict the facts using \emph{join constraints}, which fix
-arguments of predicates to instantiated values. Each node's database is
-implemented using three kinds of data structures:
+arguments of predicates to instantiated values. A database fact is made up of 2
+pointers (\code{previous} and \code{next}) and a variable number of arguments.
+Each argument is large enough to contain a value of any of the available LM types.
+Facts are stored in one of the four data structures:
 
 \begin{itemize}
 
 \item \emph{Trie Data Structures} are used to store persistent facts. Tries are
-   trees where facts are indexed by common prefix arguments.
+   trees where facts are indexed by common prefix arguments. The \code{previous}
+   and \code{next} pointers are used to store all the facts stored in the trie.
 
 \item \emph{Array Data Structures} are used to store persistent facts that are
-   only derived as initial facts and used in rules LHS.
+   only derived as initial facts and used in rules LHS. Facts stored in this
+   data structure do not have the \code{previous} and \code{next} pointers
+   because they are already chained by being part of a contigous memory area.
 
 \item \emph{Doubly Linked List Data Structures} are used to store linear facts.
    We use a double linked list because it is a very efficient way to add and
-   remove facts.
+   remove facts. The \code{previous} and \code{next} pointers are used to chain
+   the facts of the linked list.
 
 \item \emph{Hash Table Data Structures} are used to improve lookup when linked
    lists are too long and when we need to do search filtered by a fixed
@@ -43,7 +49,8 @@ Those are all stored continuously to improve data locality.
 \centering
 \includegraphics[width=0.6\textwidth]{figures/implementation/hash_table.pdf}
 \caption{Hash table and doubly linked data structures for 
-   a \texttt{a(int,int)} predicate.}
+   a \texttt{a(int,int)} predicate containing the following facts: \code{a(1,
+   2)}, \code{a(2, 12)}, \code{a(2, 42)}.}
 \label{fig:implementation:hash_table}
 \end{figure}
 
