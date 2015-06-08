@@ -13,6 +13,50 @@ problem. In turn, formal reasoning is performed at a higher level and does not
 have to deal with low level parallel programming constructs such as locks or
 message passing.
 
+\paragraph{Functional Programming and Parallel Programming}
+
+In pure functional programming languages, the \emph{side-effect free} nature of
+computation allows multiple expressions to evaluate safely in
+parallel~\cite{Loidl:2003}. This so called \emph{implicit parallelism} has been
+implemented in languages such as Id~\cite{Nikhil93anoverview} and
+SISAL~\cite{gaudiot2001sisal} with relative success. However, this kind of
+parallelism still remains elusive in the functional programming community since
+practical functional programs have a higher level of granularity, which makes it
+harder for a compiler to schedule computations
+efficiently~\cite{haskell_tutorial}.  Alternative approaches such as
+\emph{semi-explicit parallelism}~\cite{Marlow:2010}, \emph{data
+parallelism}~\cite{Blelloch:1996:PPA:227234.227246}, and \emph{explicit
+parallelism}~\cite{harris2005composable} have shown to be more effective in
+practice.
+
+In semi-explicit parallelism, the programmer uses an API to tell the runtime
+system which computations should be carried out in parallel, reducing the
+granularity problem found in implicit parallelism. These parallel computations
+are called \emph{sparked computations} and express the possibility of performing
+speculative computations which are going to be needed in the future. In a sense,
+sparked computations can be seen as \emph{lazy futures}~\cite{Baker:1977}.
+
+Data parallelism attempts to partition data among a set of processing units and
+then apply the same operation on the data. The simplest form of data parallelism
+is \emph{flat data parallelism}, where the data is flat (list or array) and is
+easily partitioned. However, functional code tends to be composed of many recursive
+data manipulation operations, which is not a good fit for flat data parallelism.
+However, in the NESL language~\cite{Blelloch:1996:PPA:227234.227246}, a new compiler
+transformation was proposed that could take a program using \emph{nested data
+parallelism} and turn it into a program using flat data parallelism, which is
+much easier to parallelize. This approach has been later implemented in more
+modern languages such as Haskell~\cite{Chakravarty07dataparallel}. The main
+advantage of this approach is that it remains true to the original goal of
+implicit parallelism.
+
+Finally, functional programs also allow the explicit creation of threads and
+communication using mechanisms such as \emph{software transactional
+memory}~\cite{harris2005composable}, which allows the programmer to share
+variables and state between threads. This approach has some similarities to
+parallel imperative programming since it requires careful control from the
+programmer.
+
+
 \paragraph{Logic Programming}
 
 Logical systems define their own meaning of truth and a set of consistent rules
@@ -88,49 +132,6 @@ allowing for both fact assertion and
 retraction~\cite{Chang03ajudgmental,Lopez:2005:MCL:1069774.1069778,simmons-lla,cruz-iclp14},
 which is one of the topics of this thesis.
 
-\paragraph{Functional Programming and Parallel Programming}
-
-In pure functional programming languages, the \emph{side-effect free} nature of
-computation allows multiple expressions to evaluate safely in
-parallel~\cite{Loidl:2003}. This so called \emph{implicit parallelism} has been
-implemented in languages such as Id~\cite{Nikhil93anoverview} and
-SISAL~\cite{gaudiot2001sisal} with relative success. However, this kind of
-parallelism still remains elusive in the functional programming community since
-practical functional programs have a higher level of granularity, which makes it
-harder for a compiler to schedule computations
-efficiently~\cite{haskell_tutorial}.  Alternative approaches such as
-\emph{semi-explicit parallelism}~\cite{Marlow:2010}, \emph{data
-parallelism}~\cite{Blelloch:1996:PPA:227234.227246}, and \emph{explicit
-parallelism}~\cite{harris2005composable} have shown to be more effective in
-practice.
-
-In semi-explicit parallelism, the programmer uses an API to tell the runtime
-system which computations should be carried out in parallel, reducing the
-granularity problem found in implicit parallelism. These parallel computations
-are called \emph{sparked computations} and express the possibility of performing
-speculative computations which are going to be needed in the future. In a sense,
-sparked computations can be seen as \emph{lazy futures}~\cite{Baker:1977}.
-
-Data parallelism attempts to partition data among a set of processing units and
-then apply the same operation on the data. The simplest form of data parallelism
-is \emph{flat data parallelism}, where the data is flat (list or array) and is
-easily partitioned. However, functional code tends to be composed of many recursive
-data manipulation operations, which is not a good fit for flat data parallelism.
-However, in the NESL language~\cite{Blelloch:1996:PPA:227234.227246}, a new compiler
-transformation was proposed that could take a program using \emph{nested data
-parallelism} and turn it into a program using flat data parallelism, which is
-much easier to parallelize. This approach has been later implemented in more
-modern languages such as Haskell~\cite{Chakravarty07dataparallel}. The main
-advantage of this approach is that it remains true to the original goal of
-implicit parallelism.
-
-Finally, functional programs also allow the explicit creation of threads and
-communication using mechanisms such as \emph{software transactional
-memory}~\cite{harris2005composable}, which allows the programmer to share
-variables and state between threads. This approach has some similarities to
-parallel imperative programming since it requires careful control from the
-programmer.
-
 \paragraph{Logic Programming and Parallel Programming}
 
 In logic programming languages such as Prolog, researchers took advantage of the
@@ -200,8 +201,6 @@ programs. An alternative to PigLatin/MapReduce is
 Dryad~\cite{Isard:2007:DDD:1272996.1273005} that allows programmers to design
 arbitrary computation patterns using DAG abstractions. It combines computational
 vertices with communication channels (edges) that are automatically scheduled to
-run on multiple computers/cores.
-
-There are many other programming systems for data-centric parallel computation
-which are not covered in this chapter. However, we describe some graph-centric 
-systems in Section~\ref{section:language:related}.
+run on multiple computers/cores. In Section~\ref{section:language:related}, we
+discuss data-centric languages in more detail and present some other programming
+systems for data-centric parallel computation.

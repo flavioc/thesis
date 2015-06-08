@@ -13,17 +13,19 @@ area and require communication to coordinate computation.
 
 Different programming models have been suggested to solve the limitations of the
 imperative model and allow programmers to exploit parallelism. We classify these
-models into three main classes: \emph{automatic parallelism}, \emph{declarative
-parallel programming}, and \emph{imperative parallel programming}.
+models into three main classes: \emph{automatic or implicit parallelism},
+\emph{declarative parallel programming}, and \emph{imperative parallel
+programming}.
 
 In automatic parallelism, we have a compiler that transforms programs into
 parallel code. A clear example of automatic parallelism is \emph{instruction
 level parallelism}, which is available on computer architectures to allow
 processors to execute multiple instructions at the same time. On the software
 side, the compiler may re-order instructions to allow the hardware to take
-advantage of parallelism.  Still, this particular solution has limited
-applicability because important parallelization opportunities are available at a
-different, higher, level of abstraction.
+advantage of parallelism. Unfortunately, such approach has limited applicability
+because important parallelization opportunities are available at a different,
+higher, level of abstraction. These high level approaches are discussed in
+Section~\ref{section:background:declarative}.
 
 In \emph{imperative parallel programming}, imperative applications are modified
 using new concurrency or communication constructs that allow the programmer to
