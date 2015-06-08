@@ -164,22 +164,72 @@ LM programs run reasonably fast and we will show next that they also scale well.
 
 \subsubsection{Memory usage}
 
+To complete our comparison against the C++ programs, we have measured and
+compared the average memory used by both systems.
+Table~\ref{table:implementation:mem} presents the memory statistics for LM
+programs while Table~\ref{table:implementation:cmem} presents statistics for the
+C++ programs.
+
 \begin{table}[ht]
    \begin{center}
       \input{experiments/mem/mem}
    \end{center}
-   \caption{Results.}
+   \caption{Memory statistics for LM programs. The meaning of each column is as
+      follows: column \textbf{Average} represents the average memory use of the
+      program; \textbf{Final} represents the memory usage after the program
+      completes; \textbf{Malloc} represents the number of \code{malloc}
+   operations requested to the operating system by the VM's memory allocator;
+   \textbf{\# Facts} represents the number of facts in the database after the
+   program completes; \textbf{Each} is the result of dividing \textbf{Final} by
+   \textbf{\# Facts} and represents the average memory required per fact.}
    \label{table:implementation:mem}
 \end{table}
+
+The MSSD program shows that LM's VM requires 2 to 5 times more memory than the
+corresponding C++ program. The ratio is larger when the dataset used is smaller
+which is understandable due to the extra data structures required by the VM
+(namely the node data structure). In terms of average memory per fact, we see
+that the MSSD requires on average 60B, which is not bad considering that, in
+reality, each fact for this particular program requires around 32B. This
+indicates that all those extra data structures represent a relatively minor
+overhead.
 
 \begin{table}[ht]
    \begin{center}
       \input{experiments/mem/c-mem}
    \end{center}
-   \caption{Results.}
+   \caption{Average memory usage of each C++ program.}
    \label{table:implementation:cmem}
 \end{table}
 
+
+When the MiniMax program completes, there is only a single fact on the database
+that indicates the best player move. The MiniMax program is also the only
+program in this experiment that dynamically generates a (tree) graph, which is
+destroyed once the best move is found. The garbage collector implemented the VM
+that collects empty nodes, is able to delete all those nodes since the
+\textbf{Final} memory usage is much smaller than the \textbf{Average} statistic.
+However, because the garbage collector retains a small number of freed nodes
+that may be reused later, the average size per fact is 15.50KB, which also
+includes those freed nodes. Finally, the memory usage of the C++ program is much
+better because the C++ program uses function calls to represent the tree
+structure of the MiniMax algorithm.
+
+The Belief Propagation program shows that LM's VM has a much higher resource
+usage than the corresponding C++ version. This is because the nodes in the LM's
+program keep a copy of the belief values of neighbor nodes, while the C++
+program performs uses shared memory and the stack to read and compute the
+neighbors belief values. Interestingly, this issue does not happen in the Heat
+Transfer program, where heat values are shared between nodes, reducing the need
+to keep facts with unique lists around. Notably, the C++ memory usage is not
+much smaller than LM's VM.
+
+Finally, for the N-Queens program it is possible to immediately understand whey
+there may be scalability issues when using larger data sets because the memory
+usage increases significantly when using larger boards. On the positive side,
+the average memory usage per fact remains the same for all data sets. In respect
+to the C++ program, it is expected that it should consume almost no memory
+because it uses the stack to compute the problem solutions.
 \subsubsection{Indexing evaluation}
 
 \subsubsection{Fact allocator evaluation}

@@ -119,7 +119,8 @@ heap whenever \texttt{refs} is decremented to zero.
 
 Nodes are also subject to garbage collection. If the database of a node becomes
 empty and there are no references to the node from other logical facts, then
-the node is deleted from the program.
+the node is deleted from the program. We keep around a small number of freed
+nodes that can be reused immediately if another node is created.
 
 We avoid garbage collection schemes based on tracing since objects are created
 and discarded in very specific points of the virtual machine and the runtime
