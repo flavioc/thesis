@@ -1,7 +1,8 @@
 
 EXPERIMENT_FILES := experiments/absolute/runtime.tex \
 	experiments/mem/mem.tex experiments/mem/c-mem.tex \
-	experiments/absolute/compare-no-indexing.tex
+	experiments/absolute/compare-no-indexing.tex \
+	experiments/absolute/compare-no-arrays.tex
 
 FIGURES := $(wildcard figures/btree/btree_trace*.pdf) \
 	$(wildcard figures/message/message_trace*.pdf) \
@@ -86,6 +87,14 @@ experiments/absolute/compare-no-indexing.tex: experiments/lib.py experiments/abs
 		experiments/absolute/runtime.csv experiments/absolute/no-indexing.csv \
 		experiments/mem/mem.csv experiments/mem/no-indexing-mem.csv > \
 		experiments/absolute/compare-no-indexing.tex
+
+experiments/absolute/compare-no-arrays.tex: experiments/lib.py experiments/absolute/compare.py \
+	experiments/mem/no-arrays.csv experiments/absolute/runtime.csv \
+	experiments/absolute/no-arrays.csv
+	$(RE) experiments/absolute/compare.py \
+		experiments/absolute/runtime.csv experiments/absolute/no-arrays.csv \
+		experiments/mem/mem.csv experiments/mem/no-arrays.csv > \
+		experiments/absolute/compare-no-arrays.tex
 
 clean:
 	rm -f thesis.pdf *.bbl *.blg *.log *.lot \

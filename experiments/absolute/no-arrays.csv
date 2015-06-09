@@ -1,0 +1,17 @@
+
+belief-propagation-50 th1 3707 3833 3806 -> 3782
+belief-propagation-200 th1 69292 69863 69287 -> 69480
+belief-propagation-300 th1 190731 185318 186195 -> 187414
+belief-propagation-400 th1 242186 241539 240628 -> 241451
+new-heat-transfer-80 th1 39278 -> 39278
+new-heat-transfer-120 th1 170193 -> 170193
+min-max-tictactoe th1 21372 -> 21372
+8queens-11 th1 437 -> 437
+8queens-12 th1 3104 -> 3104
+8queens-13 th1 23043 -> 23043
+8queens-14 th1 167560 -> 167560
+shortest-usairports500 th1 3121 -> 3121
+shortest-oclinks th1 15794 -> 15794
+shortest-uspowergrid th1 24345 -> 24345
+shortest-email th1 18938 -> 18938
+

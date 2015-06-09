@@ -254,7 +254,7 @@ memory due to the existence of hash tables used for supporting indexing.
    \end{center}
    \caption{Measuring the impact of dynamic indexing and related database data
       structures. Column \textbf{Run Time} shows the slow down ratio of the
-      unoptimized version (large numbers means unoptimized version is slower).
+      unoptimized version (numbers greater than 1 show indexing improvements).
       Column \textbf{Average Memory} is the result of dividing the average
       memory of the optimized version by the unoptimized version (large numbers
       indicate that more memory is needed when using indexing mechanisms).}
@@ -262,6 +262,28 @@ memory due to the existence of hash tables used for supporting indexing.
 \end{table}
 
 \subsubsection{Array data structures}
+
+Another important implementation detail is the use of array data structures for
+storing persistent facts that are not derived by rule derivation but only exist
+as initial facts. These cases are detected by the compiler and allow the VM to
+improve memory locality and reduce memory usage by packing persistent facts in a
+contiguous memory area.
+
+\begin{table}[ht]
+   \begin{center}
+      \input{experiments/absolute/compare-no-arrays}
+   \end{center}
+
+   \caption{Measuring the impact of using array data structures for persistent
+      facts. Column \textbf{Run Time} shows the speedups obtained by using
+      arrays. Column \textbf{Average Memory} is the result of dividing the
+      average memory of the programs using arrays by the version without them
+      (e.g., numbers show memory usage reduction when using array data
+   structures).}
+
+   \label{table:implementation:compare_arrays}
+\end{table}
+
 
 \subsection{Scalability}
 
