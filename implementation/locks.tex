@@ -1,17 +1,14 @@
-In order to protect these important synchronization points, we use ticket
-spin-locks. In Section~\ref{sec:data_structures} describes the locks used to
-protect the node data structures. In addition to these locks, we also have a
-lock per queue data structure that protects the thread's work queue.
 
-In order to manipulate the state flag of each thread (see
-Section~\ref{sec:implementation:parallelism}) we do not use locks but instead
-manipulate the state flag using lock-free \emph{compare-and-swap} operations to
-implement a state machine.
+In addition to the node locks, namely the \emph{Node Lock} and \emph{Db Lock},
+which were described in Section~\ref{sec:data_structures}, we also have the
+\emph{Queue Lock}, which is a per queue lock used to protect the work queue from
+simultaneous access. Note that all those locks are implemented as ticket
+spin-locks.
 
-Finally, we summarize the synchronization hotspots by describing how the locks
-are used in order to implement those hotspots.
+We summarize the synchronization hotspots of the VM by describing how the locks
+are used in order to implement several operations:
 
-\begin{description}
+\begin{itemize}
 
    \item \textbf{New Facts}: We use the node's \emph{Main Lock} and then attempt
       to lock the \emph{DB Lock}. If the \emph{Db Lock} cannot be used, then the
@@ -20,11 +17,32 @@ are used in order to implement those hotspots.
       in any work queue, we lock the destination work queue and then add the
       node and change the state of the node to \textbf{active}. Finally, if the
       target thread that owns the target node is \textbf{idle}, we activate it
-      by updating its state flag.
+      by updating its state flag to \textbf{active}.
 
-\item \textbf{Node Stealing}: For node stealing, we acquire the lock of the
-   target thread's queue and then copy the stolen node pointers to a temporary
-   buffer. For each node, we use the \emph{Main Lock} to update its
-   \emph{Owner} attribute and then add it to the thread's work queue.
+   \item \textbf{Node Stealing}: For node stealing, we acquire the lock of the
+      target thread's queue and then copy the stolen node pointers to a temporary
+      buffer. For each node, we use the \emph{Main Lock} to update its
+      \emph{Owner} attribute and then add it to the thread's work queue.
 
-\end{description}
+   \item \textbf{Next Node}: When a thread is \textbf{active} state, it locks
+      its work queue by acquiring the \emph{Queue Lock} and then removing the
+      first from the queue. The \emph{Main Lock} is then acquired momentarily in
+      order to update the node state flag.
+
+   \item \textbf{Node Computation}: The \emph{DB Lock} is acquired before
+      any rule is executed on the node since node computation manipulates the
+      database. The lock is released when all candidate rules are executed.
+
+   \item \textbf{Node Completion}: Once node computation is completed and all
+      candidate rules have been executed, the \emph{Main Lock} is acquired in
+      order to change the state flag. Note that if newer facts have been derived
+      by other nodes, computation is resumed on the current node instead of
+      using another node from the work queue.
+
+\end{itemize}
+
+In order to manipulate the state flag of each thread (see
+Section~\ref{sec:implementation:parallelism}) we do not use locks but instead
+manipulate the state flag using lock-free \emph{compare-and-swap} operations to
+implement a state machine.
+

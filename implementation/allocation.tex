@@ -2,7 +2,7 @@
 Memory allocation in the VM is extremely important because there is a need to
 repeatedly allocate and deallocate logical facts. Logical facts tend to be small
 memory objects, requiring, on average, 24 to 30 bytes of memory, which may lead
-to fragmentation if allocation is not careful.  Moreover, since VM is
+to fragmentation if allocation is not done carefully.  Moreover, since VM is
 multithreaded, allocation also needs to be scalable, therefore using the
 standard \code{malloc} facility provided by the POSIX standard may not be the
 best idea since each operating system uses a different implementation that may

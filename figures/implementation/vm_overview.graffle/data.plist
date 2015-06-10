@@ -48,7 +48,7 @@
 	<array>
 		<dict>
 			<key>Bounds</key>
-			<string>{{172.13855454325676, 200.75}, {125.86144545674324, 20}}</string>
+			<string>{{40.962879419763794, 201.880271983108}, {125.86144545674324, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -90,7 +90,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{36, 200.75}, {136.13855454325676, 20}}</string>
+			<string>{{166.82432487650703, 201.880271983108}, {136.13855454325676, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -142,8 +142,8 @@
 			<integer>253</integer>
 			<key>Points</key>
 			<array>
-				<string>{76.201117539317536, 316.22770550603104}</string>
-				<string>{84.089911871268924, 341.75284008730898}</string>
+				<string>{79.94356631057218, 316.24132064973594}</string>
+				<string>{84.75741605103704, 341.73936449565281}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -469,8 +469,8 @@ Hash Table}</string>
 			<integer>244</integer>
 			<key>Points</key>
 			<array>
-				<string>{188.85922653096677, 314.12980763445819}</string>
-				<string>{242.80898216069775, 355.61972801689177}</string>
+				<string>{193.84940814770511, 314.68299341713708}</string>
+				<string>{243.73850091177087, 355.61972801689183}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -767,11 +767,11 @@ Hash Table}</string>
 			<integer>235</integer>
 			<key>Points</key>
 			<array>
-				<string>{42.369439290087975, 284.11697940798933}</string>
-				<string>{36, 291}</string>
-				<string>{35.462879419763794, 308}</string>
-				<string>{48, 379.08928811961221}</string>
-				<string>{64.761518277985601, 402.12955456307105}</string>
+				<string>{47.369439290087975, 284.11697940798933}</string>
+				<string>{41, 291}</string>
+				<string>{40.462879419763794, 308}</string>
+				<string>{53, 379.08928811961221}</string>
+				<string>{65.716692387862153, 402.09627896576188}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -1314,7 +1314,7 @@ Hash Table}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{115.86290383382629, 170}, {86.698529437184305, 20}}</string>
+			<string>{{120.86290383382629, 170}, {86.698529437184305, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -1356,7 +1356,7 @@ Hash Table}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{202.56143327101063, 170}, {94.901446148753166, 20}}</string>
+			<string>{{207.56143327101063, 170}, {94.901446148753166, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -1398,7 +1398,7 @@ Hash Table}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{35.462879419763794, 170}, {80.4000244140625, 20}}</string>
+			<string>{{40.462879419763794, 170}, {80.4000244140625, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -1604,14 +1604,14 @@ Hash Table}</string>
 			<key>Head</key>
 			<dict>
 				<key>ID</key>
-				<integer>174</integer>
+				<integer>254</integer>
 			</dict>
 			<key>ID</key>
 			<integer>157</integer>
 			<key>Points</key>
 			<array>
 				<string>{317.35511131696808, 240.7195167247653}</string>
-				<string>{297.77764243307513, 211.75}</string>
+				<string>{302.72236543517499, 212.880271983108}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -1655,7 +1655,7 @@ Hash Table}</string>
 			<key>Points</key>
 			<array>
 				<string>{317.35511131696808, 240.7195167247653}</string>
-				<string>{256.28265650742236, 293.75}</string>
+				<string>{260.36001228000589, 293.75}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -1699,7 +1699,7 @@ Hash Table}</string>
 			<key>Points</key>
 			<array>
 				<string>{317.35511131696808, 240.7195167247653}</string>
-				<string>{296.00000786825012, 272.75}</string>
+				<string>{301.00000786825012, 272.75}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -2594,7 +2594,7 @@ Hash Table}</string>
 			<key>Points</key>
 			<array>
 				<string>{437, 222.74999999999997}</string>
-				<string>{266.46287941976379, 241.12500095367432}</string>
+				<string>{271.46287941976379, 241.12500095367432}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -2633,7 +2633,7 @@ Hash Table}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{35.962879419763794, 231.12500095367432}, {262, 20}}</string>
+			<string>{{40.962879419763794, 231.12500095367432}, {262, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -3630,7 +3630,7 @@ Hash Table}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{190.46287941976379, 293.75}, {104, 24}}</string>
+			<string>{{195.46287941976379, 293.75}, {104, 24}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -3690,7 +3690,7 @@ Hash Table}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{167.46287941976379, 295.75}, {21.000000000000004, 20}}</string>
+			<string>{{172.46287941976379, 295.75}, {21.000000000000004, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -3728,7 +3728,7 @@ Hash Table}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{146.46287941976379, 295.75}, {21.000000000000004, 20}}</string>
+			<string>{{151.46287941976379, 295.75}, {21.000000000000004, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -3756,7 +3756,7 @@ Hash Table}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{125.46287941976379, 295.75}, {21.000000000000004, 20}}</string>
+			<string>{{130.46287941976379, 295.75}, {21.000000000000004, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -3784,7 +3784,7 @@ Hash Table}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{104.46287941976379, 295.75}, {21.000000000000004, 20}}</string>
+			<string>{{109.46287941976379, 295.75}, {21.000000000000004, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -3812,7 +3812,7 @@ Hash Table}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{83.462879419763794, 295.75}, {21.000000000000004, 20}}</string>
+			<string>{{88.462879419763794, 295.75}, {21.000000000000004, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -3840,7 +3840,7 @@ Hash Table}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{62.462879419763794, 295.75}, {21.000000000000004, 20}}</string>
+			<string>{{67.462879419763794, 295.75}, {21.000000000000004, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -3868,7 +3868,7 @@ Hash Table}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{41.462879419763794, 295.75}, {21.000000000000004, 20}}</string>
+			<string>{{46.462879419763794, 295.75}, {21.000000000000004, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -3906,7 +3906,7 @@ Hash Table}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{191.93721413656067, 261.75}, {75, 24}}</string>
+			<string>{{196.93721413656067, 261.75}, {75, 24}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -3966,7 +3966,7 @@ Hash Table}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{167.46287941976379, 263.75}, {21.000000000000004, 20}}</string>
+			<string>{{172.46287941976379, 263.75}, {21.000000000000004, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -4004,7 +4004,7 @@ Hash Table}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{146.46287941976379, 263.75}, {21.000000000000004, 20}}</string>
+			<string>{{151.46287941976379, 263.75}, {21.000000000000004, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -4032,7 +4032,7 @@ Hash Table}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{125.46287941976379, 263.75}, {21.000000000000004, 20}}</string>
+			<string>{{130.46287941976379, 263.75}, {21.000000000000004, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -4060,7 +4060,7 @@ Hash Table}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{104.46287941976379, 263.75}, {21.000000000000004, 20}}</string>
+			<string>{{109.46287941976379, 263.75}, {21.000000000000004, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -4088,7 +4088,7 @@ Hash Table}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{83.462879419763794, 263.75}, {21.000000000000004, 20}}</string>
+			<string>{{88.462879419763794, 263.75}, {21.000000000000004, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -4116,7 +4116,7 @@ Hash Table}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{62.462879419763794, 263.75}, {21.000000000000004, 20}}</string>
+			<string>{{67.462879419763794, 263.75}, {21.000000000000004, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -4144,7 +4144,7 @@ Hash Table}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{41.462879419763794, 263.75}, {21.000000000000004, 20}}</string>
+			<string>{{46.462879419763794, 263.75}, {21.000000000000004, 20}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -4978,7 +4978,7 @@ Hash Table}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{35.462879419763794, 261.75}, {262, 24}}</string>
+			<string>{{40.462879419763794, 261.75}, {262, 24}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -5008,7 +5008,7 @@ Hash Table}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{35.462879419763794, 293.75}, {262, 24}}</string>
+			<string>{{40.462879419763794, 293.75}, {262, 24}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>ID</key>
@@ -5243,7 +5243,7 @@ Hash Table}</string>
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2015-06-10 20:05:54 +0000</string>
+	<string>2015-06-10 20:55:55 +0000</string>
 	<key>Modifier</key>
 	<string>Flávio Cruz</string>
 	<key>NotesVisible</key>

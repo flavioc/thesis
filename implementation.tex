@@ -1,44 +1,25 @@
-This chapter describes the multicore implementation of the LM language,
-including its compiler, supporting runtime and parallelism. We give an overview
-of the parallel implementation in order to understand how local computation and
-multithreaded execution fit together.  Finally, we describe how parallelism is
-achieved, including data structures and thread scheduling.
+This chapter describes the multicore aspects of the LM's virtual machine and
+provides a detailed experimental evaluation. First, we give an overview of how
+local node computation and parallelism are integrated to provide a scalable
+implementation, with a focus on locking and memory allocation. We conclude the
+chapter with an evaluation section that evaluates the performance, memory usage
+and scalability of our implementation.
 
 \section{Parallelism}\label{sec:implementation:parallelism}
 \input{implementation/parallelism}
 
-\subsection{Communication}
-
-At this point, we can now summarize the main thread synchronization hotspots in the
-virtual machine. Threads synchronize with each other using mutual exclusion. We
-use a lock in the work queue to protect queue operations.  Given threads $T_1$
-and $T_2$, we enumerate the most important synchronization hotspots:
-
-\begin{itemize}
-
-   \item \textbf{New facts}: When a node executes in $T_1$ and derives facts to
-   a node in $T_2$, $T_1$ first buffers the facts and then sends them to the
-   target node. Here, it checks if the node is currently \textbf{idle} and then
-   synchronizes with $T_2$ to add the node to the $T_2$'s queue.  If $T_2$ is
-   inactive  then $T_1$ also synchronizes with $T_2$ to change $T_2$'s state to
-   \emph{active}.
-
-   \item \textbf{Node stealing}: $T_1$ synchronizes with $T_2$ when it attempts
-   to steal nodes from $T_2$ by removing half of the nodes from one of $T_2$'s
-   queues.
-
-\end{itemize}
-
+\section{Communication And Locking}
 \input{implementation/locks}
 
 \section{Memory Allocation}
 \input{implementation/allocation}
 
+\section{Experimental Evaluation}
+\input{implementation/evaluation}
+
 \section{Related Work}
 \input{implementation/related_work}
 
-\section{Experimental Evaluation}
-\input{implementation/evaluation}
 
 \section{Chapter Summary}
 

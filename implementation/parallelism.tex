@@ -1,22 +1,58 @@
 A key goal of our parallel design is to keep the threads as busy as possible and
 to reduce inter-thread communication. Initially, the VM partitions the
 application graph of $N$ nodes into $T$ subgraphs (the number of threads) and
-then each thread will work on their own subgraph.  During execution, threads can
+then each thread will work on their own subgraph. During execution, threads can
 steal nodes of other threads to keep themselves busy. The load balancing aspect
 of the system is performed by our work scheduler that is based on a simple work
-stealing algorithm. The pseudo-code for the main thread loop is shown in
+stealing algorithm.
+
+Figure~\ref{fig:implementation:vm_overview} presents the layout of our virtual
+machine for a program with six nodes and two running threads. Note that the
+threads share the same memory space and communication between threads is
+achieved using shared memory. Each thread space includes the nodes owned by the
+thread (the dotted arrows represent the edges between nodes) and a \emph{Work
+Queue}, which contains \textbf{active} nodes, i.e., nodes that have new facts to
+process. This work queue is implemented as a linked list.  Initially, the work
+queue is filled with all the nodes of the thread in order to derive the initial
+facts. Not shown in the picture is the thread state flag, which represents the
+state of thread and can be one of the following values:
+
+\begin{itemize}
+
+   \item \textbf{active}: The thread has a non-empty \emph{Work Queue} and/or is
+      currently executing rules for a node.
+
+   \item \textbf{idle}: The thread has no active nodes and is trying to
+      synchronize with other threads to terminate the program.
+   
+   \item \textbf{stealing}: The thread is attemping to steal nodes from other
+      threads.
+\end{itemize}
+
+Figure~\ref{fig:implementation:thread_states} presents the valid transitions for
+the thread state flag.
+
+\begin{figure}[ht]
+   \centering
+   \includegraphics[width=0.4\textwidth]{figures/implementation/thread_states.pdf}
+   \caption{The thread state machine as represented by the state flag. During
+      the lifetime of a program, each thread goes through different states as
+      specified by the state machine.}
+   \label{fig:implementation:thread_states}
+\end{figure}
+
+The pseudo-code for the main thread loop is shown in
 Fig.~\ref{alg:thread_work_loop}. In each round, a thread inspects its work queue
-for \emph{active nodes}, which are nodes with new candidate rules and, if there
-is any, procedure \texttt{process\_node()} performs computation at the node
-level. If the work queue is empty, the thread attempts to steal half of the
-nodes from another thread. Starting from a random thread, it cycles through all
-the threads to find one active thread. Eventually, there will be no more work to
-do and the threads will go idle. There is a global atomic counter, a global
-boolean flag and one state flag for each thread that are used to detect
+for active nodes, procedure \texttt{process\_node()} performs computation at the
+node level.  When a thread's work queue is empty, it attempts to steal half of
+the nodes from another thread. Starting from a random thread, it cycles through
+all the threads to find one active thread. Eventually, there will be no more
+work to do and the threads will go idle. There is a global atomic counter, a
+global boolean flag and one state flag for each thread that are used to detect
 termination. Once a thread goes idle, it decrements the global counter and
-changes its flag to idle. If the counter reaches zero, the global flag is set to
-idle. Since every thread will be busy-waiting and checking the global flag, they
-will detect the change and stop executing.
+changes its flag to idle.  If the counter reaches zero, the global flag is set
+to idle. Since every thread will be busy-waiting and checking the global flag,
+they will detect the change and stop executing.
 
 \begin{figure}
 \begin{algorithm}[H]
@@ -57,19 +93,6 @@ will detect the change and stop executing.
  \label{alg:thread_work_loop}
 \end{figure}
 
-Figure~\ref{fig:implementation:vm_overview} presents the layout of our virtual
-machine for a program with six nodes and two running threads. Each thread space
-includes the nodes owned by the thread (the dotted arrows represent the edges
-between nodes) and a \emph{Work Queue}, which contains \emph{active nodes},
-i.e., nodes that have new facts to process, and can be implemented as a simple
-linked list. Initially, the \emph{Work Queue} is filled with all the nodes of
-the thread in order to derive the initial facts.
-Figure~\ref{fig:implementation:vm_overview} also illustrates the internal
-structure layout of a node, which includes: the database of linear facts
-(\emph{Linear DB}); the database of persistent facts (\emph{Persistent DB}); the
-rule matching structures (\emph{Rule Engine}); and an auxiliary buffer for
-storing intermediate facts coming from other threads (\emph{Fact Buffer}).
-
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/implementation/vm_overview.pdf}
@@ -84,16 +107,15 @@ Whenever a new fact is derived through rule derivation, we need to update the
 data structures for the corresponding node. This is trivial if the thread that
 derived the fact also owns the node. If that is not the case, then we have to
 synchronize since multiple threads might be updating the same node's data
-structures. We added a lock and a boolean flag to each node to protect the
-access to its data structures. When the flag is activated, it means that the
-node is currently being executed by the owning thread. For example, in
-Fig.~\ref{fig:implementation:vm_overview}, if thread 2 derives a fact to node
-\texttt{@1} (owned by thread 1), then thread 2 checks the node's flag and if not
-activated, will lock node \texttt{@1} and perform the required updates
-(\emph{New fact (1)}). If the flag is activated, it will not touch the main node
-data structures, but instead will add the new fact to \emph{Fact Buffer}
-(\emph{New fact (2)}). The facts stored in \emph{Fact Buffer} will then be
-processed whenever the corresponding node's flag becomes active.
+structures. For example, in Fig.~\ref{fig:implementation:vm_overview}, when
+thread 2 derives a fact to node \texttt{@1} (owned by thread 1), it first locks
+node \texttt{@1} using the \emph{Main Lock} and then it attempts to lock
+\emph{DB Lock}, which gives thread 2 full access to the node. In this case,
+thread 2 adds the new fact to the database (\emph{New fact (1)}) and to the rule
+engine. However, if the \emph{DB Lock} could not be acquired because the node
+\code{@1} is currently being executed, then the new fact is added to \emph{Fact
+Buffer} (\emph{New fact (2)}). The facts stored in \emph{Fact Buffer} will then
+be processed whenever the corresponding node's flag becomes active.
 
 There is another thread interaction that might happen during fact derivation if
 the node receiving a new fact is not active. In such case, the sending thread
