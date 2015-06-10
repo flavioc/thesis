@@ -42,8 +42,8 @@ In order to reduce thread contention in the allocator, each thread uses a
 different instance of the threaded allocator. When a thread wants to allocate an
 object, it asks its own allocator for a new object. When deallocating, a thread
 may deallocate an object that is part of another thread's allocator. However,
-this is not an issue since the thread allocator does not need to synchronize
-because chunks are never garbage collected from the system.
+this is not an issue since chunks are not garbage collected from the system,
+which allows another thread to reuse the pointer for a later allocation.
 
 \iffalse
 \subsection{Fact Allocation}

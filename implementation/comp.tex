@@ -1,136 +1,133 @@
 As an intermediate step, our compiler first transforms rules into high level
 instructions that are then transformed into C++. In Appendix~\ref{appendix:vm}
 we present an overview of the high level instructions that can be used as a
-reference to the operations that are required by the compiler. In this
-section, we present the main algorithm of the compiler and its key
-optimizations. However, all the examples are shown in C++ since it makes it
-easier to understand how the final code looks like.
+reference to the operations that are required by the compiler. In this section,
+we present the main algorithm of the compiler and its key optimizations. To make
+our presentation more readable, we present our examples using pseudo-code
+instead of C++ code.
 
 \subsection{Ordinary Rules}\label{sec:compile}
 
 After an inference rule is compiled, it must respect the \emph{fact constraints}
 (facts must exist in the database) and the \emph{join constraints} that can be
 represented by variable constraints and/or boolean expressions. For instance,
-consider gain the second rule of the SSSP program presented in
-Fig.~\ref{code:shortest_path_program}:
+consider the second rule of the bipartiteness checking program presented in
+Fig.~\ref{language:code:bichecking}:
 
-\begin{Verbatim}[label=example_rule,fontsize=\codesize]
-shortest(A, D1, P1), D1 <= D2, relax(A, D2, P2)
-   -o shortest(A, D1, P1).
+\begin{Verbatim}[fontsize=\codesize]
+visit(A, P), colored(A, P) -o colored(A, P).
 \end{Verbatim}
 
 The fact constraints include the facts required to trigger the rule, namely
-\texttt{shortest(A, D1, P1)} and \texttt{relax(A, D2, P2)}, and the join
-constraints include the expression \texttt{D1 <= D2}.
-
-However, rules may also have other less obvious join constraints such as:
+\code{visit(A, P)} and \code{visited(A, P)}, and the join constraints include
+the implicit constraint that the second argument of \code{visit} must be equal
+to the second argument of \code{colored} because the variable \code{P} is used
+for both arguments. However, rules may also have explicit constraints, such as:
 
 \begin{Verbatim}[fontsize=\codesize]
-new-neighbor-pagerank(A, B, New),
-neighbor-pagerank(A, B, Old)
-   -o neighbor-pagerank(A, B, New).
+visit(A, P1), colored(A, P2), P1 <> P2 -o fail(A).
 \end{Verbatim}
 
-\noindent
-where variable \texttt{B} must have the same value in both facts\footnote{Rule taken
-from an asynchronous PageRank program.}.
+The data structures presented in Section~\ref{sec:data_structures} support
+iteration over facts and, for the data structures for linear facts, also support
+deletion. Iteration is provided through \emph{iterators}. For linked lists, the
+iterator is simply the fact that can be iterated by following the \code{next}
+pointers. For hash tables, it is possible to iterate through the whole table or
+iterate through a single bucket. For tries, while iteration goes through every
+fact, the operation can be customized with a matching specification in order to
+prune search. A matching specification includes argument assignments (e.g.,
+argument $i = V$, where $V$ is a concrete value).
 
-\subsection{Iterators}
+To illustrate how rules are compiled, consider again the rule of the
+bipartiteness checking program:
 
-The data structures for facts presented in Section~\ref{sec:data_structures}
-support the \emph{iterator} pattern. For linked lists, the iterator goes
-through every fact in the list while the hash table iterator can either iterate
-through the whole table or iterate through a single bucket. A bucket iterator is
-in fact a linked list iterator that starts from a given argument.
-For tries, while the default iterator goes through every fact in
-the trie, it can be customized with a matching specification in
-order to reduce search. A matching specification includes argument
-assignments (e.g., argument $i = V$, where $V$ is a concrete value).
+\begin{Verbatim}[fontsize=\codesize]
+visit(A, P), colored(A, P) -o colored(A, P).
+\end{Verbatim}
 
-Iterators are heavily used in the compiled code. For instance, the second rule in
-Fig.~\ref{code:shortest_path_program} is compiled as follows:
+The compiler transforms the rule into two nested \emph{while} loops, as follows:
 
 \begin{Verbatim}[numbers=left,fontsize=\codesize]
-for(auto it1(linked_list("shortest").begin()); it1 != linked_list("shortest").end(); )
+colored_list <- linked_list(``colored'')
+visit_list <- linked_list(``visit'')
+colored <- colored_list.head()
+while(colored is valid)
 {
-   fact *f1(*it1);
-   for(auto it2(linked_list("relax").begin()); it2 != linked_list("relax").end(); )
+   visit <- visit_list.head() // Retrieve first element of the list.
+   while(visit is valid)
    {
-      fact *f2(*it2);
+      if(visit.get_int(1) == colored.get_int(1)) { // Equal arguments?
+         new_colored <- create_fact(``colored'') // New fact for predicate colored.
+         new_colored.set_int(1, visit.get_int(1)) // Set arguments.
 
-      if(f1->get_int(1) <= f2->get_int(1)) {
-         fact *new_shortest(new fact("shortest"));
-         new_shortest->set_int(1, f1->get_int(1));
-         new_shortest->set_list(2, f1->get_list(2));
+         // New fact is derived.
+         colored_list.add(new_colored) // Add new fact to the linked list.
 
-         // new fact was derived
-         linked_list("shortest").push_back(new_shortest);
-
-         // deleting facts
-         it1 = linked_list("shortest").erase(it1); // remove from list
-         it2 = linked_list("relax").erase(it2);
-         return;
+         // Deleting facts.
+         colored_list.erase(colored)
+         visit_list.erase(visit)
+         return
       }
-      ++it2;
+      visit <- visit.next()
    }
-   ++it1;
+   colored <- colored.next()
 }
 \end{Verbatim}
 
-The compilation algorithm iterates through the fact expressions in rule's LHS
+The compilation algorithm iterates through the atomic propositions in rule's LHS
 and creates nested loops to try all the possible combinations of facts.  For
-this rule, all the pairs of facts \texttt{shortest} and \texttt{relax} must be
-matched until the constraint \texttt{D1 <= D2} is true. First, an iterator for
-\texttt{shortest} is created that will loop through all \texttt{shortest} facts
-in the list. Inside the loop, a nested iterator is created for predicate
-\texttt{relax}. This inner loop includes a check for the \texttt{D1 <= D2}
-constraint. If the constraint expression is true then the rule matches and a new
-\texttt{shortest} fact is derived and two used linear facts are retracted by
-erasing the iterators from the linked lists. Note that after the rule is
-derived, the code must return since there is a higher priority rule that may be
-triggered with the new \texttt{shortest} fact (see
-Fig.~\ref{code:shortest_path_program}). This enforces the priority semantics of
+this rule, all the pairs of facts \code{colored} and \code{visit} must be
+matched until implicit constraint is true. First, the \code{colored} linked list
+is iterated over by first retrieving the head fact and then using the
+\code{next} pointer of each fact. Inside this outer loop, a nested \emph{while}
+loop is created for predicate \code{visit}. This inner loop includes a check for
+the constraint. If the constraint expression is true then the rule matches and a
+new \code{colored} fact is derived and two used linear facts are consumed by
+erasing them from the linked lists. Note that after the rule is derived, the
+code must \code{return} to terminate the rule since there is a higher priority
+rule that may be triggered with the new \code{colored} fact (see
+Fig.~\ref{language:code:bichecking}). This enforces the priority semantics of
 the language.
     
-If the constraint had failed, another \texttt{relax} fact would have been tried
-by incrementing \texttt{it2}. Likewise, if the current \texttt{f1} fact fails
-for all \texttt{f2} facts, then the next one in the list is tried
-by incrementing \texttt{it1}.
+If the constraint had failed, another \code{visit} fact would have been used by
+assigning \code{visit} to \code{visit.next()}.  Likewise, if the initial
+\code{colored} fact fails for all \code{visit} facts, then the next
+\code{colored} fact in the list is tried by following the \code{next} pointer.
 
 \begin{figure}
 \begin{algorithm}[H]
  \KwData{Rule R1, Rules}
  \KwResult{Compiled Code}
- $FactExprs \longleftarrow FactExprsFromRule(R1)$\;
+ $LHSProps \longleftarrow LHSAtomicPropositionsFromRule(R1)$\;
  $Constraints \longleftarrow ConstraintsFromRule(R1)$\;
  $Code \longleftarrow CreateFunctionForRule()$\;
- $Iterators \longleftarrow []$\;
- $CompiledFacts = []$\;
- \While{$FactExprs$ not empty}{
-  $Fact \longleftarrow RemoveBestFactExpr(FactExprs)$\;
-  $CompiledFacts.push(Fact)$\;
-  $Iterator \longleftarrow Code.InsertIterator(Fact)$\;
-  $Iterators.push(Iterator)$\;
+ $FactIterators \longleftarrow []$\;
+ $CompiledProps = []$\;
+ \While{$LHSProps$ not empty}{
+  $Prop \longleftarrow RemoveBestProposition(LHSProps)$\;
+  $CompiledProps.push(Prop)$\;
+  $Iterator \longleftarrow Code.InsertIteration(Prop)$\;
+  $FactIterators.push(Iterator)$\;
   \tcc{Select constraints that are covered by CompiledFacts.}
-  $NextConstraints \longleftarrow RemoveConstraints(Constraints, CompiledFacts)$\;
+  $NextConstraints \longleftarrow RemoveConstraints(Constraints, CompiledProps)$\;
   $Code.InsertConstraints(NextConstraints)$\;
  }
- $HeadFacts = HeadTemplatesFromRule(R1)$\;
- \While{$HeadFacts$ not empty}{
-    $Fact \longleftarrow RemoveFact(HeadFacts)$\;
-    $Code.InsertDerivation(Fact)$\;
+ $RHSProps = RHSAtomicPropositionsFromRule(R1)$\;
+ \While{$RHSProps$ not empty}{
+    $Prop \longleftarrow RemoveFact(RHSProps)$\;
+    $Code.InsertDerivation(Prop)$\;
  }
- \For{$Iterator \in Iterators$}{
+ \For{$Iterator \in FactIterators$}{
     \If{$IsLinear(Iterator)$}{
        $Code.InsertRemove(Iterator)$\;
     }
  }
  \tcc{Enforce rule priorities.}
- \uIf{$FactsDerivedUsedBefore(Head, Program, R1)$}{
+ \uIf{$FactsDerivedUsedBefore(Rules, R1)$}{
     $Code.InsertReturn()$\;
  }
  \Else{
-    $Code.InsertGoto(FirstLinear(Iterators))$\;
+    $Code.InsertGoto(FirstLinear(FactIterators))$\;
  }
  \Return{$Code$}
 \end{algorithm}
@@ -142,16 +139,16 @@ Figure~\ref{alg:compile_rule} presents the algorithm for compiling rules into
 C++ code. First, we split the rule's RHS into atomic propositions and
 constraints. Fact expressions map directly to iterators while fact constraints
 map to \emph{if} expressions. A possible compilation strategy is to first
-compile all the fact expressions and then compile the constraints. However, this
-may require unneeded database lookups since some constraints may fail early.
-Therefore, our compiler introduces constraints as soon as all the variables in
-the constraint are all included in the already compiled fact expressions. The
-order in which fact expressions are selected for compilation does not interfer
-with the correctness of the compiled code, thus our compiler selects the fact
-expressions ($RemoveBestFactExpr$) by their potential to activate constraints,
-therefore avoiding undesirable database lookups. If two fact expressions have
-the same number of new constraints, then the compiler always picks the
-persistent fact expression since persistent facts are not deleted.
+compile all the atomic propositions and then compile the constraints. However,
+this may require unneeded database lookups since some constraints may fail
+early.  Therefore, our compiler introduces constraints as soon as all the
+variables in the constraint are all included in the already compiled atomic
+propositions. The order in which fact propositions are selected for compilation
+does not interfere with the correctness of the compiled code, thus our compiler
+selects the atomic proposition ($RemoveBestProposition$) by their potential to
+activate constraints, therefore avoiding undesirable database lookups. If two
+atomic propositions have the same number of new constraints, then the compiler
+always picks the persistent proposition since persistent facts are not deleted.
 
 Derivation of new facts belonging to the local node implies adding the new fact
 to the local node data structure. Facts that belong to other nodes are sent
@@ -160,52 +157,55 @@ using an appropriate runtime API.
 \subsection{Persistence Checking}
 
 Not all linear facts need to be deleted. For instance, in the compiled rule
-above, the fact \texttt{shortest(A, D1, P1)} is re-derived in the rule's RHS.
-Our compiler is able to turn linear loops into persistent loops for linear facts
-that are retracted and then asserted.  The rule is then compiled as follows:
+above, the fact \code{colored(A, P)} is re-derived in the rule's RHS.  Our
+compiler is able to turn linear loops into persistent loops for linear facts
+that are consumed and then asserted. The rule is then compiled as follows:
 
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\$\#\&]
-for(auto it1(linked_list("shortest").begin()); it1 != linked_list("shortest").end(); )
+colored_list <- linked_list(``colored'')
+visit_list <- linked_list(``visit'')
+colored <- colored_list.head()
+while(colored is valid)
 {
-   fact *f1(*it1);
-   for(auto it2(linked_list("relax").begin()); it2 != linked_list("relax").end(); )
+   visit <- visit_list.head() // Retrieve first element of the list.
+   while(visit is valid)
    {
-      fact *f2(*it2);
-      if(f1->get_int(1) <= f2->get_int(1)) {
-         it2 = linked_list("relax").erase(it2);
-         goto next;$label#line:implementation:goto&
+      if(visit.get_int(1) == colored.get_int(1)) { // Equal arguments?
+         // Delete visit.
+         vist = visit_list.erase(visit) // Get next visit fact.
+         $textbf#goto next&$label#line:implementation:goto&
       }
-      ++it2;
-next: continue;
+      visit <- visit.next()
+$textbf#next:&
+      $textbf#continue&
    }
-   ++it1;
+   colored <- colored.next()
 }
 \end{Verbatim}
 
-In this new version of the code, only the \texttt{relax} facts are deleted,
-while the \texttt{shortest} facts remain untouched. In the SSSP program, each
-node has one \texttt{shortest} fact and this compiled code simply filters out
-the \texttt{relax} facts with the distances that are equal or greater than the
-current best distance. Note that now have a \emph{goto statement}
-(line~\ref{line:implementation:goto}) that is executed when the rule is derived.
-In this case, since no new \texttt{shortest} fact was derived, we can avoid
-returning to enforce rule priorities and we can continue to try to fire the rule
-as many times as possible.
+In this new version of the code, only the \code{visit} facts are deleted, while
+the \code{colored} facts remain untouched. In the bipartiteness checking
+program, each node has one \code{colored} fact and this compiled code simply
+filters out the \code{visit} facts with the same color.  Note that now have a
+\emph{goto statement} (line~\ref{line:implementation:goto}) that is executed
+when the rule is derived. In this case, since no new \code{colored} fact was
+derived, we avoid returning to enforce rule priorities and immediately continue
+to try to derive the rule as many times as possible.
 
 All the rule combinations are attempted in cases where a rule does not derive
 any facts or the facts derived do not appear before the rule, that is, the new
 facts are only used in lower priority rules. This is specified in the final
 \emph{if statement} in Fig.~\ref{alg:compile_rule}. If the rule does not return,
 then we always jump to the first loop that uses linear facts. We must jump to
-the first linear loop because we cannot use
-the next fact from the deepest loop since we may have constraints between the
-first linear loop and the deepest loop that were validated using deleted facts.
+the first linear loop because we cannot use the next fact from the deepest loop
+since we may have constraints between the first linear loop and the deepest loop
+that were validated using deleted facts.
 
 \subsection{Updating Facts}
 
-Many inference rules retract and then derive the same predicate but with
-different arguments. The compiler recognizes those cases and instead of
-retracting the fact from its linked list or hash table, it updates the fact
+Many inference rules consume and then derive the same predicate but with
+different arguments. The compiler recognizes those cases and, instead of
+consuming the fact from its linked list or hash table, it updates the fact
 in-place. As an example, consider the following rule:
 
 \begin{Verbatim}[fontsize=\codesize]
@@ -214,41 +214,44 @@ neighbor-pagerank(A, B, Old)
    -o neighbor-pagerank(A, B, New).
 \end{Verbatim}
 
-Assuming that \texttt{neighbor-pagerank} is stored in a hash table and indexed by the
-second argument, the code for the rule above is as follows:
+Assuming that \code{neighbor-pagerank} is stored in a hash table and indexed by
+the second argument, the code for the rule above is as follows:
 
 \begin{Verbatim}[numbers=left,fontsize=\codesize]
-for(auto it1(linked_list("new-neighbor-pagerank").begin()); it1 !=
-      linked_list("new-neighbor-pagerank").end(); )
+new_neighbor_pagerank_list <- linked_list(``new-neighbor-pagerank'')
+neighbor_pagerank_table <- hash_table(``neighbor-pagerank'')
+new_neighbor_pagerank <- new_neighbor_pagerank.head()<++>
+while(new_neighbor_pagerank is valid)
 {
-   fact *f1(*it1);
-   // hash table for neighbor-pagerank is indexed by the second argument
-   // therefore we search for the bucket using the second argument of new-neighbor-pagerank
-   hash_bucket bucket(hash_table("neighbor-pagerank").find(f1->get_node(1));
-   for(auto it2(bucket.begin()); it2 != bucket.end(); )
+   // Hash table for neighbor-pagerank is indexed by the second argument,
+   // therefore we search for the bucket using the second argument of new-neighbor-pagerank.
+   neighbor_pagerank <- neighbor_pagerank_table.lookup(new_neighbor_pagerank.get_node(1))
+   while(neighbor_pagerank is valid)
    {
-      fact *f2(*it2);
-      if(f1->get_node(1) == f2->get_node(1)) {
-         f2->set_float(2, f1->get_float(2)); // update neighbor-pagerank
-         it1 = linked_list("new-neighbor-rank").erase(it1);
-         goto next;
+      if(new_neighbor_pagerank.get_node(1) == neighbor_pagerank.get_node(1))
+      {
+         // Update fact argument.
+         neighbor_pagerank.set_float(2, new_neighbor_pagerank.get_float(2))
+         new_neighbor_pagerank <- new_neighbor_pagerank_list.erase(new_neighbor_pagerank)
+         goto next
       }
-      ++it2;
+      neighbor_pagerank <- neighbor_pagerank.next()
    }
-   ++it1;
-next: continue;
+   new_neighbor_pagerank <- new_neighbor_pagerank.next()
+next:
+   continue
 }
 \end{Verbatim}
 
-Note that \texttt{neighbor-pagerank} is updated using \texttt{set\_float}. The
-rule also does not return since this is the highest priority rule. If there
-was a higher priority rule using \texttt{neighbor-pagerank}, then the code
-would have to return since an update fact represents a new fact.
+Note that \code{neighbor-pagerank} fact is updated using \code{set\_float}. The
+rule also does not return since it is the highest priority rule. If there was a
+higher priority rule using \code{neighbor-pagerank}, then the code would have to
+return since the act of updating a fact is equivalent to deriving a new one.
 
 \subsection{Enforcing Linearity}
 
 We have already introduced the \emph{goto} statement as a way to avoid reusing
-retracted linear facts. However, this is not enough in order to enforce
+consumed linear facts. However, this is not enough in order to enforce
 linearity of facts. Consider the following inference rule:
 
 \begin{Verbatim}[fontsize=\codesize]
@@ -256,33 +259,38 @@ add(A, N1), add(A, N2) -o add(A, N1 + N2).
 \end{Verbatim}
 
 Using the standard compilation algorithm, two nested loops are created, one for
-each \texttt{add} fact. However, notice that there is an implicit constraint
-when creating the iterator for \texttt{add(A, N2)} since this fact cannot be the
-same as the first one. That would invalidate linearity since a single linear fact would
-be used to prove two linear facts. This is easily solved by adding a constraint
-for the inner loop by checking if the fact pointer is the same as the first one.
+each \code{add} fact. However, notice that there is an implicit constraint when
+creating the iterator for \code{add(A, N2)} since this fact cannot be the same
+as the first one. That would invalidate linearity since a single linear fact
+would be used to prove two linear facts. This is easily solved by adding a
+constraint in the inner loop by checking if the second fact is the same as the
+first one.
 
 \begin{Verbatim}[numbers=left,fontsize=\codesize]
-for(auto it1(linked_list("add").begin()); it1 != linked_list("add").end(); )
+add_list <- linked_list(``add'')
+add1 <- add_list.head()
+while(add1 is valid)
 {
-   fact *f1(*it1);
-   for(auto it2(linked_list("add").begin()); it2 != linked_list("add").end(); )
+   add2 <- add_list.head()
+   while(add2 is valid)
    {
-      fact *f2(*it2);
-      if(f1 != f2) {
-         f1->set_int(1, f1->get_int(1) + f2->get_int(1));
-         it2 = linked_list("add").erase(it2);
-         goto next;
+      if(add1 != add2)
+      {
+         add1.set_int(1, add1.get_int(1) + add2.get_int(1))
+         add2 <- add_list.erase(add2)
+         goto next
       }
-      ++it2;
+      add2 <- add2.next()
    }
-   ++it1;
-next: continue;
+   add1 <- add1.next()
+next:
+   continue
 }
 \end{Verbatim}
 
-Figure~\ref{fig:update_add} presents the steps for executing this rule when the
-database contains three facts. The iterators never point to the same fact.
+Figure~\ref{fig:local:update_add} presents the steps for executing this rule
+when the database contains three facts. The fact variables never point to the
+same fact.
 
 \begin{figure}
 \centering
@@ -300,129 +308,139 @@ database contains three facts. The iterators never point to the same fact.
 \end{minipage}
 \caption{Executing the add rule. First, the two iterators point to
    the first and second facts and the former is updated while the latter is
-   retracted. The second iterator then moves to the next fact and the first fact is
-   updated again, now to the value \texttt{6}, the expected result.}
-\label{fig:update_add}
+   consumed. The second iterator then moves to the next fact and the first fact is
+   updated again, now to the value \code{6}, the expected result.}
+\label{fig:local:update_add}
 \end{figure}
 
 \subsection{Comprehensions}
 
-Comprehensions were initially presented in the first rule of the SSSP program.
+Consider the comprehension used in the first rule of the bipartiteness checking
+program in Fig.~\ref{language:code:bichecking}:
 
 \begin{Verbatim}[fontsize=\codesize]
-shortest(A, D1, P1), D1 > D2, relax(A, D2, P2)
-   -o shortest(A, D2, P2),
-   {B, W | !edge(A, B, W) | relax(B, D2 + W, P2 ++ [B])}.
+visit(A, P), uncolored(A)
+   -o {B | !edge(A, B) -o visit(B, next(P))},
+      colored(A, P).
 \end{Verbatim}
 
 The attentive reader will remember that comprehensions are sub-rules, therefore
-they should be compiled like normal rules. However, they do not need to return
-due to rule priorities since all the combinations of the comprehension must be
-derived. However, the rule itself must return if any of its comprehensions
-has derived a fact that is used by a higher priority rule.
-The example rule does not need to return since it has the highest priority and the
-\texttt{relax} facts derived in the comprehension are all sent to other nodes.
-The code for the rule is shown below:
+they should be compiled like normal rules. Comprehensions must also derive all
+possible combinations. However, the rule itself must return if any combination
+of the comprehension has derived a fact that is used by a higher priority rule.
+The example rule does not need to return since it has the highest priority and
+the \code{visit} facts derived in the comprehension are contained in other
+nodes. The code for the rule is shown below:
 
 \begin{Verbatim}[numbers=left,fontsize=\codesize]
-for(auto it1(linked_list("shortest").begin()); it1 != linked_list("shortest").end(); )
+colored_list <- linked_list(``colored'')
+visit_list <- linked_list(``visit'')
+uncolored_list <- linked_list(``uncolored'')
+visit <- visit_list.head()
+while(visit is valid)
 {
-   fact *f1(*it1);
-   for(auto it2(linked_list("relax").begin()); it2 != linked_list("relax").end(); )
+   uncolored <- uncolored_list.head()
+   while(uncolored is valid)
    {
-      fact *f2(*it2);
-      if(f1->get_int(1) > f2->get_int(1)) {
-         // comprehension code
-         for(auto it3(trie("edge").begin()); it3 != trie("edge").end(); ) {
-            fact *f3(*it3);
-            fact *new_relax(new fact("relax"));
-            new_relax->set_int(1, f2->get_int(1) + f3->get_int(2));
-            new_relax->set_list(append(f2->get_list(2), list(f3->get_node(1))));
-            send_fact(new_relax, f3->get_node(1));
-            ++it3;
-         }
-         f1->set_int(1, f2->get_int(1));
-         f1->set_list(2, f2->get_list(2));
-         it2 = linked_list("relax").erase(it2);
-         goto next;
+      // Comprehension code.
+      edge_trie = trie(``edge'')
+      edge <- edge_trie.first()
+      while(edge is valid)
+      {
+         new_visit <- create_fact(``visit'') // New visit fact.
+         new_visit.set_int(1, next(visit.get_int(1)))
+         // Send fact to B.
+         send_fact(new_visit, edge.get_node(1))
+         edge <- edge.next()
       }
-      ++it2;
+      new_colored <- create_fact(``colored'')
+      new_colored.set_int(1, visit.get_int(1))
+      colored_list.add(new_colored)
+      visit <- visit_list.erase(visit)
+      uncolored <- uncolored_list.erase(uncolored)
+      goto next
    }
-   ++it1;
-next: continue;
+   uncolored <- uncolored.next()
+next:
+   continue
 }
 \end{Verbatim}
 
 Special care must be taken when the comprehension's sub-rule uses the same
-predicates that are derived by the main rule.  Rule inference must be atomic in
-the sense that after a rule matches, the comprehensions in the rule's RHS can
-use the facts that were present before the rule was matched.  Consider a rule
-with $n$ comprehensions or aggregates, where $CB_i$ and $CH_i$ is the LHS and
-RHS of the comprehension/aggregate, respectively, and $H$ represents the atomic
-propositions found in rule's RHS. The formula used by the compiler to detect
-conflicts between predicates is the following:
+predicates that are derived by the main rule. Rule inference must be atomic in
+the sense that, after a rule matches, the comprehensions in the rule's RHS can
+use the facts that were present before the rule was matched. Consider a rule
+with $n$ comprehensions or aggregates, where $CLHS_i$ and $CRHS_i$ is the LHS
+and RHS of the comprehension/aggregate, respectively, and $RHSP$ represents the
+atomic propositions found in rule's RHS. The formula used by the compiler to
+detect conflicts between predicates is the following:
 
 \[
-\bigcup^{n}_i[CB_i \cap H] \cup \bigcup^{n}_i [CB_i \cap \bigcup^{n}_j[CH_j]]
+\bigcup^{n}_i[CLHS_i \cap RHSP] \cup \bigcup^{n}_i [CLHS_i \cap \bigcup^{n}_j[CRHS_j]]
 \]
 
 If the result of the formula is not empty, then the compiler disables
 optimizations for the conflicting predicates and derives the corresponding facts
-into the fact buffer that are then added back into the database.
-Fortunately, most rules in LM programs do not show conflicts and thus
-can be fully optimized.
+into the fact buffer that are then added back into the database. As an example,
+consider the following rule:
+
+\begin{Verbatim}[fontsize=\codesize]
+update(A), !edge(A, B)
+   -o {P | points(A, B, P) -o update(B)},
+      points(A, B, 1).
+\end{Verbatim}
+
+We have $n = 1$ comprehensions, where $CLHS_0 = $ \code{points(A, B, P)},
+$CRHS_0 =$ \code{update(B)}, and $RHSP = $ \code{points(A, B, 1)}. There is a
+conflict because $CLHS_0 \cap RHSP = \{\mathtt{points}\}$, which requires
+\code{points(A, B, 1)} to be derived after the comprehension or be stored in a
+temporary data structure to avoid conflicts with the comprehensions, which could
+consume the newly derived fact. Fortunately, most rules in LM programs do not
+show these kinds of conflicts and thus can be fully optimized.
 
 \subsection{Aggregates}
 
 Aggregates are similar to comprehensions. They are also sub-rules but a value is
 accumulated for each combination of the sub-rule. After all the combinations are
 inferred, a final RHS term is derived with the accumulated term. Consider the
-following PageRank rule:
+following rule that computes a PageRank value by aggregating all neighbors
+PageRank values:
 
 \begin{Verbatim}[fontsize=\codesize]
 update(A), pagerank(A, OldRank)
-      -o [sum => V | B | neighbor-pagerank(A, B, V) | neighbor-pagerank(A, B, V) |
-            pagerank(A, damp/P + (1.0 - damp) * V)].
+      -o [sum => V; B | neighbor-pagerank(A, B, V) -o neighbor-pagerank(A, B, V)
+            -> pagerank(A, damping/P + (1.0 - damping) * V)].
 \end{Verbatim}
 
-The variable \texttt{V} is initialized to \texttt{0.0} and sums all
-the PageRank values of the neighbors as seen in the code below. The aggregate
-value is then used to update the second argument of the initial
-\texttt{pagerank} fact.
+The variable \code{V} is initialized to \code{0.0} and sums all the PageRank
+values of the neighbors as seen in the code below. The aggregate value is then
+used to update the second argument of the initial \code{pagerank} fact.
 
 \begin{Verbatim}[numbers=left,fontsize=\codesize]
-for(auto it1(linked_list("pagerank").begin()); it1 != linked_list("pagerank").end(); )
+pagerank_list <- linked_list(``pagerank'')
+update_list <- linked_list(``update'')
+neighbor_pagerank_list <- linked_list(``neighbor_pagerank_list'')
+pagerank <- pagerank_list.head()
+while(pagerank is valid)
 {
-   fact *f1(*it1);
-   for(auto it2(linked_list("update").begin()); it2 != linked_list("update").end(); )
+   update <- update_list.head()
+   while(update is valid)
    {
-      fact *f2(*it2);
-      double acc(0.0); // aggregate accumulator.
-      for(auto it3(linked_list("neighbor-pagerank").begin()); it3 !=
-            linked_list("neighbor-pagerank").end(); ) {
-         fact *f3(*it3);
-         acc += f3->get_float(2);
-         ++it3; // the sub-rule has no RHS since neighbor-pagerank is re-derived
+      V <- 0.0
+      neighbor_pagerank <- neighbor_pagerank_list.head()
+      while(neighbor_pagerank is valid)
+      {
+         V <- V + neighbor_pagerank.get_float(2)
+         neighbor_pagerank <- neighbor_pagerank.next()
       }
       // RHS of the aggregate
-      f1->set_float(1, damp / P + (1.0 - damp) * V);
-      goto next;
+      pagerank.set_float(1, damping / P + (1.0 - damping) * V)
+      update <- update_list.erase(update)
+      goto next
    }
-   ++it1;
-next: continue;
+   pagerank <- pagerank.next()
+next:
+   continue
 }
 \end{Verbatim}
-
-\subsection{Coordination Directives}
-
-Coordination directives are compiled in two different ways, depending on whether
-they appear in the LHS or RHS of the rule.  Coordination facts in the LHS are
-compiled into code that inspects the state of the virtual machine. For example,
-the fact \texttt{priority} will inspect the target node, retrieve the current
-priority and assign the priority to a variable.  Coordination facts in the RHS
-are also implemented as API commands of the virtual machine instead of being
-added to the database as facts. Semantically, action facts are like any other.
-However, since they are immediately used by the machine, there is no need to
-store them in the database, therefore avoiding unnecessary allocations and
-deallocations.
 

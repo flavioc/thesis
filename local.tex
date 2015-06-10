@@ -1,0 +1,30 @@
+
+This chapter describes the sequential parts of the LM's implementation,
+including the database data structures, rule scheduling and compilation
+algorithms. First, we give a brief overview of the LM's implementation,
+including its compiler and virtual machine. Next, we present the node data
+structure, including a detailed description of the data structures used to
+efficiently manipulate logical facts. We also describe how rules are scheduled
+locally from newly derived facts stored in the database.  Finally, we give a
+description of the compilation algorithm used by our compiler that uses the
+described data structures and turns logical rules into efficient compiled code.
+
+\section{Implementation Overview}
+\input{implementation/overview}
+
+\section{Node Data Structure}\label{sec:data_structures}
+\input{implementation/node}
+
+\section{Rule Engine}\label{section:local:rule_engine}\label{sec:implementation:rule_engine}
+\input{implementation/rule_engine}
+
+\section{Compilation}
+\input{implementation/comp}
+
+\section{Chapter Summary}
+
+In this chapter, we gave an overview of LM's implementation, including the
+compiler and the virtual machine. Afterwards, we focused on the sequential
+aspects of the implementation, namely, the data structures used for manipulating
+facts and how the compiler turns logical rules into efficient code. In the next
+chapter, we focus on the parallel aspects of the virtual machine.

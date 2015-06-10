@@ -15,6 +15,7 @@ belief-propagation-400 th26 4391 4525 4202 -> 4372
 belief-propagation-400 th28 4375 4453 4179 -> 4335
 belief-propagation-400 th30 4073 3801 4019 -> 3964
 belief-propagation-400 th32 3962 3914 3892 -> 3922
+
 min-max-tictactoe th1 20968 21380 21342 -> 21230
 min-max-tictactoe th2 10889 12599 13067 -> 12185
 min-max-tictactoe th4 7320 7106 7035 -> 7153
@@ -23,3 +24,61 @@ min-max-tictactoe th8 4471 4269 4080 -> 4273
 min-max-tictactoe th10 2695 3417 3264 -> 3125
 min-max-tictactoe th12 2997 3489 3136 -> 3207
 min-max-tictactoe th14 3205 2768 3124 -> 3032
+
+8queens-14 th1 175772 177223 175902 -> 176299
+8queens-14 th2 92799 91630 93599 -> 92676
+8queens-14 th4 45721 43762 44208 -> 44563
+8queens-14 th6 29962 29106 31443 -> 30170
+8queens-14 th8 24250 23060 24853 -> 24054
+8queens-14 th10 20647 19183 20465 -> 20098
+8queens-14 th12 17480 17866 17620 -> 17655
+8queens-14 th14 15390 15597 15810 -> 15599
+8queens-14 th16 14271 14989 14238 -> 14499
+8queens-14 th18 14339 14644 13934 -> 14305
+8queens-14 th20 13961 13669 13580 -> 13736
+8queens-14 th22 13016 13327 13521 -> 13288
+8queens-14 th24 14067 14302 13909 -> 14092
+8queens-14 th26 12400 15130 15304 -> 14278
+8queens-14 th28 12521 12154 12348 -> 12341
+8queens-14 th30 12483 14232 11837 -> 12850
+8queens-14 th32 13635 13429 13507 -> 13523
+
+
+new-heat-transfer-120 th1 160664 160328 159785 -> 160259
+new-heat-transfer-120 th2 93454 93922 92931 -> 93435
+new-heat-transfer-120 th4 45591 44013 45670 -> 45091
+new-heat-transfer-120 th6 35112 33181 34761 -> 34351
+new-heat-transfer-120 th8 35895 26104 24423 -> 28807
+new-heat-transfer-120 th10 19591 19483 19058 -> 19377
+new-heat-transfer-120 th12 21934 21235 18920 -> 20696
+new-heat-transfer-120 th14 17404 15090 18034 -> 16842
+new-heat-transfer-120 th16 15615 15401 15199 -> 15405
+new-heat-transfer-120 th18 16097 18628 13544 -> 16089
+new-heat-transfer-120 th20 14456 12231 14921 -> 13869
+new-heat-transfer-120 th22 13495 13284 12452 -> 13077
+new-heat-transfer-120 th24 15626 12199 12064 -> 13296
+new-heat-transfer-120 th26 11680 11820 13034 -> 12178
+new-heat-transfer-120 th28 11888 10280 14943 -> 12370
+new-heat-transfer-120 th30 9745 9404 9833 -> 9660
+new-heat-transfer-120 th32 9640 10416 11733 -> 10596
+
+
+
+shortest-uspowergrid th1 25722 25776 25611 -> 25703
+shortest-uspowergrid th2 11867 12922 12932 -> 12573
+shortest-uspowergrid th4 6187 6153 6089 -> 6143
+shortest-uspowergrid th6 4343 4380 4324 -> 4349
+shortest-uspowergrid th8 3586 3195 3124 -> 3301
+shortest-uspowergrid th10 3207 2868 3131 -> 3068
+shortest-uspowergrid th12 2438 2555 2414 -> 2469
+shortest-uspowergrid th14 2243 2303 2341 -> 2295
+shortest-uspowergrid th16 2008 2040 2387 -> 2145
+shortest-uspowergrid th18 1994 1844 1918 -> 1918
+shortest-uspowergrid th20 1758 1720 1750 -> 1742
+shortest-uspowergrid th22 1716 1814 1676 -> 1735
+shortest-uspowergrid th24 1585 1594 1551 -> 1576
+shortest-uspowergrid th26 1491 1555 1542 -> 1529
+shortest-uspowergrid th28 1566 1589 1462 -> 1539
+shortest-uspowergrid th30 1475 1463 1341 -> 1426
+shortest-uspowergrid th32 1515 1583 1438 -> 1512
+

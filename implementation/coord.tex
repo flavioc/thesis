@@ -55,17 +55,16 @@ owned by the thread and not the highest priority node in the whole program.
 
 \subsection{Node State Machine}\label{sec:node_state_machine}
 
-In order to facilitate the implementation of coordination, we added a state
-variable for each node. The state variable is protected by the node's main lock
-already described in Section~\ref{sec:data_structures}. The state
-machine in Fig.~\ref{fig:implementation:node_states} represents the valid state
-transitions of a node:
+We added a new node state to the state machine presented in
+Fig.~\ref{fig:local:node_states} to accommodate the new coordination facilities.
+We review the states of the state machine presented in
+Fig.~\ref{fig:implementation:node_states}:
 
 \begin{itemize}
-   \item \textbf{working}: the node is executing.
+   \item \textbf{running}: the node is deriving rules.
    \item \textbf{inactive}: the node is inactive, i.e., it has no new facts and is not in any
    queue for processing.
-   \item \textbf{queue}: the node is active with new facts and is in some queue waiting
+   \item \textbf{active}: the node has new facts and is in some queue waiting
    to be processed.
    \item \textbf{stealing}: the node has just been stolen and is in the process of being
    moved to another thread.

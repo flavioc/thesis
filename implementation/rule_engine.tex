@@ -1,0 +1,96 @@
+The rule engine decides which rules may need to be executed while taking into
+account rule priorities. The rule engine is composed of 3 data structures, which
+we describe as follows:
+
+\begin{itemize}
+
+   \item \texttt{Rule Queue} is the bitmap representing the rules scheduled to
+      run. The bit $i-1$ is set if the rule number $i$ is scheduled to run,
+      which depends on fact availability (do we have all the facts required to
+      run the rule?). Rules are executed by fetching the least significant bit
+      of the bitmap, unsetting that bit and then executing the corresponding
+      rule. This is an operation that is accomplished using the \emph{Bit Scan
+      Forward (bsf)} assembly instruction available on x86/x86-64 machines;
+
+   \item \texttt{Rule Counter}, which keeps a count of the number of predicates
+      needed by the rule that exist in the database. For the rule \texttt{a,
+      e(1) -o b} then the rule needs predicates \texttt{a} and \texttt{e} and
+      the rule counter is at the most 2 (where the rule can be executed). The
+      \texttt{Rule Queue} bitmap is updated when the rule counter is increments
+      or decrements to the maximum possible value;
+
+   \item \texttt{Predicate Bitmap} is a bitmap representing the existence of a
+      given predicate in the database. When a predicate becomes available then
+      the \texttt{Rule Counter} is updated to take into account the existence of
+      new facts.
+
+\end{itemize}
+
+To understand how our engine works, consider the following set of facts and
+rules:
+
+\begin{Verbatim}[numbers=left,fontsize=\codesize]
+a, e(1) -o b.  // rule 1
+a -o c.        // rule 2
+b -o d.        // rule 3
+e(0) -o f.     // rule 4
+c -o e(1).     // rule 5
+
+a.
+e(0).
+\end{Verbatim}
+
+\begin{figure}[t]
+   \centering
+   \includegraphics[width=0.8\textwidth]{figures/implementation/rule_queue.pdf}
+
+   \caption{Rule engine data structures for a program with five rules. The
+      initial state is represented in (a), where the rules scheduled to run are
+      1, 2 and 4. After attempting rule 1, bit 0 is unset from the \emph{Rule
+      Queue}, resulting in (b). Figure (c) is the result of deriving rule 2,
+      \code{a -o c}, which marks rule 5 in the \emph{Rule Queue} since the rule
+      is now marked as ``available`` in the \emph{Rule Counter}.}
+
+   \label{fig:implementation:rule_engine}
+\end{figure}
+
+Figure~\ref{fig:implementation:rule_engine} shows the rule engine data
+structures for this example. Since we have facts for predicates \texttt{a} and
+\texttt{e}, the \texttt{Rules Counter} starts with rules 1, 2 and 4 with 2, 1, 1
+predicate counts. Since these rules have the required counter to be applied, the
+\texttt{Rule Queue} bitmap starts with the same three rules
+(Fig.~\ref{fig:implementation:rule_engine}(a)). In order to pick rules for
+execution, we take the rule corresponding to the least significant bit from the
+\texttt{Rule Queue} bitmap, initially the first rule \texttt{a, e(1) -o b}.
+However, since we don't have fact \texttt{e(1)}, this rule fails and its bit in
+\texttt{Rule Queue} must be set to 0.
+Figure~\ref{fig:implementation:rule_engine}(b) shows the rule engine data
+structures at that point.
+
+The next rule in \texttt{Rule Queue} is the second rule \texttt{a -o c}.
+Because the this rule succeeds, fact \texttt{a} is consumed and fact \texttt{c}
+is derived. We thus update \texttt{Predicates Bitmap} accordingly, decreasing
+the counters for the first and second rules in \texttt{Rule Counter} since such
+rules are no longer applicable (\texttt{a} was consumed), and increase the
+counter for the fifth rule since \texttt{c} was derived. Finally, to update the
+\texttt{Rule Queue}, we must schedule the fifth rule since its counter has been
+increased to the required number (we have all predicates).  In the continuation,
+the rule engine will schedule the fourth and fifth rules to run.
+Figure~\ref{fig:implementation:rule_engine}(b) shows the rule engine data
+structures at that point.
+
+Note that every node in the program has the same set of data structures
+presented in Fig.~\ref{fig:implementation:rule_engine}. We use 64 bit integers
+to implement the 2 bitmaps and an array of 16 bits integers for \texttt{Rule
+Counter}.
+
+We do a small optimization to reduce the number of derivations of persistent
+facts and, for that, we divide the program rules into two sets: \emph{persistent
+rules} and \emph{non persistent rules}. Persistent rules are rules where only
+persistent facts are involved. We compile such rules incrementally, i.e., we
+attempt to fire all rules where a persistent fact is used. This is called the
+\emph{pipelined semi-naive} evaluation and it originated in the P2
+system~\cite{Loo-condie-garofalakis-p2}. This evaluation method avoids excessive
+re-derivations of the same fact. The order of derivation does not matter for
+those rules, since only persistent facts are used.
+

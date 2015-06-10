@@ -1,18 +1,30 @@
-In order to protect these important synchronization points, we use ticket spin-locks.
-We now summarize the locks used in the different data structures of the VM:
+In order to protect these important synchronization points, we use ticket
+spin-locks. In Section~\ref{sec:data_structures} describes the locks used to
+protect the node data structures. In addition to these locks, we also have a
+lock per queue data structure that protects the thread's work queue.
+
+In order to manipulate the state flag of each thread (see
+Section~\ref{sec:implementation:parallelism}) we do not use locks but instead
+manipulate the state flag using lock-free \emph{compare-and-swap} operations to
+implement a state machine.
+
+Finally, we summarize the synchronization hotspots by describing how the locks
+are used in order to implement those hotspots.
 
 \begin{description}
-   \item[Queue Locks] A lock per queue data structure that protects access to
-      the work queue.
-   \item[Node Locks] Lock refered in Section~\ref{sec:node_state_machine} and used to protect the state of the node. We have one node lock per node.
-   \item[Database Locks] Locks that protect the database data structures of each node. The lock is activated when the node is executing and can be grabbed by other threads when a fact is sent to another thread. We have one database lock per node.
-\end{description}
 
-In order to manipulate the state flag of each thread (see Section~\ref{sec:implementation:parallelism}) we do not use locks but instead manipulate the state flag using lock-free \emph{compare-and-swap} operations to implement a state machine.
+   \item \textbf{New Facts}: We use the node's \emph{Main Lock} and then attempt
+      to lock the \emph{DB Lock}. If the \emph{Db Lock} cannot be used, then the
+      new facts are added to the \emph{Fact Buffer}, otherwise the node data
+      structure is updated with new facts. If the target node is not currently
+      in any work queue, we lock the destination work queue and then add the
+      node and change the state of the node to \textbf{active}. Finally, if the
+      target thread that owns the target node is \textbf{idle}, we activate it
+      by updating its state flag.
 
-Finally, we now improve the description of the synchronization hotspots by describing how the locks are used in order to implement those hotspots.
+\item \textbf{Node Stealing}: For node stealing, we acquire the lock of the
+   target thread's queue and then copy the stolen node pointers to a temporary
+   buffer. For each node, we use the \emph{Main Lock} to update its
+   \emph{Owner} attribute and then add it to the thread's work queue.
 
-\begin{description}
-\item \textbf{New Facts}: We use the node lock and then attempt to lock the database lock. If the database lock cannot be used, then the new facts are added to the fact buffer, otherwise the node data structure is updated with new facts. If the target node is not currently in any queue, we lock the destination queue (either the standard queue or the priority queue) and then add the node and change the state of the node to \textbf{queue}. Finally, if the target thread that owns the target node is idle, we activate it by updating its state flag.
-\item \textbf{Node Stealing}: For node stealing, we simply have to lock the queue spin-lock of the target thread's queue and then copy the nodes we need to a temporary buffer. Once the buffer is filled up, we unlock the queue's spin-lock. For each node, we use the node lock to update its \textbf{owner} field and then add it to thread's queue.
 \end{description}

@@ -1,27 +1,17 @@
 This chapter describes the multicore implementation of the LM language,
-including its compiler, supporting runtime and parallelism. We first start with
-an overview of the implementation in order to understand how all pieces of the
-implementation fit together. Secondly, we describe how parallelism is achieved,
-including its data structures and thread scheduling. Thirdly, we present the
-implementation details of coordination and how it relates with parallelism.  We
-then describe the runtime and data structure used to implement nodes and the
-database of facts, followed by the compilation algorithm used by our compiler to
-turn logical rules into efficient C++ code.
-
-\section{Overview}
-\input{implementation/overview}
+including its compiler, supporting runtime and parallelism. We give an overview
+of the parallel implementation in order to understand how local computation and
+multithreaded execution fit together.  Finally, we describe how parallelism is
+achieved, including data structures and thread scheduling.
 
 \section{Parallelism}\label{sec:implementation:parallelism}
 \input{implementation/parallelism}
-
-\section{Node Data Structure}\label{sec:data_structures}
-\input{implementation/node}
 
 \subsection{Communication}
 
 At this point, we can now summarize the main thread synchronization hotspots in the
 virtual machine. Threads synchronize with each other using mutual exclusion. We
-use a spin-lock in the work queue to protect queue operations.  Given threads $T_1$
+use a lock in the work queue to protect queue operations.  Given threads $T_1$
 and $T_2$, we enumerate the most important synchronization hotspots:
 
 \begin{itemize}
@@ -41,12 +31,8 @@ and $T_2$, we enumerate the most important synchronization hotspots:
 
 \input{implementation/locks}
 
-
 \section{Memory Allocation}
 \input{implementation/allocation}
-
-\section{Compilation}
-\input{implementation/comp}
 
 \section{Related Work}
 \input{implementation/related_work}

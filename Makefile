@@ -8,7 +8,9 @@ FIGURES := $(wildcard figures/btree/btree_trace*.pdf) \
 	$(wildcard figures/message/message_trace*.pdf) \
 	$(wildcard figures/visit/trace*.pdf) \
 	$(wildcard figures/sssp/coord*.pdf) \
-	$(wildcard figures/sssp/shortest.pdf)
+	$(wildcard figures/sssp/*.pdf) \
+	$(wildcard figures/implementation/*.pdf) \
+	$(wildcard figures/compiler/*.pdf)
 
 all: thesis.pdf
 
@@ -51,7 +53,8 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex ack.tex \
 		lld/cont-p.tex lld/cont-bang-p.tex lld/der-p.tex lld/der-other.tex \
 		lld/aggregates.tex lld/soundness.tex \
 		lld/comprehensions_soundness.tex lld/aggregates_soundness.tex \
-		lld.tex hld.tex sequent_calculus.tex \
+		lld.tex hld.tex sequent_calculus.tex local.tex \
+		implementation/rule_engine.tex \
 		$(EXPERIMENT_FILES) \
 		$(FIGURES)
 	latexmk -pdf thesis.tex

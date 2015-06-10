@@ -1,12 +1,61 @@
 The main characteristic of LM rules is that they are constrained by the first
 argument\footnote{In the implementation, the first argument of each fact is not
-   stored.}. As shown in Fig.~\ref{fig:implementation:vm_overview}, each node
-has its own database of linear facts (\emph{Linear DB}) and a database of
-persistent facts (\emph{Persistent DB}).  Moreover, since only one thread at a
-time will be using a node's database, we do not need to deal with
-synchronization issues.
+stored.}. Rule derivation uses only facts from the same node, therefore there is
+no need to synchronize with other nodes to derive rules. However, when nodes
+derive non-local facts (owned by other nodes), then the implementation must
+synchronize and \emph{send} the facts to the target node. From the point of view
+of the receiving node, these are called \emph{incoming facts}. Note that this is related
+to the parallel aspects of the virtual machine and more details are given in the
+next chapter.
 
-The databases of facts must be implemented efficiently because during matching
+As shown in Fig.~\ref{fig:local:node_overview}, each node contains the
+following attributes:
+
+\begin{itemize}
+   \item \emph{State}: the node state flag which can be one of the following:
+      \textbf{running}, the node is deriving rules; \textbf{inactive}, the node
+      has no new facts to be considered and all candidate rules have been tried;
+      \textbf{active}, the node has new facts to be considered but is waiting to
+      be executed by a thread. Figure~\ref{fig:local:node_states} presents the
+      state machine with the valid state transitions.
+   \item \emph{Main Lock}: a lock that protects the node attributes enumerated
+      in this list except for \emph{Linear DB} and \emph{Persistent DB}.
+   \item \emph{DB Lock}: a lock that protects \emph{Linear DB},
+      \emph{Persistent DB} and \emph{Rule Engine}. The lock is held when the node is deriving rules or
+      when incoming facts from other nodes need to be added to the database data
+      structures.
+   \item \emph{Rule Engine}: a data structure that detects which rules are
+      candidates and should be derived. The data structure is fully explained
+      in Section~\ref{section:local:rule_engine}.
+   \item \emph{Owner}: a pointer to the thread responsible for executing this
+      node.
+   \item \emph{Fact Buffer}: a data structure that holds incoming facts that
+      could not be added to the database data structures since the node is
+      currently deriving rules.
+   \item \emph{Linear DB}: the database of linear facts as an array of data
+      structures for storing linear facts for each linear predicate.
+   \item \emph{Persistent DB}: the database of persistent facts.
+\end{itemize}
+
+\begin{figure}[ht]
+   \centering
+   \includegraphics[width=0.55\textwidth]{figures/local/node_state.pdf}
+   \caption{The node state machine as represented by the state variable. During
+      the lifetime of a program, each node goes through different states as
+      specified by the state machine.}
+   \label{fig:local:node_states}
+\end{figure}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.5\textwidth]{figures/local/node.pdf}
+\caption{Layout of the node data structure.}
+\label{fig:local:node_overview}
+\end{figure*}
+
+\paragraph{Database data structures}
+
+The database of facts must be implemented efficiently because during matching
 of rules we need to restrict the facts using \emph{join constraints}, which fix
 arguments of predicates to instantiated values. A database fact is made up of 2
 pointers (\code{prev} and \code{next}) and a variable number of arguments.
@@ -22,7 +71,7 @@ Facts are stored in one of the four data structures:
 \item \emph{Array Data Structures} are used to store persistent facts that are
    only derived as initial facts and used in rules LHS. Facts stored in this
    data structure do not have the \code{prev} and \code{next} pointers
-   because they are already chained by being part of a contigous memory area.
+   because they are already chained by being part of a contiguous memory area.
 
 \item \emph{Doubly Linked List Data Structures} are used to store linear facts.
    We use a double linked list because it is a very efficient way to add and
@@ -40,10 +89,8 @@ Facts are stored in one of the four data structures:
 \end{itemize}
 
 Figure~\ref{fig:implementation:hash_table} shows an example for a hash table
-data structure for a \texttt{a(int,int)} predicate with 3 linear facts indexed
-by the second argument and stored as a doubly linked list in bucket \texttt{2}.
-Each linear fact contains the regular list pointers and the fact arguments.
-Those are all stored continuously to improve data locality.
+data structure for a \code{a(int,int)} predicate with 3 linear facts indexed
+by the second argument and stored as a doubly linked list in bucket \code{2}.
 
 \begin{figure}[ht]
 \centering
@@ -54,103 +101,7 @@ Those are all stored continuously to improve data locality.
 \label{fig:implementation:hash_table}
 \end{figure}
 
-\subsubsection{Locking}
-
-Each node is protected by a main spin-lock that allows threads to change node
-attributes. There is also a database spin-lock that protects the internal
-database of the node and is locked whenever the node is in the \textbf{working}
-state.  
-
-To avoid unnecessary copying, when a node sends facts to a node located in
-another thread, the current thread first attempts to lock the database lock of
-the target node in order to directly update its database and indexing
-structures, otherwise it adds the facts to the list of incoming facts that are
-later processed by the owner thread of the target node.
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Rule Engine}
-\label{sec:implementation:rule_engine}
-
-The rule engine decides which rules may need to be executed while taking into
-account rule priorities. To understand how our engine works, consider the
-following set of facts and rules:
-
-\begin{Verbatim}[numbers=left,fontsize=\codesize]
-a, e(1) -o b.  // rule 1
-a -o c.        // rule 2
-b -o d.        // rule 3
-e(0) -o f.     // rule 4
-c -o e(1).     // rule 5
-
-a.
-e(0).
-\end{Verbatim}
-
-Figure~\ref{fig:implementation:rule_engine} shows the rule engine data
-structures for this example. The purpose of each data structure is as follows:
-
-\begin{itemize}
-
-   \item \texttt{Rule Queue} is the bitmap representing the rules scheduled to
-      run. The $i^{th}$ is set if the $i^{th}$ rule is scheduled to run;
-
-   \item \texttt{Rule Counter}, which keeps a count of the number of predicates
-      needed by the rule that exist in the database. For the rule
-      \texttt{a, e(1) -o b} then the rule needs predicates \texttt{a} and
-      \texttt{e} and the rule counter is at the most 2 (where the rule can be
-      executed).
-
-   \item \texttt{Predicate Bitmap} is a bitmap representing the existence of a
-      given predicate in the database;
-
-\end{itemize}
-
-\begin{figure}[t]
-   \centering
-   \includegraphics[width=0.8\textwidth]{figures/implementation/rule_queue.pdf}
-   \caption{Rule engine data structures (a) before and (b) after applying 
-      the rule \texttt{a -o c}.}
-   \label{fig:implementation:rule_engine}
-\end{figure}
-
-Since we have facts for predicates \texttt{a} and \texttt{e}, the \texttt{Rules
-Counter} starts with rules 1, 2 and 4 with 2, 1, 1 predicate counts. Since these
-rules have the required counter to be applied, the \texttt{Rule Queue} bitmap
-starts with the same three rules.  In order to pick rules for execution, we take
-the rule corresponding to the least significant bit from the \texttt{Rule Queue}
-bitmap, initially the first rule \texttt{a, e(1) -o b}. However, since we don't
-have fact \texttt{e(1)}, this rule fails and its bit in \texttt{Rule Queue} must
-be set to 0.  Figure~\ref{fig:implementation:rule_engine}(a) shows the rule
-engine data structures at that point.
-
-The next rule in \texttt{Rule Queue} is the second rule \texttt{a -o c}.
-Because the this rule will succeed, we must consume fact \texttt{a} and derive
-fact \texttt{c}. We thus update \texttt{Predicates Bitmap} accordingly, decrease
-the counters for the first and second rule in \texttt{Rule Counter} since such
-rules are no longer applicable (\texttt{a} was consumed), and increase the
-counter for the fifth rule since \texttt{c} was derived. Finally, to update the
-\texttt{Rule Queue}, we must schedule the fifth rule since its counter has been
-increased to the required number (we have all predicates).  In the continuation,
-the rule engine will schedule the fourth and fifth rules to run.
-Figure~\ref{fig:implementation:rule_engine}(b) shows the rule engine data
-structures at that point.
-
-Note that every node in the program has the same set of data structures
-presented in Fig.~\ref{fig:implementation:rule_engine}. We use 64 bit integers
-to implement the 2 bitmaps and an array of 16 bits integers for \texttt{Rule
-Counter}.
-
-We do a small optimization to reduce the number of derivations of persistent
-facts and, for that, we divide the program rules into two sets: \emph{persistent
-rules} and \emph{non persistent rules}. Persistent rules are rules where only
-persistent facts are involved. We compile such rules incrementally, i.e., we
-attempt to fire all rules where a persistent fact is used. This is called the
-\emph{pipelined semi-naive} evaluation and it originated in the P2
-system~\cite{Loo-condie-garofalakis-p2}. This evaluation method avoids excessing
-re-derivations of the same fact. The order of derivation does not matter for
-those rules, since only persistent facts are used.
 
 \subsection{Indexing}\label{sec:implementation:indexing}
 
@@ -158,8 +109,7 @@ To improve fact lookup, the VM employs a fully dynamic mechanism to
 decide which argument may be optimal to index.  The algorithm is
 performed in the beginning of execution and empirically tries to
 assess the argument of each predicate that more equally spreads the
-database across the values of the argument.  A single thread performs
-the algorithm for all predicates.
+database across the values of the argument. 
 
 The indexing algorithm is performed in three main steps. First, it
 gathers lookup statistics by keeping a counter for each
@@ -208,4 +158,5 @@ done once in a while, before a node executes.
 We have seen very good results with this scheme. The overhead of dynamic
 indexing is negligible since programs run almost as fast as if the indices have
 been added from the start. However, the programmer can still index predicates
-statically, if needed.
+statically, if needed, using the directive \code{index pred/arg}, where
+\code{pred} is the argument name and \code{arg} is the argument number to index.
