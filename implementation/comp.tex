@@ -48,8 +48,8 @@ visit(A, P), colored(A, P) -o colored(A, P).
 The compiler transforms the rule into two nested \emph{while} loops, as follows:
 
 \begin{Verbatim}[numbers=left,fontsize=\codesize]
-colored_list <- linked_list(``colored'')
-visit_list <- linked_list(``visit'')
+colored_list <- linked_list("colored")
+visit_list <- linked_list("visit")
 colored <- colored_list.head()
 while(colored is valid)
 {
@@ -57,7 +57,7 @@ while(colored is valid)
    while(visit is valid)
    {
       if(visit.get_int(1) == colored.get_int(1)) { // Equal arguments?
-         new_colored <- create_fact(``colored'') // New fact for predicate colored.
+         new_colored <- create_fact("colored") // New fact for predicate colored.
          new_colored.set_int(1, visit.get_int(1)) // Set arguments.
 
          // New fact is derived.
@@ -162,8 +162,8 @@ compiler is able to turn linear loops into persistent loops for linear facts
 that are consumed and then asserted. The rule is then compiled as follows:
 
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\$\#\&]
-colored_list <- linked_list(``colored'')
-visit_list <- linked_list(``visit'')
+colored_list <- linked_list("colored")
+visit_list <- linked_list("visit")
 colored <- colored_list.head()
 while(colored is valid)
 {
@@ -218,8 +218,8 @@ Assuming that \code{neighbor-pagerank} is stored in a hash table and indexed by
 the second argument, the code for the rule above is as follows:
 
 \begin{Verbatim}[numbers=left,fontsize=\codesize]
-new_neighbor_pagerank_list <- linked_list(``new-neighbor-pagerank'')
-neighbor_pagerank_table <- hash_table(``neighbor-pagerank'')
+new_neighbor_pagerank_list <- linked_list("new-neighbor-pagerank")
+neighbor_pagerank_table <- hash_table("neighbor-pagerank")
 new_neighbor_pagerank <- new_neighbor_pagerank.head()<++>
 while(new_neighbor_pagerank is valid)
 {
@@ -267,7 +267,7 @@ constraint in the inner loop by checking if the second fact is the same as the
 first one.
 
 \begin{Verbatim}[numbers=left,fontsize=\codesize]
-add_list <- linked_list(``add'')
+add_list <- linked_list("add")
 add1 <- add_list.head()
 while(add1 is valid)
 {
@@ -333,9 +333,9 @@ the \code{visit} facts derived in the comprehension are contained in other
 nodes. The code for the rule is shown below:
 
 \begin{Verbatim}[numbers=left,fontsize=\codesize]
-colored_list <- linked_list(``colored'')
-visit_list <- linked_list(``visit'')
-uncolored_list <- linked_list(``uncolored'')
+colored_list <- linked_list("colored")
+visit_list <- linked_list("visit")
+uncolored_list <- linked_list("uncolored")
 visit <- visit_list.head()
 while(visit is valid)
 {
@@ -343,17 +343,17 @@ while(visit is valid)
    while(uncolored is valid)
    {
       // Comprehension code.
-      edge_trie = trie(``edge'')
+      edge_trie = trie("edge")
       edge <- edge_trie.first()
       while(edge is valid)
       {
-         new_visit <- create_fact(``visit'') // New visit fact.
+         new_visit <- create_fact("visit") // New visit fact.
          new_visit.set_int(1, next(visit.get_int(1)))
          // Send fact to B.
          send_fact(new_visit, edge.get_node(1))
          edge <- edge.next()
       }
-      new_colored <- create_fact(``colored'')
+      new_colored <- create_fact("colored")
       new_colored.set_int(1, visit.get_int(1))
       colored_list.add(new_colored)
       visit <- visit_list.erase(visit)
@@ -417,9 +417,9 @@ values of the neighbors as seen in the code below. The aggregate value is then
 used to update the second argument of the initial \code{pagerank} fact.
 
 \begin{Verbatim}[numbers=left,fontsize=\codesize]
-pagerank_list <- linked_list(``pagerank'')
-update_list <- linked_list(``update'')
-neighbor_pagerank_list <- linked_list(``neighbor_pagerank_list'')
+pagerank_list <- linked_list("pagerank")
+update_list <- linked_list("update")
+neighbor_pagerank_list <- linked_list("neighbor_pagerank_list")
 pagerank <- pagerank_list.head()
 while(pagerank is valid)
 {
