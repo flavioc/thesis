@@ -24,6 +24,7 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex ack.tex \
 		implementation/overview.tex implementation/comp.tex \
 		implementation/parallelism.tex implementation/locks.tex \
 		implementation/related_work.tex implementation/evaluation.tex \
+		implementation/scale.tex \
 		coordination/partitioning.tex coordination/scheduling.tex \
 		coordination/ht.tex language/bipartite.tex \
 		coordination/types.tex coordination/rationale.tex \
@@ -99,6 +100,11 @@ experiments/absolute/compare-no-arrays.tex: experiments/lib.py experiments/absol
 		experiments/mem/mem.csv experiments/mem/no-arrays.csv > \
 		experiments/absolute/compare-no-arrays.tex
 
+scale:
+	$(RE) experiments/scalability/plot.py \
+		experiments/scalability/runtime.csv \
+		experiments/absolute/runtime.csv experiments/scalability/
+	
 clean:
 	rm -f thesis.pdf *.bbl *.blg *.log *.lot \
 		*.brf *.lof *.toc *.out \

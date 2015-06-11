@@ -206,7 +206,7 @@ class experiment(object):
       return float(self.times[nthreads]) / 1000
 
    def x_axis(self):
-      return [0] + self.x_axis1()
+      return self.x_axis1()
 
    def x_axis1(self):
       return [key for key in self.times.keys() if key <= max_threads]
@@ -215,6 +215,9 @@ class experiment(object):
       if not base:
          base = self.times[1]
       return [None] + [float(base)/float(x) for th, x in self.times.iteritems() if th <= max_threads]
+
+   def time_data(self):
+      return [float(x) for th, x in self.times.iteritems() if th <= max_threads]
 
    def linear_speedup(self):
       return self.x_axis()
@@ -227,6 +230,10 @@ class experiment(object):
          return math.ceil(m) + 1
       else:
          return math.ceil(m) + 2
+
+   def max_time(self):
+      m = max(x for th, x in self.times.iteritems() if th <= max_threads)
+      return float(m) * 1.1
 
    def get_improvement(self, reg):
       return [float(reg.get_time(th))/float(c) for th, c in self.times.iteritems() if th <= max_threads]
@@ -395,6 +402,42 @@ class experiment(object):
 
       name = prefix + self.name + ".png"
       plt.savefig(name)
+
+   def max_threads(self):
+      return max(x for x in self.times.keys() if x <= max_threads)
+
+   def create_scale(self, cexp, prefix):
+      fig = plt.figure()
+      ax = fig.add_subplot(111)
+
+      names = ('Scalability')
+      formats = ('f4')
+      titlefontsize = 22
+      ylabelfontsize = 20
+      ax.set_title(self.title, fontsize=titlefontsize)
+      ax.yaxis.tick_left()
+      ax.yaxis.set_label_position("left")
+      ax.set_ylabel('Execution Time', fontsize=ylabelfontsize)
+      ax.set_xlabel('Threads', fontsize=ylabelfontsize)
+      ax.set_xlim([1, self.max_threads()])
+      ax.set_ylim([0, self.max_time()])
+      cmap = plt.get_cmap('gray')
+
+      ax.plot(self.x_axis(), self.time_data(),
+         label='Execution Time', linestyle='--', marker='^', color=cmap(0.1))
+      ax.plot(self.x_axis(), [cexp.get_time(1)] * len(self.x_axis()),
+        label='Linear', linestyle='-', color=cmap(0.2))
+
+      setup_lines(ax, cmap)
+
+      name = prefix + self.create_filename()
+      plt.savefig(name)
+
+   def create_filename(self):
+      s = self.name
+      if self.dataset:
+         s = s + "-" + self.dataset
+      return s + ".png"
 
    def create_speedup(self, prefix):
       fig = plt.figure()
