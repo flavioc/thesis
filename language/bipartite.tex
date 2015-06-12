@@ -99,8 +99,10 @@ terminate, since it is limited by the number of \code{visit} facts that can be
 generated.
 
 \begin{theorem}[Bipartiteness Correctness]
+
 If the graph is connected and bipartite then the nodes will be partitioned into sets
 $C_{true}$ and $C_{false}$, while sets $F$ and $U$ are empty.
+
 \end{theorem}
 \begin{proof}
    By induction, we prove that uncolored nodes become part of either $C_{true}$
@@ -121,11 +123,9 @@ $C_{true}$ and $C_{false}$, while sets $F$ and $U$ are empty.
    every node of the graph.
 \end{proof}
 
-\begin{theorem}[Bipartite Failure]
-
+\begin{theorem}[Bipartiteness Failure]
 If the graph is connected but not bipartite then some nodes will be partitioned
 into sets $C_{true}$, $C_{false}$, $F$, and possibly $U$.
-
 \end{theorem}
 \begin{proof}
 

@@ -1,38 +1,38 @@
 
 Figure~\ref{code:language:message} shows the first LM program, a message routing
-program that simulates message transmission through a network of nodes. In
-lines~\ref{line:language:message_pred1}-\ref{line:language:message_pred2} we
+program that simulates message transmission through a network of nodes.
+Lines~\ref{line:language:message_pred1}-\ref{line:language:message_pred2}
 declare the predicates used in the program's rules. Note that the first argument
 of every predicate must be typed as \code{node} because the first argument
-indicates where the node lives in the graph. Predicate \code{edge} is a
+indicates where the fact lives in the graph. Predicate \code{edge} is a
 \emph{persistent predicate} while \code{message} and \code{processed} are
 \emph{linear predicates}. Persistent predicates model facts that are never
 retracted from the database, while linear predicates model linear facts which
 are retracted when used in rules. To improve readability of LM rules, persistent
-predicates are preceded with a \code{!} symbol. Predicate \code{edge} represents
-the connections between nodes, predicate \code{message} contains the message
-content and the route list, and predicate \code{processed} keeps count of the
-number of messages routed at each node. Along with the type, a predicate
-argument can also be named (see \code{Neighbor} and \code{Content}) for
+predicates may be preceded with a \code{!} symbol. Predicate \code{edge}
+represents the connections between nodes, predicate \code{message} contains the
+message content and the route list, and predicate \code{processed} keeps count
+of the number of messages routed at each node. Along with the type, a predicate
+argument can also be named (e.g., see \code{Neighbor} and \code{Content}) for
 documentation purposes.
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,commandchars=\*\{\},fontsize=\codesize]
-type edge(node, node Neighbor).*label{line:language:message_pred1}
+type edge(node, node Neighbor).*label{line:language:message_pred1}*hfill// Predicate declaration.
 type linear message(node, string Content, list node Routing).
 type linear processed(node, int Total).*label{line:language:message_pred2}
 
-!edge(A, B),*label{line:language:message_first1}
-message(A, Content, [B | L]),
+message(A, Content, [B | L]),*label{line:language:message_first1}*hfill// Rule 1.
+!edge(A, B),
 processed(A, N)
-   -o message(B, Content, L),
-      processed(A, N + 1).*label{line:language:message_first2}
+   -o processed(A, N + 1),
+      message(B, Content, L).*label{line:language:message_first2}
 
-message(A, Content, []),*label{line:language:message_second1}
+message(A, Content, []),*label{line:language:message_second1}*hfill// Rule 2.
 processed(A, N)
    -o processed(A, N + 1).*label{line:language:message_second2}
 
-!edge(@1, @2). !edge(@2, @3). !edge(@3, @4). !edge(@1, @3).*label{line:language:message_axioms}
+!edge(@1, @2). !edge(@2, @3). !edge(@3, @4). !edge(@1, @3).*label{line:language:message_axioms}*hfill// Initial facts.
 processed(@1, 0). processed(@2, 0). processed(@3, 0). processed(@4, 0).
 message(@1, "hello world", [@3, @4]).*label{line:language:message_message}
 \end{Verbatim}
@@ -42,36 +42,35 @@ world") to route through nodes \code{@3} and \code{@4}.}
 \end{figure}
 
 The message routing program in Fig.~\ref{code:language:message} implements two
-rules in
-lines~\ref{line:language:message_first1}-\ref{line:language:message_first2}. An
-LM rule has the form $L_1, \cdots, L_n \mathtt{-o} \; R_1, \cdots, R_m$, where
-$L_1, \cdots, L_n$ is the \emph{left-hand side}~(LHS) of the rule while $R_1,
-\cdots, R_m$ is \emph{right-hand side}~(RHS) of the rule. The meaning of a rule
-is then as follows: if facts $L_1, \cdots, L_n$ are present in the database then
-retract facts $L_i$ that are linear facts and derive the facts $R_1, \cdots,
-R_m$ from the RHS. Note that in all the rules, the LHS of each rule uses facts
-from the same node (in this particular case, \code{A}), but the rule's RHS may
-derive facts in other nodes (\code{B} in the first rule) because a node variable
-was instantiated in the LHS.
+rules. An LM rule has the form $L_1, \cdots, L_n \mathtt{-o} \; R_1, \cdots,
+R_m$, where $L_1, \cdots, L_n$ is the \emph{left-hand side}~(LHS) of the rule
+and $R_1, \cdots, R_m$ is \emph{right-hand side}~(RHS) of the rule. The meaning
+of a rule is then as follows: if facts $L_1, \cdots, L_n$ are present in the
+database then consume all the facts $L_i$ that are linear facts and derive the
+facts $R_1, \cdots, R_m$ from the RHS. Note that in the rules, the LHS of each
+rule uses only facts from the same node (epresented by \code{A} in both rules),
+but the rule's RHS may derive facts that belong to other nodes (case of \code{B}
+in the first rule) if a node variable is instantiated in the LHS.
 
 The first rule
 (lines~\ref{line:language:message_first1}-\ref{line:language:message_first2})
-grabs the head node in the route list (third argument of \code{message}) using
-the syntax \code{[B | L]} and ensures that a communication edge exists (through
-\code{edge(A,~B)}). We increase the number of processed messages by consuming
-\code{processed(A,~N)} and deriving \code{processed(A,~N~+~1)}.  When the route
-list is empty, the message has reached its destination and thus it is consumed
-(rule in lines
-\ref{line:language:message_first1}-\ref{line:language:message_first2}).
+grabs the head node \code{B} in the route list (third argument of \code{message}
+using the syntax \code{[B | L]} to represent the head and tail of a list) and
+ensures that a communication edge exists (through \code{edge(A,~B)}). If so, we
+increase the number of processed messages by consuming \code{processed(A,~N)}
+and then deriving \code{processed(A,~N~+~1)}, and by deriving a new message to
+the head node \code{B}.  When the route list is empty, the message has reached
+its destination and thus it is simply consumed (second rule in lines
+\ref{line:language:message_second1}-\ref{line:language:message_second2}).
 
 The initial facts of the program are declared in
 lines~\ref{line:language:message_axioms}-\ref{line:language:message_message}.
-The \code{edge(a, b)} facts describe the structure of the graph, where node
-\code{a} has a direct connection with node \code{b}. Node literals are
-represented using the syntax \code{@N}, where \code{N} is an non-negative
-number. In line~\ref{line:language:message_message} we declare the message that
-needs to be routed and has the content \code{"hello world"} and a route list
-with the nodes \code{@3} and \code{@4}.
+The \code{edge} facts describe the structure of the graph, where the node in the
+first argument has a direct connection with the node in the second argument.
+Node literals are represented using the syntax \code{@N}, where \code{N} is an
+non-negative number. In line~\ref{line:language:message_message} we declare the
+message that needs to be routed with the content \code{"hello world"} and a
+route list with the nodes \code{@3} and \code{@4}.
 
 In Fig.~\ref{fig:message_trace} we present an execution trace of the message
 routing program. The database is represented as a graph structure where the

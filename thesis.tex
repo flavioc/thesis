@@ -12,9 +12,8 @@
 }
 \makeatother
 \makeatletter
-\newtheoremstyle{indented}
-  {15pt}% space before
-  {0pt}% space after
+\newtheoremstyle{indented} {5pt}% space before
+  {5pt}% space after
   {\parshape 1 0em \linewidth}% body font
   {0pt}% indent
   {\bfseries}% header font
@@ -29,12 +28,30 @@
 %\usepackage[letterpaper,twoside,vscale=.8,hscale=.75,nomarginpar]{geometry}
 %for general printing (not binding)
 \usepackage[letterpaper,twoside,vscale=.8,hscale=.75,nomarginpar,hmarginratio=1:1]{geometry}
-\newtheorem{corollary}{Corollary}
-\newtheorem{definition}{Definition}
-\newtheorem{lemma}{Lemma}
-\declaretheorem{theorem}
-\newtheorem{invariant}{Invariant}
-\newtheorem{variant}{Variant}
+
+\newtheorem{corollary}{Corollary}[section]
+
+\newtheorem{lemm}{Lemma}[section]
+\newtheorem{theom1}{Theorem}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{invar}{Invariant}[section]
+\newtheorem{vari}{Variant}[section]
+
+\newtheorem{defi}{Definition}[section]
+
+\global\mdfdefinestyle{styledef}{pstrickssetting={linestyle=dashed,},linecolor=black,middlelinewidth=2pt}
+\global\mdfdefinestyle{styleinv}{pstrickssetting={linestyle=dashed,},linecolor=red,middlelinewidth=3pt}
+\global\mdfdefinestyle{styletheo}{pstrickssetting={linestyle=dashed,},linecolor=blue,middlelinewidth=3pt}
+
+\newcommand{\envmargin}{5mm}
+
+\newenvironment{definition}{\vspace{\envmargin}\begin{mdframed}[style=styledef]\begin{defi}}{\end{defi}\end{mdframed}\vspace{\envmargin}}
+
+\newenvironment{invariant}{\vspace{\envmargin}\begin{mdframed}[style=styleinv]\begin{invar}}{\end{invar}\end{mdframed}\vspace{\envmargin}}
+\newenvironment{lemma}{\vspace{\envmargin}\begin{mdframed}[style=styletheo]\begin{lemm}}{\end{lemm}\end{mdframed}\vspace{\envmargin}}
+\newenvironment{variant}{\vspace{\envmargin}\begin{mdframed}[style=styleinv]\begin{vari}}{\end{vari}\end{mdframed}\vspace{\envmargin}}
+\renewenvironment{theorem}{\vspace{\envmargin}\begin{mdframed}[style=styletheo]\begin{theom1}}{\end{theom1}\end{mdframed}\vspace{\envmargin}}
+
 \AtBeginEnvironment{theorem}{\parindent0pt}
 \AtBeginEnvironment{lemma}{\parindent0pt}
 \AtBeginEnvironment{definition}{\parindent0pt}

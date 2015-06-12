@@ -1,31 +1,30 @@
 
 \begin{figure}[ht]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\{\}]
-type left(node, node).*label{line:language:dict_header1}
+type left(node, node).*label{line:language:dict_header1}*hfill // Predicate declaration.
 type right(node, node).
 type linear value(node, int Key, string Value).
 type linear replace(node, int Key, string Value).*label{line:language:dict_header2}
 
-replace(A, K, New),*label{line:language:dict_first1}
+replace(A, K, New),*label{line:language:dict_first1}*hfill// Rule 1: we found our key.
 value(A, K, Old)
-   -o value(A, K, New). // we found our key*label{line:language:dict_first2}
+   -o value(A, K, New).*label{line:language:dict_first2}
 
-replace(A, RKey, RValue),*label{line:language:dict_second1}
+replace(A, RKey, RValue),*label{line:language:dict_second1}*hfill// Rule 2: go left.
 value(A, Key, Value),
-!left(A, B),
-RKey < Key
+RKey < Key,
+!left(A, B)
    -o value(A, Key, Value),
-      replace(B, RKey, RValue). // go left*label{line:language:dict_second2}
+      replace(B, RKey, RValue).*label{line:language:dict_second2}
 
-replace(A, RKey, RValue),*label{line:language:dict_third1}
+replace(A, RKey, RValue),*label{line:language:dict_third1}*hfill// Rule 3: go right.
 value(A, Key, Value),
-!right(A, B),
-RKey > Key
+RKey > Key,
+!right(A, B)
    -o value(A, Key, Value),
-      replace(B, RKey, RValue). // go right*label{line:language:dict_third2}
+      replace(B, RKey, RValue). *label{line:language:dict_third2}
 
-// initial configuration*label{line:language:dict_axioms1}
-!left(@0, @1).     !right(@0, @2).
+!left(@0, @1).     !right(@0, @2).*hfill// Initial facts.*label{line:language:dict_axioms1}
 !left(@1, @3).     !right(@1, @4). 
 !left(@2, @5).     !right(@2, @6).
 
@@ -34,7 +33,7 @@ value(@2, 5, "c").   value(@3, 0, "d").
 value(@4, 2, "e").   value(@5, 4, "f").
 value(@6, 6, "g").
 
-// update key 6 to value "x"
+// Update key 6 to value "x".
 replace(@0, 6, "x").*label{line:language:dict_axioms2}
 \end{Verbatim}
 \caption{LM program for replacing a key's value in a BST dictionary.}
@@ -42,24 +41,23 @@ replace(@0, 6, "x").*label{line:language:dict_axioms2}
 \end{figure}
 
 Our second example, shown in Fig.~\ref{code:language:btree_replace}, implements
-the key update operation for a binary tree search~(BST) represented as a
+the key update operation for a binary search tree~(BST) represented as a
 key/value dictionary. Each LM node represents a binary tree node. We first
 declare all the predicates in
 lines~\ref{line:language:dict_header1}-\ref{line:language:dict_header2}.  Linear
-predicate \code{value} assigns a key/value pair to a node that can be updated
-later. The \code{replace} linear predicate represents an update operation where
-the key in the second argument will be updated to the value in the third
-argument. As expected, predicates \code{left} and \code{right} represent the
-child nodes of each BST node.
+predicate \code{value} stores the key/value pair of a node. The linear predicate
+\code{replace} represents an update operation where the key in the second
+argument is to be updated to the value in the third argument. Predicates
+\code{left} and \code{right} represent the child nodes of each BST node.
 
 The algorithm uses three rules for the three possible cases of updating a key's
-value: the first rule
+value. The first rule
 (lines~\ref{line:language:dict_first1}-\ref{line:language:dict_first2}) performs
 the update by removing \code{replace(A, K, New)} and \code{value(A, K, Old)} and
-deriving \code{value(A, K, New)}; the second rule
+deriving \code{value(A, K, New)}. The second rule
 (lines~\ref{line:language:dict_second1}-\ref{line:language:dict_second2})
 recursively picks the left branch for the update operation by deleting
-\code{replace(A, RKey, RValue)} and re-deriving it at node \code{B}; and the
+\code{replace(A, RKey, RValue)} and re-deriving it at node \code{B}. And the
 third rule
 (lines~\ref{line:language:dict_third1}-\ref{line:language:dict_third2}) picks
 the right branch. The derivation of \code{replace} facts on node \code{B} can
@@ -68,10 +66,10 @@ since \code{B} is a different node than \code{A} and the LHS of each rule can
 only manipulate facts from the same node.
 
 The initial facts of this program are presented in
-lines~\ref{line:language:dict_axioms1}-\ref{line:language:dict_axioms2} and they
-describe the initial binary tree configuration, including keys and values.  The
-axiom \code{replace(@0, 6, "x")} instantiated at the root node \code{@3}
-manifests the intent to change the value of key 6 to 7.
+lines~\ref{line:language:dict_axioms1}-\ref{line:language:dict_axioms2} and
+describe the initial binary tree configuration, including keys and values, and
+the \code{replace(@0, 6, "x")} fact instantiated at the root node \code{@3} that
+manifests the intent to change the value of key 6 to "x".
 
 Figure~\ref{fig:language:btree_trace} represents the trace of the algorithm. The program
 database is partitioned by the seven nodes using the first argument of each
@@ -85,30 +83,30 @@ rule 1 and \code{value(@6, 6, "g")} is updated to \code{value(@6, 6, "x")}.
         \centering
         \begin{subfigure}[b]{0.5\textwidth}
                 \includegraphics[width=\textwidth]{figures/btree/btree_trace1}
-                \caption{Initial database. Replace axiom instantiated at the
-                   \code{@3} root node.}
+                \caption{Initial database.}
                 \label{fig:language:btree_trace1}
         \end{subfigure}%
         ~
         \begin{subfigure}[b]{0.5\textwidth}
                 \includegraphics[width=\textwidth]{figures/btree/btree_trace2}
 
-                \caption{After applying rule 3 at node \code{@3}. The
-                \code{replace} fact is \emph{sent} (or derived at) to node
-                \code{@5}.}
+                \caption{After applying rule 3 at node \code{@0}. The
+                \code{replace} fact is \emph{sent} to (or derived at) node
+                \code{@2}.}
 
                 \label{fig:language:btree_trace2}
         \end{subfigure}\\
         \begin{subfigure}[b]{0.5\textwidth}
                 \includegraphics[width=\textwidth]{figures/btree/btree_trace3}
-                \caption{After applying rule 3 at node \code{@5}. Replace fact
+                \caption{After applying rule 3 at node \code{@2}. Replace fact
                    reaches node \code{@6}.}
                 \label{fig:language:btree_trace3}
         \end{subfigure}%
         ~
         \begin{subfigure}[b]{0.5\textwidth}
                   \includegraphics[width=\textwidth]{figures/btree/btree_trace4}
-                  \caption{After applying rule 1 at node \code{@6}. Value of key 6 has changed to 7.}
+                  \caption{After applying rule 1 at node \code{@6}. Value of key
+                  6 has changed to "x".}
                   \label{fig:language:btree_trace4}
           \end{subfigure}
         \caption{An execution trace for the binary tree dictionary

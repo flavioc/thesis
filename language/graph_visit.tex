@@ -1,21 +1,20 @@
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\[\]]
-type edge(node, node).
+type edge(node, node).*hfill// Predicate declaration.
 type linear visit(node).
 type linear unvisited(node).
 type linear visited(node).
 
-// The program rules*label[line:language:visit_first1]
-visit(A), unvisited(A) -o
+visit(A), unvisited(A) -o*label[line:language:visit_first1]*hfill // Rule 1: visit node.
    visited(A), {B | !edge(A, B) -o visit(B)}.*label[line:language:visit_first2]*label[line:language:visit_comprehension]
 
-visit(A), visited(A) -o visited(A).*label[line:language:visit_second]
+visit(A), visited(A) -o visited(A).*label[line:language:visit_second]*hfill // Rule 2: node already visited.
 
-// Initial facts: the input data
-!edge(@1, @2). !edge(@2, @3). !edge(@1, @4). !edge(@2, @4).
+!edge(@1, @2). !edge(@2, @3). !edge(@1, @4). !edge(@2, @4).*hfill// Initial facts.
 !edge(@2, @1). !edge(@3, @2). !edge(@4, @1). !edge(@4, @2).
 unvisited(@1). unvisited(@2). unvisited(@3). unvisited(@4).
+
 visit(@1).*label[line:language:visit_axiom]
 \end{Verbatim}
   \caption{Visit program. Nodes reachable from node \code{@1} will be marked
@@ -23,7 +22,7 @@ visit(@1).*label[line:language:visit_axiom]
   \label{code:language:visit}
 \end{figure}
 
-Our third example shown in Fig.~\ref{code:language:visit} presents another
+Our third example, shown in Fig.~\ref{code:language:visit}, presents another
 complete LM program that, for a given graph of nodes, performs a visit to all
 nodes reachable from node \code{@1}. The first rule of the program
 (lines~\ref{line:language:visit_first1}-\ref{line:language:visit_first2}) visits
@@ -69,8 +68,10 @@ facts and deriving \code{visited}. In addition, we can also apply rule 1 at node
          %(or a blank line to force the subfigure onto a new line)
         \begin{subfigure}[b]{0.45\textwidth}
                   \includegraphics[width=\textwidth]{figures/visit/trace4}
-                  \caption{After applying rule 1 and 2 (nodes \code{@3},
-                        \code{@4}).}
+
+                  \caption{After applying rule 1 and 2 at node \code{@4} and
+                  rule 1 at node \code{@3}.}
+
                   \label{fig:exec_trace4}
           \end{subfigure}
         \caption{A possible execution trace for the visit
@@ -87,8 +88,6 @@ the graph is a chain of nodes then the program becomes effectively sequential.
 In the best case, if the graph densily connected (each node connects to most
 nodes in the graph), then it is possible to run the program on most nodes at the
 same time.
-
-\subsubsection{Proof of correctness}
 
 The goal of introducing higher-level declarative languages is to facilitate
 reasoning about the properties of a program. In the case of the visit program,
@@ -109,12 +108,14 @@ To prove the correctness property of the program, we first define the main
 \begin{invariant}[Node state]
 A node is either \code{visited} or \code{unvisited} but not both.
 \end{invariant}
-\begin{proof}
-From the initial facts we check if all nodes start as \code{unvisited}. This is
-true for the example presented in this section.
 
-Rule 1 changes a node from \code{unvisited} to \code{visited}, while rule 2
-keeps the node \code{visited}, proving the invariant.
+\begin{proof}
+
+From the initial facts we check if all nodes start as \code{unvisited}. This is
+clearly true for the previous example. Rule 1 changes a node from
+\code{unvisited} to \code{visited}, while rule 2 keeps the node \code{visited},
+proving the invariant.
+
 \end{proof}
 
 Invariants are conditions that never change, no matter which rules are derived
@@ -136,7 +137,6 @@ size. The inverse is true for set $U$.
 \end{invariant}
 \begin{proof}
 Initially, $V = \emptyset$ and $U = N$.
-
 By rule 1, $V$ increases by 1 while $U$ decreases by 1. With rule 2, set
 membership remains unchanged.
 \end{proof}

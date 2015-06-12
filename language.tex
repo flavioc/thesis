@@ -1,26 +1,27 @@
 
-Linear Meld (LM) is a \emph{forward chaining} logic programming language in the
-style of Datalog~\cite{Ullman:1990:PDK:533142}. The program is defined as a
-\emph{database of facts} and a set of \emph{derivation rules}.  Initially, we
+Linear Meld (LM) is a forward chaining logic programming language in the style
+of Datalog~\cite{Ullman:1990:PDK:533142}. An LM program is defined by a
+\emph{database of facts} and by a set of \emph{derivation rules}.  Initially, we
 populate the database with the program's initial facts and then determine which
 derivation rules can be applied by using the current database. Once a rule is
 applied, we derive new facts, which are then added to the database.  If a rule
 uses linear facts, they are consumed and thus deleted from the database.  The
 program stops when we reach \emph{quiescence}, that is, when we can no longer
-able to obtain new facts through rule derivation.
+obtain new facts through rule derivation.
 
 LM departs from Datalog by making the database of facts a graph data structure
-where each node contains a fraction of the database. Derivation rules are then
-restricted so that they are only allowed to manipulate facts belonging to the
-same node. This restriction allows multiple nodes of the graph to perform
-independent rule derivations at the node level, thus introducing concurrency in
-the program. Communication between nodes arises when a derivation rule derives a
-fact that is in another node.
+where each node contains the fraction of the database representing the facts
+associated with or belonging to the node. Derivation rules are then restricted
+so that they are only allowed to manipulate facts belonging to the same node.
+This restriction allows multiple nodes of the graph to perform independent rule
+derivations at the node level, thus introducing concurrency in the program.
+Communication between nodes arises when a derivation rule derives a fact that
+belongs to another node.
 
 \section{A Taste Of LM}
 
 In order to understand how LM programs are written, we now present and discuss
-three basic LM programs.
+three elementary LM programs.
 
 \subsection{First Example: Message Routing}\label{section:language:message}
 \input{language/message_routing}

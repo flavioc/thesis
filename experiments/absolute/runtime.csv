@@ -5,6 +5,7 @@ belief-propagation-400 c 166613
 new-heat-transfer-80 c 4150
 new-heat-transfer-120 c 16678
 min-max-tictactoe c 2936
+min-max-tictactoe-big c 22030
 8queens-11 c 280
 8queens-12 c 1542
 8queens-13 c 8591

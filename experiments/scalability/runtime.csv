@@ -1,3 +1,22 @@
+
+belief-propagation-300 th1 182654 182336 185217 -> 183402
+belief-propagation-300 th2 68016 67420 67412 -> 67616
+belief-propagation-300 th4 32919 32560 33103 -> 32860
+belief-propagation-300 th6 16670 16454 16585 -> 16569
+belief-propagation-300 th8 12699 12202 12110 -> 12337
+belief-propagation-300 th10 8974 8882 8850 -> 8902
+belief-propagation-300 th12 6911 6356 6684 -> 6650
+belief-propagation-300 th14 4867 4826 4951 -> 4881
+belief-propagation-300 th16 4782 4977 4849 -> 4869
+belief-propagation-300 th18 4218 4331 4214 -> 4254
+belief-propagation-300 th20 4057 3969 3982 -> 4002
+belief-propagation-300 th22 3304
+belief-propagation-300 th24 3039
+belief-propagation-300 th26 2711
+belief-propagation-300 th28 2608
+belief-propagation-300 th30 2387
+belief-propagation-300 th32 2362
+
 belief-propagation-400 th1 256053 239441 254264 -> 249919
 belief-propagation-400 th2 120307 123917 129696 -> 124640
 belief-propagation-400 th4 51677 52016 49930 -> 51207
@@ -16,15 +35,42 @@ belief-propagation-400 th28 4375 4453 4179 -> 4335
 belief-propagation-400 th30 4073 3801 4019 -> 3964
 belief-propagation-400 th32 3962 3914 3892 -> 3922
 
-min-max-tictactoe th1 20968 21380 21342 -> 21230
-min-max-tictactoe th2 10889 12599 13067 -> 12185
-min-max-tictactoe th4 7320 7106 7035 -> 7153
-min-max-tictactoe th6 4139 4157 4439 -> 4245
-min-max-tictactoe th8 4471 4269 4080 -> 4273
-min-max-tictactoe th10 2695 3417 3264 -> 3125
-min-max-tictactoe th12 2997 3489 3136 -> 3207
-min-max-tictactoe th14 3205 2768 3124 -> 3032
+min-max-tictactoe th1 20962 20982 20868 -> 20937
+min-max-tictactoe th2 12885 12552 12598 -> 12678
+min-max-tictactoe th4 7216 6333 6949 -> 6832
+min-max-tictactoe th6 4938 4927 4953 -> 4939
+min-max-tictactoe th8 4341 5922 4430 -> 4897
+min-max-tictactoe th10 3385 3725 3800 -> 3636
+min-max-tictactoe th12 3973 3647 2579 -> 3399
+min-max-tictactoe th14 3446 2623 3829 -> 3299
+min-max-tictactoe th16 2971 3159 2729 -> 2953
+min-max-tictactoe th18 2458 3370 3637 -> 3155
+min-max-tictactoe th20 4392 3308 3584 -> 3761
+min-max-tictactoe th22 2004 3578 2726 -> 2769
+min-max-tictactoe th24 1852 3189 4312 -> 3117
+min-max-tictactoe th26 1581 3478 3009 -> 2689
+min-max-tictactoe th28 2637 2113 4098 -> 2949
+min-max-tictactoe th30 2373 3694 2690 -> 2919
+min-max-tictactoe th32 2057 4363 3651 -> 3357
 
+
+8queens-13 th1 24211 24405 24207 -> 24274
+8queens-13 th2 12847 12114 12600 -> 12520
+8queens-13 th4 6096 6198 6186 -> 6160
+8queens-13 th6 4262 4261 4413 -> 4312
+8queens-13 th8 3372 3343 3261 -> 3325
+8queens-13 th10 2883 2754 2887 -> 2841
+8queens-13 th12 2447 2496 2512 -> 2485
+8queens-13 th14 2497 2199 2426 -> 2374
+8queens-13 th16 1965 2285 2295 -> 2181
+8queens-13 th18 2078 2163 2180 -> 2140
+8queens-13 th20 1959 1951 2238 -> 2049
+8queens-13 th22 1895 2046 2098 -> 2013
+8queens-13 th24 2129 2315 1876 -> 2106
+8queens-13 th26 2438 2212 1993 -> 2214
+8queens-13 th28 2369 1723 2274 -> 2122
+8queens-13 th30 2001 2570 1900 -> 2157
+8queens-13 th32 2118 1805 2351 -> 2091
 8queens-14 th1 175772 177223 175902 -> 176299
 8queens-14 th2 92799 91630 93599 -> 92676
 8queens-14 th4 45721 43762 44208 -> 44563
@@ -44,6 +90,23 @@ min-max-tictactoe th14 3205 2768 3124 -> 3032
 8queens-14 th32 13635 13429 13507 -> 13523
 
 
+new-heat-transfer-80 th1 34552 34289 34234 -> 34358
+new-heat-transfer-80 th2 19774 19300 19209 -> 19427
+new-heat-transfer-80 th4 10373 10302 9972 -> 10215
+new-heat-transfer-80 th6 9678 8927 7319 -> 8641
+new-heat-transfer-80 th8 5481 5435 5613 -> 5509
+new-heat-transfer-80 th10 7470 6527 4526 -> 6174
+new-heat-transfer-80 th12 5390 5898 4033 -> 5107
+new-heat-transfer-80 th14 3945 4883 4080 -> 4302
+new-heat-transfer-80 th16 6001 4081 4343 -> 4808
+new-heat-transfer-80 th18 6436 4520 4922 -> 5292
+new-heat-transfer-80 th20 5919 4683 3396 -> 4666
+new-heat-transfer-80 th22 3036 3276 4418 -> 3576
+new-heat-transfer-80 th24 2940 3140 2856 -> 2978
+new-heat-transfer-80 th26 3642 3195 3051 -> 3296
+new-heat-transfer-80 th28 2818 3018 3341 -> 3059
+new-heat-transfer-80 th30 3008 2792 2781 -> 2860
+new-heat-transfer-80 th32 2724 2762 2699 -> 2728
 new-heat-transfer-120 th1 160664 160328 159785 -> 160259
 new-heat-transfer-120 th2 93454 93922 92931 -> 93435
 new-heat-transfer-120 th4 45591 44013 45670 -> 45091
@@ -82,3 +145,41 @@ shortest-uspowergrid th28 1566 1589 1462 -> 1539
 shortest-uspowergrid th30 1475 1463 1341 -> 1426
 shortest-uspowergrid th32 1515 1583 1438 -> 1512
 
+
+
+min-max-tictactoe-big th1 173761 179829 190911 -> 181500
+min-max-tictactoe-big th2 107067 86429 112510 -> 102002
+min-max-tictactoe-big th4 52473 50491 48249 -> 50404
+min-max-tictactoe-big th6 36870 36785 37440 -> 37031
+min-max-tictactoe-big th8 38761 32253 32443 -> 34485
+min-max-tictactoe-big th10 26897 25411 29314 -> 27207
+min-max-tictactoe-big th12 24446 23477 31439 -> 26454
+min-max-tictactoe-big th14 28093 23788 23187 -> 25022
+min-max-tictactoe-big th16 33568 29002 23425 -> 28665
+min-max-tictactoe-big th18 25952 20560 21113 -> 22541
+min-max-tictactoe-big th20 26997 20541 27436 -> 24991
+min-max-tictactoe-big th22 58313 22472 22824 -> 34536
+min-max-tictactoe-big th24 19664 25753 26463 -> 23960
+min-max-tictactoe-big th26 17907 35057 24289 -> 25751
+min-max-tictactoe-big th28 24300 30028 27980 -> 27436
+min-max-tictactoe-big th30 20224
+min-max-tictactoe-big th32 22720
+
+
+shortest-uspowergrid th1 132381 132367 131465 -> 132071
+shortest-uspowergrid th2 63211 63488 62666 -> 63121
+shortest-uspowergrid th4 28227 28590 27904 -> 28240
+shortest-uspowergrid th6 21301 19703 20345 -> 20449
+shortest-uspowergrid th8 16533 17116 15540 -> 16396
+shortest-uspowergrid th10 14553 13950 14490 -> 14331
+shortest-uspowergrid th12 12843 12651 13121 -> 12871
+shortest-uspowergrid th14 12140 10849 11106 -> 11365
+shortest-uspowergrid th16 9778 10236 10061 -> 10025
+shortest-uspowergrid th18 9958 10256 10360 -> 10191
+shortest-uspowergrid th20 9971 9604 9909 -> 9828
+shortest-uspowergrid th22 9819 10732 10242 -> 10264
+shortest-uspowergrid th24 9618 9110 9406 -> 9378
+shortest-uspowergrid th26 9780 10382 9800 -> 9987
+shortest-uspowergrid th28 9981 9268 9356 -> 9535
+shortest-uspowergrid th30 9464 9201 9738 -> 9467
+shortest-uspowergrid th32 9128 10259 9383 -> 9590
