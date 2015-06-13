@@ -144,7 +144,7 @@ membership remains unchanged.
 In turn, since set membership changes from $U$ to $V$, we now prove the
 following:
 
-\begin{lemma}[Edge visits]
+\begin{lemma}[Edge visits]\label{lemma:language:edge_visits}
 The program generates at most one \code{visit} per directed edge and for a node
 $a \in N$ that receives a \code{visit} fact, then for all $b \in N$ where $(a,
 b) \in E$, exactly one \code{visit} fact is generated at $b$.
@@ -172,9 +172,11 @@ while $U = \emptyset$.
 Proof by induction.
 
 \begin{itemize}
-   \item Base case: axiom \code{visit(@1)} adds node \code{@1} to $V$. By
-   the Edge visits lemma, a \code{visit} fact is generate for all edges of
-   \code{@1}.
+
+   \item Base case: initial fact \code{visit(@1)} adds node \code{@1} to $V$.
+      By Lemma~\ref{lemma:language:edge_visits}, a \code{visit} fact is generate
+      for all edges of \code{@1}.
+
    \item Inductive case: assume a set $V'$ and a set $U'$ that contains the
    \code{visited} and \code{unvisited} nodes, respectively. Since the graph
    is connected, there must be a node $a \in V'$ that is connected to a node $b

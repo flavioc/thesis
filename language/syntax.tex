@@ -1,12 +1,19 @@
 Table~\ref{tbl:language:ast} shows the abstract syntax for rules in LM.  A LM
 program $Prog$ consists of a list of derivation rules $\Sigma$ and a database
 $D$. A database fact $l(\hat{t})$ is an association between a predicate $l$ and
-a list of literals $\hat{t}$. Each derivation rule $R$ can be written as $LHS
-\lolli RHS$ with the meaning described in
-Section~\ref{section:language:message}.  Rules without an LHS are allowed in LM
-and they are called \emph{initial facts}
-(lines~\ref{line:language:dict_axioms1}-\ref{line:language:dict_axioms2} in
-Fig.~\ref{code:language:btree_replace}).
+a list of literals $\hat{t}$. Literals $t$ can be either a number
+$\m{number}(N)$, a node $\m{node}(N)$, a list $\m{list}(\hat{t})$, among other
+literals such as strings, arrays, booleans, etc.
+
+Each derivation rule $R$ can be written as $LHS \lolli RHS$ with the meaning
+described in Section~\ref{section:language:message}. Rules without an LHS are
+called \emph{initial facts}. All the variables in the rule's scope must be
+introduced explicitly in the abstract syntax using the $\forall_x. R$
+production. However, when the programmer writes LM programs, those variables are
+introduced implicitly. A rule can also use a \emph{selector} in the form
+$\selector{S}{y}{LHS}{RHS}$ which allows the programmer to force a specific
+ordering during rule derivation. Selectors are described in more detail in
+Section~\ref{section:language:selector}.
 
 \newcommand{\sop}[0]{\Vert}
 
@@ -16,18 +23,30 @@ Fig.~\ref{code:language:btree_replace}).
   Program & $Prog$ & $::=$ & $\Sigma, D$ \\
   List Of Rules & $\Sigma$ & $::=$ & $\cdot \; \sop \; \Sigma, R$\\
   Database & $D$ & $::=$ & $\Gamma; \Delta$ \\
+  Known Linear Facts & $\Delta$ & $::=$ & $\cdot \; \sop \; \Delta, l(\hat{t})$ \\
+  Known Persistent Facts & $\Gamma$ & $::=$ & $\cdot \; \sop \; \Gamma, \bang p(\hat{t})$ \\
+
+  Literal List & $\hat{t}$ & $::=$ & $\cdot \; \sop \; t, \hat{t}$ \\
+  Literal & $t$ & $::=$ & $\m{number}(N) \; \sop \; \m{node}(N) \; \sop \; \m{list}(\hat{t}) \; \sop \ldots$ \\
   Rule & $R$ & $::=$ & $LHS \lolli RHS \; \sop \; \forall_{x}. R \; \sop \;
   \selector{S}{y}{LHS}{RHS}$ \\
   LHS Expression & $LHS$ & $::=$ & $L \; \sop \; P \; \sop \; C \; \sop \; LHS,
   LHS \; \sop \; \exists_{x}. LHS \; \sop \; \one$\\
-  RHS Expression & $RHS$ & $::=$ & $L \; \sop \; P \; \sop \; RHS, RHS \; \sop
+  Selector Operation & $S$ & $::=$ & $\mathtt{min} \; \sop \; \mathtt{max} \; \sop \; \mathtt{random}$\\
+  RHS Expression & $RHS$ & $::=$ & $L \; \sop \; P \; \sop \; C \; \sop \; RHS, RHS \; \sop
   \; EE \; \sop \; CE \; \sop \; AE \; \sop \; \one$\\
   
   Linear Atomic Proposition & $L$ & $::=$ & $l(\hat{x})$\\
   Persistent Atomic Prop. & $P$ & $::=$ & $\bang p(\hat{x})$\\
-  Constraint & $C$ & $::=$ & $c(\hat{x})$ \\
-  Selector Operation & $S$ & $::=$ & $\mathtt{min} \; \sop \; \mathtt{max} \;
-  \sop \; \mathtt{random}$\\
+  Term List & $\hat{x}$ & $::=$ & $\cdot \; \sop \; x, \hat{x} \; \sop \; t, \hat{x}$ \\
+  Constraint & $C$ & $::=$ & $e \; O \; e$ \\
+  Expression & $e$ & $::=$ & $x \; \sop \; t \; \sop \; \m{fun}(\hat{e}) \; \sop
+  e \; M \; e \; \sop \; e \; O \; e$ \\
+  Expression List & $\hat{e}$ & $::=$ & $\cdot \; \sop \; e, \hat{e}$ \\
+  Math Operation & $M$ & $::=$ & $+ \; \sop \; \times \; \sop \; / \; \sop \; - \; \sop \; \%$ \\
+  Boolean Operation & $O$ & $::=$ & $= \; \sop \; <> \; \sop \; > \; \sop \;
+  \geq \; \sop \; < \; \sop \; \leq $ \\
+
   
   Exists Expression & $EE$ & $::=$ & $\existsc{\widehat{x}}{SRHS}$ \\
   Comprehension & $CE$ & $::=$ & $\comprehension{\widehat{x}}{SLHS}{SRHS}$ \\
@@ -39,33 +58,32 @@ Fig.~\ref{code:language:btree_replace}).
   Sub-LHS & $SLHS$ & $::=$ & $L \; \sop \; P \; \sop \; SLHS, SLHS \; \sop \; \exists_{x}. SLHS$\\
   Sub-RHS & $SRHS$ & $::=$ & $L \; \sop \; P \; \sop \; SRHS, SRHS \; \sop \; \one$\\
   
-  Known Linear Facts & $\Delta$ & $::=$ & $\cdot \; \sop \; \Delta, l(\hat{t})$ \\
-  Known Persistent Facts & $\Gamma$ & $::=$ & $\cdot \; \sop \; \Gamma, \bang p(\hat{t})$ \\
-
-  Literal List & $\hat{t}$ & $::=$ & $\cdot \; \sop \; t, \hat{t}$ \\
-  Term List & $\hat{x}$ & $::=$ & $\cdot \; \sop \; x, \hat{x} \; \sop \; t, \hat{x}$ \\
-  Literal & $t$ & $::=$ & $\m{number}(N) \; \sop \; \m{node}(N) \; \sop \; \m{list}(\hat{t}) \; \sop \ldots$ \\
 \end{tabular}
 \caption{Core abstract syntax of LM.}\label{tbl:language:ast}
 \end{table}
 
-The LHS of a rule, $LHS$, may contain linear ($L$) and persistent ($P$)
-\emph{atomic propositions} and constraints ($C$). Atomic propositions are
-template facts that instantiate variables (from facts in the database) such as
-\code{visit(A)} in line~\ref{line:language:visit_second} in
-Fig.~\ref{code:language:visit}. Variables can be used again in the LHS for
-matching and also in the RHS when instantiating facts.  Constraints are boolean
-expressions that must be true in order for the rule to be derived. Constraints
-use variables from fact expressions and are built using a small functional
-language that includes mathematical operations, boolean operations, external
-functions and literal values.
+The $LHS$ of a rule may contain linear ($L$) and persistent ($P$) \emph{atomic
+propositions} and constraints ($C$). Atomic propositions are template facts that
+instantiate variables (from facts in the database) in
+line~\ref{line:language:visit_second} in Fig.~\ref{code:language:visit}.
+Variables can be used again in the LHS for matching and also in the RHS when
+instantiating facts.  Constraints $C$ are boolean expressions that must be true
+in order for the rule to be derived. Each constraint starts with a boolean
+operation $e \; O \; e$, where each expression $e$ may be a literal, a variable,
+a function call $\m{fun}(\hat{e})$ or a mathematical operation $e \; M \; e$.
 
-The RHS of a rule, $RHS$, contains linear ($L$) and persistent ($P$)
-\emph{atomic propositions} which are uninstantiated facts. The RHS can also have
-\emph{exists expressions} ($EE$), \emph{comprehensions} ($CE$) and
-\emph{aggregates} ($AE$). All those expressions may use all the variables
-instantiated in the rule's LHS and are explained in detail in
-Section~\ref{section:language:expressions}.
+The $RHS$ of a rule contains linear ($L$) and persistent ($P$) atomic
+propositions which are uninstantiated facts. The RHS can also have \emph{exists
+expressions} ($EE$), \emph{comprehensions} ($CE$) and \emph{aggregates} ($AE$).
+All those expressions may use all the variables instantiated in the rule's LHS
+and are explained in detail next in Section~\ref{section:language:expressions}.
+To introduce variables in the scope of the RHS, it is possible to use the
+$\exists_x. LHS$ production, which can be used for sub-computations for
+instantiating the atomic propositions of the RHS. This production is heavily
+used by the compiler to move variables defined in the rule's LHS to the RHS
+which are only used in the RHS, however it is still possible for the programmer
+to define RHS's variables explicitly using an equality constraint of the form $x
+= e$.
 
 \subsubsection{Graph visit using the abstract syntax}\label{visit:ast}
 
@@ -87,30 +105,28 @@ introduce the variable \code{A}, that is not explicitly quantified, as follows:
 
 \begin{align}
 \forall_A. \mathtt{visit}(A), \; \mathtt{unvisited}(A) \lolli & \;
-\mathtt{visited}(A), \; \comprehension{B}{\mathtt{edge}(A, B)}{\mathtt{visit}(B)}\\
+\mathtt{visited}(A), \; \comprehension{B}{\bang\mathtt{edge}(A, B)}{\mathtt{visit}(B)}\\
 \forall_A. \mathtt{visit}(A), \; \mathtt{visited}(A) \lolli & \;
 \mathtt{visited}(A)
 \end{align}
 
-Finally, initial facts are represented as a rule where the LHS is $\one$:
+For the initial facts, they are translated as rules where the LHS is $\one$:
 
 \nopagebreak
 
 \begin{align}
-\one \lolli & \bang \mathtt{edge}(@1, @2) \\
-\one \lolli & \bang \mathtt{edge}(@2, @3) \\
-\one \lolli & \bang \mathtt{edge}(@1, @4) \\
-\one \lolli & \bang \mathtt{edge}(@2, @4) \\
-\one \lolli & \mathtt{unvisited}(@1)  \\
-\one \lolli & \mathtt{unvisited}(@2) \\
-\one \lolli & \mathtt{unvisited}(@3) \\
-\one \lolli & \mathtt{unvisited}(@4) \\
-\one \lolli & \mathtt{visit}(@1)
+\one \lolli \; & \bang \mathtt{edge}(@1, @2) \\
+\one \lolli \; & \bang \mathtt{edge}(@2, @3) \\
+\one \lolli \; & \bang \mathtt{edge}(@1, @4) \\
+\one \lolli \; & \bang \mathtt{edge}(@2, @4) \\
+\one \lolli \; & \mathtt{unvisited}(@1)  \\
+\one \lolli \; & \mathtt{unvisited}(@2) \\
+\one \lolli \; & \mathtt{unvisited}(@3) \\
+\one \lolli \; & \mathtt{unvisited}(@4) \\
+\one \lolli \; & \mathtt{visit}(@1)
 \end{align}
 
-\subsection{RHS Expressions}\label{section:language:expressions}
-
-\subsubsection{Selectors}
+\subsection{Selectors}\label{section:language:selector}
 
 When a rule's LHS is instantiated using facts from the database, facts are
 picked non-deterministically. While our system uses an implementation dependent
@@ -128,13 +144,15 @@ In this case, we order the \code{weight} facts by \code{W} in ascending order
 and then try to match them. Other operations available are \code{max} and
 \code{random} (to force no pre-defined order at the implementation level).
 
+\subsection{RHS Expressions}\label{section:language:expressions}
+
 \subsubsection{Exists Expression}
 
-Exists constructs ($EE$) are based on the linear logic construct of the same name
-and are used to create fresh node addresses. We can use the new address to
-instantiate new facts for the new node. As an example, consider the implementation of the
-insertion operation for the key/value dictionary described in
-Fig.~\ref{code:language:btree_replace}:
+Exists constructs ($EE$) are based on the linear logic construct of the same
+name and are used to create fresh node addresses. We can use the new address to
+instantiate new facts for the new node. As an example, consider extending the
+key/value dictionary example described in Fig.~\ref{code:language:btree_replace}
+with an insertion operation:
 
 \begin{Verbatim}[fontsize=\codesize]
 insert(A, IKey, IValue),
@@ -144,9 +162,10 @@ IKey < Key
       exists B. (value(B, IKey, IValue), !left(A, B)).
 \end{Verbatim}
 
-The exists construct is used to create the left node of node \code{A} that
-contains \code{value(B, IKey, IValue)} (the newly inserted key/value pair) and
-the persistent fact \code{!left(A, B)} that connects \code{A} to \code{B}.
+The exists construct creates a new node \code{B} containing the linear fact
+\code{value(B, IKey, IValue)} (the newly inserted key/value pair) and the
+persistent fact \code{!left(A, B)} that connects \code{A} to \code{B} is also
+added to node \code{A}.
 
 \subsubsection{Comprehensions}
 
