@@ -122,7 +122,7 @@ is used in the LHS of a higher priority rule, namely, the rule in
 line~\ref{line:implementation:higher}. Once the \code{colored} fact is derived,
 the procedure must return to schedule the higher priority rule, as follows:
 
-\begin{Verbatim}[numbers=left,fontsize=\codesize]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\$\#\&]
 colored_list <- linked_list("colored")
 visit_list <- linked_list("visit")
 colored <- colored_list.head()
@@ -141,7 +141,7 @@ while(colored is valid)
          // Deleting facts.
          colored_list.erase(colored)
          visit_list.erase(visit)
-         return
+         $textbf#return&
       }
       visit <- visit.next()
    }
@@ -233,7 +233,7 @@ while(colored is valid)
       if(visit.get_int(1) == colored.get_int(1)) { // Equal arguments?
          // Delete visit.
          visit <- visit_list.erase(visit) // Get next visit fact.
-         $textbf#goto next&$label#line:implementation:goto&
+         goto next$label#line:implementation:goto&
       }
       visit <- visit.next()
 $textbf#next:&
