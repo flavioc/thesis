@@ -8,13 +8,16 @@ The Dryad system~\cite{Isard:2007:DDD:1272996.1273005} combines computational
 vertices with communication channels (edges) to form a data-flow graph. The
 program is scheduled to run on multiple processors or cores and data is
 partitioned during runtime. Routines that run on computational vertices are
-sequential, with no synchronization.
+sequential, with no synchronization. Dryad is better suited for a wider range of
+problem domains than LM, however Dryad is not a language but a framework where
+languages such as LM could be built upon.
 
 The Pregel system~\cite{Malewicz:2010:PSL:1807167.1807184} is also graph based,
 although programs have a more strict structure. They must be represented as
 a sequence of iterations where each iteration is composed of computation and
-message passing.  Pregel is specially suited to work on big graphs and to
-scale to large architectures.
+message passing. Pregel is specially suited to work on big graphs and to
+scale to large architectures. LM does not impose iteration restrictions on
+programs, however it is not as suited for big graphs as Pregel.
 
 GraphLab~\cite{GraphLab2010} is a C++ framework for developing parallel machine
 learning algorithms. While Pregel uses message passing, GraphLab allows nodes to
@@ -23,18 +26,22 @@ models in order to balance performance and data consistency. While some programs
 only need to access the local node's data, others may need to update edge
 information. Each consistency model will provide different guarantees that are
 better adapted to some algorithms. GraphLab also provides different schedulers
-that dictate the order in which node's are computed.
+that dictate the order in which node's are computed. The downside of GraphLab is
+that GraphLab has a steep learning curve and programs must be written in
+C++. LM programs tend to be smaller and easier to reason about since they are
+written at a higher abstraction level.
 
-Ligra~\cite{Shun:2013:LLG:2517327.2442530} is a lightweight framework for large scale
-graph processing on a single multicore machine. Ligra exploits the fact that
-most huge graph datasets available today can be made to fit in the main memory
-of commodity servers. Ligra is a simple framework that exposes 
-two main interfaces: \texttt{EdgeMap} and \texttt{VertexMap}. The former applies
-a function to a subset of edges of the graph, while the latter applys a function
+Ligra~\cite{Shun:2013:LLG:2517327.2442530} is a lightweight framework for large
+scale graph processing on a single multicore machine. Ligra exploits the fact
+that most huge graph datasets available today can be made to fit in the main
+memory of commodity servers. Ligra is a simple framework that exposes two main
+interfaces: \texttt{EdgeMap} and \texttt{VertexMap}. The former applies a
+function to a subset of edges of the graph, while the latter applies a function
 to a subset of vertices. The functions passed as arguments are applied to either
 a single edge or a single vertex and the user must ensure that the function can
-be executed in parallel. The framework allows the use of \emph{Compare-and-Swap}
-instructions when implementing functions in order to avoid race conditions.
+be executed in parallel. The framework allows the use of
+\emph{Compare-and-Swap}~(CAS) instructions when implementing functions in order
+to avoid race conditions.
 
 Grace~\cite{wang:asynchronous} is another graph-based framework for multicore
 machines. Unlike Ligra, Grace programs are implemented from the point of view of
@@ -62,6 +69,14 @@ represented in a worklist, while operators can be implemented on top of
 iterators of the worklist. Galois supports speculative execution by allowing
 operator rollback when an operator requires the use of a node that is held by
 another operator.
+
+Ligra, Grace and Galois are not programming language but frameworks built on top
+of other programming languages such as C and Java. Naturally, programs written
+in these frameworks need to take into account about several implementation
+details such as CAS instructions, worklists, and scheduling order. LM programs
+are slightly more abstract since reasoning is performed around logical rules and
+logical facts which are much closer to the problem domain of graph-based
+programs.
 
 SociaLite~\cite{Seo:2013:DSD:2556549.2556572} is a Datalog-based language for
 writing algorithms for social-network analysis. SociaLite takes Datalog programs
@@ -105,7 +120,7 @@ committed-choice constraint language used to write constraint solvers. A CHR
 program is a set of rules and a set of constraints. Constraints can be consumed
 or generated during the application of rules. Unlike LM, in CHR there is no
 concept of rule priorities, but there is an extension to CHR that supports
-them~\cite{DeKoninck:2007:URP:1273920.1273924}.  Finally, there is also a CHR
+them~\cite{DeKoninck:2007:URP:1273920.1273924}. Finally, there is also a CHR
 extension that adds persistent constraints and it has been proven to be sound
 and complete~\cite{DBLP:journals/corr/abs-1007-3829} in relation to the standard
 formulation of CHR.
