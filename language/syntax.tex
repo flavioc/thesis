@@ -169,27 +169,29 @@ added to node \code{A}.
 
 \subsubsection{Comprehensions}
 
-Sometimes we need to consume a linear fact and then immediately generate several
+Sometimes, when consuming a linear fact, we might want to generate several new
 facts depending on the contents of the database. To solve this particular need,
-we created the concept of comprehensions, which are sub-rules that are applied
-with all possible combinations of facts from the database. In a comprehension
-$\comprehension{\widehat{x}}{SLHS}{SRHS}$, $\widehat{x}$ is a list of variables
-in the scope of $SLHS$ and $SRHS$, $SLHS$ is the comprehension's left-hand side
-and $SRHS$ is the right-hand side. $SLHS$ is used to generate all possible
-combinations for $SRHS$, according to the facts in the database. We have already
-seen an example of comprehensions in the visit program
-(Fig.~\ref{code:language:visit} line~\ref{line:language:visit_comprehension}):
+we have created the concept of comprehensions, which are sub-rules that are
+applied with all possible combinations of facts from the database. In a
+comprehension $\comprehension{\widehat{x}}{SLHS}{SRHS}$, $\widehat{x}$ is a list
+of variables in the scope of $SLHS$ and $SRHS$ being $SLHS$ the comprehension's
+left-hand side and $SRHS$ the comprehension's right-hand side. $SLHS$ is used to
+generate all possible combinations for $SRHS$, according to the list of
+variables $\hat{x}$ and to the facts in the database. We have already seen an
+example of a comprehension in the graph visit program (Fig.~\ref{code:language:visit}
+line~\ref{line:language:visit_comprehension}):
 
 \begin{Verbatim}[fontsize=\codesize,commandchars=\*\#\&]
 visit(A), unvisited(A) -o visited(A), *textbf#{B | !edge(A, B) -o visit(B)}&.
 \end{Verbatim}
 
-We match \code{!edge(A, B)} using all the combinations available in the database
-and for each combination we derive \code{visit(B)}.
+In this example, the comprehension matches \code{!edge(A, B)} using all the
+combinations available in the database for node \code{B} and for each
+combination it derives \code{visit(B)}.
 
 \subsubsection{Aggregates}
 
-Another useful feature in logic programs is the ability to reduce several facts
+Another useful feature is the ability to reduce several facts
 into a single fact. LM features aggregates ($AE$), a special kind of sub-rule
 that works somewhat like comprehensions. In the abstract syntax
 $\aggregate{A}{y}{\widehat{x}}{SLHS}{SRHS_1}{SRHS_2}$, $A$ is the aggregate
@@ -206,71 +208,27 @@ PageRank program presented in Section~\ref{section:language:pagerank}:
 \begin{Verbatim}[fontsize=\codesize]
 update(A),
 !numInbound(A, T)
-   -o [sum => V; B, W, Val, Iter | neighbor-pagerank(A, B, Val, Iter), V =
+   -o [sum => V; B, Val, Iter | neighbor-pagerank(A, B, Val, Iter), V =
          Val/float(T) -o neighbor-pagerank(A, B, Val, Iter) -> sum-ranks(A, V)].
 \end{Verbatim}
 
-The rule aggregates the PageRank values \code{Val} by iterating over
-\code{neighbor-pagerank(A, B, Val, Iter)} (the $SLHS$) and then re-deriving the
-fact present in $SRHS_1$ using \code{neighbor-pagerank(A, B, Val, Iter)}. Once all
+The rule aggregates the values \code{V} by iterating over
+\code{neighbor-pagerank(A, B, Val, Iter)} (the $SLHS$) and by re-deriving the
+fact \code{neighbor-pagerank(A, B, Val, Iter)} (the $SHRS_1$). Once all
 values are inspected, the atomic proposition \code{sum-ranks(A, V)} present in
-$SRHS_2$ is derived once with \code{V} that represents the sum of all the
-neighbor values. LM provides several aggregate operations, including the
+$SRHS_2$ is derived once with \code{V} representing the sum of all the
+neighbor values \code{Val/float(T)}. LM provides several aggregate operations, including the
 \code{min} (minimum value), \code{max} (maximum value), \code{sum} (add all
 numbers), \code{count} (count combinations) and \code{collect} (collect items
 into a list).
 
-\section{Types and Locality}
-
-Each fact is an association between a \emph{predicate} and a tuple of values. A
-predicate is a pair with a name and a tuple of types (the argument types). LM
-rules are type-checked using the predicate declarations in the header of the
-program. LM has a simple type system that includes the following simples types:
-\emph{node}, \emph{int}, \emph{float}, \emph{string}, \emph{bool}. The following
-structured types are also supported: \emph{list} $X$, for lists of type $X$;
-\emph{struct} $X_1, \ldots, X_n$, for composite values made of $n$ elements; and
-\emph{array} $X$, for arrays of type $X$.
-
-LM allows definition of new type names from simpler types using the declaration
-\code{type simple-type new-type} in the header of the program. The type
-\code{new-type} can then be used as any other type. Note that LM uses
-\emph{structural equivalence} to check if two types are the same, therefore
-\code{simple-type} and \code{new-type} are type equivalent.
-
-Type checking LM programs is straightforward due to its simple type system and
-mandatory predicate declarations. For each rule, the variables found in the LHS
-are mapped to types based on their use on atomic proposition arguments. Some
-constraints of the form \code{X = expression} that force an equality between
-\code{X} and \code{expression} may actually represent an assignment of
-\code{expression} to \code{X} since \code{X} may not be used in any proposition
-argument. In this case, all the variables in \code{expression} must be typed or
-else \code{X} becomes an \emph{undefined variable}. Variables in the rule's RHS
-must be defined in the LHS, because otherwise derived facts would not be
-\emph{ground}, that is, some arguments would be undefined or uncomputable.  For
-comprehensions and aggregates, type checking is identical, however, the LHS of
-each construct must document the variables in scope using the $\hat{x}$
-argument. If a variable is introduced in the LHS that is not in $\hat{x}$, type
-checking will fail.
-
-Another important component of type checking is \emph{locality checking}. The
-first argument of each atomic proposition in the LHS must use the same variable
-in order to enforce locality and allow concurrency. This \emph{home variable} is
-always typed as a \emph{node} and represents a node in the program's graph. In
-the rule's RHS, other home variables are allowed, as long as they are defined
-variables. For comprehensions and aggregates, the LHS must use the same home
-argument as the rule's LHS.
-
 \section{Operational Semantics}
 
 As said before, the first argument of every predicate must be typed as a
-\emph{node}.  For distribution purposes, the LHS of all rules can only use facts
-from the same node in order to make concurrency possible. However, the facts in
-the rule's RHS may refer to other nodes, as long as those nodes are instantiated
-in the LHS. We drew some inspiration from the Linda system~\cite{linda}
-mentioned early on, where the tuple space contains the data and is used by the
-processors to communicate and perform computation. This differs from imperative
-languages, since in those languages data and computation are two separate
-entities.
+\emph{node} and all rules must only use facts belonging to the same node. These
+two restrictions, allows LM to be concurrent since computation can be performed
+using the facts belonging to the same node without requiring communication
+between multiple nodes.
 
 The execution is performed at the node level and happens non-deterministically
 (i.e., any node can be picked to run). This means that the programmer cannot
@@ -279,7 +237,7 @@ partially since the process is non-deterministic. The operational semantics
 promises that rule derivations are performed atomically, therefore if a rule
 sends many facts to a node then the target node will receive them all at once.
 Under these restrictions, computation can then be parallelized by processing
-many nodes concurrently.
+nodes concurrently.
 
 Each rule in LM has a defined priority that is inferred from its position in the
 source file.  Rules at the beginning of the file have higher priority. At the
@@ -297,9 +255,10 @@ g(A) -o 1.
 \end{Verbatim}
 
 If the database contains the facts \code{h(@1)} and \code{f(@1)}, then the
-second rule is applied, deriving \code{g(@1)} and retracting \code{h(@1)}. Next,
+second rule is applied, retracting \code{h(@1)} and deriving \code{g(@1)}. Next,
 the first and third rules are candidate rules, but since the first rule has
-higher priority, it is applied immediately, resulting in a database with a
-single fact \code{f(@1)}.  Section~\ref{sec:implementation:rule_engine} gives
-details in how our implementation manages the set of candidate rules.
+higher priority, it is applied first, resulting in a database with a single fact
+\code{f(@1)}, where no rule can be applied. Later, in
+Section~\ref{sec:implementation:rule_engine}, we give more details about how our
+implementation manages the set of candidate rules.
 

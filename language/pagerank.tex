@@ -45,16 +45,16 @@ Where $G_{i}$ is the row of the $G$ matrix that corresponds to the inbound links
 of page $i$. Note that we also do not need to have the complete $x(t)$ vector
 most elements of $G_{i}$ are $0$.
 
-The code for this iterative computation is shown in
-Fig.~\ref{language:code:pagerank} and starts by declaring six predicates,
-namely: \code{outbound}, to declare outbound links where the third argument
-represents a value in the transition matrix $P$; \code{numInbound}, with the
-number of inbound links; \code{pagerank}, to represent the PageRank of a page;
-\code{accumulator}, to accumulate the incoming neighbor's PageRank values;
-\code{neighbor-pagerank}, to represent an incoming PageRank value; and
-\code{start} to initialize a node.  Since this program is asynchronous, the
-PageRank values of all nodes must be computed before the next PageRank is
-computed.
+The LM code for this iterative computation is shown in
+Fig.~\ref{language:code:pagerank} and the code starts by declaring six
+predicates, namely: \code{outbound}, that specifies outbound links where the
+third argument represents a value in the transition matrix $P$;
+\code{numInbound}, with the number of inbound links; \code{pagerank}, to
+represent the PageRank of a page; \code{accumulator}, to accumulate the incoming
+neighbor's PageRank values; \code{neighbor-pagerank}, to represent an incoming
+PageRank value; and \code{start} to initialize a node.  Since this program is
+synchronous, the PageRank values of all nodes must be computed before the next
+PageRank is computed.
 
 We use constant definitions provided by LM
 (lines~\ref{line:language:spagerank_const1}-\ref{line:language:spagerank_const2})
@@ -75,7 +75,7 @@ propagates a newly computed PageRank value to all neighbors and represents a
 step in the iterative method for a column in the $G$ matrix. The fact
 \code{neighbor-pagerank} informs the neighbor node about the PageRank value of
 node \code{A} for iteration \code{Iter + 1}. For every iteration, each node will
-accumulate the all the \code{neighbor-pagerank} facts into the
+accumulate all the \code{neighbor-pagerank} facts into the
 \code{accumulator} fact (lines
 \ref{line:language:spagerank_fourth1}-\ref{line:language:spagerank_fourth2}).
 When all inbound neighbor PageRank values are accumulated, the third rule
@@ -84,34 +84,35 @@ is derived and a PageRank value is generated for iteration \code{Iter}.
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\[\]]
-type outbound(node, node, float).
+type outbound(node, node, float).\hfill// Predicate declaration.
 type numInbound(node, int).
 type linear pagerank(node, float, int).
 type linear accumulator(node, float Acc, int Left, int Iteration).
 type linear neighbor-pagerank(node, node Neighbor, float Rank, int Iteration).
 type linear start(node).
 
-const damping = 0.85. // probability of user following a link in the current page.\label[line:language:spagerank_const1]
-const iterations = str2int(@arg1). // iterations to compute.
-const pages = @world. // number of pages in the graph.\label[line:language:spagerank_const2]
+const damping = 0.85.\hfill// probability of user following a link in the current page.\label[line:language:spagerank_const1]
+const iterations = str2int(@arg1).\hfill// iterations to compute.
+const pages = @world.\hfill// number of pages in the graph.\label[line:language:spagerank_const2]
 
-start(A).
-
-start(A), !numInbound(A, T)\label[line:language:spagerank_first1]
+start(A), !numInbound(A, T)\label[line:language:spagerank_first1]\hfill// Rule 1: initialize pagerank and accumulator.
    -o accumulator(A, 0.0, T, 1), pagerank(A, 1.0 / float(pages), 0).\label[line:language:spagerank_first2]
 
-pagerank(A, V, Iter), // propagate new pagerank value\label[line:language:spagerank_second1]
+pagerank(A, V, Iter), // propagate new pagerank value\label[line:language:spagerank_second1]\hfill// Rule 2: propagate pagerank.
 Iter < iterations
    -o {B, W | !outbound(A, B, W) -o neighbor-pagerank(B, A, V * W, Iter + 1)}.\label[line:language:spagerank_second2]
 
-accumulator(A, Acc, 0, Iter), // new pagerank\label[line:language:spagerank_third1]
+neighbor-pagerank(A, B, V, Iter),\label[line:language:spagerank_fourth1]\hfill// Rule 3: accumulate neighbor's value.
+accumulator(A, Acc, T, Iter)
+   -o accumulator(A, Acc + V, T - 1, Iter).\label[line:language:spagerank_fourth2]
+
+accumulator(A, Acc, 0, Iter),\label[line:language:spagerank_third1]\hfill// Rule 4: generate new pagerank.
 !numInbound(A, T),
 V = damping + (1.0 - damping) * Acc,
 Iter <= iterations
    -o pagerank(A, V, Iter), accumulator(A, 0.0, T, Iter + 1).\label[line:language:spagerank_third2]
 	
-neighbor-pagerank(A, B, V, Iter), accumulator(A, Acc, T, Iter)\label[line:language:spagerank_fourth1]
-   -o accumulator(A, Acc + V, T - 1, Iter).\label[line:language:spagerank_fourth2]
+start(A).\hfill// Initial facts.
 \end{Verbatim}
 \caption{Synchronous PageRank program.}
 \label{language:code:pagerank}

@@ -64,6 +64,81 @@ while(colored is valid)
          colored_list.add(new_colored) // Add new fact to the linked list.
 
          // Deleting facts.
+         colored <- colored_list.erase(colored)
+         visit <- visit_list.erase(visit)
+         goto next
+      }
+      visit <- visit.next()
+   }
+   colored <- colored.next()
+next:
+   continue
+}
+\end{Verbatim}
+
+The compilation algorithm iterates through the atomic propositions in rule's LHS
+and creates nested loops to try all the possible combinations of facts.  For
+this rule, all the pairs of facts \code{colored} and \code{visit} must be
+matched until the implicit constraint is true. First, the \code{colored} linked
+list is iterated over by first retrieving the head fact and then using the
+\code{next} pointer of each fact. Inside this outer loop, a nested \emph{while}
+loop is created for predicate \code{visit}. This inner loop includes a check for
+the constraint.
+
+If the constraint expression is true then the rule matches and a new
+\code{colored} fact is derived and two used linear facts are consumed by erasing
+them from the linked lists. Note that after the rule is derived, the code uses
+\code{goto next} to jump to the outer loop which uses the next \code{colored}
+fact computed using \code{colored\_list.erase(colored)}. This forces the
+procedure to try all the combinations of the rule from the database.
+Furthermore, we must jump to the first linear loop because we cannot use the
+next fact from the deepest loop since we may have constraints between the first
+linear loop and the deepest loop that were validated using deleted facts.
+
+If the implicit constraint had failed, another \code{visit} fact would have been
+used by assigning \code{visit} to \code{visit.next()}.  Likewise, if the initial
+\code{colored} fact fails for all \code{visit} facts, then the next
+\code{colored} fact in the list is tried by following the \code{next} pointer.
+
+In order to understand how rule priorities affect compilation, consider a
+slightly different bipartiteness checking program where the second and third
+rules are swapped:
+
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\[\]]
+visit(A, P), uncolored(A)
+   -o {B | !edge(A, B) -o visit(B, next(P))},
+      colored(A, P).
+
+visit(A, P1), colored(A, P2), P1 <> P2 -o fail(A).*label[line:implementation:higher]
+
+*textbf[visit(A, P), colored(A, P) -o colored(A, P).]
+
+visit(A, P), fail(A) -o fail(A).
+\end{Verbatim}
+
+The procedure for the rule
+being compiled cannot be the same since the derived \code{colored} fact
+is used in the LHS of a higher priority rule, namely, the rule in 
+line~\ref{line:implementation:higher}. Once the \code{colored} fact is derived,
+the procedure must return to schedule the higher priority rule, as follows:
+
+\begin{Verbatim}[numbers=left,fontsize=\codesize]
+colored_list <- linked_list("colored")
+visit_list <- linked_list("visit")
+colored <- colored_list.head()
+while(colored is valid)
+{
+   visit <- visit_list.head() // Retrieve first element of the list.
+   while(visit is valid)
+   {
+      if(visit.get_int(1) == colored.get_int(1)) { // Equal arguments?
+         new_colored <- create_fact("colored") // New fact for predicate colored.
+         new_colored.set_int(1, visit.get_int(1)) // Set arguments.
+
+         // New fact is derived.
+         colored_list.add(new_colored) // Add new fact to the linked list.
+
+         // Deleting facts.
          colored_list.erase(colored)
          visit_list.erase(visit)
          return
@@ -74,26 +149,11 @@ while(colored is valid)
 }
 \end{Verbatim}
 
-The compilation algorithm iterates through the atomic propositions in rule's LHS
-and creates nested loops to try all the possible combinations of facts.  For
-this rule, all the pairs of facts \code{colored} and \code{visit} must be
-matched until implicit constraint is true. First, the \code{colored} linked list
-is iterated over by first retrieving the head fact and then using the
-\code{next} pointer of each fact. Inside this outer loop, a nested \emph{while}
-loop is created for predicate \code{visit}. This inner loop includes a check for
-the constraint. If the constraint expression is true then the rule matches and a
-new \code{colored} fact is derived and two used linear facts are consumed by
-erasing them from the linked lists. Note that after the rule is derived, the
-code must \code{return} to terminate the rule since there is a higher priority
-rule that may be triggered with the new \code{colored} fact (see
-Fig.~\ref{language:code:bichecking}). This enforces the priority semantics of
-the language.
+This enforces the priority semantics of the language. When a rule derives facts
+that were used as input to a higher priority rule, the initial rule is only
+derived once because the newly derived facts may trigger the derivation of a
+higher priority rule.
     
-If the constraint had failed, another \code{visit} fact would have been used by
-assigning \code{visit} to \code{visit.next()}.  Likewise, if the initial
-\code{colored} fact fails for all \code{visit} facts, then the next
-\code{colored} fact in the list is tried by following the \code{next} pointer.
-
 \begin{figure}
 \begin{algorithm}[H]
  \KwData{Rule R1, Rules}
@@ -172,7 +232,7 @@ while(colored is valid)
    {
       if(visit.get_int(1) == colored.get_int(1)) { // Equal arguments?
          // Delete visit.
-         vist = visit_list.erase(visit) // Get next visit fact.
+         visit <- visit_list.erase(visit) // Get next visit fact.
          $textbf#goto next&$label#line:implementation:goto&
       }
       visit <- visit.next()
@@ -186,20 +246,7 @@ $textbf#next:&
 In this new version of the code, only the \code{visit} facts are deleted, while
 the \code{colored} facts remain untouched. In the bipartiteness checking
 program, each node has one \code{colored} fact and this compiled code simply
-filters out the \code{visit} facts with the same color.  Note that now have a
-\emph{goto statement} (line~\ref{line:implementation:goto}) that is executed
-when the rule is derived. In this case, since no new \code{colored} fact was
-derived, we avoid returning to enforce rule priorities and immediately continue
-to try to derive the rule as many times as possible.
-
-All the rule combinations are attempted in cases where a rule does not derive
-any facts or the facts derived do not appear before the rule, that is, the new
-facts are only used in lower priority rules. This is specified in the final
-\emph{if statement} in Fig.~\ref{alg:compile_rule}. If the rule does not return,
-then we always jump to the first loop that uses linear facts. We must jump to
-the first linear loop because we cannot use the next fact from the deepest loop
-since we may have constraints between the first linear loop and the deepest loop
-that were validated using deleted facts.
+filters out the \code{visit} facts with the same color.
 
 \subsection{Updating Facts}
 
@@ -220,7 +267,7 @@ the second argument, the code for the rule above is as follows:
 \begin{Verbatim}[numbers=left,fontsize=\codesize]
 new_neighbor_pagerank_list <- linked_list("new-neighbor-pagerank")
 neighbor_pagerank_table <- hash_table("neighbor-pagerank")
-new_neighbor_pagerank <- new_neighbor_pagerank.head()<++>
+new_neighbor_pagerank <- new_neighbor_pagerank.head()
 while(new_neighbor_pagerank is valid)
 {
    // Hash table for neighbor-pagerank is indexed by the second argument,
@@ -343,7 +390,7 @@ while(visit is valid)
    while(uncolored is valid)
    {
       // Comprehension code.
-      edge_trie = trie("edge")
+      edge_trie <- trie("edge")
       edge <- edge_trie.first()
       while(edge is valid)
       {
