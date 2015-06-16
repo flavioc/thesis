@@ -6,12 +6,14 @@ of the system, namely, the compiler and virtual machine.
 \begin{figure}[ht]
   \centering
   \includegraphics[width=.75\linewidth]{figures/implementation/overview.pdf}
+
   \caption{Compilation of a LM program into an executable. The compiler
-     transforms a LM program into \code{file.cpp}, C++ file with compiled
-     rules, and a \code{data} file with the graph structure and initial facts. The virtual
-     machine which includes code for managing multithreaded execution and the
-     database of facts is then linked with \code{file.cpp} to create a
-     standalone executable that can be run in parallel.}
+     transforms a LM program into a C++ file, \code{file.cpp}, with compiled
+     rules, and into a data file with the graph structure and initial facts,
+     \code{file.data}. The virtual machine which includes code for managing
+  multithreaded execution and the database of facts is then linked with both
+  files to create a standalone executable that can be run in parallel.}
+
   \label{fig:implementation:overview}
 \end{figure}
 
@@ -19,15 +21,15 @@ The virtual machine contains supporting data structures for managing the
 database of facts and to schedule the execution of rules. The parallel engine is
 also a major part of the virtual machine and is responsible for managing
 multithreaded execution by launching threads, managing communication and
-and scheduling parallel execution.
+scheduling concurrent execution.
 
 The compiler transforms LM files into C++ code that use the virtual machine
 facilities to implement the program logic.  The compiled code implements the
 inference rules of the program and uses the API of the virtual machine to derive
-and retract facts and to schedule the execution of rules.  The compiler also
-creates a separate file, named \code{file.data}, with the program's initial
-facts and graph structure. The graph structure is reconstructed in parallel once
-the program starts.
+and retract facts and to schedule the execution of rules in the file named
+\code{file.cpp}. The compiler also creates a separate file, named
+\code{file.data}, with the program's initial facts and graph structure. The
+graph structure is reconstructed in parallel once the program starts.
 
 To complete the compilation process, we use a C++ compiler to compile the
 virtual machine files and \code{file.cpp} into object files that are then linked

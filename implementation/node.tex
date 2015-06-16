@@ -8,18 +8,30 @@ of the receiving node, these are called \emph{incoming facts}. Note that this is
 to the parallel aspects of the virtual machine and more details are given in the
 next chapter.
 
+During the lifetime of a program, each node goes through different states as
+specified by the state machine. Figure~\ref{fig:local:node_states} presents the
+state machine with the valid state transitions.  In the \textbf{running} state,
+the node is deriving rules. In the \textbf{inactive} state, the node has no new
+facts to be considered and all candidate rules have been tried. In the
+\textbf{active} state, the node has new facts to be considered but is waiting to
+be executed by a thread. Finally, in the \textbf{stealing} state, the node is
+currently being stolen by some thread.
+
+\begin{figure}[ht]
+   \centering
+   \includegraphics[width=0.55\textwidth]{figures/local/node_state.pdf}
+   \caption{The node state machine as represented by the state variable.}
+   \label{fig:local:node_states}
+\end{figure}
+
 As shown in Fig.~\ref{fig:local:node_overview}, each node contains the
 following attributes:
 
 \begin{itemize}
-   \item \emph{State}: the node state flag which can be one of the following:
-      \textbf{running}, the node is deriving rules; \textbf{inactive}, the node
-      has no new facts to be considered and all candidate rules have been tried;
-      \textbf{active}, the node has new facts to be considered but is waiting to
-      be executed by a thread. Figure~\ref{fig:local:node_states} presents the
-      state machine with the valid state transitions.
+   \item \emph{State}: the node state flag.
    \item \emph{Main Lock}: a lock that protects the node attributes enumerated
-      in this list except for \emph{Linear DB} and \emph{Persistent DB}.
+      in this list except for \emph{Linear DB}, \emph{Persistent DB}, and
+      \emph{Rule Engine}.
    \item \emph{DB Lock}: a lock that protects \emph{Linear DB},
       \emph{Persistent DB} and \emph{Rule Engine}. The lock is held when the node is deriving rules or
       when incoming facts from other nodes need to be added to the database data
@@ -37,15 +49,6 @@ following attributes:
    \item \emph{Persistent DB}: the database of persistent facts.
 \end{itemize}
 
-\begin{figure}[ht]
-   \centering
-   \includegraphics[width=0.55\textwidth]{figures/local/node_state.pdf}
-   \caption{The node state machine as represented by the state variable. During
-      the lifetime of a program, each node goes through different states as
-      specified by the state machine.}
-   \label{fig:local:node_states}
-\end{figure}
-
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.5\textwidth]{figures/local/node.pdf}
@@ -53,14 +56,14 @@ following attributes:
 \label{fig:local:node_overview}
 \end{figure*}
 
-\paragraph{Database data structures}
-
-The database of facts must be implemented efficiently because during matching
-of rules we need to restrict the facts using \emph{join constraints}, which fix
+The database of facts must be implemented efficiently because during matching of
+rules we need to restrict the facts using \emph{join constraints}, which fix
 arguments of predicates to instantiated values. A database fact is made up of 2
-pointers (\code{prev} and \code{next}) and a variable number of arguments.
-Each argument is large enough to contain a value of any of the available LM types.
-Facts are stored in one of the four data structures:
+pointers (\code{prev} and \code{next}) and a variable number of arguments.  Each
+fact argument is large enough to contain a value of any of the available LM
+types. Each predicate of the program is stored in a different data structure in
+order to make it easier to lookup facts by predicate. Predicate facts are stored
+in one of the four data structures:
 
 \begin{itemize}
 
@@ -69,9 +72,12 @@ Facts are stored in one of the four data structures:
    and \code{next} pointers are used to store all the facts stored in the trie.
 
 \item \emph{Array Data Structures} are used to store persistent facts that are
-   only derived as initial facts and used in rules LHS. Facts stored in this
-   data structure do not have the \code{prev} and \code{next} pointers
-   because they are already chained by being part of a contiguous memory area.
+   used in the LHS of rules without matching (no join constraints) and exist
+   only as initial facts. Facts stored in this data structure do not have the
+   \code{prev} and \code{next} pointers because they are already chained by
+   being part of a contiguous memory area. The compiler performs static analysis
+   of the program's rule in order to choose between trie and array data
+   structures for a particular predicate.
 
 \item \emph{Doubly Linked List Data Structures} are used to store linear facts.
    We use a double linked list because it is a very efficient way to add and
@@ -89,16 +95,20 @@ Facts are stored in one of the four data structures:
 \end{itemize}
 
 Figure~\ref{fig:implementation:hash_table} shows an example for a hash table
-data structure for a \code{a(int,int)} predicate with 3 linear facts indexed
-by the second argument and stored as a doubly linked list in bucket \code{2}.
+data structure for a \code{p(int, int)} predicate with 4 linear facts indexed by
+the second argument. Note that for each bucket, facts are stored in a doubly
+linked list using the \code{prev} and \code{next} pointers of each fact.
 
 \begin{figure}[ht]
-\centering
-\includegraphics[width=0.6\textwidth]{figures/implementation/hash_table.pdf}
-\caption{Hash table and doubly linked data structures for 
-   a \texttt{a(int,int)} predicate containing the following facts: \code{a(1,
-   2)}, \code{a(2, 12)}, \code{a(2, 42)}.}
-\label{fig:implementation:hash_table}
+   \centering
+   \includegraphics[width=0.6\textwidth]{figures/implementation/hash_table.pdf}
+
+   \caption{Hash table and doubly linked data structures for a \texttt{p(int,
+   int)} predicate containing the following facts: \code{p(0, 20)}, \code{p(1,
+   3)}, \code{p(2, 13)}, and \code{p(2, 43)}. Facts are indexed by computing
+   $arg_2\mod{}10$ where $arg_2$ is the second argument of the fact.}
+
+   \label{fig:implementation:hash_table}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -107,28 +117,27 @@ by the second argument and stored as a doubly linked list in bucket \code{2}.
 
 To improve fact lookup, the VM employs a fully dynamic mechanism to
 decide which argument may be optimal to index.  The algorithm is
-performed in the beginning of execution and empirically tries to
+executed along with normal computation and empirically tries to
 assess the argument of each predicate that more equally spreads the
 database across the values of the argument. 
 
-The indexing algorithm is performed in three main steps. First, it
-gathers lookup statistics by keeping a counter for each
-predicate's argument.  Every time a fact search is performed where
-arguments are fixed to a value, the counter of such arguments is
-incremented. This phase is performed during rule execution for a small
-fraction of the nodes in the program.
+The indexing algorithm is performed in three main steps. First, it gathers
+lookup statistics by keeping a counter for each predicate's argument. Every time
+a fact search is performed where arguments are fixed to a value, the counter of
+such arguments is incremented. This phase is performed during rule execution for
+100 nodes or 1\% of the nodes of the graph, if the graph has more than 100000
+nodes.
 
 The second step of the algorithm selects the candidate arguments of each
-predicate.  If a predicate was not searched with any fixed arguments, then it
-will be not indexed and there are no candidates.  If only one argument was
-fixed, then such argument is the only available candidate argument and thus
-immediatelly becomes the indexing argument. Otherwise, the top 2 arguments are
-selected for the third phase, where \emph{entropy statistics} are collected
-dynamically.
+predicate. If a predicate was not searched with any fixed arguments, then it
+will be not indexed as there are no candidates. If only one argument was fixed,
+then such argument is the only available candidate argument and thus immediately
+becomes the indexing argument. Otherwise, the top 2 arguments are selected for
+the third phase, where \emph{entropy statistics} are collected dynamically.
 
-During the third phase, each candidate argument has an entropy score.
-Before a node is executed, the facts of the target predicate
-are used in the following formula applied for the two arguments:
+During the third phase, each candidate argument has an entropy score. Before a
+node is executed, the facts of the target predicate are used in the following
+formula applied for the two arguments:
 
 \[
 Entropy(A, F) = - \sum_{v \in values(F, A)} \frac{count(F, A = v)}{total(F)} \log_2 \frac{count(F, A = v)}{total(F)}
