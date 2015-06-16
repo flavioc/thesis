@@ -37,47 +37,44 @@ approach in order to limit the size of the cache.
 
 \begin{figure}[ht]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\{\}]
-type left(node, node).
+type left(node, node).*hfill// Predicate declaration.
 type right(node, node).
 type linear value(node, int Key, string Value).
 type linear replace(node, int Key, string Value).
 type linear cache(thread, node, int).
 type linear cache-size(thread, int).
 
-// (1) Key exists and is also in the cache.*label{line:threads:kv_rule1_start}
-replace(A, Key, RValue),
+replace(A, Key, RValue),*hfill*label{line:threads:kv_rule1_start}// Rule 1: key exists and is also in the cache.
 value(A, Key, Value),
 *textbf{cache(T, A, Key)}
    -o value(A, Key, RValue).
       *textbf{cache(T, A, Key)}.*label{line:threads:kv_rule1_end}
 
-// (2) Key exists and is not in the cache.*label{line:threads:kv_rule2_start}
-replace(A, Key, RValue),
+replace(A, Key, RValue),*label{line:threads:kv_rule2_start}*hfill// Rule 2: key exists and is not in the cache.
 value(A, Key, Value),
 *textbf{cache-size(T, Total)}
    -o value(A, Key, RValue),
       *textbf{cache-size(T, Total + 1)},
       *textbf{cache(T, A, Key)}.*label{line:threads:kv_rule2_end}
 
-// (3) Cached by the thread.*label{line:threads:kv_rule3_start}
-replace(A, RKey, RValue),
+replace(A, RKey, RValue),*label{line:threads:kv_rule3_start}*hfill// Rule 3: cached by the thread.
 *textbf{cache(T, TargetNode, RKey)}
    -o replace(TargetNode, RKey, RValue),
       *textbf{cache(T, TargetNode, RKey)}.*label{line:threads:kv_rule3_end}
 
-replace(A, RKey, RValue),
+replace(A, RKey, RValue),*hfill// Rule 4: go left.
 value(A, Key, Value),
 !left(A, B),
 RKey < Key
    -o value(A, Key, Value),
-      replace(B, RKey, RValue). // go left
+      replace(B, RKey, RValue).
 
-replace(A, RKey, RValue),
+replace(A, RKey, RValue),*hfill// Rule 5: go right.
 value(A, Key, Value),
 !right(A, B),
 RKey > Key
    -o value(A, Key, Value),
-      replace(B, RKey, RValue). // go right
+      replace(B, RKey, RValue).
 \end{Verbatim}
 \caption{LM program for performing lookups in a BST with a thread cache.}
 \label{code:threads:btree_lookup_cache}

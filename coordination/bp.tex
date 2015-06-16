@@ -10,6 +10,14 @@ graphical models with cycles~\cite{Murphy99loopybelief}. In its essence, LBP is
 a sum-product message passing algorithm where nodes exchange messages with their
 immediate neighbors and apply some computations to the messages received.
 
+\begin{figure}[h]
+   \begin{center}
+      \includegraphics[width=0.3\textwidth]{figures/bp/bp.pdf}
+   \end{center}
+\caption{LBP: communication patterns}
+\label{fig:coordination:bp}
+\end{figure}
+
 LBP is an algorithm that maps very well to the graph-based model of LM. The
 original algorithm computes the belief of all nodes for several iterations with
 synchronization between iterations. However, it is possible to avoid the
@@ -21,27 +29,33 @@ Figure~\ref{fig:coordination:bp} shows the communication patterns for our
 application and Fig.~\ref{code:coordination:bp} presents the LM code for the
 implementation.
 
-\begin{figure}[h]
-   \begin{center}
-      \includegraphics[width=0.3\textwidth]{figures/bp/bp.pdf}
-   \end{center}
-\caption{LBP: communication patterns}
-\label{fig:coordination:bp}
-\end{figure}
-
-\begin{figure}[h!]
+\begin{figure}[ht]
 \begin{Verbatim}[numbers=left, fontsize=\codesize, commandchars=\*\{\}]
-neighbor-belief(A, B, Belief),*label{line:coord:bp_first1}
+type list float belief.*hfill// Type declaration.
+
+type potential(node, belief).*hfill// Predicate declaration.
+type edge(node, node).
+type linear neighbor-belief(node, node, belief).
+type linear new-neighbor-belief(node, node, belief).
+type linear neighbor-belief-old(node, node, belief).
+type linear sent-neighbor-belief(node, node, belief).
+type linear check-residual(node, float, node).
+type linear belief(node, belief).
+type linear update-messages(node, belief).
+type linear update(node).
+
+neighbor-belief(A, B, Belief),*label{line:coord:bp_first1}*hfill// Rule 1: update neighbor belief value.
 new-neighbor-belief(A, B, NewBelief)
    -o neighbor-belief(A, B, NewBelief).*label{line:coord:bp_first2}
 
-check-residual(A, Residual, B),*label{line:coord:bp_check1}
+check-residual(A, Residual, B),*label{line:coord:bp_check1}*hfill// Rule 2: check residual.
 Residual > bound
    -o update(B).
-check-residual(A, _, _) -o 1.*label{line:coord:bp_check2}
+
+check-residual(A, _, _) -o 1.*label{line:coord:bp_check2}*hfill// Rule 3: check residual.
 
 // update belief to be sent to one neighbor*label{line:coord:bp_iterate1}
-update-messages(A, NewBelief),
+update-messages(A, NewBelief),*hfill// Rule 4: compute belief to be sent to a neighbor node.
 !edge(A, B),
 neighbor-belief-old(A, B, OldIn),
 sent-neighbor-belief(A, B, OldOut),
@@ -54,13 +68,13 @@ OutMessage = damp(Convolved, OldOut, damping)
       new-neighbor-belief(B, A, OutMessage),
       sent-neighbor-belief(A, B, OutMessage).*label{line:coord:bp_iterate2}
 
-update-messages(A, NewBelief) -o 1.*label{line:coord:bp_iterate_final}
+update-messages(A, NewBelief) -o 1.*label{line:coord:bp_iterate_final}*hfill// Rule 5: all neighbors were processed.
 
 // if we have two update functions, just run one of them*label{line:coord:bp_last1}
-update(A), update(A) -o update(A).*label{line:coord:bp_update}
+update(A), update(A) -o update(A).*label{line:coord:bp_update}*hfill// Rule 6: prune update operations.
 
 // make a copy of neighbors beliefs in order to add them up*label{line:coord:bp_update1}
-update(A),
+update(A),*hfill// Rule 7: initiate update operation.
 !potential(A, Potential),
 belief(A, MyBelief)
    -o [custom addfloats Potential => Belief; B, Belief |*label{line:coord:bp_agg1}
@@ -72,6 +86,8 @@ belief(A, MyBelief)
 \caption{LM code for the Loopy Belief Propagation problem.}
 \label{code:coordination:bp}
 \end{figure}
+
+\clearpage
 
 Belief values are arrays of floats and are represented by \code{belief/2} facts.
 The first rule (lines~\ref{line:coord:bp_first1}-\ref{line:coord:bp_first2})
@@ -132,4 +148,3 @@ OutMessage = damp(Convolved, OldOut, damping)
 \caption{Updating the BP program to use priorities.}
 \label{code:coordination:improved_bp}
 \end{figure}
-

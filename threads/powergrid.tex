@@ -47,9 +47,9 @@ different combinations to happen.
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\scriptsize,commandchars=*\#\&]
-node generator.*label#line:threads:pg_decl1&
+node generator.*label#line:threads:pg_decl1&*hfill// Type declaration.
 node consumer.*label#line:threads:pg_decl2&
-type linear capacity(generator, int Total, int Used).
+type linear capacity(generator, int Total, int Used).*hfill// Predicate declaration.
 type linear connected-to(generator, consumer, int).
 type linear connected-to-list(generator, list consumer).
 type power(consumer, int).
@@ -62,39 +62,39 @@ type linear reconnect(consumer).
 type linear connect(generator, consumer, int).
 type linear disconnect(consumer, generator).
 
-connected-to-list(G, []).  fails(G, 0).
-disconnected(C).  reconnect(C).  !generators(C, all-generators).
-
-fails(G, Fails), Fails > maxfails*label#line:threads:pg_recon1&
+fails(G, Fails), Fails > maxfails*label#line:threads:pg_recon1&*hfill// Rule 1: disconnect one consumer.
    -o random-reconnect(G).
 
-capacity(G, Total, Used), random-reconnect(G),
+capacity(G, Total, Used), random-reconnect(G),*hfill// Rule 2: disconnect one consumer.
 connected-to-list(G, L), L <> [], C = nth(L, randint(length(L))),
 connected-to(G, C, Power)
    -o fails(G, 0), capacity(G, Total, Used - Power),
       connected-to-list(G, remove(L, C)), disconnect(C, G).
 
-capacity(G, Total, Used), random-reconnect(G)
+capacity(G, Total, Used), random-reconnect(G)*hfill// Rule 3: unable to disconnect one consumer.
    -o capacity(G, Total, Used), fails(G, 0).*label#line:threads:pg_recon2&
 
-connect(G, C, Power), capacity(G, Total, Used),*label#line:threads:pg_gen1&
+connect(G, C, Power), capacity(G, Total, Used),*label#line:threads:pg_gen1&*hfill// Rule 4: connect consumer.
 fails(G, Fails), connected-to-list(G, L), Used + Power <= Total
    -o capacity(G, Total, Used + Power),
       fails(G, max(Fails - 1, 0)), connected-to(G, C, Power),
       connected-to-list(G, [C | L]).*label#line:threads:pg_gen2&
 
-connect(G, C, Power), capacity(G, Total, Used),*label#line:threads:pg_fail1&
+connect(G, C, Power), capacity(G, Total, Used),*label#line:threads:pg_fail1&*hfill// Rule 5: unable to connect consumer.
 Used + Power > Total, fails(G, Fails)
    -o capacity(G, Total, Used), disconnect(C, G),
       fails(G, Fails + 1).*label#line:threads:pg_fail2&
 
-!generators(C, L), !power(C, Power),*label#line:threads:pg_connect1&
+!generators(C, L), !power(C, Power),*label#line:threads:pg_connect1&*hfill// Rule 6: connect to a generator.
 reconnect(C), disconnected(C),
 G = nth(L, randint(num-generators))
    -o connected(C, G), connect(G, C, Power).*label#line:threads:pg_connect2&
 
-disconnect(C, G), connected(C, G)
+disconnect(C, G), connected(C, G)*hfill// Rule 7: finish disconnection.
    -o disconnected(C), reconnect(C).
+
+connected-to-list(G, []). fails(G, 0).*hfill// Initial facts.
+disconnected(C). reconnect(C). !generators(C, all-generators).
 \end{Verbatim}
 \caption{LM code for the regular powergrid program.}
 \label{code:threads:powergrid}
@@ -136,14 +136,11 @@ state is updated accordingly.
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\scriptsize,commandchars=*\#\&]
-type linear thread-connected-to(thread, generator, consumer, int).
+type linear thread-connected-to(thread, generator, consumer, int).*hfill// Predicate declaration.
 type linear thread-connected-to-list(thread, generator, list consumer).
 type linear thread-capacity(thread, generator, int, int).
 type linear thread-total-capacity(thread, int, int).
 type linear start(generator).
-
-thread-total-capacity(T, 0, 0).
-fails(G, 0).  disconnected(C).  reconnect(C).  !generators(C, all-generators).  start(G).
 
 start(G), !generator-id(G, Id)*label#line:threads:pgt_start1&
    -o set-thread(G, Id % @threads).*label#line:threads:pgt_start2&
@@ -188,6 +185,9 @@ NewUsed = Used + Power, NewUsed <= Total
 
 disconnect(C, G), connected(C, G)
    -o disconnected(C), reconnect(C).
+
+thread-total-capacity(T, 0, 0).*hfill// Initial facts.
+fails(G, 0).  disconnected(C).  reconnect(C).  !generators(C, all-generators).  start(G).
 \end{Verbatim}
 \caption{LM code for the optimized powergrid program.}
 \label{code:threads:powergridt}

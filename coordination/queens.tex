@@ -68,8 +68,8 @@ multi-threaded performance of the program.
 %% XXX results
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\scriptsize,commandchars=\*\#\&]
-type list int state.
-type left(node, node).  type right(node, node).
+type list int state.*hfill// Type declaration.
+type left(node, node).  type right(node, node).*hfill// Predicate declaration.
 type down-left(node, node).  type down-right(node, node).
 type coord(node, int, int).
 type linear propagate-left(node, state).
@@ -81,51 +81,52 @@ type linear send-down(node, state).
 type linear new-state(node, state).
 type linear final-state(node, state).
 
-propagate-right(@0, []).*label#line:coord:queens_axiom&
-
-propagate-left(A, State)
+propagate-left(A, State)*hfill// Rule 1: propagate to the left.
   -o {L | !left(A, L), L <> A -o propagate-left(L, State)}, new-state(A, State).
-propagate-right(A, State)*label#line:coord:queens_propr1&
+propagate-right(A, State)*label#line:coord:queens_propr1&*hfill// Rule 2: propagate to the right.
   -o {R | !right(A, R), R <> A -o propagate-right(R, State)}, new-state(A, State).*label#line:coord:queens_propr2&
 
-new-state(A, State), !coord(A, X, Y) -o test-y(A, Y, State, State).
+new-state(A, State), !coord(A, X, Y) -o test-y(A, Y, State, State).*hfill// Rule 3: check if queen can be added.
 
 // check if there is no queen on the same column*label#line:coord:queens_col1&
-test-y(A, Y, [], State), !coord(A, OX, OY)
+test-y(A, Y, [], State), !coord(A, OX, OY)*hfill// Rule 4: check vertical.
   -o test-diag-left(A, OX - 1, OY - 1, State, State).
-test-y(A, Y, [X, Y1 | RestState], State), Y = Y1
+test-y(A, Y, [X, Y1 | RestState], State), Y = Y1*hfill// Rule 5: check vertical.
   -o 1. // fail*label#line:coord:queens_empty1&
-test-y(A, Y, [X, Y1 | RestState], State), Y <> Y1
+test-y(A, Y, [X, Y1 | RestState], State), Y <> Y1*hfill// Rule 6: check vertical.
   -o test-y(A, Y, RestState, State).*label#line:coord:queens_col2&
 
 // check if there is no queen on the left diagonal*label#line:coord:queens_ldiag1&
-test-diag-left(A, X, Y, _, State), X < 0 || Y < 0, !coord(A, OX, OY)
+test-diag-left(A, X, Y, _, State), X < 0 || Y < 0, !coord(A, OX, OY)*hfill// Rule 7: check left diagonal.
   -o test-diag-right(A, OX - 1, OY + 1, State, State).
-test-diag-left(A, X, Y, [X1, Y1 | RestState], State), X = X1, Y = Y1
+test-diag-left(A, X, Y, [X1, Y1 | RestState], State), X = X1, Y = Y1*hfill// Rule 8: check left diagonal.
   -o 1. // fail*label#line:coord:queens_empty2&
 test-diag-left(A, X, Y, [X1, Y1 | RestState], State), X <> X1 || Y <> Y1
-  -o test-diag-left(A, X - 1, Y - 1, RestState, State).*label#line:coord:queens_ldiag2&
+  -o test-diag-left(A, X - 1, Y - 1, RestState, State).*label#line:coord:queens_ldiag2&*hfill// Rule 9: check left diagonal.
 
 // check if there is no queen on the right diagonal*label#line:coord:queens_rdiag1&
-test-diag-right(A, X, Y, [], State), X < 0 || Y >= size, !coord(A, OX, OY)
+test-diag-right(A, X, Y, [], State), X < 0 || Y >= size, !coord(A, OX, OY)*hfill// Rule 10: check right diagonal.
   -o send-down(A, [OX, OY | State]). // add new queen*label#line:coord:queens_add&
-test-diag-right(A, X, Y, [X1, Y1 | RestState], State), X = X1, Y = Y1
+test-diag-right(A, X, Y, [X1, Y1 | RestState], State), X = X1, Y = Y1*hfill// Rule 11: check right diagonal.
   -o 1. // fail*label#line:coord:queens_empty3&
-test-diag-right(A, X, Y, [X1, Y1 | RestState], State), X <> X1 || Y <> Y1
+test-diag-right(A, X, Y, [X1, Y1 | RestState], State), X <> X1 || Y <> Y1*hfill// Rule 12: check right diagonal.
   -o test-diag-right(A, X - 1, Y + 1, RestState, State).*label#line:coord:queens_rdiag2&
 
-send-down(A, State), !coord(A, size - 1, _)*label#line:coord:queens_complete1&
+send-down(A, State), !coord(A, size - 1, _)*label#line:coord:queens_complete1&*hfill// Rule 13: final state.
   -o final-state(A, State).*label#line:coord:queens_complete2&
-send-down(A, State), !coord(A, CX, _), CX <> size - 1*label#line:coord:queens_down1&
+send-down(A, State), !coord(A, CX, _), CX <> size - 1*label#line:coord:queens_down1&*hfill// Rule 14: propagate the state down.
   -o {B | !down-right(A, B), B <> A -o propagate-right(B, State)},
      {B | !down-left(A, B), B <> A -o propagate-left(B, State)}.*label#line:coord:queens_down2&
+
+propagate-right(@0, []).*label#line:coord:queens_axiom&*hfill// Initial fact.
 \end{Verbatim}
   \caption{N-Queens problem solved in LM.}
   \label{code:coordination:nqueens}
 \end{figure}
 
 
-\subsubsection{Proof of correctness}
+We now prove that the N-Queens program finds all the distinct solutions for
+the puzzle.
 
 \begin{lemma}[test-y lemma]
 

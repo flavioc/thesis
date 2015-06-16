@@ -11,8 +11,15 @@ and two nodes are created that will recursively sort the sublists.
 Interestingly, this creates a tree that will look similar to a call tree in a
 functional programming language.
 
-Figure~\ref{language:code:quicksort} presents the code for the quick-sort
-algorithm in LM. For each sublist, we start with a \code{down} fact that later
+Figure~\ref{language:code:quicksort} presents the code for the Quick-Sort
+algorithm in LM. The code uses six predicates described as follows: \code{up}
+represents a list that needs to be sorted; \code{down} is the result of sorting
+an \code{up} list; \code{sorted} represents a sorted sublist; \code{back}
+connects a node that is sorting a sublist to its parent node; \code{split} is
+used for splitting a list into two sublists using a pivot element; and
+\code{waitpivot} waits for two sorted sublists.
+
+For each sublist, we start with a \code{down} fact that later
 must be, eventually, transformed into an \code{up} fact with the sublist sorted.
 In line~\ref{line:language:qs_axiom} we start with the initial list at node
 \code{@0}. If the list has a small number of items (two or less), then rules at
@@ -36,10 +43,10 @@ of an \code{up} fact (line~\ref{line:language:qs_up}).
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\{\}]
-type linear back(node, node).*hfill// Predicate declaration.
-type linear down(node, list int).
+type linear down(node, list int).*hfill// Predicate declaration.
 type linear up(node, list int).
 type linear sorted(node, node, list int).
+type linear back(node, node).
 type linear split(node, int list int, list int, list int).
 type linear waitpivot(node, int, node, node).
 

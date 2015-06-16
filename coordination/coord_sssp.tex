@@ -14,23 +14,23 @@ Dijkstra's algorithm.
 
 \begin{figure}[ht]
 \begin{Verbatim}[numbers=left,commandchars=\\\{\},fontsize=\scriptsize]
-type edge(node, node, int).
+type edge(node, node, int).\hfill// Predicate declaration.
 type linear shortest(node, int, list int).
 type linear relax(node, int, list int).
 
 \underline{priority @order asc}.\label{line:coord:sssp_asc}
 
-shortest(A, +00, []).
-relax(@1, 0, [@1]).
-
-shortest(A, D1, P1), D1 > D2, relax(A, D2, P2)
+shortest(A, D1, P1), D1 > D2, relax(A, D2, P2)\hfill// Rule 1: newly improved path.
    -o shortest(A, D2, P2),
       \{B, W | !edge(A, B, W) -o
          relax(B, D2 + W, P2 ++ [B]),
          \underline{set-priority(B, float(D2 + W))}\}.\label{line:coord:sssp_set}
 
-shortest(A, D1, P1), D1 <= D2, relax(A, D2, P2)
+shortest(A, D1, P1), D1 <= D2, relax(A, D2, P2)\hfill// Rule 2: longer path.
    -o shortest(A, D1, P1).
+
+shortest(A, +00, []).\hfill// Initial facts.
+relax(@1, 0, [@1]).
 \end{Verbatim}
    \caption{Shortest Path Program coordinated with \texttt{set-priority}.}
    \label{code:shortest_path_program_coord}
