@@ -140,7 +140,7 @@ node is executed, the facts of the target predicate are used in the following
 formula applied for the two arguments:
 
 \[
-Entropy(A, F) = - \sum_{v \in values(F, A)} \frac{count(F, A = v)}{total(F)} \log_2 \frac{count(F, A = v)}{total(F)}
+Entropy(F, A) = - \sum_{v \in values(F, A)} \frac{count(F, A = v)}{total(F)} \log_2 \frac{count(F, A = v)}{total(F)}
 \]
 
 \noindent where $A$ is the target argument, $F$ is the set of linear facts for
@@ -151,13 +151,13 @@ value is a good metric because it tells us how much information is needed to
 describe an argument. If more information is needed, then that must be the best
 argument to index.
 
-For one of the arguments to score, $Entropy(A, F)$ multiplied by the number of
-times it has been used for lookup, must be larger than the other argument. The
-argument with the best score is selected and then a global variable called
-\texttt{indexing\_epoch} is updated. In order to convert the node's linked lists
-into hash tables, each node also has a local variable called
-\texttt{indexing\_epoch} that is compared to the global variable in order to
-rebuild the database according to the new indexing information.
+For each arguments, the $Entropy(A, F)$ value is then multiplied by the number
+of times it has been used for lookup. The argument with the best score is
+selected and then a global variable called \texttt{indexing\_epoch} is updated
+to \textbf{completed}. In order to convert the node's linked lists into hash
+tables, each node also has a local variable called \texttt{indexing\_epoch} that
+is compared to the global variable in order to rebuild the database according to
+the new indexing information.
 
 The VM also dynamically resizes the hash table if necessary. When the hash table
 becomes too dense, it is doubled in size. When it becomes too sparse, it is

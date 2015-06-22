@@ -29,17 +29,15 @@ visit(A, P1), colored(A, P2), P1 <> P2 -o fail(A).
 \end{Verbatim}
 
 The data structures presented in Section~\ref{sec:data_structures} support
-iteration over facts and, for the data structures for linear facts, also support
-deletion. Iteration is provided through \emph{iterators}. For linked lists, the
-iterator is simply the fact that can be iterated by following the \code{next}
-pointers. For hash tables, it is possible to iterate through the whole table or
-iterate through a single bucket. For tries, while iteration goes through every
-fact, the operation can be customized with a matching specification in order to
-prune search. A matching specification includes argument assignments (e.g.,
-argument $i = V$, where $V$ is a concrete value).
-
-To illustrate how rules are compiled, consider again the rule of the
-bipartiteness checking program:
+iteration over facts and for linear facts, they also support deletion. Iteration
+is provided through \emph{iterators}. For linked lists, the iterator is simply
+the fact that can be iterated by following the \code{next} pointers. For hash
+tables, it is possible to iterate through the whole table or iterate through a
+single bucket. For tries, while iteration goes through every fact, the operation
+can be customized with a matching specification in order to prune search. A
+matching specification includes argument assignments, such as, argument $i = V$,
+where $V$ is a concrete value.  To illustrate how rules are compiled, consider
+again the rule:
 
 \begin{Verbatim}[fontsize=\codesize]
 visit(A, P), colored(A, P) -o colored(A, P).
@@ -50,11 +48,11 @@ The compiler transforms the rule into two nested \emph{while} loops, as follows:
 \begin{Verbatim}[numbers=left,fontsize=\codesize]
 colored_list <- linked_list("colored")
 visit_list <- linked_list("visit")
-colored <- colored_list.head()
-while(colored is valid)
+visit <- visit_list.head()
+while(visit is valid)
 {
-   visit <- visit_list.head() // Retrieve first element of the list.
-   while(visit is valid)
+   colored <- colored_list.head() // Retrieve first element of the list.
+   while(colored is valid)
    {
       if(visit.get_int(1) == colored.get_int(1)) { // Equal arguments?
          new_colored <- create_fact("colored") // New fact for predicate colored.
@@ -64,13 +62,13 @@ while(colored is valid)
          colored_list.add(new_colored) // Add new fact to the linked list.
 
          // Deleting facts.
-         colored <- colored_list.erase(colored)
-         visit <- visit_list.erase(visit)
+         colored <- colored_list.erase_and_next(colored)
+         visit <- visit_list.erase_and_next(visit)
          goto next
       }
-      visit <- visit.next()
+      colored <- colored.next()
    }
-   colored <- colored.next()
+   visit <- visit.next()
 next:
    continue
 }
@@ -81,16 +79,17 @@ and creates nested loops to try all the possible combinations of facts.  For
 this rule, all the pairs of facts \code{colored} and \code{visit} must be
 matched until the implicit constraint is true. First, the \code{colored} linked
 list is iterated over by first retrieving the head fact and then using the
-\code{next} pointer of each fact. Inside this outer loop, a nested \emph{while}
+\code{next} pointer of each fact. Inside this outer loop, a nested \code{while}
 loop is created for predicate \code{visit}. This inner loop includes a check for
 the constraint.
 
 If the constraint expression is true then the rule matches and a new
 \code{colored} fact is derived and two used linear facts are consumed by erasing
-them from the linked lists. Note that after the rule is derived, the code uses
-\code{goto next} to jump to the outer loop which uses the next \code{colored}
-fact computed using \code{colored\_list.erase(colored)}. This forces the
-procedure to try all the combinations of the rule from the database.
+them from the linked lists. After the rule is derived, the \code{visit} and
+\code{colored} facts are deleted from the linked list and the pointers adjusted
+to the next elements of each list. Afterwards, the \code{goto next} statement is
+used to jump to the outer loop, which will use the new fact pointers. This
+forces the procedure to try all the combinations of the rule from the database.
 Furthermore, we must jump to the first linear loop because we cannot use the
 next fact from the deepest loop since we may have constraints between the first
 linear loop and the deepest loop that were validated using deleted facts.
@@ -116,11 +115,11 @@ visit(A, P1), colored(A, P2), P1 <> P2 -o fail(A).*label[line:implementation:hig
 visit(A, P), fail(A) -o fail(A).
 \end{Verbatim}
 
-The procedure for the rule
-being compiled cannot be the same since the derived \code{colored} fact
-is used in the LHS of a higher priority rule, namely, the rule in 
-line~\ref{line:implementation:higher}. Once the \code{colored} fact is derived,
-the procedure must return to schedule the higher priority rule, as follows:
+The procedure for the rule being compiled cannot be the same since the derived
+\code{colored} fact is used in the LHS of a higher priority rule, namely, the
+rule in line~\ref{line:implementation:higher}. Once the \code{colored} fact is
+derived, the procedure must return to schedule the higher priority rule, as
+follows:
 
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\$\#\&]
 colored_list <- linked_list("colored")
@@ -139,8 +138,8 @@ while(colored is valid)
          colored_list.add(new_colored) // Add new fact to the linked list.
 
          // Deleting facts.
-         colored_list.erase(colored)
-         visit_list.erase(visit)
+         colored_list.erase_and_next(colored)
+         visit_list.erase_and_next(visit)
          $textbf#return&
       }
       visit <- visit.next()
@@ -232,7 +231,7 @@ while(colored is valid)
    {
       if(visit.get_int(1) == colored.get_int(1)) { // Equal arguments?
          // Delete visit.
-         visit <- visit_list.erase(visit) // Get next visit fact.
+         visit <- visit_list.erase_and_next(visit) // Get next visit fact.
          goto next$label#line:implementation:goto&
       }
       visit <- visit.next()
@@ -246,7 +245,10 @@ $textbf#next:&
 In this new version of the code, only the \code{visit} facts are deleted, while
 the \code{colored} facts remain untouched. In the bipartiteness checking
 program, each node has one \code{colored} fact and this compiled code simply
-filters out the \code{visit} facts with the same color.
+filters out the \code{visit} facts with the same color. Please note that the
+\code{colored} facts are now iterated in the outer loop in order to make the
+\code{goto} statement jump to the inner loop. This is now possible because the
+\code{colored} next is not deleted during rule derivation.
 
 \subsection{Updating Facts}
 
@@ -279,7 +281,8 @@ while(new_neighbor_pagerank is valid)
       {
          // Update fact argument.
          neighbor_pagerank.set_float(2, new_neighbor_pagerank.get_float(2))
-         new_neighbor_pagerank <- new_neighbor_pagerank_list.erase(new_neighbor_pagerank)
+         new_neighbor_pagerank <- new_neighbor_pagerank_list.
+                  erase_and_next(new_neighbor_pagerank)
          goto next
       }
       neighbor_pagerank <- neighbor_pagerank.next()
@@ -297,7 +300,7 @@ return since the act of updating a fact is equivalent to deriving a new one.
 
 \subsection{Enforcing Linearity}
 
-We have already introduced the \emph{goto} statement as a way to avoid reusing
+We have already introduced the \code{goto} statement as a way to avoid reusing
 consumed linear facts. However, this is not enough in order to enforce
 linearity of facts. Consider the following inference rule:
 
@@ -324,7 +327,7 @@ while(add1 is valid)
       if(add1 != add2)
       {
          add1.set_int(1, add1.get_int(1) + add2.get_int(1))
-         add2 <- add_list.erase(add2)
+         add2 <- add_list.erase_and_next(add2)
          goto next
       }
       add2 <- add2.next()
@@ -403,8 +406,8 @@ while(visit is valid)
       new_colored <- create_fact("colored")
       new_colored.set_int(1, visit.get_int(1))
       colored_list.add(new_colored)
-      visit <- visit_list.erase(visit)
-      uncolored <- uncolored_list.erase(uncolored)
+      visit <- visit_list.erase_and_next(visit)
+      uncolored <- uncolored_list.erase_and_next(uncolored)
       goto next
    }
    uncolored <- uncolored.next()
@@ -482,7 +485,7 @@ while(pagerank is valid)
       }
       // RHS of the aggregate
       pagerank.set_float(1, damping / P + (1.0 - damping) * V)
-      update <- update_list.erase(update)
+      update <- update_list.erase_and_next(update)
       goto next
    }
    pagerank <- pagerank.next()
