@@ -376,11 +376,11 @@ visit(A, P), uncolored(A)
 
 The attentive reader will remember that comprehensions are sub-rules, therefore
 they should be compiled like normal rules. Comprehensions must also derive all
-possible combinations. However, the rule itself must return if any combination
-of the comprehension has derived a fact that is used by a higher priority rule.
-The example rule does not need to return since it has the highest priority and
-the \code{visit} facts derived in the comprehension are contained in other
-nodes. The code for the rule is shown below:
+possible combinations. However, the rule itself must return if the
+comprehension's RHS derives a fact that is used by a higher priority rule. The
+example rule does not need to return since it has the highest priority and the
+\code{visit} facts derived in the comprehension are contained in other nodes.
+The code for the rule is shown below:
 
 \begin{Verbatim}[numbers=left,fontsize=\codesize]
 colored_list <- linked_list("colored")
@@ -420,10 +420,10 @@ Special care must be taken when the comprehension's sub-rule uses the same
 predicates that are derived by the main rule. Rule inference must be atomic in
 the sense that, after a rule matches, the comprehensions in the rule's RHS can
 use the facts that were present before the rule was matched. Consider a rule
-with $n$ comprehensions or aggregates, where $CLHS_i$ and $CRHS_i$ is the LHS
-and RHS of the comprehension/aggregate, respectively, and $RHSP$ represents the
-atomic propositions found in rule's RHS. The formula used by the compiler to
-detect conflicts between predicates is the following:
+with $n$ comprehensions or aggregates, where each $CLHS_i$ and $CRHS_i$ are the
+LHS and RHS of the comprehension/aggregate $i$, respectively, and $RHSP$
+represents the atomic propositions found in rule's RHS. The formula used by the
+compiler to detect conflicts between predicates is the following:
 
 \[
 \bigcup^{n}_i[CLHS_i \cap RHSP] \cup \bigcup^{n}_i [CLHS_i \cap \bigcup^{n}_j[CRHS_j]]
@@ -452,7 +452,7 @@ show these kinds of conflicts and thus can be fully optimized.
 
 Aggregates are similar to comprehensions. They are also sub-rules but a value is
 accumulated for each combination of the sub-rule. After all the combinations are
-inferred, a final RHS term is derived with the accumulated term. Consider the
+inferred, a final RHS term is derived with the accumulated value. Consider the
 following rule that computes a PageRank value by aggregating all neighbors
 PageRank values:
 
