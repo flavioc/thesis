@@ -87,8 +87,8 @@ assigned to a concrete value as the matching process goes forward.
 The most interesting aspects introduced by the LLD machine are the
 \emph{continuation frame} and the \emph{continuation stack}. A continuation
 frame acts as a choice point that is created during rule matching whenever we
-try to match a fact expression against the database.  The frame considers all
-the facts relevant to the expression given the current context $\Psi$.
+try to match an atomic proposition against the database.  The frame considers
+all the facts relevant to the proposition given the current context $\Psi$.
 
 The frame contains enough state to resume the matching process at the time of
 its creation, therefore we can easily backtrack to the choice point and select
@@ -137,7 +137,7 @@ $\lframe{\Delta}{\Delta''}{p(\widehat{x})}{\Omega; \Psi}{\Delta'}{\Omega'}$, whe
    \item[$\Delta'$] multi-set of linear facts we have consumed to reach this point;
 
    \item[$\Omega'$] terms matched already using $\Delta'$ and $\Gamma$;
-   \item[$\Psi$] dictionary of variable assignments (includes variable and
+   \item[$\Psi$] substitution of variable assignments (includes variable and
       value).
 \end{description}
 
@@ -146,7 +146,8 @@ $\lframe{\Delta}{\Delta''}{p(\widehat{x})}{\Omega; \Psi}{\Delta'}{\Omega'}$, whe
 Persistent frames are slightly different since they only need to keep track of
 remaining persistent candidates. They are structured as
 $\pframe{\Gamma''}{\Delta}{\bang
-   p(\widehat{x})}{\Omega; \Psi}{\Delta'}{\Omega'}$:
+   p(\widehat{x})}{\Omega; \Psi}{\Delta'}{\Omega'}$\footnote{We will use $p$
+      instead of $p(\widehat{x})$ for brevity.}:
 
 \begin{description}
    \item[$\bang p(\widehat{x})$] persistent atomic proposition that created
@@ -159,9 +160,128 @@ $\pframe{\Gamma''}{\Delta}{\bang
 
    \item[$\Delta'$] multi-set of linear facts consumed up-to this frame;
    \item[$\Omega'$] terms matched up-to this point using $\Delta'$ and $\Gamma$;
-   \item[$\Psi$] dictionary of variable assignments (includes variable and value).
+   \item[$\Psi$] substitution of variable assignments (includes variable and value).
 \end{description}
 
+We now introduce some definitions which helps define what means for a
+continuation frame to be well-formed.
+
+\subsubsection{Term equivalence}
+
+The first definition defines the equality between two multi-sets of terms.  Two
+multi-sets $A$ and $B$ are equal, $\feq{A}{B}$, when there a substitution
+$\theta$ that allows $A\theta$ and $B\theta$ to have the same
+constituent atoms. Each continuation frame builds a substitution $\Psi$ which
+can be used to determine if two terms are equal.
+
+\[
+\infer[\equiv p]
+{\feq{p, A}{q, B}}{\feq{A}{B} & p\theta \triangleq q\theta}
+\tab
+\infer[\equiv \bang p]
+{\feq{\bang p, A}{\bang p, B}}{\feq{A}{B} & \bang p \theta \triangleq
+\bang q\theta}
+\tab
+\infer[\equiv \one~L]
+{\feq{\one, A}{B}}{\feq{A}{B}}
+\]
+
+\[
+\infer[\equiv \one~R]
+{\feq{A}{\one, B}}{\feq{A}{B}}
+\tab
+\infer[\equiv \cdot]
+{\feq{\cdot}{\cdot}} {}
+\tab
+\infer[\equiv \otimes~L]
+{\feq{A \otimes B, C}{D}}{\feq{A, B, C}{D}}
+\tab
+\infer[\equiv \otimes~R]
+{\feq{A}{B \otimes C, D}}{\feq{A}{B, C, D}}
+\]
+
+\begin{theorem}[Match equivalence]
+
+If two multi-sets are equivalent, $\feq{A_1, \dotsc, A_n}{B_1, \dotsc, B_m}$,
+and we can match $A_1 \otimes \dotsb \otimes A_n$ in HLD such that
+$\mz{\Gamma}{\Delta}{(A_1 \otimes \dotsb \otimes A_n)\theta}$ then
+$\mz{\Gamma}{\Delta}{(B_1 \otimes \dotsb \otimes B_m)\theta}$ is also true.
+
+\end{theorem}
+\begin{proof}
+By straightforward induction on the first assumption.
+\end{proof}
+
+\begin{definition}[Split contexts]
+$split(\Omega)$ is defined as $split(\Omega) = times(flatten(\Omega))$, where:
+
+\begin{align}
+flatten(\cdot) = \cdot \\
+flatten(\one, \Omega) = flatten(\Omega) \\
+flatten(A \otimes B, \Omega) = flatten(A), flatten(B), flatten(\Omega) \\
+flatten(p, \Omega) = p, flatten(\Omega) \\
+flatten(\bang p, \Omega) = \bang p, flatten(\Omega)
+\end{align}
+
+And $times(A_1, \dotsc, A_n) = A_1 \otimes \dotsb \otimes A_n$.
+\end{definition}
+
+\begin{theorem}[Split equivalence]
+$\feqa{split(\Omega)}{\Omega}{\theta}{\theta}$.
+\end{theorem}
+\begin{proof}
+Induction on the structure of $\Omega$.
+\end{proof}
+
+\subsubsection{Well-Formed Continuation Frames}
+
+We now define the concept of a well-formed frame given initial linear and
+persistent contexts and a term $A$ that needs to be matched.
+
+\begin{definition}[Well-formed frame]
+
+Consider a triplet $A; \Gamma; \deltan$ where $A$ is a term, $\Gamma$ is a
+set of persistent resources and $\deltan$ a multi-set of linear
+resources. A frame $f$ is well-formed iff:
+
+\begin{enumerate}[leftmargin=*]
+   \item Linear frame $f = \lframe{\Delta,
+      p_1}{\Delta''}{p}{\Omega}{\Delta'}{\Omega'}$
+
+   \begin{enumerate}
+      \item $\feqa{p, \Omega, \Omega'}{A}{\Psi}{\Psi}$ (the remaining terms and already
+               matched terms are equivalent to the initial LHS $A$);
+      \item $\Delta' = \Delta'_1, \dotsc, \Delta'_n$ and $\Omega' =
+      \Omega'_1 \otimes \dotsb \otimes \Omega'_n$
+      \item $\Delta, \Delta'', \Delta, p_1 = \deltan$ (available facts, candidate
+            facts for $p$, consumed facts and the linear fact used for $p$,
+            respectively, are the same as the initial $\deltan$);
+      \item $\mz{\Gamma}{\Delta'}{\Omega'}$ is valid.
+
+   \end{enumerate}
+   \item Persistent frame $f = \pframe{\Gamma''}{\Delta}{\bang
+   p}{\Omega}{\Delta'}{\Omega'}$
+      \begin{enumerate}
+         \item $\feqa{\bang p, \Omega, \Omega'}{A}{\Psi}{\Psi}$;
+         \item $\Delta' = \Delta'_1, \dotsc, \Delta'_n$ and $\Omega' =
+         \Omega'_1 \otimes \dotsb \otimes \Omega'_n$
+         \item $\Delta, \Delta' = \deltan$;
+         \item $\Gamma'' \subset \Gamma$ (remaining candidates are a subset of
+                     $\Gamma$);
+         \item $\mz{\Gamma}{\Delta'}{\Omega'}$ is valid.
+      \end{enumerate}
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[Well-formed stack]
+A continuation stack $\lstack{C}$ is well-formed iff every frame is well-formed.
+For two consequent linear frames $f_1 = \lframe{\Delta, \Delta_q, q_1,
+p_1}{\Delta_p}{p}{\Omega_1}{\Delta'_1}{\Omega'_1}$ and $f_2 = \lframe{\Delta,
+\Delta_p, q_1}{\Delta_q}{q}{\Omega_2}{\Delta'_1, p_1}{\Omega'_1 \otimes p}$
+where $f_2$ is on top of $f_1$, we also know that $\feqa{\Omega_1}{\Omega_2,
+p}{\Psi}{\Psi}$.
+Identical relationships exist between different pairs of frames.
+\end{definition}
 
 \subsection{Match}\label{sec:lld_body_match}
 
@@ -175,7 +295,7 @@ structured as $\matstate{A \lolli
    \item[$A \lolli B$] rule being matched: $A$ is the rule's LHS and $B$ the RHS;
 
    \item[$\rulestk$] rule continuation to be used if the current rule fails.
-   Contains the original $\Delta_N$ and the rest of the rules $\Phi$;
+   Contains the original $\deltan$ and the rest of the rules $\Phi$;
 
    \item[$\lstack{C}$] ordered list of frames representing the continuation
    stack used for matching $A$;
@@ -185,12 +305,12 @@ structured as $\matstate{A \lolli
 
    \item[$\Omega$] ordered list of deconstructed RHS terms to match;
 
-   \item[$\Delta'$] multi-set of linear facts from the original $\Delta_N$ that
-   were already consumed ($\Delta', \Delta = \Delta_N$);
+   \item[$\Delta'$] multi-set of linear facts from the original $\deltan$ that
+   were already consumed ($\Delta', \Delta = \deltan$);
 
    \item[$\Omega'$] parts of $A$ already matched. They are in the form $P_1
    \otimes \dotsb \otimes P_n$. The idea is to use term equivalence and the fact
-   that $\feq{\Omega, \Omega'}{A}$ to justify $\mz{\Gamma}{\Delta'}{A}$ when the
+   that $\feqa{\Omega, \Omega'}{A}{\Psi}{\cdot}$ to justify $\mz{\Gamma}{\Delta'}{A}$ when the
    matching process completes.
 
 \end{description}
@@ -198,41 +318,42 @@ structured as $\matstate{A \lolli
 Not shown in the matching state is the context $\Psi$ that maps variables to
 values. At the start of matching, the $\widehat{x}$ variables are set as
 \emph{undefined}. Matching then uses facts from $\Delta$ and $\Gamma$ to match
-the terms of the rule's LHS represented as $\Omega$. During the process
-continuation frames are pushed into $\lstack{C}$ and if the matching process
-fails, we use $\lstack{C}$ to restore the process using different candidate
-facts. New facts also update the variables in the $\Psi$ context by assigning
-them concrete values.
+the terms of the rule's LHS represented as $\Omega$. During the matching
+process, continuation frames are pushed into $\lstack{C}$ and if matching fails,
+we use $\lstack{C}$ to restore the process using different candidate facts. New
+facts also update the variables in the $\Psi$ context by assigning them concrete
+values.
 
-\subsubsection{Linear fact expression}
+\subsubsection{Linear atomic propositions}
 
-The first 2 state transitions are used when the head of $\Omega$ is a linear fact
-expression $p$.
+The first 2 state transitions are used when the head of $\Omega$ is a linear
+atomic proposition $p(\widehat{x})$. In the first transition we find $p_1$ and
+$\Delta''$ as facts from the database that match $p(\widehat{x})$'s hidden and
+partially initialized arguments. Context $\Delta''$ is stored in the second
+argument of the new continuation frame but is passed along with $\Delta$ since
+the facts have not been consumed yet (just fact $p_1$).
 
-In the first transition we find $p_1$ and $\Delta''$ as facts from the database
-that match $p$'s hidden and partially initialized arguments.  Context $\Delta''$
-is stored in the second argument of the new continuation frame but is passed
-along with $\Delta$ since the facts have not been consumed yet (just $p_1$).
-
-The second transition deals with the case where there are no candiate facts and
+The second transition deals with the case where there are no candidate facts and
 thus a different machine state is used for enabling backtracking.
 
-Note that the proposition $p_1, \Delta'' \prec p$ indicates that facts
-$\Delta'', p_1$ satisfy the constraints of $p$ while $\Delta \npreceq p$
-indicates that no fact in $\Delta$ satisfies $p$. Both propositions use the
-omitted variable context $\Psi$ in order to replace the variables of $p$.
+Note that the proposition $p_1, \Delta'' \prec p(\widehat{x})$ indicates that
+facts $\Delta'', p_1$ satisfy the constraints of $p(\widehat{x})$ while $\Delta
+\npreceq p(\widehat{x})$ indicates that no fact in $\Delta$ satisfies
+$p(\widehat{x})$. In the first rule, the substitution context $\Psi$ is extended
+with a new set of variable assignments $\theta$ which take into account the new
+linear proposition.
 
 \input{lld/match-p}
 
-\subsubsection{Persistent fact expressions}
+\subsubsection{Persistent atomic propositions}
 
 The next 2 state transitions are used when the head of $\Omega$ contains a
-persistent fact expression $\bang p$. They are identical to the previous 2
-transitions but they deal with the persistent context $\Gamma$.
+persistent atomic proposition $\bang p(\widehat{x})$. They are identical to the
+previous 2 transitions but they deal with the persistent context $\Gamma$.
 
 \input{lld/match-bang-p}
 
-\subsubsection{Other expressions}
+\subsubsection{Other propositions}
 
 Finally, we have the transitions that deconstruct the other LHS terms and a
 final transition to initiate the RHS derivation.
@@ -282,26 +403,26 @@ the next inference rule in $\Phi$.
 Once the list of terms $\Omega$ of the LHS is exhausted, we derive the rule's
 RHS. The derivation state simply iterates over $B$, the rule's RHS, and derives
 terms into the corresponding new contexts. The state is represented as
-$\derstatex{\Gamma}{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\Omega}$ with the following
+$\derstatex{\Gamma}{\Delta}{\Xi}{\gammanew}{\deltanew}{\Omega}$ with the following
 meaning:
 
 \begin{enumerate}
    \item[$\Gamma$] set of persistent facts;
 
-   \item[$\Delta$] multi-set of remaining liner facts;
+   \item[$\Delta$] multi-set of remaining linear facts;
 
    \item[$\Xi$] multi-set of linear facts consumed up-to this point;
 
-   \item[$\Gamma_1$] set of persistent facts derived;
+   \item[$\gammanew$] set of persistent facts derived;
 
-   \item[$\Delta_1$] multi-set of linear facts derived;
+   \item[$\deltanew$] multi-set of linear facts derived;
 
    \item[$\Omega$] remaining terms to derive as an ordered list. We start with
    $B$ if the original rule is $A \lolli B$.
 
 \end{enumerate}
 
-\subsubsection{Fact templates}
+\subsubsection{Atomic propositions}
 
 When deriving either $p$ or $\bang p$ we have the following two inference rules:
 
@@ -334,4 +455,115 @@ $\done$judgment.
 \subsection{Aggregates}
 
 \input{lld/aggregates}
+
+
+\subsection{State well-formedness}
+
+Given all the state transitions show above, we now define what it means for a
+given machine state to be well-formed.
+
+\begin{definition}[Well-formed LHS match]
+
+$\matstateb{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta}{\Omega}{\Delta'
+\rightarrow \Omega'}{\Psi}$ is well-formed in relation to a triplet $A; \Gamma;
+\deltan$ iff:
+
+\begin{itemize}[leftmargin=*]
+   \item $\Delta, \Delta' = \deltan$
+   \item $\feqa{\Omega', \Omega}{A}{\Psi}{\Psi}$;
+   \item $\mz{\Gamma}{\Delta'}{\Omega}$ is valid;
+   \item $\lstack{C}$ is well-formed in relation to $A; \Gamma; \deltan$ and:
+   \begin{itemize}[leftmargin=\secondm]
+      \item If $\lstack{C} = \cdot$
+   
+         $\feqa{\Omega}{A}{\Psi}{\Psi}$.
+   
+      \item If $\lstack{C} = \lframe{\Delta_a,
+   p_1}{\Delta_b}{p}{\Omega_a; \Psi}{\Delta_c}{\Omega_b}, \lstack{C'}$:
+      \begin{itemize}[leftmargin=\thirdm]
+         \item $\feqa{\Omega'}{\Omega}{\Psi}{\Psi}$;
+         \item $\Delta = \Delta_a, \Delta_b$;
+         \item $\Delta' = \Delta_c, p_1$.
+      \end{itemize}
+
+      \item If $\lstack{C} = \pframe{\Gamma''}{\Delta_a}{\bang
+         p}{\Omega_a; \Psi}{\Delta_a}{\Omega_b}, \lstack{C'}$:
+      \begin{itemize}[leftmargin=\thirdm]
+         \item $\feqa{\Omega}{\Omega_a}{\Psi}{\Psi}$;
+         \item $\Delta' = \Delta_a$;
+         \item $\Delta = \Delta_a$.
+      \end{itemize}
+   \end{itemize}
+\end{itemize}
+
+\end{definition}
+
+\begin{definition}[Well-formed backtracking]
+$\contstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}$ is well-formed in
+relation to a triplet $A; \Gamma; \deltan$ iff $\lstack{C}$ is well-formed in
+relation to $A; \Gamma; \deltan$.
+\end{definition}
+
+\begin{definition}[Well-formed aggregate match]
+The matching state $\matstatea{\deltan}{\lstack{C};
+      \lstack{P}}{\Gamma}{\Delta}{\Omega}{\Delta' \rightarrow
+         \Omega'}{\Sigma}$
+is well-formed in relation to a triplet $A; \Gamma; \deltan$ iff:
+
+\begin{itemize}[leftmargin=*]
+   \item $\lstack{P}$ is composed solely of persistent frames;
+   \item $\lstack{C}$ is composed of either linear or persistent frames, but the first
+   frame is linear;
+   \item $\mz{\Gamma}{\Delta'}{\Omega}$ is valid;
+   \item $\Delta, \Delta' = \deltan$;
+   \item $\feqa{\Omega, \Omega'}{A}{\Psi}{\Psi}$;
+   \item $\lstack{C}$ and $\lstack{P}$ are well-formed in relation to $A; \Gamma; \deltan$ and
+   follow the same rules presented before in "Well-formed LHS match" as a stack
+   $\lstack{C}, \lstack{P}$.
+\end{itemize}
+\end{definition}
+
+
+\begin{definition}[Well-formed aggregate backtracking]
+$\contstatea{\deltan}{\lstack{C} ; \lstack{P}}{\Gamma}{\Sigma}$ is well-formed
+in relation to a triplet $A; \Gamma; \deltan$ iff:
+
+\begin{itemize}[leftmargin=*]
+   \item $\lstack{P}$ is composed solely of persistent frames.
+   \item $\lstack{C}$ is composed of either linear or persistent frames, but the first
+   frame is linear.
+   \item $\lstack{C}$ and $\lstack{P}$ are well-formed in relation to $A; \Gamma; \deltan$.
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Well-formed stack update]
+$\fixstatea{\Delta}{\Xi; \Delta'}{\lstack{C}; \lstack{P}}{\Gamma}{\Sigma}$ is
+well-formed in relation to a triplet $A; \Gamma; \deltan$ iff:
+
+\begin{itemize}[leftmargin=*]
+   \item $\lstack{P}$ is composed solely of persistent frames.
+   \item $\lstack{C}$ is composed of either linear or persistent frames, but the first
+   frame is linear.
+   \item $\lstack{C}$ and $\lstack{P}$ are well-formed in relation to $A; \Gamma; \deltan$.
+   \item $\Delta, \Delta' = \deltan$
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Well-formed aggregate derivation]
+$\derstatea{\Delta}{\Xi}{\gammanew}{\deltanew}{\Sigma}{\lstack{C};
+      \lstack{P}}{\Omega}$
+is well-formed in relation to a triplet $A; \Gamma; \deltan$ iff:
+
+\begin{itemize}[leftmargin=*]
+   \item $\lstack{P}$ is composed solely of persistent frames.
+   \item $\lstack{C}$ is empty or has a single linear frame;
+   \item $\lstack{C}$ and $\lstack{P}$ are well-formed in relation to $A; \Gamma; \deltan$.
+\end{itemize}
+
+\end{definition}
+
+For the theorems that follow, we always assume that the states are
+well-formed in relation to their main contexts and matching LHS, be it either a
+rule LHS or an aggregate LHS.
+
 

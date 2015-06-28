@@ -1,7 +1,7 @@
 
 \item Match fails:
 \begin{itemize}[leftmargin=\secondm]
-   \item $s_2 = \derstatex{\Gamma}{\Delta_N}{\Xi}{\Gamma_{N1}}{\Delta_{N1}}
+   \item $s_2 = \derstatex{\Gamma}{\deltan}{\Xi}{\gammanew}{\deltanew}
 {(\lambda x.  C\{\Psi(\widehat{v})/\widehat{v}\} x) \Sigma,
    \Omega_N}$
 \end{itemize}
@@ -10,7 +10,7 @@
 stack $\lstack{C}$ ($\lstack{C} \neq \cdot$):
 
 \begin{itemize}[leftmargin=\secondm]
-   \item $s_2 = \matstatea{\Delta_N}{\lstack{C'''}, f', \lstack{C''};
+   \item $s_2 = \matstatea{\deltan}{\lstack{C'''}, f', \lstack{C''};
                   \lstack{P}}{\Gamma}{\Delta_c}{\cdot}
                {\Delta'_f, p_2, \Delta'' \rightarrow \Omega_f \otimes p
                   \otimes split(\Omega'_f)}{\Sigma}$
@@ -27,7 +27,7 @@ stack $\lstack{C}$ ($\lstack{C} \neq \cdot$):
 \item Match succeeds with backtracking to a persistent continuation frame
 in stack $\lstack{C}$ ($\lstack{C} \neq \cdot$):
 \begin{itemize}[leftmargin=\secondm]
-   \item $s_2 = \matstatea{\Delta_N}{\lstack{C'''}, f', \lstack{C''};
+   \item $s_2 = \matstatea{\deltan}{\lstack{C'''}, f', \lstack{C''};
       \lstack{P}}{\Gamma}{\Delta_{c_1}}{\cdot}{\Delta'_f, \Delta_{c_2}, 
          \rightarrow \Omega_f \otimes \bang p \otimes split(\Omega'_f)}{\Sigma}$
 
@@ -45,7 +45,7 @@ in stack $\lstack{C}$ ($\lstack{C} \neq \cdot$):
 \item Match succeeds with backtracking to a persistent continuation frame
 in stack $\lstack{P}$ ($\lstack{C} = \cdot$):
 \begin{itemize}[leftmargin=\secondm]
-   \item $s_2 = \matstatea{\Delta_N}{\lstack{C'}; \lstack{P'''}, f', \lstack{P''}}
+   \item $s_2 = \matstatea{\deltan}{\lstack{C'}; \lstack{P'''}, f', \lstack{P''}}
          {\Gamma}{\Delta_{c_1}}{\cdot}{\Delta'_f, \Delta_{c_2}, 
          \rightarrow \Omega_f \otimes \bang p \otimes split(\Omega'_f)}{\Sigma}$
 

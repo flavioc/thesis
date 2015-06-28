@@ -12,10 +12,10 @@ Consider an aggregate $\m{agg}$, where $\Pi(\m{agg}) = \forall_{\widehat{v}, \Si
                                                 (A \lolli B \otimes
                                                  \defstwo{agg}{\widehat{v}}{\sigma
                                                  ::\Sigma'}))))$,
-a triplet $T = A; \Gamma; \Delta_{N}$ and a context $\Delta_{N} = \Delta_1,
+a triplet $T = A; \Gamma; \deltan$ and a context $\deltan = \Delta_1,
   \Delta_2, \Delta'$.
 
-  If $s_1 = \matstatea{\Delta_N}{\lstack{C};
+  If $s_1 = \matstatea{\deltan}{\lstack{C};
       \lstack{P}}{\Gamma}{\Delta_1, \Delta_2}{\Omega}{\Delta' \rightarrow
          \Omega'}{\Sigma}$ is well-formed in relation to $T$ and
          $\transs{s_1}{s_2}$ then either:
@@ -25,7 +25,7 @@ a triplet $T = A; \Gamma; \Delta_{N}$ and a context $\Delta_{N} = \Delta_1,
    or $\lstack{P}$ ($\lstack{C} \neq \cdot$):
 
    \begin{itemize}[leftmargin=\secondm]
-      \item $s_2 = \matstatea{\Delta_N}{\lstack{C'}, \lstack{C}; \lstack{P'},
+      \item $s_2 = \matstatea{\deltan}{\lstack{C'}, \lstack{C}; \lstack{P'},
          \lstack{P}}{\Gamma}{\Delta_1}{\cdot}{\Delta', \Delta_2 \rightarrow \Omega' \otimes split(\Omega)}{\Sigma}$
    \end{itemize}
 
@@ -33,7 +33,7 @@ a triplet $T = A; \Gamma; \Delta_{N}$ and a context $\Delta_{N} = \Delta_1,
 
 \end{itemize}
 
-If $\contstatea{\Delta_N}{\lstack{C}; \lstack{P}}{\Gamma}{\Sigma}$ is
+If $\contstatea{\deltan}{\lstack{C}; \lstack{P}}{\Gamma}{\Sigma}$ is
 well-formed in relation to $T$ then either:
 
 \begin{itemize}[leftmargin=*]
@@ -42,10 +42,10 @@ well-formed in relation to $T$ then either:
 \end{lemma}
 
 Proving this particular lemma follows the same strategy used for
-Lemma~\ref{thm:body_match}. Next, we need to prove that, when matching succeeds,
-the continuation stack is corrected for the next application of the aggregate.
-Note that the aggregate value is appended to $\Sigma$ after the stack is
-corrected.
+Lemma~\ref{thm:body_match}\footnote{We have omitted the $\Psi$ context for
+brevity.}. Next, we need to prove that, when matching succeeds, the
+continuation stack is corrected for the next application of the aggregate.  Note
+that the aggregate value is appended to $\Sigma$ after the stack is corrected.
 
 \begin{theorem}[From update to derivation]\label{thm:agg_from_update_to_derivation}
 Consider an aggregate $\m{agg}$, where $\Pi(\m{agg}) = \forall_{\widehat{v}, \Sigma'}.
@@ -53,12 +53,12 @@ Consider an aggregate $\m{agg}$, where $\Pi(\m{agg}) = \forall_{\widehat{v}, \Si
                                                 (A \lolli B \otimes
                                                  \defstwo{agg}{\widehat{v}}{\sigma
                                                  ::\Sigma'}))))$,
-a triplet $T = A; \Gamma; \Delta_{N}$ and that $\Delta_{N} = \Delta,
+a triplet $T = A; \Gamma; \deltan$ and that $\deltan = \Delta,
   \Delta'$.
 A well-formed stack update
 $\fixstatea{\Delta}{\Xi; \Delta'}{\lstack{C}; \lstack{P}}{\Gamma}{\Sigma}$
 implies
-$\derstatea{\Delta}{\Xi, \Delta'}{\Gamma_{N1}}{\Delta_{N1}}{V :: \Sigma}{f';
+$\derstatea{\Delta}{\Xi, \Delta'}{\gammanew}{\deltanew}{V :: \Sigma}{f';
    \lstack{P'}}{B\{\Psi(\widehat{x}), V / \widehat{x}, \sigma\}}$,
 where:
 
@@ -71,9 +71,9 @@ where:
       \Delta'}{p}{\Omega}{\cdot}{\Omega'}$
 
    \item $\lstack{P'}$ is the transformation of stack $\lstack{P}$, where for every frame $f \in
-   \lstack{P}$ of the form $\pframe{\Gamma'}{\Delta_N}{\bang
+   \lstack{P}$ of the form $\pframe{\Gamma'}{\deltan}{\bang
       p}{\Omega}{\cdot}{\Omega'}$
-   will turn into $f' = \pframe{\Gamma'}{\Delta_N-\Delta'}{\bang
+   will turn into $f' = \pframe{\Gamma'}{\deltan-\Delta'}{\bang
       p}{\Omega}{\cdot}{\Omega'}$
 
 \end{itemize}
@@ -89,12 +89,12 @@ Consider an aggregate $\m{agg}$, where $\Pi(\m{agg}) = \forall_{\widehat{v}, \Si
                                                 (A \lolli B \otimes
                                                  \defstwo{agg}{\widehat{v}}{\sigma
                                                  ::\Sigma'}))))$,
-a triplet $T = A; \Gamma; \Delta_{N}$ and that $\Delta_{N} = \Delta,
+a triplet $T = A; \Gamma; \deltan$ and that $\deltan = \Delta,
   \Delta'$.
 
-A well-formed $\matstatea{\Delta_N}{\lstack{C}; \lstack{P}}{\Gamma}{\Delta}{\cdot}{\Delta' \rightarrow \Omega'}{\Sigma}$
+A well-formed $\matstatea{\deltan}{\lstack{C}; \lstack{P}}{\Gamma}{\Delta}{\cdot}{\Delta' \rightarrow \Omega'}{\Sigma}$
 implies
-$\derstatea{\Delta}{\Xi, \Delta'}{\Gamma_{N1}}{\Delta_{N1}}{V :: \Sigma}{f';
+$\derstatea{\Delta}{\Xi, \Delta'}{\gammanew}{\deltanew}{V :: \Sigma}{f';
    \lstack{P'}}{B\{\Psi(\widehat{x}), V / \widehat{x}, \sigma\}}$,
 where:
    
@@ -107,9 +107,9 @@ where:
       \Delta'}{p}{\Omega}{\cdot}{\Omega'}$
 
    \item $\lstack{P'}$ is the transformation of stack $\lstack{P}$, where for every frame $f \in
-   \lstack{P}$ of the form $\pframe{\Gamma'}{\Delta_N}{\bang
+   \lstack{P}$ of the form $\pframe{\Gamma'}{\deltan}{\bang
       p}{\Omega}{\cdot}{\Omega'}$
-   will turn into $f' = \pframe{\Gamma'}{\Delta_N-\Delta'}{\bang
+   will turn into $f' = \pframe{\Gamma'}{\deltan-\Delta'}{\bang
       p}{\Omega}{\cdot}{\Omega'}$
 
 \end{itemize}
@@ -120,7 +120,7 @@ Invert the assumption and then apply Theorem~\ref{thm:agg_from_update_to_derivat
 \end{proof}
 
 
-\paragraph{Aggregate Derivation}
+\paragraph{Aggregate derivation}
 
 We have just seen that after a single aggregate application, we add a value $V$
 to the $\Sigma$ context and that the continuation stacks are now valid.
@@ -128,18 +128,18 @@ Now, we need to prove that deriving the aggregate's RHS
 is sound in relation to HLD by using the new stacks.
 
 \begin{theorem}[Aggregate derivation soundness]\label{thm:aggregate_derivation}
-If $\derstatea{\Delta_N}{\Xi_N}{\Gamma_{N1}}{\Delta_{N1}}{\Sigma}{\lstack{C}; \lstack{P}}{\Omega_1,
+If $\derstatea{\deltan}{\xin}{\gammanew}{\deltanew}{\Sigma}{\lstack{C}; \lstack{P}}{\Omega_1,
 \dotsc, \Omega_n}$ then:
 
 \begin{itemize}[leftmargin=*]
-   \item $\derstatea{\Delta_N}{\Xi_N}{\Gamma_{N1}, \Gamma_1, \dotsc,
-      \Gamma_n}{\Delta_{N1}, \Delta_1, \dotsc, \Delta_n}{\Sigma}{\lstack{C};
+   \item $\derstatea{\deltan}{\xin}{\gammanew, \Gamma_1, \dotsc,
+      \Gamma_n}{\deltanew, \Delta_1, \dotsc, \Delta_n}{\Sigma}{\lstack{C};
          \lstack{P}}{\cdot}$
 
-   \item If $\dz{\Gamma}{\Pi}{\Delta_N}{\Xi_N}{\Gamma_{N1}, \Gamma_1, \dotsc,
-         \Gamma_n}{\Delta_{N1}, \Delta_1, \dotsc, \Delta_n}{\Omega_x}{\outsem}$ then\\
+   \item If $\dz{\Gamma}{\Pi}{\deltan}{\xin}{\gammanew, \Gamma_1, \dotsc,
+         \Gamma_n}{\deltanew, \Delta_1, \dotsc, \Delta_n}{\Omega_x}{\outsem}$ then\\
          \hspace{2cm}
-   $\dz{\Gamma}{\Pi}{\Delta_N}{\Xi_N}{\Gamma_{N1}}{\Delta_{N1}}{\Omega_1, \dotsc,
+   $\dz{\Gamma}{\Pi}{\deltan}{\xin}{\gammanew}{\deltanew}{\Omega_1, \dotsc,
    \Omega_n, \Omega_x}{\outsem}$
 
 \end{itemize}
@@ -150,7 +150,7 @@ Straightforward induction on $\Omega_1, \dotsc, \Omega_n$.
 \end{proof}
 
 
-\paragraph{Multiple Aggregate Derivation} We now prove that it is possible
+\paragraph{Multiple aggregate derivation} We now prove that it is possible
 to apply an aggregate several times in order to a get multiple values (one per
 application). In turn, we also conclude important results for the
 soundness of the aggregate computation mechanism.
@@ -161,7 +161,7 @@ Consider an aggregate $\m{agg}$, where $\Pi(\m{agg}) = \forall_{\widehat{v}, \Si
                                                 (A \lolli B \otimes
                                                  \defstwo{agg}{\widehat{v}}{\sigma
                                                  ::\Sigma'}))))$,
-and a triplet $T = A; \Gamma; \Delta_{N}$.
+and a triplet $T = A; \Gamma; \deltan$.
 Assume that there exists $n \geq 0$ applications of $\m{agg}$
 where the $i_{th}$ application is related to the following information:
 \begin{description}
@@ -172,12 +172,12 @@ where the $i_{th}$ application is related to the following information:
    \item[$\Psi_i$]: context representing new variable bindings for the aggregate.
 \end{description}
 
-Since each application consumes $\Xi_i$ then the initial context $\Delta_N =
+Since each application consumes $\Xi_i$ then the initial context $\deltan =
 \Delta, \Xi_1, \dotsc, \Xi_n$. We now define the two main implications of the
 theorem.
 
 \begin{itemize}[leftmargin=*]
-   \item Assume that $\Delta_N = \Delta_a, \Delta_b$, $\Delta_b =
+   \item Assume that $\deltan = \Delta_a, \Delta_b$, $\Delta_b =
    \Delta'_b, p_1$ and there is a frame $f = \lframe{\Delta_a,
       p_1}{\Delta'_b}{p}{\Omega}{\cdot}{\Omega'_f}$
 
@@ -187,11 +187,11 @@ theorem.
 
    \input{lld/agg-multiple-derivation}
 
-   \item Assume that there is a frame $f = \pframe{\Gamma'}{\Delta_N}{\bang
+   \item Assume that there is a frame $f = \pframe{\Gamma'}{\deltan}{\bang
       p}{\Omega}{\cdot}{\Omega_f}$.
       
-   If $s_1 = \matstatea{\Delta_N}{\cdot;
-      f, \lstack{P}}{\Gamma}{\Delta_N}{\Omega}{\cdot \rightarrow \bang p \otimes \Omega_f}{\Sigma}$
+   If $s_1 = \matstatea{\deltan}{\cdot;
+      f, \lstack{P}}{\Gamma}{\deltan}{\Omega}{\cdot \rightarrow \bang p \otimes \Omega_f}{\Sigma}$
       (well-formed in relation to $T$) and $\transs{s_1}{s_2}$ then:
 
    \input{lld/agg-multiple-derivation}
@@ -214,20 +214,20 @@ By applying Lemma~\ref{thm:aggregate_body_match} to (1), we get:
 \begin{itemize}[leftmargin=*]
    \item Failure:
    
-   $s_2 = \derstatex{\Gamma}{\Delta_N}{\Xi}{\Gamma_{N1}}{\Delta_{N1}}
+   $s_2 = \derstatex{\Gamma}{\deltan}{\Xi}{\gammanew}{\deltanew}
 {(\lambda x.  C\{\Psi(\widehat{v})/\widehat{v}\} x) \Sigma,
    \Omega_N}$ \hfill (2) from lemma, thus $n = 0$\\
    
    \item Success with no backtracking to frames of stack $\lstack{C}$ or
    $\lstack{P}$:
    
-      $s_2 = \matstatea{\Delta_N}{\lstack{C'}, f; \lstack{P}}{\Gamma}
+      $s_2 = \matstatea{\deltan}{\lstack{C'}, f; \lstack{P}}{\Gamma}
          {\Delta, \Xi_2, \dotsc, \Xi_n}{\cdot}{p_1, \Xi'_1 \rightarrow \Omega'_f \otimes p
                                 \otimes split(\Omega)}{\Sigma}$ \hfill (2) from
                                 lemma \\
       $\Xi_1 = \Xi'_1, p_1$ \hfill (3) by definition \\
 
-      $\feq{A}{\Omega'_f \otimes p \otimes split(\Omega)}$ \hfill (4) by
+      $\feqa{A}{\Omega'_f \otimes p \otimes split(\Omega)}{\Psi}{\Psi}$ \hfill (4) by
       well-formedness \\
       $\mz{\Gamma}{\Xi_1}{A}$ \hfill (5) from match equivalence
       theorem and split equivalence on (4) \\
@@ -242,19 +242,19 @@ By applying Lemma~\ref{thm:aggregate_body_match} to (1), we get:
 
 
       $\derstatea{\Delta, \Xi_2, \dotsc, \Xi_n}{\Xi,
-         \Xi_1}{\Gamma_{N1}}{\Delta_{N1}}{V_1 :: \Sigma}{f';
+         \Xi_1}{\gammanew}{\deltanew}{V_1 :: \Sigma}{f';
             \lstack{P'}}{B\{\Psi(\widehat{x}), V / \widehat{x}, \sigma\}}$
       \dots \hfill (8) from the Corollary \\
 
-      $\derstatea{\Delta, \Xi_2, \dotsc, \Xi_n}{\Xi, \Xi_1}{\Gamma_{N1},
-         \Gamma_1}{\Delta_{N1}, \Delta_1}{\Sigma}{f'; \lstack{P'}}{\cdot}$
+      $\derstatea{\Delta, \Xi_2, \dotsc, \Xi_n}{\Xi, \Xi_1}{\gammanew,
+         \Gamma_1}{\deltanew, \Delta_1}{\Sigma}{f'; \lstack{P'}}{\cdot}$
       \\ \dots \hfill (9) applying Theorem~\ref{thm:aggregate_derivation} on (8)
 
-      If $\dz{\Gamma}{\Pi}{\Delta, \Xi_2, \dotsc, \Xi_n}{\Xi, \Xi_1}{\Gamma_{N1},
-         \Gamma_1}{\Delta_{N1}, \Delta_1}{\Omega_x}{\outsem}$ then \\
+      If $\dz{\Gamma}{\Pi}{\Delta, \Xi_2, \dotsc, \Xi_n}{\Xi, \Xi_1}{\gammanew,
+         \Gamma_1}{\deltanew, \Delta_1}{\Omega_x}{\outsem}$ then \\
          \hspace{2cm}
          $\dz{\Gamma}{\Pi}{\Delta, \Xi_2, \dotsc,
-            \Xi_n}{\Xi, \Xi_1}{\Gamma_{N1}}{\Delta_{N1}}{B\{\Psi(\widehat{x}), V
+            \Xi_n}{\Xi, \Xi_1}{\gammanew}{\deltanew}{B\{\Psi(\widehat{x}), V
                / \widehat{x}, \sigma\}, \Omega_x}{\outsem}$
             \hfill (10) from
       Theorem~\ref{thm:aggregate_derivation} on (8) \\
@@ -270,13 +270,13 @@ By applying Lemma~\ref{thm:aggregate_body_match} to (1), we get:
       
    \item Success with backtracking to the linear continuation frame of stack $\lstack{C}$:
       
-      $s_2 = \matstatea{\Delta_N}{\lstack{C'},
+      $s_2 = \matstatea{\deltan}{\lstack{C'},
          f';\lstack{P}}{\Gamma}{\Delta, \Xi_2, \dotsc, \Xi_n}{\cdot}{\Delta'_f, p_2, \Xi'_1 \rightarrow \Omega'_f \otimes p
                   \otimes split(\Omega)}{\Sigma}$ \hfill (2) from lemma \\
 
       $\Xi_1 = \Delta'_f, p_2, \Xi'_1$ \hfill (3) by definition \\
 
-      $\feq{A}{\Omega'_f \otimes p \otimes split(\Omega)}$ \hfill (4) by
+      $\feqa{A}{\Omega'_f \otimes p \otimes split(\Omega)}{\Psi}{\Psi}$ \hfill (4) by
       well-formedness \\
       $\mz{\Gamma}{\Xi_1}{A}$ \hfill (5) from match equivalence
       theorem and split equivalence on (4) \\
@@ -308,7 +308,7 @@ Consider an aggregate $\m{agg}$, where $\Pi(\m{agg}) = \forall_{\widehat{v}, \Si
                                                 (A \lolli B \otimes
                                                  \defstwo{agg}{\widehat{v}}{\sigma
                                                  ::\Sigma'}))))$,
-and a triplet $T = A; \Gamma; \Delta_{N}$.
+and a triplet $T = A; \Gamma; \deltan$.
 Assume that there exists $n \geq 0$ applications of $\m{agg}$
 where the $i_{th}$ application is related to the following information:
 \begin{description}
@@ -319,7 +319,7 @@ where the $i_{th}$ application is related to the following information:
    \item[$\Psi_i$]: context representing new variable bindings for the aggregate.
 \end{description}
 
-Since each application consumes $\Xi_i$ then the initial context $\Delta_N =
+Since each application consumes $\Xi_i$ then the initial context $\deltan =
 \Delta, \Xi_1, \dotsc, \Xi_n$.
 
 If $s_1 = \matstatea{\Delta, \Xi_1, \dotsc, \Xi_n}{\cdot;
@@ -336,37 +336,37 @@ Apply Lemma~\ref{thm:aggregate_body_match} to get two sub-cases:
 \begin{itemize}[leftmargin=*]
    \item Match fails:
    
-   $s_2 = \derstatex{\Gamma}{\Delta_N}{\Xi}{\Gamma_{N1}}{\Delta_{N1}}
+   $s_2 = \derstatex{\Gamma}{\deltan}{\Xi}{\gammanew}{\deltanew}
 {(\lambda x.  C\{\Psi(\widehat{v})/\widehat{v}\} x) \Sigma,
    \Omega_N}$ \hfill (2) from lemma, thus $n = 0$\\
    
    \item Match succeeds:
 
 
-      $s_2 = \matstatea{\Delta_N}{\lstack{C}; \lstack{P}}{\Gamma}
+      $s_2 = \matstatea{\deltan}{\lstack{C}; \lstack{P}}{\Gamma}
          {\Delta, \Xi_2, \dotsc, \Xi_n}{\cdot}{\Xi_1 \rightarrow \one \otimes
                                                  split(A)}{\cdot}$ \hfill (2) from
                                 lemma \\
-      $\feq{A}{\one \otimes split(\Omega)}$ \hfill (3) by well-formedness \\
+     $\feqa{A}{\one \otimes split(\Omega)}{\Psi}{\Psi}$ \hfill (3) by well-formedness \\
       $\mz{\Gamma}{\Xi_1}{A}$ \hfill (4) from match equivalence
       theorem and split equivalence on (4) \\
 
       Now, we apply Corollary~\ref{thm:agg_match_to_derivation} on (2) \\
 
       $\derstatea{\Delta, \Xi_2, \dotsc, \Xi_n}{\Xi,
-         \Xi_1}{\Gamma_{N1}}{\Delta_{N1}}{V_1 :: \cdot}{f';
+         \Xi_1}{\gammanew}{\deltanew}{V_1 :: \cdot}{f';
             \lstack{P'}}{B\{\Psi(\widehat{x}), V / \widehat{x}, \sigma\}}$
       \dots \hfill (5) \\
 
-      $\derstatea{\Delta, \Xi_2, \dotsc, \Xi_n}{\Xi, \Xi_1}{\Gamma_{N1},
-         \Gamma_1}{\Delta_{N1}, \Delta_1}{V_1 :: \cdot}{f'; \lstack{P'}}{\cdot}$
+      $\derstatea{\Delta, \Xi_2, \dotsc, \Xi_n}{\Xi, \Xi_1}{\gammanew,
+         \Gamma_1}{\deltanew, \Delta_1}{V_1 :: \cdot}{f'; \lstack{P'}}{\cdot}$
       \hfill (6) applying Theorem~\ref{thm:aggregate_derivation} on (5)
 
-      If $\dz{\Gamma}{\Pi}{\Delta, \Xi_2, \dotsc, \Xi_n}{\Xi, \Xi_1}{\Gamma_{N1},
-         \Gamma_1}{\Delta_{N1}, \Delta_1}{\Omega_x}{\outsem}$ then \\
+      If $\dz{\Gamma}{\Pi}{\Delta, \Xi_2, \dotsc, \Xi_n}{\Xi, \Xi_1}{\gammanew,
+         \Gamma_1}{\deltanew, \Delta_1}{\Omega_x}{\outsem}$ then \\
          \hspace{2cm}
          $\dz{\Gamma}{\Pi}{\Delta, \Xi_2, \dotsc,
-            \Xi_n}{\Xi, \Xi_1}{\Gamma_{N1}}{\Delta_{N1}}{B\{\Psi(\widehat{x}), V
+            \Xi_n}{\Xi, \Xi_1}{\gammanew}{\deltanew}{B\{\Psi(\widehat{x}), V
                / \widehat{x}, \sigma\}, \Omega_x}{\outsem}$
             \hfill (7) from
       Theorem~\ref{thm:aggregate_derivation} on (5) \\

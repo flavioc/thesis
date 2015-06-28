@@ -1,16 +1,21 @@
 
 \begin{multline}
-\transx{\matstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta, p_1, \Delta''}{p,
-   \Omega}{\Delta' \rightarrow \Omega'}}
-{\matstate{A \lolli B}{\rulestk}{\lframe{\Delta,
-   p_1}{\Delta''}{p}{\Omega}{\Delta'}{\Omega'}, \lstack{C}}{\Gamma}{\Delta,
-   \Delta''}{\Omega}{\Delta', p_1 \rightarrow \Omega' \otimes p}} \;\;\; (p_1, \Delta'' \prec p)
+\transx{\matstateb{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta, p_1,
+\Delta''}{p(\widehat{x}),
+   \Omega}{\Delta' \rightarrow \Omega'}{\Psi}}
+{\matstateb{A \lolli B}{\rulestk}{\lframe{\Delta,
+p_1}{\Delta''}{p(\widehat{x})}{\Omega; \m{extend}(\Psi, \theta)}{\Delta'}{\Omega'}, \lstack{C}}{\Gamma}{\Delta,
+   \Delta''}{\Omega}{\Delta', p_1 \rightarrow \Omega' \otimes
+      p(\widehat{x}\theta)}{\m{extend}(\Psi, \theta)}} \\
+   \;\;\; (p_1,
+   \Delta'' \prec p(\widehat{x}) \;\;\; \Delta \npreceq p(\widehat{x}))
    \tag{match p ok}
 \end{multline}
 
 \begin{align}
-\trans{\matstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta}{p,
+   \trans{\matstate{A \lolli
+   B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta}{p(\widehat{x}),
    \Omega}{\Delta' \rightarrow \Omega'}}
 {\contstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}} \;\;\; (\Delta \npreceq
-      p) \tag{match p fail}
+p(\widehat{x})) \tag{match p fail}
 \end{align}

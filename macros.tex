@@ -112,21 +112,26 @@
 \newcommand{\failstate}[2]{\m{next}_{#1; #2}}
 \newcommand{\derstatex}[6]{\curvearrowright_{#3}^{#4; #5} #1; #2; #6}
 \newcommand{\finalstate}[3]{\circlearrowleft #1 ; #2; #3}
-\newcommand{\matstatea}[7]{{{}^{\Gamma_{N1}; \Delta_{N1}}_{\Omega_N ; #1 ;
+\newcommand{\matstatea}[7]{{{}^{\gammanew; \deltanew}_{\omegan ; #1 ;
    \Xi}\blacktriangleright}_{\m{agg} ; #7}^{\mzname^\Gamma \; #6} \;
 #2; #3; #4; #5}
-\newcommand{\contstatea}[4]{{{}^{\Gamma_{N1}; \Delta_{N1}}_{\Omega_N ; #1 ;
+\newcommand{\contstatea}[4]{{{}^{\gammanew; \deltanew}_{\omegan ; #1 ;
    \Xi}\triangleleft}_{\m{agg} ; #4} \; #2 ; #3}
-\newcommand{\fixstatea}[5]{{{}^{\Gamma_{N1} ; \Delta_{N1}}_{\Omega_N ; #1;
+\newcommand{\fixstatea}[5]{{{}^{\gammanew ; \deltanew}_{\omegan ; #1;
 #2}\bowtie}_{\m{agg} ; #5} \; #3 ; #4}
-\newcommand{\derstatea}[7]{{{}_{\Omega_N ; #1 ;
+\newcommand{\derstatea}[7]{{{}_{\omegan ; #1 ;
 #2}\curvearrowright}_{\m{agg} ; #5}^{#3; #4} \; #6 ; \Gamma ; #7}
 
 % term equivalence
-\newcommand{\feq}[2]{#1 \equiv^{\theta_1, \theta_2} #2}
-\newcommand{\feqa}[4]{#1 \equiv^{#3, #4} #2}
+\newcommand{\feq}[2]{#1 \equiv^{\theta} #2}
+\newcommand{\feqa}[4]{#1 \equiv^{#3} #2}
 
 %\newcommand{\outsem}[0]{\Xi'; \Delta'; \Gamma'}
 \newcommand{\outsem}[0]{\mathcal{O}}
 \newcommand{\codesize}[0]{\footnotesize}
 \newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\deltan}[0]{\Delta_{\mathcal{I}}}
+\newcommand{\xin}[0]{\Xi_{\mathcal{I}}}
+\newcommand{\omegan}[0]{\Omega_{\mathcal{I}}}
+\newcommand{\deltanew}[0]{\Delta_{\mathcal{N}}}
+\newcommand{\gammanew}[0]{\Gamma_{\mathcal{N}}}

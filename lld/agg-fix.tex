@@ -15,8 +15,8 @@
                                                 (A \lolli B \otimes
                                                  \defstwo{agg}{\widehat{v}}{\sigma
                                                  ::\Sigma'})))) \\
-   f' = remove(f, \Delta') \\
-   \lstack{P'} = remove(\lstack{P}, \Delta') \\
+                                                 f' = \texttt{remove}(f, \Delta') \\
+                                                 \lstack{P'} = \texttt{remove}(\lstack{P}, \Delta') \\
    V = \Psi(\sigma)
    \end{gathered}
 }
@@ -25,7 +25,7 @@
       \fixstatea{\Delta}{\Xi; \Delta'}{f; \lstack{P}}{\Gamma}{\Sigma}
    }
    {
-      \derstatea{\Delta}{\Xi; \Delta'}{\Gamma_1}{\Delta_1}{V :: \Sigma}{f';
+      \derstatea{\Delta}{\Xi; \Delta'}{\gammanew}{\deltanew}{V :: \Sigma}{f';
          \lstack{P'}}{B\{\Psi(\widehat{x}), V / \widehat{x}, \sigma \}}
    }
 }
@@ -40,7 +40,7 @@
                                                 (A \lolli B \otimes
                                                  \defstwo{agg}{\widehat{v}}{\sigma
                                                  ::\Sigma'})))) \\
-   \lstack{P'} = remove(\lstack{P}, \Delta') \\
+                                                 \lstack{P'} = \texttt{remove}(\lstack{P}, \Delta') \\
    V = \Psi(\sigma)
    \end{gathered}
 }

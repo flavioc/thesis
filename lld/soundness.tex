@@ -10,227 +10,6 @@ lacks the non-determinism inherent in HLD.
 First and foremost, we need to prove some auxiliary theorems and definitions
 that will be used during the soundness theorem.
 
-\subsection{Term Equivalence}
-
-The first definition defines the equality between two multi-sets of terms.  Two
-multi-sets $A$ and $B$ are equal, $\feq{A}{B}$, when there exists two
-substitutions $\theta_1$ and $\theta_2$ that allow $A\theta_1$ and $B\theta_2$
-to have the same constituent atoms.
-
-\[
-\infer[\equiv p]
-{\feq{p, A}{q, B}}{\feq{A}{B} & p\theta_1 \triangleq q\theta_2}
-\tab
-\infer[\equiv \bang p]
-{\feq{\bang p, A}{\bang p, B}}{\feq{A}{B} & \bang p \theta_1 \triangleq
-\bang q\theta_2}
-\tab
-\infer[\equiv \one~L]
-{\feq{\one, A}{B}}{\feq{A}{B}}
-\]
-
-\[
-\infer[\equiv \one~R]
-{\feq{A}{\one, B}}{\feq{A}{B}}
-\tab
-\infer[\equiv \cdot]
-{\feq{\cdot}{\cdot}} {}
-\tab
-\infer[\equiv \otimes~L]
-{\feq{A \otimes B, C}{D}}{\feq{A, B, C}{D}}
-\tab
-\infer[\equiv \otimes~R]
-{\feq{A}{B \otimes C, D}}{\feq{A}{B, C, D}}
-\]
-
-\begin{theorem}[Match equivalence]
-If two multi-sets are equivalent, $\feq{A_1, \dotsc, A_n}{B_1, \dotsc, B_m}$,
-   and we can match $A_1 \otimes \dotsb \otimes A_n$ in HLD such that
-   $\mz{\Gamma}{\Delta}{(A_1 \otimes \dotsb \otimes A_n)\theta_1}$ then
-      $\mz{\Gamma}{\Delta}{(B_1 \otimes \dotsb \otimes B_m)\theta_2}$ is also true.
-\end{theorem}
-\begin{proof}
-By straightforward induction on the first assumption.
-\end{proof}
-
-\begin{definition}[Split contexts]
-$split(\Omega)$ is defined as $split(\Omega) = times(flatten(\Omega))$, where:
-
-\begin{align}
-flatten(\cdot) = \cdot \\
-flatten(\one, \Omega) = flatten(\Omega) \\
-flatten(A \otimes B, \Omega) = flatten(A), flatten(B), flatten(\Omega) \\
-flatten(p, \Omega) = p, flatten(\Omega) \\
-flatten(\bang p, \Omega) = \bang p, flatten(\Omega)
-\end{align}
-
-And $times(A_1, \dotsc, A_n) = A_1 \otimes \dotsb \otimes A_n$.
-\end{definition}
-
-\begin{theorem}[Split equivalence]
-$\feqa{split(\Omega)}{\Omega}{\theta}{\theta}$.
-\end{theorem}
-\begin{proof}
-Induction on the structure of $\Omega$.
-\end{proof}
-
-\subsection{Well-Formed Continuation Frames}
-
-We now define the concept of a well-formed frame given initial linear and
-persistent contexts and a term $A$ that needs to be matched.
-
-\begin{definition}[Well-formed frame]
-
-Consider a triplet $A; \Gamma; \Delta_{N}$ where $A$ is a term, $\Gamma$ is a
-set of persistent resources and $\Delta_{N}$ a multi-set of linear
-resources. A frame $f$ is well-formed iff:
-
-\begin{enumerate}[leftmargin=*]
-   \item Linear frame $f = \lframe{\Delta,
-      p_1}{\Delta''}{p}{\Omega}{\Delta'}{\Omega'}$
-
-   \begin{enumerate}
-      \item $\feq{p, \Omega, \Omega'}{A}$ (the remaining terms and already
-               matched terms are equivalent to the initial LHS $A$);
-      \item $\Delta' = \Delta'_1, \dotsc, \Delta'_n$ and $\Omega' =
-      \Omega'_1 \otimes \dotsb \otimes \Omega'_n$
-      \item $\Delta, \Delta'', \Delta, p_1 = \Delta_{N}$ (available facts, candidate
-            facts for $p$, consumed facts and the linear fact used for $p$,
-            respectively, are the same as the initial $\Delta_{N}$);
-      \item $\mz{\Gamma}{\Delta'}{\Omega'}$ is valid.
-
-   \end{enumerate}
-   \item Persistent frame $f = \pframe{\Gamma''}{\Delta}{\bang
-   p}{\Omega}{\Delta'}{\Omega'}$
-      \begin{enumerate}
-         \item $\feq{\bang p, \Omega, \Omega'}{A}$;
-         \item $\Delta' = \Delta'_1, \dotsc, \Delta'_n$ and $\Omega' =
-         \Omega'_1 \otimes \dotsb \otimes \Omega'_n$
-         \item $\Delta, \Delta' = \Delta_{N}$;
-         \item $\Gamma'' \subset \Gamma$ (remaining candidates are a subset of
-                     $\Gamma$);
-         \item $\mz{\Gamma}{\Delta'}{\Omega'}$ is valid.
-      \end{enumerate}
-\end{enumerate}
-\end{definition}
-
-
-\begin{definition}[Well-formed stack]
-A continuation stack $\lstack{C}$ is well-formed iff every frame is well-formed.
-For two consequent linear frames $f_1 = \lframe{\Delta, \Delta_q, q_1,
-p_1}{\Delta_p}{p}{\Omega_1}{\Delta'_1}{\Omega'_1}$ and $f_2 = \lframe{\Delta,
-\Delta_p, q_1}{\Delta_q}{q}{\Omega_2}{\Delta'_1, p_1}{\Omega'_1 \otimes p}$
-where $f_2$ is on top of $f_1$, we also know that $\feq{\Omega_1}{\Omega_2, p}$.
-Identical relationships exist between different pairs of frames.
-\end{definition}
-
-Given the previous definitions, we can now define what it means for a given
-machine state to be well-formed.
-
-\begin{definition}[Well-formed LHS match]
-
-$\matstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta}{\Omega}{\Delta'
-\rightarrow \Omega'}$ is well-formed in relation to a triplet $A; \Gamma;
-\Delta_{N}$ iff:
-
-\begin{itemize}[leftmargin=*]
-   \item $\Delta, \Delta' = \Delta_{N}$
-   \item $\feq{\Omega', \Omega}{A}$;
-   \item $\mz{\Gamma}{\Delta'}{\Omega}$ is valid;
-   \item $\lstack{C}$ is well-formed in relation to $A; \Gamma; \Delta_{N}$ and:
-   \begin{itemize}[leftmargin=\secondm]
-      \item If $\lstack{C} = \cdot$
-   
-      $\feq{\Omega}{A}$.
-   
-      \item If $\lstack{C} = \lframe{\Delta_a,
-   p_1}{\Delta_b}{p}{\Omega_a}{\Delta_c}{\Omega_b}, \lstack{C'}$:
-      \begin{itemize}[leftmargin=\thirdm]
-         \item $\feq{\Omega'}{\Omega}$;
-         \item $\Delta = \Delta_a, \Delta_b$;
-         \item $\Delta' = \Delta_c, p_1$.
-      \end{itemize}
-
-      \item If $\lstack{C} = \pframe{\Gamma''}{\Delta_a}{\bang
-         p}{\Omega_a}{\Delta_a}{\Omega_b}, \lstack{C'}$:
-      \begin{itemize}[leftmargin=\thirdm]
-         \item $\feq{\Omega}{\Omega_a}$;
-         \item $\Delta' = \Delta_a$;
-         \item $\Delta = \Delta_a$.
-      \end{itemize}
-   \end{itemize}
-\end{itemize}
-
-\end{definition}
-
-\begin{definition}[Well-formed backtracking]
-$\contstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}$ is well-formed in
-relation to a triplet $A; \Gamma; \Delta_{N}$ iff $\lstack{C}$ is well-formed in
-relation to $A; \Gamma; \Delta_{N}$.
-\end{definition}
-
-\begin{definition}[Well-formed aggregate match]
-The matching state $\matstatea{\Delta_N}{\lstack{C};
-      \lstack{P}}{\Gamma}{\Delta}{\Omega}{\Delta' \rightarrow
-         \Omega'}{\Sigma}$
-is well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
-
-\begin{itemize}[leftmargin=*]
-   \item $\lstack{P}$ is composed solely of persistent frames;
-   \item $\lstack{C}$ is composed of either linear or persistent frames, but the first
-   frame is linear;
-   \item $\mz{\Gamma}{\Delta'}{\Omega}$ is valid;
-   \item $\Delta, \Delta' = \Delta_{N}$;
-   \item $\feq{\Omega, \Omega'}{A}$;
-   \item $\lstack{C}$ and $\lstack{P}$ are well-formed in relation to $A; \Gamma; \Delta_{N}$ and
-   follow the same rules presented before in "Well-formed LHS match" as a stack
-   $\lstack{C}, \lstack{P}$.
-\end{itemize}
-\end{definition}
-
-
-\begin{definition}[Well-formed aggregate backtracking]
-$\contstatea{\Delta_N}{\lstack{C} ; \lstack{P}}{\Gamma}{\Sigma}$ is well-formed
-in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
-
-\begin{itemize}[leftmargin=*]
-   \item $\lstack{P}$ is composed solely of persistent frames.
-   \item $\lstack{C}$ is composed of either linear or persistent frames, but the first
-   frame is linear.
-   \item $\lstack{C}$ and $\lstack{P}$ are well-formed in relation to $A; \Gamma; \Delta_{N}$.
-\end{itemize}
-\end{definition}
-
-\begin{definition}[Well-formed stack update]
-$\fixstatea{\Delta}{\Xi; \Delta'}{\lstack{C}; \lstack{P}}{\Gamma}{\Sigma}$ is
-well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
-
-\begin{itemize}[leftmargin=*]
-   \item $\lstack{P}$ is composed solely of persistent frames.
-   \item $\lstack{C}$ is composed of either linear or persistent frames, but the first
-   frame is linear.
-   \item $\lstack{C}$ and $\lstack{P}$ are well-formed in relation to $A; \Gamma; \Delta_{N}$.
-   \item $\Delta, \Delta' = \Delta_{N}$
-\end{itemize}
-\end{definition}
-
-\begin{definition}[Well-formed aggregate derivation]
-$\derstatea{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\Sigma}{\lstack{C};
-      \lstack{P}}{\Omega}$
-is well-formed in relation to a triplet $A; \Gamma; \Delta_{N}$ iff:
-
-\begin{itemize}[leftmargin=*]
-   \item $\lstack{P}$ is composed solely of persistent frames.
-   \item $\lstack{C}$ is empty or has a single linear frame;
-   \item $\lstack{C}$ and $\lstack{P}$ are well-formed in relation to $A; \Gamma; \Delta_{N}$.
-\end{itemize}
-
-\end{definition}
-
-For the theorems that follow, we always assume that the states are
-well-formed in relation to their main contexts and matching LHS, be it either a
-rule LHS or an aggregate LHS.
-
 \subsection{Soundness Of Matching}
 
 The soundness theorem will be proven into two main steps. First, we prove that
@@ -285,18 +64,18 @@ $\lstack{C}$. The complete lemma is stated and proven below.
 Given a rule $A \lolli H$, consider a triplet $T = A; \Gamma; \Delta_{N}$ and a
 context $\Delta_{N} = \Delta_1, \Delta_2, \Xi$.
 
-If $s_1 = \matstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta_1,
-   \Delta_2}{\Omega}{\Delta' \rightarrow \Omega'}$
+If $s_1 = \matstateb{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta_1,
+   \Delta_2}{\Omega}{\Delta' \rightarrow \Omega'\Psi}{\Psi}$
 is well-formed in relation to $T$ and $\transs{s_1}{s_2}$ then:
 
 \begin{itemize}[leftmargin=*]
    \item Match succeeds with no backtracking to frames of stack $\lstack{C}$:
    \begin{itemize}[leftmargin=\secondm]
-      \item $s_2 = \matstate{A \lolli B}{\rulestk}{\lstack{C''},
+      \item $s_2 = \matstateb{A \lolli B}{\rulestk}{\lstack{C''},
          \lstack{C}}{\Gamma}{\Delta_1}{\cdot}{\Delta', \Delta_2 \rightarrow
-            \Omega' \otimes split(\Omega)}$
+         \Omega'\Psi \otimes split(\Omega)\Psi_2}{\m{extend}(\Psi, \Psi2)}$
       %\item $\mo \Gamma; \Delta_1; \Xi, \Delta_2; \cdot; H; \lstack{C''}, \lstack{C}; \lstack{R} \rightarrow \outsem$ (well-formed in relation to $T$)
-      %\item $\mo \Gamma; \Delta_1; \Xi, \Delta_2; \Omega; H; \lstack{C}; (\cdot, \Delta_N) \rightarrow \outsem$ (well-formed in relation to $T$)
+      %\item $\mo \Gamma; \Delta_1; \Xi, \Delta_2; \Omega; H; \lstack{C}; (\cdot, \deltan) \rightarrow \outsem$ (well-formed in relation to $T$)
    \end{itemize}
 
    \input{lld/body}
@@ -434,11 +213,11 @@ We are finally ready to prove that the derivation of the rule's RHS is sound in
 relation to HLD.
 
 \begin{lemma}[RHS derivation soundness]\label{thm:head_derivation_soundness}
-If $s_1 = \derstatex{\Gamma}{\Delta_N}{\Xi}{\Gamma_{N1}}{\Delta_{N1}}{\Omega}$
-then $\transs{s_1}{\finalstate{\Xi, \Xi^{*}}{\Gamma_{N1},
-      \Gamma^{*}}{\Delta_{N1}, \Delta^{*}}}$ and
-$\dz{\Gamma}{\Pi}{\Delta_N}{\Xi}{\Gamma_{N1}}{\Delta_{N1}}{A \lolli B,
-   \Omega}{\Xi, \Xi^{*}; \Gamma_{N1}, \Gamma^{*}; \Delta_{N1}, \Delta^{*}}$
+If $s_1 = \derstatex{\Gamma}{\deltan}{\Xi}{\gammanew}{\deltanew}{\Omega}$
+then $\transs{s_1}{\finalstate{\Xi, \Xi^{*}}{\gammanew,
+      \Gamma^{*}}{\deltanew, \Delta^{*}}}$ and\\
+$\dz{\Gamma}{\Pi}{\deltan}{\Xi}{\gammanew}{\deltanew}{A \lolli B,
+   \Omega}{\Xi, \Xi^{*}; \gammanew, \Gamma^{*}; \deltanew, \Delta^{*}}$
 \end{lemma}
 
 \begin{proof}\label{sec:derivation_theorem} Induction on $\Omega$. Most of the
@@ -447,67 +226,67 @@ rule inference. The sub-case for aggregates is more
 complicated and is proved beflow.
 
 \paragraph{Aggregates} Apply Lemma~\ref{thm:aggregates} on the assumption to get
-$n$ applications of the aggregate. Assume that $\Delta_N = \Delta, \Xi_1,
+$n$ applications of the aggregate. Assume that $\deltan = \Delta, \Xi_1,
 \dotsc, \Xi_n$, where $\Xi_i$ are the facts consumed and $\Gamma_i, \Delta_i$
 the facts derived by the $i^{th}$ application.  The lemma proves the following:
 
 \begin{itemize}[leftmargin=*]
    \item $n$ values $\Sigma = V_n :: \dotsb :: V_1 :: \cdot$
    \item $n$ applications are derived:\\
-   $\derstatex{\Gamma}{\Delta}{\Xi, \Xi_1, \dotsc, \Xi_n}{\Gamma_{N1},
-      \Gamma_1, \dotsc, \Gamma_n}{\Delta_{N1}, \Delta_1, \dotsc,
+   $\derstatex{\Gamma}{\Delta}{\Xi, \Xi_1, \dotsc, \Xi_n}{\gammanew,
+      \Gamma_1, \dotsc, \Gamma_n}{\deltanew, \Delta_1, \dotsc,
          \Delta_n}{(\lambda x.  C\{\Psi(\widehat{v})/\widehat{v}\} x) \Sigma,
             \Omega_N}$ (final state) \hfill (1)
    \item $n$ propositions $\mz{\Gamma}{\Xi_i}{A}$ \hfill (2)
    \item $n$ implications\\
       If $\dz{\Gamma}{\Pi}{\Delta, \Xi_{i+1}, \dotsc, \Xi_{n}}{\Xi, \Xi_1,
-         \dotsc, \Xi_i}{\Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_i}{\Delta_{N1},
+         \dotsc, \Xi_i}{\gammanew, \Gamma_1, \dotsc, \Gamma_i}{\deltanew,
             \Delta_1, \dotsc, \Delta_i}{\Omega_x}{\outsem}$ then\\
-            \hspace*{2cm} $\dz{\Gamma}{\Pi}{\Delta, \Xi_{i+1}, \dotsc, \Xi_{n}}{\Xi, \Xi_1,
-            \dotsc, \Xi_i}{\Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_{i-1}}{\Delta_{N1},
+            \hspace*{0.5cm} $\dz{\Gamma}{\Pi}{\Delta, \Xi_{i+1}, \dotsc, \Xi_{n}}{\Xi, \Xi_1,
+            \dotsc, \Xi_i}{\gammanew, \Gamma_1, \dotsc, \Gamma_{i-1}}{\deltanew,
             \Delta_1, \dotsc, \Delta_{i-1}}{B, \Omega_x}{\outsem}$ \hfill (3)
    \item $n$ contexts $\Psi_1, \dotsc, \Psi_n$ for variable bindings \hfill (4)
 \end{itemize}
 
 \newcommand{\outsemm}[3]{#1, \Xi^{*}; #2, \Gamma^{*}; #3, \Delta^{*}}
-\newcommand{\aggoutsem}[0]{\outsemm{\Xi, \Xi_1, \dotsc, \Xi_n}{\Gamma_{N1}, \Gamma_1, \dotsc,
-      \Gamma_n}{\Delta_{N1}, \Delta_1, \dotsc, \Delta_n}}
+\newcommand{\aggoutsem}[0]{\outsemm{\Xi, \Xi_1, \dotsc, \Xi_n}{\gammanew, \Gamma_1, \dotsc,
+      \Gamma_n}{\deltanew, \Delta_1, \dotsc, \Delta_n}}
 
 \noindent From (1) we apply the inductive hypothesis since $C$ is smaller than
 the original aggregate:\\
-$\dz{\Gamma}{\Pi}{\Delta}{\Xi, \Xi_1, \dotsc, \Xi_n}{\Gamma_{N1}, \Gamma_1,
-\dotsc, \Gamma_n}{\Delta_{N1}, \Delta_1, \dotsc, \Delta_n}{
+$\dz{\Gamma}{\Pi}{\Delta}{\Xi, \Xi_1, \dotsc, \Xi_n}{\gammanew, \Gamma_1,
+\dotsc, \Gamma_n}{\deltanew, \Delta_1, \dotsc, \Delta_n}{
    (\lambda x.  C\{\Psi(\widehat{v})/\widehat{v}\} x) \Sigma,
-   \Omega\\ \hspace*{2cm}}{\aggoutsem}$
+   \Omega\\ \hspace*{1cm}}{\aggoutsem}$
 
 \noindent Since we are building the proof tree backwards, starting from the final
 derivation result, we first need to derive $\defstwo{agg}{\widehat{V}}{\Sigma}$ by applying rules
 $\dzname \m{agg}_2$:\\
-$\dz{\Gamma}{\Pi}{\Delta}{\Xi, \Xi_1, \dotsc, \Xi_n}{\Gamma_{N1}, \Gamma_1,
-\dotsc, \Gamma_n}{\Delta_{N1}, \Delta_1, \dotsc, \Delta_n}
-{\defstwo{agg}{\Phi(\widehat{v})}{\Sigma}, \Omega \\ \hspace*{2cm}}{\aggoutsem}$ \\
+$\dz{\Gamma}{\Pi}{\Delta}{\Xi, \Xi_1, \dotsc, \Xi_n}{\gammanew, \Gamma_1,
+\dotsc, \Gamma_n}{\deltanew, \Delta_1, \dotsc, \Delta_n}
+{\defstwo{agg}{\Phi(\widehat{v})}{\Sigma}, \Omega \\ \hspace*{1cm}}{\aggoutsem}$ \\
 
 \noindent If $n = 0$ then this is all we need, otherwise
 we need to rebuild the matching and derivation tree of the
 $n^{th}$ aggregate.  Using the $n^{th}$ implication (3) on (5):
 
-\noindent $\dz{\Gamma}{\Pi}{\Delta, \Xi_n}{\Xi, \Xi_1, \dotsc, \Xi_{n-1}}{\Gamma_{N1}, \Gamma_1,
-\dotsc, \Gamma_{n-1}}{\Delta_{N1}, \Delta_1, \dotsc, \Delta_{n-1}}{B, \defstwo{agg}{\Phi(\widehat{v})}{\Sigma},
-   \Omega \\ \hspace*{2cm}}{\aggoutsem}$ \\
+\noindent $\dz{\Gamma}{\Pi}{\Delta, \Xi_n}{\Xi, \Xi_1, \dotsc, \Xi_{n-1}}{\gammanew, \Gamma_1,
+\dotsc, \Gamma_{n-1}}{\deltanew, \Delta_1, \dotsc, \Delta_{n-1}}{B, \defstwo{agg}{\Phi(\widehat{v})}{\Sigma},
+   \Omega \\ \hspace*{1cm}}{\aggoutsem}$ \\
 
 \noindent Using $\dzname \lolli$ and the matching proposition (2) on (6), the $A \lolli B$
 implication is reconstructed:
 
-\noindent $\dz{\Gamma}{\Pi}{\Delta, \Xi_n}{\Xi, \Xi_1, \dotsc, \Xi_{n-1}}{\Gamma_{N1},
-   \Gamma_1, \dotsc, \Gamma_{n-1}}{\Delta_{N1}, \Delta_1, \dotsc, \Delta_{n-1}}
-{A \lolli B, \defstwo{agg}{\Phi(\widehat{v})}{\Sigma}, \Omega \\ \hspace*{2cm}}{\aggoutsem}$ \\
+\noindent $\dz{\Gamma}{\Pi}{\Delta, \Xi_n}{\Xi, \Xi_1, \dotsc, \Xi_{n-1}}{\gammanew,
+   \Gamma_1, \dotsc, \Gamma_{n-1}}{\deltanew, \Delta_1, \dotsc, \Delta_{n-1}}
+{A \lolli B, \defstwo{agg}{\Phi(\widehat{v})}{\Sigma}, \Omega \\ \hspace*{1cm}}{\aggoutsem}$ \\
 
 \noindent Next, we package the implication and the aggregate using $\dzname \otimes$:
 
-\noindent $\dz{\Gamma}{\Pi}{\Delta, \Xi_n}{\Xi, \Xi_1, \dotsc, \Xi_{n-1}}{\Gamma_{N1},
-\Gamma_1, \dotsc, \Gamma_{n-1}}{\Delta_{N1}, \Delta_1, \dotsc, \Delta_{n-1}}{
+\noindent $\dz{\Gamma}{\Pi}{\Delta, \Xi_n}{\Xi, \Xi_1, \dotsc, \Xi_{n-1}}{\gammanew,
+\Gamma_1, \dotsc, \Gamma_{n-1}}{\deltanew, \Delta_1, \dotsc, \Delta_{n-1}}{
 (A \lolli B) \otimes \defstwo{agg}{\Phi(\widehat{v})}{\Sigma}, \Omega \\
-\hspace*{2cm}}{\aggoutsem}$ \\
+\hspace*{1cm}}{\aggoutsem}$ \\
 
 \noindent Now, we apply $\dzname \forall$ to include the whole term and
 deconstruct $\Sigma$ into $\sigma :: V_{n-1} :: \dotsb :: V_1 :: \cdot$ since
@@ -515,10 +294,10 @@ $V_n$ is the $\sigma$ variable. The $\widehat{x}$ terms included in the
 aggregate's LHS are replaced using information constructed in $\Psi_n$:
 
 \noindent $\dz{\Gamma}{\Pi}{\Delta, \Xi_n}{\Xi, \Xi_1, \dotsc, \Xi_{n-1}}
-{\Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_{n-1}}{\Delta_{N1}, \Delta_1, \dotsc,
-\Delta_{n-1}}{\\ \hspace*{2cm} \forall_{\widehat{x}, \sigma}. ((A' \lolli B') \otimes
+{\gammanew, \Gamma_1, \dotsc, \Gamma_{n-1}}{\deltanew, \Delta_1, \dotsc,
+\Delta_{n-1}}{\\ \hspace*{1cm} \forall_{\widehat{x}, \sigma}. ((A' \lolli B') \otimes
       \defstwo{agg}{\Psi(\widehat{v})}{\sigma :: V_{n-1} ::
-   \dotsb :: V_1 :: \cdot}), \Omega \\ \hspace*{3cm}}{\aggoutsem}$ \\
+   \dotsb :: V_1 :: \cdot}), \Omega \\ \hspace*{2cm}}{\aggoutsem}$ \\
 
 
 \noindent This last expression can be folded into
@@ -526,15 +305,15 @@ $\defstwo{agg}{\Psi(\widehat{v})}{V_{n-1} ::
    \dotsb :: V_1 :: \cdot}$:
 
 \noindent $\dz{\Gamma}{\Pi}{\Delta, \Xi_n}{\Xi, \Xi_1, \dotsc, \Xi_{n-1}}
-{\Gamma_{N1}, \Gamma_1, \dotsc, \Gamma_{n-1}}{\Delta_{N1}, \Delta_1, \dotsc,
+{\gammanew, \Gamma_1, \dotsc, \Gamma_{n-1}}{\deltanew, \Delta_1, \dotsc,
 \Delta_{n-1}}{\defstwo{agg}{\Psi(\widehat{v})}{V_{n-1} ::
-   \dotsb :: V_1 :: \cdot}, \Omega \\ \hspace*{2cm}}{\aggoutsem}$ \\
+   \dotsb :: V_1 :: \cdot}, \Omega \\ \hspace*{1cm}}{\aggoutsem}$ \\
 
 \noindent The last 5 steps are then applied $n-1$ times to get:
 
 \noindent $\dz{\Gamma}{\Pi}{\Delta, \Xi_1, \dotsc,
-   \Xi_n}{\Xi}{\Gamma_{N1}}{\Delta_{N1}}{\defstwo{agg}{\Psi(\widehat{v})}{\cdot},
-      \Omega \\ \hspace*{2cm}}{\aggoutsem}$ \\
+   \Xi_n}{\Xi}{\gammanew}{\deltanew}{\defstwo{agg}{\Psi(\widehat{v})}{\cdot},
+      \Omega \\ \hspace*{1cm}}{\aggoutsem}$ \\
 
 \noindent This completes the sub-case for aggregates.
 
@@ -552,9 +331,9 @@ sound in relation to HLD.
 
 \iffalse
 \begin{theorem}[One rule]\label{thm:one_rule}
-If $\transs{\dostate{\Delta}{\Phi}{\Gamma}{\Pi}}{\finalstate{\Xi}{\Gamma_{N1}}{\Delta_{N1}}}$
+If $\transs{\dostate{\Delta}{\Phi}{\Gamma}{\Pi}}{\finalstate{\Xi}{\gammanew}{\deltanew}}$
 then $\exists_{R \in \Phi}$ such that
-$\transs{\dostate{\Delta}{R}{\Gamma}{\Pi}}{\finalstate{\Xi}{\Gamma_{N1}}{\Delta_{N1}}}$
+$\transs{\dostate{\Delta}{R}{\Gamma}{\Pi}}{\finalstate{\Xi}{\gammanew}{\deltanew}}$
 \end{theorem}
 \begin{proof}
 Induction on the size of $\Phi$.
@@ -571,7 +350,7 @@ Applying Lemma~\ref{thm:body_match} (LHS match result) leads to two subcases:
    $\contstate{A \lolli B}{\rulestk}{\cdot}{\Gamma}$ \hfill (1) \\
 
    $\dostate{\Delta}{\Phi'}{\Gamma}{\Pi}$ \hfill (2) state after (1) \\
-   $\transs{\dostate{\Delta}{R'}{\Gamma}{\Pi}}{\finalstate{\Xi}{\Gamma_{N1}}{\Delta_{N1}}}$
+   $\transs{\dostate{\Delta}{R'}{\Gamma}{\Pi}}{\finalstate{\Xi}{\gammanew}{\deltanew}}$
    \hfill (3) i.h. on (2) where $R' \in \Phi'$ \\
 
    \item Match succeeds: \\
@@ -587,20 +366,20 @@ Applying Lemma~\ref{thm:body_match} (LHS match result) leads to two subcases:
 
 
 \begin{theorem}[Soundness]\label{thm:soundness}
-If $s_1 = \dostate{\Delta_N}{\Phi}{\Gamma}{\Pi}$
-then either $\transs{s_1}{\finalstate{\Xi}{\Gamma_{N1}}{\Delta_{N1}}}$
-and $\exists_{R \in \Phi}. \az{\Gamma}{\Delta_N}{\Pi}{R}{\Xi; \Gamma_{N1};
-      \Delta_{N1}}$
-or $\transs{s_1}{\failstate{\Gamma}{\Delta_N}}$.
+If $s_1 = \dostate{\deltan}{\Phi}{\Gamma}{\Pi}$
+then either $\transs{s_1}{\finalstate{\Xi}{\gammanew}{\deltanew}}$
+and $\exists_{R \in \Phi}. \az{\Psi}{\Gamma}{\deltan}{\Pi}{R}{\Xi; \gammanew;
+      \deltanew}$
+or $\transs{s_1}{\failstate{\Gamma}{\deltan}}$.
 \end{theorem}
 
 \begin{proof}
-If $\Phi = \cdot$ then the second conclusion applies immediatelly, otherwise use
+If $\Phi = \cdot$ then the second conclusion applies immediately, otherwise use
 induction on the size of $\Phi$.
 
-Assume $\Phi = A \lolli B, \Phi'$ and $\rulestk = (\Delta_N; \Phi')$.
+Assume $\Phi = A \lolli B, \Phi'$ and $\rulestk = (\deltan; \Phi')$.
 
-$\dostate{\Delta_N}{\Phi}{\Gamma}{\Pi}$ \hfill (1) first state of the assumption \\
+$\dostate{\deltan}{\Phi}{\Gamma}{\Pi}$ \hfill (1) first state of the assumption \\
 
 Applying Lemma~\ref{thm:body_match} (LHS match result) to the state after two
 transitions of (1) leads to two subcases:
@@ -608,34 +387,34 @@ transitions of (1) leads to two subcases:
 \begin{itemize}[leftmargin=*]
    \item Match fails: \\
    $\contstate{A \lolli B}{\rulestk}{\cdot}{\Gamma}$ \hfill (2) \\
-   $\dostate{\Delta_N}{\Phi'}{\Gamma}{\Pi}$ \hfill (3) state after (2) \\
+   $\dostate{\deltan}{\Phi'}{\Gamma}{\Pi}$ \hfill (3) state after (2) \\
 
-   $\exists_{R' \in \Phi'}. \az{\Gamma}{\Delta_N}{\Pi}{R'}{\Xi; \Gamma_{N1};
-   \Delta_{N1}}$. \hfill (4) i.h. on (3) where $R' \in \Phi'$ if $\Phi'$ is
+   $\exists_{R' \in \Phi'}. \az{\Psi}{\Gamma}{\deltan}{\Pi}{R'}{\Xi; \gammanew;
+   \deltanew}$. \hfill (4) i.h. on (3) where $R' \in \Phi'$ if $\Phi'$ is
    not empty \\
 
-   $\failstate{\Gamma}{\Delta_N}$ \hfill (5) if $\Phi' = \cdot$ \\
+   $\failstate{\Gamma}{\deltan}$ \hfill (5) if $\Phi' = \cdot$ \\
 
    \item Match succeeds: \\
 
-   $\matstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta}{\cdot}{\Delta'
-      \rightarrow split(A)}$ \hfill (1) $\Delta_N = \Delta', \Delta$ \\
+   $\matstateb{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta}{\cdot}{\Delta'
+      \rightarrow split(A)\Psi}{\Psi}$ \hfill (1) $\deltan = \Delta', \Delta$ \\
 
-   $\feq{split(A)}{A}$ \hfill (2) well-formedness of state (1) \\
+   $\feqa{split(A)}{A}{\Psi}{\Psi}$ \hfill (2) well-formedness of state (1) \\
 
-   $\mz{\Gamma}{\Delta}{A}$ \hfill (3) match equivalence for (2) and (1) \\
+   $\mz{\Gamma}{\Delta}{A\Psi}$ \hfill (3) match equivalence for (2) and (1) \\
 
    $\derstatex{\Gamma}{\Delta}{\Delta'}{\cdot}{\cdot}{B}$ \hfill (4) state
    after (1) \\
 
-   $\transs{\derstatex{\Gamma}{\Delta}{\Delta'}{\cdot}{\cdot}{B}}{\finalstate{\Xi}{\Gamma_{N1}}{\Delta_{N1}}}$
+   $\transs{\derstatex{\Gamma}{\Delta}{\Delta'}{\cdot}{\cdot}{B}}{\finalstate{\Xi}{\gammanew}{\deltanew}}$
    \hfill (5) applying Lemma~\ref{thm:head_derivation_soundness} to (4) \\
 
-   $\dz{\Gamma}{\Pi}{\Delta}{\Xi}{\Gamma_{N1}}{\Delta_{N1}}{B}{\Delta', \Xi^{*}; \Gamma_{N1}; \Delta_{N1}}$ \hfill (5) from the
+   $\dz{\Gamma}{\Pi}{\Delta}{\Xi}{\gammanew}{\deltanew}{B}{\Delta', \Xi^{*}; \gammanew; \deltanew}$ \hfill (5) from the
       same Lemma \\
 
-   $\az{\Gamma}{\Delta, \Delta'}{\Pi}{A \lolli B}{\Delta', \Xi^{*}; \Gamma_{N1};
-      \Delta_{N1}}$ \hfill (6) using $\azname \m{rule}$ on (5) and (3) \\
+      $\az{\Psi}{\Gamma}{\Delta, \Delta'}{\Pi}{A \lolli B}{\Delta', \Xi^{*}; \gammanew;
+      \deltanew}$ \hfill (6) using $\azname \m{rule}$ on (5) and (3) \\
 
 \end{itemize}
 

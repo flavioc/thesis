@@ -65,17 +65,17 @@ computation.
 \subsubsection{Matching}
 
 The matching state for aggregates is 
-$\matstatea{\Delta_N}{\lstack{C};
+$\matstatea{\deltan}{\lstack{C};
    \lstack{P}}{\Gamma}{\Delta}{\Omega}{\Delta' \rightarrow \Omega'}{\Sigma}$
 
 \begin{enumerate}
 
-   \item[$\Omega_N$] ordered list of remaining terms of the rule's RHS to be
+   \item[$\omegan$] ordered list of remaining terms of the rule's RHS to be
       derived;
 
-   \item[$\Delta_N$] multi-set of linear facts that were still available after
+   \item[$\deltan$] multi-set of linear facts that were still available after
       matching the rule's LHS and all the previous aggregates. Note that
-      $\Delta, \Xi = \Delta_N$;
+      $\Delta, \Xi = \deltan$;
 
    \item[$\Xi$] multi-set of linear facts used during the matching process of
       the rule's LHS and all the previous aggregates;
@@ -113,14 +113,14 @@ value from the $\Psi$ context. Remember that $\Psi$ is used for the
 quantification connectives in the sequent calculus and in LLD is used to store
 current variable bindings.
 
-\subsubsection{Linear fact expressions}
+\subsubsection{Linear atomic propositions}
 
 The following two transitions deal with the case when there is a linear
-fact expression in the aggregates' LHS.
+atomic propositions in the aggregates' LHS.
 
 \input{lld/agg-match-p}
 
-\subsubsection{Persistent fact expressions}
+\subsubsection{Persistent atomic propositions}
 
 The transitions for dealing with persistent facts are similar to the previous
 ones.
@@ -150,7 +150,7 @@ $\fixstatea{\Delta}{\Xi; \Delta'}{\lstack{C};
 
 \begin{enumerate}
 
-   \item[$\Omega_N$] ordered list of remaining terms of the rule's RHS to be
+   \item[$\omegan$] ordered list of remaining terms of the rule's RHS to be
       derived;
 
    \item[$\Delta$] multi-set of linear facts that were still available after
@@ -159,10 +159,10 @@ $\fixstatea{\Delta}{\Xi; \Delta'}{\lstack{C};
    the rule's LHS and all the previous aggregates;
    \item[$\Delta'$] multi-set of linear facts consumed by the aggregate's LHS;
 
-   \item[$\Gamma_{1}$] set of persistent facts derived by the rule's RHS and all
+   \item[$\gammanew$] set of persistent facts derived by the rule's RHS and all
       the previous aggregates;
 
-   \item[$\Delta_{1}$] multi-set of linear facts derived by the rule's RHS and
+   \item[$\deltanew$] multi-set of linear facts derived by the rule's RHS and
       all the previous aggregates;
 
    \item[$\m{agg}$] the current aggregate;
@@ -185,22 +185,22 @@ from its contexts.
 If the aggregate match fails, we need to backtrack to the next candidate fact.
 The backtracking state 
 has the form
-$\contstatea{\Delta_N}{\lstack{C} ; \lstack{P}}{\Gamma}{\Sigma}$, where:
+$\contstatea{\deltan}{\lstack{C} ; \lstack{P}}{\Gamma}{\Sigma}$, where:
 
 \begin{enumerate}
 
-   \item[$\Omega_N$] ordered list of remaining terms of the rule's RHS to be
+   \item[$\omegan$] ordered list of remaining terms of the rule's RHS to be
       derived;
 
-   \item[$\Delta_N$] multi-set of linear facts that were still available after
+   \item[$\deltan$] multi-set of linear facts that were still available after
    matching the rule's LHS and the aggregate's LHS;
    \item[$\Xi$] multi-set of linear facts used during the matching process of
    the rule's LHS and all the previous aggregates;
 
-   \item[$\Gamma_{1}$] set of persistent facts derived by the rule's RHS and all
+   \item[$\gammanew$] set of persistent facts derived by the rule's RHS and all
       the previous aggregates;
 
-   \item[$\Delta_{1}$] multi-set of linear facts derived by the rule's RHS and
+   \item[$\deltanew$] multi-set of linear facts derived by the rule's RHS and
       all the previous aggregates;
 
    \item[$\m{agg}$] the current aggregate;
@@ -235,12 +235,12 @@ along with the rest of the rule's RHS.
 
 After updating the continuation stacks, the first aggregate's RHS is derived.
 The derivation state has the form
-$\derstatea{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\Sigma}{\lstack{C};
+$\derstatea{\Delta}{\Xi}{\gammanew}{\deltanew}{\Sigma}{\lstack{C};
 \lstack{P}}{\Omega}$, where:
 
 \begin{enumerate}
 
-   \item[$\Omega_N$] ordered list of remaining terms of the rule's RHS to be
+   \item[$\omegan$] ordered list of remaining terms of the rule's RHS to be
       derived;
 
    \item[$\Delta$] multi-set of remaining linear facts that can be used for
@@ -249,10 +249,10 @@ $\derstatea{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\Sigma}{\lstack{C};
    \item[$\Xi$] multi-set of linear facts consumed both by the rule's LHS and
       previous aggregate applications;
 
-   \item[$\Gamma_1$] set of persistent facts derived by the rule's RHS, previous
+   \item[$\gammanew$] set of persistent facts derived by the rule's RHS, previous
       aggregates and current derivation;
 
-   \item[$\Delta_1$] multi-set of linear facts derived by the rule's RHS,
+   \item[$\deltanew$] multi-set of linear facts derived by the rule's RHS,
       previous aggregates and current derivation;
 
    \item[$\m{agg}$] current aggregate symbol;
@@ -264,5 +264,5 @@ $\derstatea{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{\Sigma}{\lstack{C};
 
 \input{lld/agg-der}
 
-This completes the specification of LLD.
+This completes the specification of the LLD semantics.
 

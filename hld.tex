@@ -72,8 +72,9 @@ derivation rule. First, it \emph{guesses} the correct term values to the
 $\forall$ variables and then splits the $\Delta$ context into $\Delta_1$ and
 $\Delta_2$, namely the multi-set of linear facts consumed to match the rule's
 LHS ($\Delta_1$) and the remaining linear facts ($\Delta_2$). The $\Psi$ context
-is used to store the variable and term substitutions. In the next section,
-we will see how LLD semantics deterministically calculate $\Delta_1$ and $\Psi$.
+is used to store a substitution that maps variables to values. In the next
+section, we will see how LLD semantics deterministically calculate $\Delta_1$
+and $\Psi$.
 
 \input{hld/application}
 
