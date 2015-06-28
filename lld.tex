@@ -246,30 +246,29 @@ resources. A frame $f$ is well-formed iff:
 
 \begin{enumerate}[leftmargin=*]
    \item Linear frame $f = \lframe{\Delta,
-      p_1}{\Delta''}{p}{\Omega}{\Delta'}{\Omega'}$
+      p_1}{\Delta''}{p}{\Omega; \Psi}{\Delta'}{\Omega'}$
 
    \begin{enumerate}
       \item $\feqa{p, \Omega, \Omega'}{A}{\Psi}{\Psi}$ (the remaining terms and already
                matched terms are equivalent to the initial LHS $A$);
-      \item $\Delta' = \Delta'_1, \dotsc, \Delta'_n$ and $\Omega' =
-      \Omega'_1 \otimes \dotsb \otimes \Omega'_n$
+      \item $\Delta' = \Delta'_1, \dotsc, \Delta'_n$ and $\Omega' = \Omega'_1 \otimes \dotsb \otimes \Omega'_n$;
       \item $\Delta, \Delta'', \Delta, p_1 = \deltan$ (available facts, candidate
             facts for $p$, consumed facts and the linear fact used for $p$,
             respectively, are the same as the initial $\deltan$);
       \item $\mz{\Gamma}{\Delta'}{\Omega'}$ is valid.
 
    \end{enumerate}
-   \item Persistent frame $f = \pframe{\Gamma''}{\Delta}{\bang
-   p}{\Omega}{\Delta'}{\Omega'}$
-      \begin{enumerate}
-         \item $\feqa{\bang p, \Omega, \Omega'}{A}{\Psi}{\Psi}$;
-         \item $\Delta' = \Delta'_1, \dotsc, \Delta'_n$ and $\Omega' =
-         \Omega'_1 \otimes \dotsb \otimes \Omega'_n$
-         \item $\Delta, \Delta' = \deltan$;
-         \item $\Gamma'' \subset \Gamma$ (remaining candidates are a subset of
-                     $\Gamma$);
-         \item $\mz{\Gamma}{\Delta'}{\Omega'}$ is valid.
-      \end{enumerate}
+   \item Persistent frame $f = \pframe{\Gamma''}{\Delta}{\bang p}{\Omega; \Psi}{\Delta'}{\Omega'}$
+
+   \begin{enumerate}
+      \item $\feqa{\bang p, \Omega, \Omega'}{A}{\Psi}{\Psi}$;
+      \item $\Delta' = \Delta'_1, \dotsc, \Delta'_n$ and $\Omega' =
+      \Omega'_1 \otimes \dotsb \otimes \Omega'_n$;
+      \item $\Delta, \Delta' = \deltan$;
+      \item $\Gamma'' \subset \Gamma$ (remaining candidates are a subset of
+                  $\Gamma$);
+      \item $\mz{\Gamma}{\Delta'}{\Omega'}$ is valid.
+   \end{enumerate}
 \end{enumerate}
 \end{definition}
 
