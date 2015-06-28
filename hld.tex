@@ -5,13 +5,16 @@ semantics present a simplified overview of the dynamics of the language that are
 closer to the sequent calculus (Section~\ref{sec:fragment}) presented before
 than the implementation principles of our virtual machine. The low level
 dynamic~(LLD) semantics are much closer to a real implementation and
-represent the operational semantics of the language.
+represent the operational semantics of the language. Both the HLD and LLD
+semantics model local computation at the node level.
 
 Note that both HLD and LLD do not model the use of variable bindings when
 matching facts from the database. The formalization of bindings tends to
 complicate the formal system and it is not necessary for a good understanding of
-the system. Instead, we assume that all facts of type $\emph{fact}(\hat{x})$ do
-not have the argument $\hat{x}$.
+the system. Therefore, when we write an atomic proposition as $p$, we assume a
+proposition of the form $p(\widehat{x})$, where $\widehat{x}$ is the list of
+terms for that proposition (either values or variables), which is used for
+matching during the derivation process.
 
 Starting from the sequent calculus, we consider $\Gamma$ and $\Delta$ the
 database of our program. $\Gamma$ contains the database of persistent facts
@@ -42,10 +45,15 @@ program and that $\Gamma$ and $\Delta$ are split into $\Gamma_1, \dotsc,
 database of each fact is updated accordingly.
 
 Steps are defined as $\stepz \Gamma; \Delta; \Phi \Longrightarrow \Gamma';
-\Delta'$, where $\Gamma'$ and $\Delta'$ are the new database contexts. The step
-rule is as follows:
+\Delta'$, where $\Gamma'$ and $\Delta'$ are the new database contexts and $\Phi$
+are the derivation rules of the program. The step rule is as follows:
 
 \input{hld/step}
+
+A step is then a local derivation of some rule at a given node $i$. The effects
+of a step result in the addition and retraction of facts from node $i$ and also
+the assertion of facts in \emph{remote} nodes. In the rule above, this is
+represented by the contexts $\Gamma'_j$ and $\Delta'_j$.
 
 \subsection{Application}
 
@@ -53,17 +61,19 @@ A step is performed through
 $\doz{\Gamma}{\Delta}{\Phi}{\Pi}{\Xi'}{\Gamma'}{\Delta'}$.  $\Gamma$, $\Delta$,
 $\Phi$ and $\Pi$ have the meaning explained before, while $\Xi'$, $\Gamma'$ and
 $\Delta'$ are output multi-sets from applying one of the rules in $\Phi$ and are
-usually written as $\outsem$. $\Xi'$ is the set of consumed linear resources,
-$\Gamma'$ is the set of derived persistent facts and $\Delta'$ is the set of
-derived linear facts.  Note that for HLD semantics there is no concept of rule
-priority, therefore a rule is picked non-deterministically.
+sometimes written as $\outsem$ for conciseness. $\Xi'$ is the multi-set of
+retracted linear facts, $\Gamma'$ is the set of derived persistent facts and
+$\Delta'$ is the multi-set of derived linear facts.  Note that for HLD semantics
+there is no concept of rule priority, therefore a rule is picked
+non-deterministically.
 
-The judgment $\az{\Gamma}{\Delta}{\Pi}{A \lolli B}{\outsem}$ applies the
-derivation rule $A \lolli B$. To do this, it splits the $\Delta$ context into
-$\Delta_1$ and $\Delta_2$, namely the set of linear resources consumed to match
-the rule's LHS ($\Delta_1$) and the remaining linear facts ($\Delta_2$).  Again,
-the set of resources needed to match the rule's LHS. LLD semantics will
-deterministically calculate $\Delta_1$.
+The judgment $\az{\Psi}{\Gamma}{\Delta}{\Pi}{A \lolli B}{\outsem}$ applies one
+derivation rule. First, it \emph{guesses} the correct term values to the
+$\forall$ variables and then splits the $\Delta$ context into $\Delta_1$ and
+$\Delta_2$, namely the multi-set of linear facts consumed to match the rule's
+LHS ($\Delta_1$) and the remaining linear facts ($\Delta_2$). The $\Psi$ context
+is used to store the variable and term substitutions. In the next section,
+we will see how LLD semantics deterministically calculate $\Delta_1$ and $\Psi$.
 
 \input{hld/application}
 
@@ -73,7 +83,7 @@ The $\mz{\Gamma}{\Delta}{C}$ judgment uses the right ($R$) rules of the sequent
 calculus in order to match (prove) the term $C$ using $\Gamma$ and $\Delta$. We
 must consume all the linear facts in the multi-set $\Delta$ when matching $C$.
 The context $\Gamma$ may be used to match persistent terms in $C$ but such facts
-are never consumed since they are persistent.
+are never retracted since they are persistent.
 
 \input{hld/match}
 
@@ -92,9 +102,9 @@ following meaning:
    aggregates;
 
    \item[$\Delta$] the multi-set of linear resources in the database not yet
-   consumed;
+   retracted;
 
-   \item[$\Xi$] the multi-set of linear resources that have been consumed while
+   \item[$\Xi$] the multi-set of linear resources that have been retracted while
    matching the rule's LHS, matching comprehensions or aggregates;
 
    \item[$\Gamma_1$] the multi-set of persistent facts that have been derived
@@ -104,9 +114,8 @@ following meaning:
    the current rule;
 
 
-   \item[$\Omega$] an ordered list which contains the terms of the rule's RHS
-      that still need to be derived. We start with $B$ that is continuously
-      deconstructed to derive all the facts of the rule;
+   \item[$\Omega$] an ordered list which contains the propositions of the rule's RHS
+      that need to asserted into the database;
 
    \item[$\outsem$] the output contexts, including consumed facts and derived
    persistent and linear facts.
@@ -121,9 +130,10 @@ calculus:
 The main rule for deriving aggregates is $\dzname \m{agg}_1$. It looks into
 $\Pi$ for the appropriate persistent term and applies $\defsz{agg}$ to the
 implication and then selects the recursive case. On the other hand, the rule
-$\dzname \m{agg}_2$ is identical but instead decides t The HLD semantics do not
-take into account the contents of the database to determine how many times a
-comprehension should be applied.
+$\dzname \m{agg}_2$ is identical but instead decides to derive the final part of
+the aggregate by selecting the additive conjunction's left hand side. The HLD
+semantics do not take into account the contents of the database to determine how
+many times a comprehension should be applied.
 
 \input{hld/derivation-agg}
 

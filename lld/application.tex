@@ -1,13 +1,4 @@
-\[
-\trans{\dostate{\Delta}{R_1, \Phi}{\Gamma}{\Pi}}
-   {\appstate{\Delta}{\Phi}{\Pi}{\Gamma}{R}} \tag{select rule}
-\]
-\[
-\trans{\dostate{\Delta}{\cdot}{\Gamma}{\Pi}}
-   {\failstate{\Gamma}{\Delta}} \tag{fail}
-\]
-\[
-\trans{\appstate{\Delta}{\Phi}{\Pi}{\Gamma}{A \lolli B}}
-      {\matstate{A \lolli B}{(\Delta; \Phi)}{\cdot}{\Gamma}{\Delta}{A}{\cdot \rightarrow
-                                                            \one}} \tag{init rule}
-\]
+\input{lld/init}
+\input{lld/fail}
+\input{lld/open_rule}
+\input{lld/init_rule}

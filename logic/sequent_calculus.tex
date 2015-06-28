@@ -2,10 +2,10 @@ We now describe the linear logic fragment used as a basis for LM.  Note that in
 this thesis we follow the intuitionistic approach and use the sequent
 calculus~\cite{gen35} to specify the logic. Our initial sequent is written as
 $\Psi; \seqx{\Gamma}{\Delta}{C}$ and can be read as "assuming persistent
-resources $\Psi$ and linear resources $\Delta$ then $C$ is true".  More
-specifically, $\Psi$ is the typing context, $\Gamma$ is a multi-set of
-persistent resources, $\Delta$ is a multi-set of linear resources while $C$ is
-the proposition we want to prove.
+resources $\Gamma$ and linear resources $\Delta$ then $C$ is true".  More
+specifically, $\Psi$ is the typing context which contains unique variables,
+$\Gamma$ is a multi-set of persistent resources, $\Delta$ is a multi-set of
+linear resources while $C$ is the proposition we want to prove.
 
 We first have the \emph{simultaneous conjunction} $A \otimes B$ that packages
 linear resources together. In the right rule, $A \otimes B$ is true if both $A$
@@ -45,13 +45,16 @@ does not need any resource to be proven.
 Next, we introduce the \emph{quantification} connectives, namely \emph{universal
 quantification} $\forall_{n:\tau}. A$ and \emph{existencial quantification}
 $\exists_{n:\tau}. A$. These connectives use the typing context $\Psi$ because
-they can introduce and read terms from the context. The right and left duals of
+they can introduce and read term variables from the context. The right and left duals of
 those two connectives are dual.
 
 \input{appendix/fragment_quant}
 
-Finally, we complete the linear logic system with the \emph{cut rules} and the
-\emph{identity rule}:
+The judgment $\Psi \vdash M : \tau$ introduces a new term $M$ with type $\tau$
+that does not depend on $\Gamma$ or $\Delta$ but may depend on the variables in
+$\Psi$. In rules $\forall R$ and $\exists L$, the new $m$ variable introduced in
+$\Psi$ must always be \emph{fresh}. We complete the linear logic system with the
+\emph{cut rules} and the \emph{identity rule}:
 
 \input{appendix/fragment_cut}
 \input{appendix/fragment_id}

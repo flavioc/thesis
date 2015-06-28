@@ -6,7 +6,6 @@ the following:
 
    \item Match rules by priority order;
 
-
    \item Determine the set of linear facts needed to match either the rule's LHS
       or the LHS of comprehensions/aggregates without guessing;
 
@@ -16,35 +15,72 @@ the following:
 
 \end{itemize}
 
-The complete set of inference rules for the semantics are presented in
+While the implementation presented in Chapter~\ref{chapter:local} follows the
+LLD semantics, there are several optimizations not implemented in LLD, such as:
+
+\begin{itemize}
+   \item Indexing: the implementation uses indexing for looking up facts using a
+      specific argument;
+   \item Better candidate rules: when selecting a rule to execute, the
+      implementation filters out rules which do not have enough facts to be
+      derived;
+   \item Multiple rule derivation: the LLD semantics only execute one rule at
+      the time, while the implementation is able to derive a rule multiple times
+      when there are no conflicting rule;
+   \item Matching and substitution: in the implementation, matching is done
+      implicitly using variables and comparisons, while LLD uses the $\Psi$
+      context to hold substitutions.
+\end{itemize}
+
+The complete set of inference rules for the LLD semantics are presented in
 Appendix~\ref{sec:lld}.
 
 LLD is specified as an \emph{abstract machine} and is represented as a sequence
 of state transitions of the form $\trans{S_1}{S_2}$. HLD had many different
 proof trees for a given triplet $\Gamma; \Delta; \Phi$ because HLD allows
 choices to be made during the inference rules. For instance, in HLD any rule
-could be selected to be executed.  In LLD there is only one state sequence
+could be selected to be executed. In LLD there is only one state sequence
 possible for a given $\Gamma; \Delta; \Phi$ since there is no guessing involved.
 LLD semantics present a complete step by step mechanism that is needed to
 correctly evaluate a LM program. For instance, when LLD tries to apply a rule,
-it will check if there is enough facts in the database and backtrack
-until a rule can be applied.
+it will check if there are enough facts in the database and backtrack until a
+rule can be applied.
 
 \subsection{Application}
 
-LLD shares exactly the same inputs and outputs as HLD. The first difference
-between the two systems starts when picking a rule to derive.  Instead of
-guessing, LLD treats the list of rules as a stack and picks the first rule $R_1$
-to execute (the rule with the highest priority). The remaining rules are stored
-as a \emph{continuation}. If $R_1$ cannot be matched because there is not enough
-facts in the database, we backtrack and use the rule continuation to pick the
-next rule and so on, until one rule can be successfully applied.
+LLD shares exactly the same inputs and outputs as HLD. The inputs correspond to
+the $\Gamma$ and $\Delta$ fact contexts and the list of rules $\Phi$, while the
+outputs correspond to the newly asserted facts in $\Gamma'$ and $\Delta'$ and
+the retracted facts which are put in the $\Xi'$ context.
 
-The machine starts with a database $(\Gamma; \Delta)$ and a queue of rules
+The first difference between LLD and HLD start when picking a rule to derive.
+Instead of guessing, LLD treats the list of rules as a stack and picks the first
+rule $R_1$ to execute (the rule with the highest priority). The remaining rules
+are stored as a \emph{continuation}. If $R_1$ cannot be matched because there
+are not enough facts in the database, we backtrack and use the rule continuation
+to pick the next rule and so on, until one rule can be successfully applied.
+
+The machine starts with a database $(\Gamma; \Delta)$ and a list of rules
 $\Phi$. The initial state is always $\dostate{\Delta}{\Phi}{\Gamma}{\Pi}$.
 We start by picking the first rule $R_1$ from $\Phi$:
 
-\input{lld/application}
+\input{lld/init}
+
+If, after trying all the rules, there are no remaining candidate rules, the
+machine enters into the $\m{next}$ state, which means that no more rules are
+possible for this node and the machine should perform local computation on
+another node.
+
+\input{lld/fail}
+
+In order to try a particular rule, we either need to unfold the $\forall$
+connective, by adding its variable to the $\Psi$ context, or, initiate the matching
+process when reaching the $\lolli$ connective. The variables in the $\Psi$
+context, which are initially assigned to an unknown value $\_$, will later be
+assigned to a concrete value as the matching process goes forward.
+
+\input{lld/open_rule}
+\input{lld/init_rule}
 
 \subsection{Continuation Frames}
 
@@ -57,16 +93,17 @@ the facts relevant to the expression given the current context $\Psi$.
 The frame contains enough state to resume the matching process at the time of
 its creation, therefore we can easily backtrack to the choice point and select
 the next candidate fact from the database.  We keep the continuation frames in a
-continuation stack for backtracking purposes. If a given fact fails, we update
-the top frame to try the next candidate fact. If all candidates are exhausted,
-we pop the top frame and continue with the next available frame.
+continuation stack for backtracking purposes. If, at some point there are no
+candidate facts because the current variable assignments are not usable, we
+update the top frame to try the next candidate fact. If all candidates are
+exhausted, we pop the top frame and continue with the next available frame.
 
 By using this match mechanism, we determine which facts need to be used to match
 a rule.  Our LM implementation works like LLD, by iterating over the available
 facts at each choice point and then committing to the rule if the matching
 process succeeds. However, while the implementation only attempts to match rules
-with a very high change of success, LLD is more na\"{i}ve in this aspect because
-it tries all rules in order.
+when the database has all the facts required by the rule's LHS, LLD is more
+na\"{i}ve in this aspect because it tries all rules in order.
 
 
 \subsection{Structure of Continuation Frames}
@@ -80,39 +117,47 @@ assignments and matchings.}
 \subsubsection{Linear Continuation Frames}
 
 There are two types of continuation frames. Linear frames use the form
-$\lframe{\Delta}{\Delta''}{p}{\Omega; \Psi}{\Delta'}{\Omega'}$, where:
+$\lframe{\Delta}{\Delta''}{p(\widehat{x})}{\Omega; \Psi}{\Delta'}{\Omega'}$, where:
 
 \begin{description}
-   \item[$\Delta$] multi-set of linear facts that are not of type $p$ plus all
-   the other $p$'s we have already tried, including the current $p$;
 
-   \item[$\Delta''$] all the other $p$'s we haven't tried yet. It is a multi-set
-   of linear facts;
+   \item[$p(\widehat{x})$] atomic proposition that created this
+      frame. The predicate for the proposition is $p$;
 
-   \item[$p$] current fact expression that originated this choice point;
+   \item[$\Delta$] multi-set of linear facts that are not of predicate $p$ plus
+      all the other candidate facts of the predicate $p$ we have already
+      tried, including a fact $p$, which is the current candidate fact;
 
-   \item[$\Omega$] ordered list of remaining terms needed to match past this
-   choice point;
+   \item[$\Delta''$] facts of predicate $p$ that match $p(\widehat{x})$ which we
+      haven't tried yet. It is a multi-set of linear facts;
+
+
+   \item[$\Omega$] ordered list of remaining terms needed to match;
 
    \item[$\Delta'$] multi-set of linear facts we have consumed to reach this point;
 
-   \item[$\Omega'$] terms matched up-to this point using $\Delta'$ and $\Gamma$;
-   \item[$\Psi$] dictionary of variable assignments (includes variable and value).
+   \item[$\Omega'$] terms matched already using $\Delta'$ and $\Gamma$;
+   \item[$\Psi$] dictionary of variable assignments (includes variable and
+      value).
 \end{description}
 
 \subsubsection{Persistent Continuation Frame}
 
 Persistent frames are slightly different since they only need to keep track of
-remaining persistent candidates. They are structured as $\pframe{\Gamma''}{\Delta}{\bang
-   p}{\Omega; \Psi}{\Delta'}{\Omega'}$:
+remaining persistent candidates. They are structured as
+$\pframe{\Gamma''}{\Delta}{\bang
+   p(\widehat{x})}{\Omega; \Psi}{\Delta'}{\Omega'}$:
 
 \begin{description}
-   \item[$\Gamma''$] remaining candidate facts;
-   \item[$\Delta$] remaining multi-set of linear facts;
-   \item[$\bang p$] current fact expression that originated this choice point;
-   \item[$\Omega$] ordered list of remaining terms needed to match past this
-   choice point;
-   \item[$\Delta'$] multi-set of linear facts consumed up-to this point;
+   \item[$\bang p(\widehat{x})$] persistent atomic proposition that created
+      this frame;
+   \item[$\Gamma''$] remaining candidate facts that match $\bang p(\widehat{x})$;
+   \item[$\Delta$] multi-set of linear facts not consumed yet;
+
+   \item[$\Omega$] ordered list of terms needed to match past this
+   frame;
+
+   \item[$\Delta'$] multi-set of linear facts consumed up-to this frame;
    \item[$\Omega'$] terms matched up-to this point using $\Delta'$ and $\Gamma$;
    \item[$\Psi$] dictionary of variable assignments (includes variable and value).
 \end{description}

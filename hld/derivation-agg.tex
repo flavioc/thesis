@@ -4,7 +4,7 @@
    \Omega}{\outsem}}
 {\begin{gathered}
    \Pi(\m{agg}) = \forall_{\widehat{v}, \Sigma'}.
-   (\defstwo{agg}{\widehat{v}}{\Sigma'} \lolli ((\lambda x. C)\Sigma' \with (\forall_{\widehat{x}, \sigma}.
+   (\defstwo{agg}{\widehat{v}}{\Sigma'} \lolli ((\lambda x. C x)\Sigma' \with (\forall_{\widehat{x}, \sigma}.
                                                 (A \lolli B \otimes
                                                  \defstwo{agg}{\widehat{v}}{\Sigma'
                                                  + \sigma})))) \\
@@ -21,12 +21,11 @@
    \Omega}{\outsem}}
 {\begin{gathered}
    \Pi(\m{agg}) = \forall_{\widehat{v}, \Sigma'}.
-   (\defstwo{agg}{\widehat{v}}{\Sigma'} \lolli ((\lambda x. C)\Sigma' \with (\forall_{\widehat{x}, \sigma}.
+   (\defstwo{agg}{\widehat{v}}{\Sigma'} \lolli ((\lambda x. C x)\Sigma' \with (\forall_{\widehat{x}, \sigma}.
                                                 (A \lolli B \otimes
                                                  \defstwo{agg}{\widehat{v}}{\Sigma'
                                                  + \sigma})))) \\
-   \dz{\Gamma}{\Pi}{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{(\lambda x.
-      C\{\widehat{V}/\widehat{v}\}\{\Sigma/\Sigma'\} x) \Sigma, \Omega}{\outsem}
+   \dz{\Gamma}{\Pi}{\Delta}{\Xi}{\Gamma_1}{\Delta_1}{C\{\widehat{V}/\widehat{v}\}\{\Sigma/\Sigma'\}, \Omega}{\outsem}
    \end{gathered}
 }
 \]

@@ -1,149 +1,18 @@
-This chapter provides an overview of the proof theoretic basis behind LM
-and the dynamic semantics of the language. First, we will present the subset of
-linear logic from which LM is built on. Second, we present the high level
-dynamic semantics - how rules are evaluated and node communication - followed by
-the low level dynamics, a close representation of how the virtual machine runs.
-Finally, we prove that the low level dynamic semantics are sound in relation to
-the high level dynamic semantics.
+This chapter provides an overview of the proof theoretic basis behind LM and the
+dynamic semantics of the language. First, we will present the subset of linear
+logic on which LM is built. Second, we present the high level dynamic semantics
+- how rules are evaluated and node communication - followed by the low level
+dynamics, a close representation of how the virtual machine runs. We prove that
+the low level dynamic semantics are sound in relation to the high level dynamic
+semantics. However, the low level dynamic semantics are not complete due to the
+presence of rule priorities, comprehensions and aggregates, which are features
+that are not represented directly by the underlying linear logic system.  This
+approach has been used in Prolog, which includes useful features such as the
+\emph{cut operator} and a depth-first search strategy that make the language
+sound but not complete.
 
 \section{Linear Logic}
-
-Logic, as \emph{classically} understood, treats true propositions as
-\emph{persistent truth}. When a persistent proposition is needed to prove other
-propositions, it can be reused as many times as we wish because it is true
-indefinitely. This is also true in the \emph{constructive} or
-\emph{intuitionistic} school of logic.  Linear logic is a \emph{substructural
-logic} (lacks weakening and contraction) developed by
-Girard~\cite{Girard95logic:its} extends \emph{persistent logic} with linear
-propositions which can be understood as ephemeral resources that can be used
-only once to prove other propositions.
-
-Linear logic is well suited for modeling computing systems that deal with state,
-of which LM is one of them.  Due to the resource interpretation of the logic,
-linear logic presents a good basis for programming languages with a structured
-way to manage state~\cite{Miller85anoverview}. Beyond programming languages,
-linear logic has also been used in game
-semantics~\cite{lafont1991games,blass1992game}, concurrent
-programming~\cite{lopez2005monadic,mazurak2010lolliproc,perez-2012}, knowledge
-representation~\cite{bos2011survey}, narrative
-generation~\cite{chris-int7,martens2013linear}, etc.
-
-In the context of the Curry-Howard correspondence~\cite{howard:tfatnoc}, linear
-logic has been applied in programming languages as a mechanism to implement
-\emph{linear types}. Linear types or also sometimes known as \emph{uniqueness
-types} are types that force objects to be used exactly once. Surprisingly, such
-types add mutable state to functional languages because they enforce a linear
-view of state, allowing the language to naturally support concurrency,
-input/output and data structure's updates.  Arguably, the most popular language
-that features uniqueness types is the Clean programming
-language~\cite{JFP:1349748}.  Monads~\cite{Wadler:1997:DI:262009.262011}, made
-popular with the Haskell programming language, are another interesting way to
-add state to functional languages. While monads tend to be more powerful than
-linear types, they also ensure equational reasoning in the presence of mutable
-data structures and I/O effects.
-
-Linear logic programming is a different approach than either monads or linear
-types.  While the latter are mechanisms that enhance functional programming with
-state, the former uses state as a foundation, since the program's database is
-both the state and the program, because it drives the computation forward
-through rule application.
-
-Traditional forward-chaining logic programming languages like
-Datalog only use persistent logic, however many ad-hoc
-extensions~\cite{Liu98extendingdatalog,Ludascher95alogical} have been devised
-in to support state updates, but most are extra-logical which makes it harder
-to reason about programs. LM uses linear logic as its foundation, therefore
-state updates are natural to the language.
-
-In linear logic, truth is treated as a resource that is consumed once used. For
-instance, in the graph visit program in Fig.~\ref{code:language:visit}, the
-\texttt{unvisited(A)} and \texttt{visit(A)} linear facts are consumed in order
-to prove \texttt{visit(A)} and the comprehension. If those facts were
-persistent, then the rule would make no sense, because the node would be
-\texttt{visited} and \texttt{unvisited} at the same time!
-
-\subsection{Sequent Calculus}
-
-\input{sequent_calculus}
-
-\subsection{From The Sequent Calculus To LM}
-
-\begin{table*}
-\begin{center}
-\resizebox{16cm}{!}{
-    \begin{tabular}{ | l | l || l | l | l |}
-    \hline
-    Connective                   & Description                                      & LM Syntax                                  & LM Place     & LM Example                                  \\ \hline \hline
-    $\emph{fact}(\hat{x})$       & Linear facts.                                    & $fact(\hat{x})$                               & Body or Head    & \texttt{path(A, P)}                            \\ \hline
-    $\bang \emph{fact}(\hat{x})$ & Persistent facts.                                & $\bang fact(\hat{x})$                         & Body or Head    & \texttt{$\bang$edge(X, Y, W)}                  \\ \hline
-    $1$                          & Represents rules with an empty RHS.             & $1$                                           & Head            & \texttt{1}                                     \\ \hline
-    $A \otimes B$                & Connect two expressions.                         & $A, B$                                        & Body and Head   & \texttt{path(A, P), edge(A, B, W)}             \\ \hline
-    $\forall x. A$               & To represent variables defined inside the rule.  & Please see $A \lolli B$                       & Rule            & \texttt{path(A, B) $\lolli$ reachable(A, B)}   \\ \hline
-    $\exists x. A$               & Instantiates new node variables.  & $\existsc{\widehat{x}}{B}$                  & Head            & \texttt{exists A.(path(A, P))}                 \\ \hline
-    $A \lolli B$                 & $\lolli$ means "linearly implies".               & $A \lolli B$                                  & Rule            & \texttt{path(A, B) $\lolli$ reachable(A, B)}   \\
-                                 & $A$ is the rule's LHS and $B$ is the RHS.             &                                               &                 &                                                \\ \hline
-    $\defsz{comp}$               & For comprehensions
-    ($\widehat{V}$ is empty).  & $\comprehension{\widehat{x}}{A}{B}$  & Head            & \texttt{\{B | !edge(A, B) | visit(B)\}}        \\
-                                 & For aggregates ($\widehat{V}$ accumulates).          &                                               &                 &                                                \\ \hline
-    \end{tabular}
-}
-\end{center}
-\caption{Connectives from linear logic and their use in LM.}
-\label{table:linear}
-\end{table*}
-
-The connections between LM and the sequent calculus fragment presented in the previous section
-are somewhat obvious. We summarize the connection connectives of the system and
-the LM syntax in Table~\ref{table:linear}. As an example, we translate the
-abstract syntax of the first rule of the graph visit program shown
-in~\ref{visit:ast} to a sequent calculus proposition:
-
-\begin{align}
-\forall_A. (\mathtt{visit}(A) \otimes \mathtt{unvisited}(A) \lolli
-   \mathtt{visited}(A) \otimes \defsone{comp}{A})
-\end{align}
-
-The translation is fairly straightforward, except for the comprehension. Each
-comprehension of a LM program must be assigned to an unique name (here
-$\m{comp}$) and a persistent term. For $comp$, the term is as follows:
-
-\begin{align}
-\bang \forall_A. (\defsone{comp}{A} \lolli (\one \with
-         (\forall_B. (\bang \mathtt{edge}(A, B) \lolli
-                                             \mathtt{visit}(B)) \otimes
-          \defsone{comp}{A})))
-\end{align}
-
-Notice that the enclosing $\forall$ includes all the arguments of the unique
-name in order to pass around variables from outside the definition of the
-comprehension, in this case variable $A$. The persistent term allows the
-implication of the comprehension to be derived as many times as needed.
-However, the argument list can also be used to implement aggregates.
-Recall the aggregate example shown before:
-
-\begin{Verbatim}[fontsize=\codesize]
-count-prices(A) -o [sum => P | . | price(A, P) | 1 | total(A, P)].
-\end{Verbatim}
-
-This rule is translated into a linear logic proposition as shown next:
-
-\begin{align}
-\forall_{A}. (\mathtt{count-prices}(A) \lolli \defstwo{agg}{A}{0})
-\end{align}
-
-The persistent term for $\mathtt{agg}$ is defined as follows:
-
-\begin{align}
-\bang \forall_{A, P}. (\defstwo{agg}{A}{P} \lolli (\mathtt{total}(A, P)
-            \with (\forall_{P'}.
-               ((\mathtt{price}(A, P') \lolli \one) \otimes \defstwo{agg}{A}{P +
-                P'}))))
-\end{align}
-
-The argument $P$ of $\defsz{agg}$ accumulates the aggregate computation by
-consuming $\mathtt{price}$ and re-deriving a new $\defsz{agg}$ with $P +
-P'$. Once the aggregate is complete, we simply select $\mathtt{total}(A, P)$
-instead.
+\input{logic/linear_logic}
 
 \section{High Level Dynamic Semantics}
 

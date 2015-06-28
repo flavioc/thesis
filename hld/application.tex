@@ -1,12 +1,19 @@
 \[
 \infer[\azname \m{rule}]
-{\az{\Gamma}{\Delta_1, \Delta_2}{\Pi}{A \lolli B}{\outsem}}
+{\az{\Psi}{\Gamma}{\Delta_1, \Delta_2}{\Pi}{A \lolli B}{\outsem}}
 {\mz{\Gamma}{\Delta_1}{A} &
    \dz{\Gamma}{\Pi}{\Delta_2}{\Delta_1}{\cdot}{\cdot}{B}{\outsem}}
 \]
 
 \[
+\infer[\azname \forall]
+{\az{\Psi}{\Gamma}{\Delta}{\Pi}{\forall_{x : \tau}. A}{\outsem}}
+{\az{\Psi, m : M : \tau}{\Gamma}{\Delta}{\Pi}{A \{M/x\}}{\outsem} & \Psi \vdash
+M : \tau}
+\]
+
+\[
 \infer[\dozname \m{rule}]
 {\dozx{\Gamma}{\Delta}{R, \Phi}{\Pi}{\outsem}}
-{\az{\Gamma}{\Delta}{\Pi}{R}{\outsem}}
+{\az{\cdot}{\Gamma}{\Delta}{\Pi}{R}{\outsem}}
 \]

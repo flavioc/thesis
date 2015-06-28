@@ -1,0 +1,153 @@
+Logic, as \emph{classically} understood, treats true propositions as
+\emph{persistent truth}. When a persistent proposition is needed to prove other
+propositions, it can be reused as many times as we wish because it is true
+indefinitely. This is also true in the \emph{constructive} or
+\emph{intuitionistic} school of logic.  Linear logic is a \emph{substructural
+logic} (lacks weakening and contraction) developed by
+Girard~\cite{Girard95logic:its} extends \emph{persistent logic} with linear
+propositions which can be understood as ephemeral resources that can be used
+only once to prove other propositions.
+
+Linear logic is well suited for modeling computing systems that deal with state,
+of which LM is one of them.  Due to the resource interpretation of the logic,
+linear logic presents a good basis for programming languages with a structured
+way to manage state~\cite{Miller85anoverview}. Beyond programming languages,
+linear logic has also been used in game
+semantics~\cite{lafont1991games,blass1992game}, concurrent
+programming~\cite{lopez2005monadic,mazurak2010lolliproc,perez-2012}, knowledge
+representation~\cite{bos2011survey}, narrative
+generation~\cite{chris-int7,martens2013linear}, etc.
+
+In the context of the Curry-Howard correspondence~\cite{howard:tfatnoc}, linear
+logic has been applied in programming languages as a mechanism to implement
+\emph{linear types}. Linear types are types that force objects to be used
+exactly once. Surprisingly, such types add mutable state to functional languages
+because they enforce a linear view of state, allowing the language to naturally
+support concurrency, input/output and data structure's updates.  Arguably, the
+most popular language that features uniqueness types is the Clean programming
+language~\cite{JFP:1349748}.  Monads~\cite{Wadler:1997:DI:262009.262011}, made
+popular with the Haskell programming language, are another interesting way to
+add state to functional languages. While monads tend to be more powerful than
+linear types, they also ensure equational reasoning in the presence of mutable
+data structures and I/O effects.
+
+Linear logic programming is a different approach than either monads or linear
+types.  While the latter are mechanisms that enhance functional programming with
+state, the former uses state as a foundation, since the program's database is
+both the state and the program, because it drives the computation forward
+through rule application.
+
+Traditional forward-chaining logic programming languages like
+Datalog only use persistent logic, however many ad-hoc
+extensions~\cite{Liu98extendingdatalog,Ludascher95alogical} have been devised
+in to support state updates, but most are extra-logical which makes it harder
+to reason about programs. LM uses linear logic as its foundation, therefore
+state updates are natural to the language.
+
+In linear logic, truth is treated as a resource that is consumed once used. For
+instance, in the graph visit program in Fig.~\ref{code:language:visit}, the
+\texttt{unvisited(A)} and \texttt{visit(A)} linear facts are consumed in order
+to prove \texttt{visit(A)} and the comprehension. If those facts were
+persistent, then the rule would make no sense, because the node would be
+\texttt{visited} and \texttt{unvisited} at the same time!
+
+\subsection{Sequent Calculus}
+
+\input{logic/sequent_calculus}
+
+\subsection{From The Sequent Calculus To LM}
+
+\begin{table*}
+\begin{center}
+\resizebox{16cm}{!}{
+    \begin{tabular}{ | l | l || l | l | l |}
+    \hline
+    Connective                   & Description                                      & LM Syntax                                  & LM Place     & LM Example                                  \\ \hline \hline
+    $\emph{fact}(\hat{x})$       & Linear atomic propositions.                      & $fact(\hat{x})$                               & LHS or RHS    & \texttt{path(A, P)}                            \\ \hline
+    $\bang \emph{fact}(\hat{x})$ & Persistent atomic propositions.                  & $\bang fact(\hat{x})$                         & LHS or RHS    & \texttt{$\bang$edge(X, Y, W)}                  \\ \hline
+    $1$                          & Represents rules with an empty RHS.              & $1$                                           & RHS            & \texttt{1}                                     \\ \hline
+    $A \otimes B$                & Connect two expressions.                         & $A, B$                                        & LHS and RHS   & \texttt{path(A, P), edge(A, B, W)}             \\ \hline
+    $\forall x. A$               & To represent variables defined inside the rule.  & Please see $A \lolli B$                       & Rule            & \texttt{path(A, B) $\lolli$ reachable(A, B)}   \\ \hline
+    $\exists x. A$               & Instantiates new node variables.  & $\existsc{\widehat{x}}{B}$                  & RHS            & \texttt{exists A.(path(A, P))}                 \\ \hline
+    $A \lolli B$                 & $\lolli$ means "linearly implies".               & $A \lolli B$                                  & Rule            & \texttt{path(A, B) $\lolli$ reachable(A, B)}   \\
+                                 & $A$ is the rule's LHS and $B$ is the RHS.             &                                               &                 &                                                \\ \hline
+    $\bang C$                    & Constraint.                                      & $A = B$                     & LHS & \texttt{A = B} \\ \hline
+                                 $\defstwo{comp}{\widehat{V}}{M}$               & For comprehensions
+    ($M$ is not used).  & $\comprehension{\widehat{x}}{A}{B}$  & RHS & \texttt{\{B | !edge(A, B) -o visit(B)\}}        \\
+    & For aggregates ($M$ accumulates). $\widehat{V}$ captures rule variables.          &                                               &                 &                                                \\ \hline
+    \end{tabular}
+}
+\end{center}
+\caption{Connectives from linear logic and their use in LM.}
+\label{table:linear}
+\end{table*}
+
+The connections between LM and the sequent calculus fragment presented in the
+Table~\ref{table:linear}. In the table, we show how each connective is
+translated to LM's abstract syntax and then to LM programs. In order to
+understand how LM rules are related to the sequent calculus, consider the first
+rule of the graph visit program shown in Fig~\ref{visit:ast}:
+
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\[\]]
+visit(A), unvisited(A) -o
+   visited(A), {B | !edge(A, B) -o visit(B)}.
+\end{Verbatim}
+
+This rule is translated to a sequent calculus proposition, as follows:
+
+\begin{align}
+\forall_A. (\texttt{visit}(A) \otimes \texttt{unvisited}(A) \lolli
+   \texttt{visited}(A) \otimes \defsone{comp}{A})
+\end{align}
+
+First, the rule's variable $A$ is included using the $\forall$ connective. The
+rule's LHS and RHS are connected using the $\lolli$ connective. The
+comprehension is transformed into $\defsone{comp}{A}$, which is a
+\emph{recursive} term that is assigned to an unique name, namely, $\m{comp}$.
+This name is related to the following persistent term:
+
+\begin{align}
+\bang \forall_A. (\defsone{comp}{A} \lolli (\one \with
+         (\forall_B. (\bang \texttt{edge}(A, B) \lolli
+                                             \texttt{visit}(B)) \otimes
+          \defsone{comp}{A})))
+\end{align}
+
+Notice that the enclosing $\forall$ includes all the arguments of the unique
+name in order to pass around variables from outside the definition of the
+comprehension, in this case variable $A$. The persistent term allows the
+implication of the comprehension to be derived as many times as needed.
+However, the argument list can also be used to implement aggregates.  Recall the
+PageRank aggregate example shown before:
+
+\begin{Verbatim}[fontsize=\codesize]
+  update(A),
+  !numInbound(A, T)
+     -o [sum => V; B, Val, Iter | neighbor-pagerank(A, B, Val, Iter), V =
+           Val/float(T) -o neighbor-pagerank(A, B, Val, Iter) -> sum-ranks(A, V)].
+\end{Verbatim}
+
+This rule is translated into a linear logic proposition as shown next:
+
+\begin{align}
+\forall_{A}. \forall_{T}. (\texttt{update}(A) \otimes \bang \texttt{numInbound}(A, T) \lolli
+\defstwo{agg}{A, T}{0})
+\end{align}
+
+The persistent term for $\texttt{agg}$ is defined as follows:
+
+\begin{multline}
+\bang \forall_A. \forall_T. \forall_S. (\defstwo{agg}{A, T}{S} \lolli \texttt{sum-ranks}(A, S) \with\\
+(\forall_V. \forall_B. \forall_{Val}. \forall_{Iter}.
+   (\texttt{neighbor-pagerank}(A, B, Val, Iter) \otimes \bang V = Val/\texttt{float}(T) -o \\\texttt{neighbor-pagerank}(A, B, Val, Iter) \otimes \defstwo{agg}{A, T}{S + V})))
+\end{multline}
+
+The argument $S$ of $\defsz{agg}$ accumulates the PageRank values of the
+neighborhood by consuming $\texttt{neighbor-pagerank}$ and re-deriving a new
+$\defsz{agg}$ with $S + V$. Once the aggregate is complete, we simply select
+$\texttt{sum-ranks}(A, S)$ instead. As an side, note how the constraint are
+translated to a persistent term of the form $\bang V = Val/\texttt{float}(T)$
+since it does not require any fact to be proven true. This recursive mechanism
+is inspired in Baelde's work on \emph{fix points}~\cite{BaeldeM07,Baelde:2012}, which allow
+the introduction of recursive definitions into a consistent fragment of linear
+logic.

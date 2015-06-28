@@ -72,7 +72,7 @@
       \aggz{#1}{#2}{#3}{#4}{x :: #5})}
 \newcommand{\aggunfoldz}[2]{(\lambda x. #1) #2}
 \newcommand{\azname}{\m{app} \;}
-\newcommand{\az}[5]{\m{app}^{#1 ; #3} \; #2 ; #4 \rightarrow #5}
+\newcommand{\az}[6]{\m{app}^{#2 ; #4}_{#1} \; #3; #4 \rightarrow #6}
 \newcommand{\dozname}{\m{run} \;}
 \newcommand{\doz}[7]{\m{run}^{#1 ; #4} \; #2 ; #3 \rightarrow #5 ; #6; #7}
 \newcommand{\dozx}[5]{\m{run}^{#1 ; #4} \; #2 ; #3 \rightarrow #5}
@@ -101,14 +101,15 @@
 \newcommand{\trans}[2]{#1 \;\; \mapsto \;\; #2}
 \newcommand{\transx}[2]{#1 \;\; \mapsto \\ #2}
 \newcommand{\transs}[2]{#1 \;\; \mapsto^{*} \;\; #2}
-\newcommand{\dostate}[4]{\mathtt{infer} \; #1; #2; #3; #4}
-\newcommand{\appstate}[5]{\mathtt{apply} \; #1; #2; #3; #4; #5}
+\newcommand{\dostate}[4]{\mathtt{infer} \; #1; #2; #3}
+\newcommand{\appstate}[6]{\mathtt{apply} \; #1; #2; #4; #5; #6}
 \newcommand{\rulestk}[0]{\lstack{R}}
 \newcommand{\matstate}[7]{{\blacktriangleright}_{#1}^{\mzname^\Gamma \; #7} \; #2; #3; #4; #5; #6}
+\newcommand{\matstateb}[8]{{}^{#8}{\blacktriangleright}_{#1}^{\mzname^\Gamma \; #7} \; #2; #3; #4; #5; #6}
 \newcommand{\lframe}[6]{\underset{\mzname^{\Gamma} \; #5 \rightarrow #6}{(#1; #2; #3; #4)}}
 \newcommand{\pframe}[6]{\underset{\mzname^{\Gamma} \; #5 \rightarrow #6}{[#1; #2; #3; #4]}}
 \newcommand{\contstate}[4]{\triangleleft_{#1} \; #2; #3; #4}
-\newcommand{\failstate}[2]{\m{fail}_{#1; #2}}
+\newcommand{\failstate}[2]{\m{next}_{#1; #2}}
 \newcommand{\derstatex}[6]{\curvearrowright_{#3}^{#4; #5} #1; #2; #6}
 \newcommand{\finalstate}[3]{\circlearrowleft #1 ; #2; #3}
 \newcommand{\matstatea}[7]{{{}^{\Gamma_{N1}; \Delta_{N1}}_{\Omega_N ; #1 ;
