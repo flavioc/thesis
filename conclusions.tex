@@ -1,0 +1,185 @@
+
+In this chapter, we summarize the main contributions of this thesis and suggest
+several directions for further research.
+
+\section{Main Contributions}
+
+The goal of our thesis was to show the potential of using a forward-chaining
+linear logic programming language for writing parallel programs. For this, we
+designed and implemented LM, a programming language suitable for writing
+concurrent algorithms over graph data-structures. LM programs are composed of a
+set of inference rules that apply over a database of logical facts. Since LM is
+based on linear logic, facts used in rules may be retracted, making it possible
+for the programmer to declaratively manage structured state.
+
+We introduced coordination facts in LM to show that it is possible for the
+programmer to change how programs are scheduled in order to improve program run
+time and scalability. This is possible due to the existence of linear facts,
+which make it possible for different scheduling decisions to have an effect on
+program computation. Without them, a logic program would always compute the same
+result.
+
+We also introduced explicit parallelism in LM by adding support for thread
+facts. Thread facts are facts stored at the thread level and allow the
+programmer to write rules that reason about thread state. This opens new
+opportunities for program optimization and improved parallelism because programs
+are aware of the existence of threads. Furthermore, implementing complicated
+scheduling parallel algorithms such as Splash Belief Propagation is convenient
+when both thread and coordination facts are available.
+
+We now enumerate all the contributions of this thesis:
+
+\begin{description}
+   \item[Structured State]
+
+Since LM is based on linear logic, LM enables programs to manage
+state in a structured manner. Due to the restriction over the inference rules,
+rules are derived independently on different nodes of the graph, which makes it
+possible to run LM programs in parallel.
+
+   \item[Implementation]
+
+Writing efficient implementations of declarative languages is challenging,
+especially when adding support for parallel execution. In this thesis, we have
+showed a compilation strategy and memory layout organization for LM programs,
+which allows programs to run less than one order of magnitude slower than
+hand-written C++ programs. We also described how the LM runtime supports
+multicore execution by partitioning the graph among threads. To the best of our
+knowledge, LM is the fastest linear logic based programming language available.
+
+\item[Semantics and Abstract Machine]
+
+We showed how LM semantics are specified in order to allow concurrent
+programs. We demonstrated how the language is based upon the sequent calculus of
+linear logic and we specified a low level abstract machine that closely
+resembles the real implementation. We have also proved the soundness of the
+abstract machine.
+
+\item[Coordination]
+
+We have presented new coordination features that improve the expressive
+power of the language by making coordination a first class programming construct
+that is semantically equivalent to regular computation. In turn, this allows the
+programmer to specify how declarative programs are scheduled by the runtime
+system, therefore improving overall run time and scalability.
+
+Coordination facts are divided into scheduling and partitioning facts.
+Scheduling facts change how nodes are scheduled by the system while partitioning
+facts change how nodes are assigned to threads and how they move between
+threads. Both these two types of facts are divided into sensing facts (with
+information about the state of the runtime system) and action facts (which
+perform actions on the runtime system). The interplay between regular facts,
+sensing facts and action facts results in faster execution time and improved
+parallelism because regular facts affect how action facts are derived and,
+conversely, action facts may affect which regular facts are derived.
+
+The coordination facts do not affect the correctness of programs and are well
+integrated into proofs since they do not change how rules are scheduled but how
+nodes are scheduled during execution. As long as the correctness proof does not
+take into account node scheduling, then the proof will work even in the presence
+of coordination facts.
+
+\item[Explicit Parallelism]
+
+We have also introduced the concept of thread facts, which enable LM programs to
+exploit the underlying architecture by making it possible to reason about the
+state of threads. Thread facts allow the programmer to escape the default
+implicit parallelism of LM and allows the implementation of structured
+scheduling algorithms that communicate directly with the underlying runtime
+system. To the best of our knowledge, this is the first time that such paradigm
+is available in a logic programming language and we are not aware of competing
+systems that allow the programmer to reason directly about thread state in a
+structured fashion.
+
+\item[Experimentation]
+
+We compared LM sequential execution to hand-written sequential C++ programs and
+against frameworks such as GraphLab and Ligra. We showed how well the LM runtime
+is able to scale using different programs and datasets. We measured the run
+time, scalability and memory usage effects of using coordination facts and the
+overhead of using coordination facts. For thread facts, we analyzed different
+applications and measured the performance improvements of using explicit
+parallelism.
+
+In our experiments, we noted that the memory layout of applications, especially
+the memory allocator, tends to have a significant effect on the overall
+performance. In modern architectures, good memory locality tends to beat
+efficient algorithms and in LM this is no different. Due to the use and storage
+of logical facts, the memory allocator is important for performance and
+scalability reasons. We have experimented with two allocators to analyze how
+sequential performance may affect scalability. It is our belief that it is more
+important to focus on faster sequential execution at the expense of scalability
+in order to make declarative parallel languages more competitive with sequential
+programs written in languages such as C++.
+
+\end{description}
+
+\section{Future Work}
+
+While much progress has been achieved with this thesis, many new research
+visions have been opened with this work. We now enumerate further research goals
+that should be interesting to pursue.
+
+\begin{description}
+   \item[Faster Implementation]
+
+LM is still not competitive enough to replace efficient parallel frameworks such
+as Ligra. LM is a programming language on its own right and thus requires more
+engineering effort to get right than frameworks implemented in languages such as
+C or C++. Better compilation and runtime systems will be required in order to
+reduce the overhead even further.
+
+Aggressive code analysis should be employed to prove invariants about predicates
+and introduce more specialized data structures for storing logical facts. The
+goal should be to recover more of the \emph{imperative flavor} that is present
+in linear logic programs in order to make them more efficient. The restrictions
+of LM rules that make concurrency possible makes this task harder since there is
+an inherent tension between concurrency and execution speed since concurrency
+implies communication. However, local node computation has still some room for
+improvement.
+
+\item[Provability]
+
+We need automated tools for reasoning about correctness and termination of
+programs. While we have shown that writing informal proofs is relatively easy
+because programs tend to be small, automated proof systems will increase the
+faith that programs will work correctly. Ideally, the programmer should be able
+to write invariants about the program and the compiler should be able to prove
+if such invariants are not being met with the given inference rules.
+
+\item[Expressiveness]
+
+Although LM programs are expressive, some work must be done in order to reduce
+the restrictions on LM rules and allow for more programmer freedom.  LM
+currently only allows rules where the LHS refers to the same node, however, it
+should be possible to allow rules that use facts from different nodes. The use
+of linear logic facts makes this hard because we need to ensure that a linear
+fact is used up only once, therefore the compiler should generate code to
+enforce this, probably through the use of transactions. It will also be
+interesting to measure how such mechanisms might reduce the overall performance
+of programs.
+
+\item[Implicit and Explicit Parallelism] We need more applications that take
+   advantage of the mixed parallelism that is available with thread facts. We
+   feel that this paradigm needs to be further explored in order to make it
+   possible to write new scheduling and parallel algorithms that could be
+   compiled to efficient code in other application areas. Furthermore,
+   mechanized proofs about such algorithms could then be automatic, improving
+   the correctness and reliability of parallel algorithms.
+
+\end{description}
+
+\section{Final Remarks}
+
+We argue that our work makes LM the ideal framework for prototyping new
+(correct) graph algorithms since LM programs tend to be relatively short and the
+programmer only needs to reason about the state of the graph, without the need
+to understand how a framework must be used to express the intended algorithms.
+Finally, the good performance of the LM system allows programs to run reasonably
+fast when executed on multicore systems.
+
+Furthermore, the addition of coordination facts and thread facts help the
+programmer exploit the underlying parallel architecture in order to create
+better programs that take advantage of those architectures without radically
+changing the underlying parallel algorithm.
+

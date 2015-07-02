@@ -53,7 +53,6 @@ min-max-tictactoe th28 2637 2113 4098 -> 2949
 min-max-tictactoe th30 2373 3694 2690 -> 2919
 min-max-tictactoe th32 2057 4363 3651 -> 3357
 
-
 8queens-13 th1 24211 24405 24207 -> 24274
 8queens-13 th2 12847 12114 12600 -> 12520
 8queens-13 th4 6096 6198 6186 -> 6160
@@ -71,6 +70,7 @@ min-max-tictactoe th32 2057 4363 3651 -> 3357
 8queens-13 th28 2369 1723 2274 -> 2122
 8queens-13 th30 2001 2570 1900 -> 2157
 8queens-13 th32 2118 1805 2351 -> 2091
+
 8queens-14 th1 175772 177223 175902 -> 176299
 8queens-14 th2 92799 91630 93599 -> 92676
 8queens-14 th4 45721 43762 44208 -> 44563
@@ -89,7 +89,6 @@ min-max-tictactoe th32 2057 4363 3651 -> 3357
 8queens-14 th30 12483 14232 11837 -> 12850
 8queens-14 th32 13635 13429 13507 -> 13523
 
-
 new-heat-transfer-80 th1 34552 34289 34234 -> 34358
 new-heat-transfer-80 th2 19774 19300 19209 -> 19427
 new-heat-transfer-80 th4 10373 10302 9972 -> 10215
@@ -107,6 +106,7 @@ new-heat-transfer-80 th26 3642 3195 3051 -> 3296
 new-heat-transfer-80 th28 2818 3018 3341 -> 3059
 new-heat-transfer-80 th30 3008 2792 2781 -> 2860
 new-heat-transfer-80 th32 2724 2762 2699 -> 2728
+
 new-heat-transfer-120 th1 160664 160328 159785 -> 160259
 new-heat-transfer-120 th2 93454 93922 92931 -> 93435
 new-heat-transfer-120 th4 45591 44013 45670 -> 45091
@@ -124,28 +124,6 @@ new-heat-transfer-120 th26 11680 11820 13034 -> 12178
 new-heat-transfer-120 th28 11888 10280 14943 -> 12370
 new-heat-transfer-120 th30 9745 9404 9833 -> 9660
 new-heat-transfer-120 th32 9640 10416 11733 -> 10596
-
-
-
-shortest-uspowergrid th1 25722 25776 25611 -> 25703
-shortest-uspowergrid th2 11867 12922 12932 -> 12573
-shortest-uspowergrid th4 6187 6153 6089 -> 6143
-shortest-uspowergrid th6 4343 4380 4324 -> 4349
-shortest-uspowergrid th8 3586 3195 3124 -> 3301
-shortest-uspowergrid th10 3207 2868 3131 -> 3068
-shortest-uspowergrid th12 2438 2555 2414 -> 2469
-shortest-uspowergrid th14 2243 2303 2341 -> 2295
-shortest-uspowergrid th16 2008 2040 2387 -> 2145
-shortest-uspowergrid th18 1994 1844 1918 -> 1918
-shortest-uspowergrid th20 1758 1720 1750 -> 1742
-shortest-uspowergrid th22 1716 1814 1676 -> 1735
-shortest-uspowergrid th24 1585 1594 1551 -> 1576
-shortest-uspowergrid th26 1491 1555 1542 -> 1529
-shortest-uspowergrid th28 1566 1589 1462 -> 1539
-shortest-uspowergrid th30 1475 1463 1341 -> 1426
-shortest-uspowergrid th32 1515 1583 1438 -> 1512
-
-
 
 min-max-tictactoe-big th1 173761 179829 190911 -> 181500
 min-max-tictactoe-big th2 107067 86429 112510 -> 102002
@@ -165,7 +143,6 @@ min-max-tictactoe-big th28 24300 30028 27980 -> 27436
 min-max-tictactoe-big th30 20224
 min-max-tictactoe-big th32 22720
 
-
 shortest-uspowergrid th1 132381 132367 131465 -> 132071
 shortest-uspowergrid th2 63211 63488 62666 -> 63121
 shortest-uspowergrid th4 28227 28590 27904 -> 28240
@@ -183,3 +160,57 @@ shortest-uspowergrid th26 9780 10382 9800 -> 9987
 shortest-uspowergrid th28 9981 9268 9356 -> 9535
 shortest-uspowergrid th30 9464 9201 9738 -> 9467
 shortest-uspowergrid th32 9128 10259 9383 -> 9590
+
+shortest-usairports500 th1 3142 3140 3142 -> 3141
+shortest-usairports500 th2 1899 2085 1993 -> 1992
+shortest-usairports500 th4 1035 928 1124 -> 1029
+shortest-usairports500 th6 648 650 646 -> 648
+shortest-usairports500 th8 597 631 616 -> 614
+shortest-usairports500 th10 743 611 754 -> 702
+shortest-usairports500 th12 587 594 482 -> 554
+shortest-usairports500 th14 503 630 523 -> 552
+shortest-usairports500 th16 503 527 567 -> 532
+shortest-usairports500 th18 325 469 370 -> 388
+shortest-usairports500 th20 451 484 398 -> 444
+shortest-usairports500 th22 386 437 384 -> 402
+shortest-usairports500 th24 458 599 431 -> 496
+shortest-usairports500 th26 513 554 500 -> 522
+shortest-usairports500 th28 391 572 397 -> 453
+shortest-usairports500 th30 418 409 448 -> 425
+shortest-usairports500 th32 461 441 551 -> 484
+
+shortest-oclinks th1 15896 13912 15870 -> 15226
+shortest-oclinks th2 12442 12207 12066 -> 12238
+shortest-oclinks th4 7132 6528 7223 -> 6961
+shortest-oclinks th6 6534 6753 6730 -> 6672
+shortest-oclinks th8 4004 4606 4780 -> 4463
+shortest-oclinks th10 4892 4411 4233 -> 4512
+shortest-oclinks th12 4497 3627 3961 -> 4028
+shortest-oclinks th14 3095 3164 3128 -> 3129
+shortest-oclinks th16 3376 2893 2507 -> 2925
+shortest-oclinks th18 3397 3005 3489 -> 3297
+shortest-oclinks th20 2624 2688 2643 -> 2651
+shortest-oclinks th22 2812 2900 2797 -> 2836
+shortest-oclinks th24 2603 2926 2572 -> 2700
+shortest-oclinks th26 2227 2242 2866 -> 2445
+shortest-oclinks th28 2067 3240 2000 -> 2435
+shortest-oclinks th30 2904 2544 2876 -> 2774
+shortest-oclinks th32 1883 2237 2377 -> 2165
+
+shortest-email th1 19398 19426 19539 -> 19454
+shortest-email th2 13144 13090 13171 -> 13135
+shortest-email th4 9942 9160 9447 -> 9516
+shortest-email th6 8062 8259 7964 -> 8095
+shortest-email th8 6966 7286 6826 -> 7026
+shortest-email th10 6530 6588 6406 -> 6508
+shortest-email th12 6225 6398 5903 -> 6175
+shortest-email th14 5536 5518 5641 -> 5565
+shortest-email th16 4943 4943 5253 -> 5046
+shortest-email th18 5088 5548 4817 -> 5151
+shortest-email th20 4699 4631 4670 -> 4666
+shortest-email th22 4305 4665 4746 -> 4572
+shortest-email th24 4296 4462 4727 -> 4495
+shortest-email th26 4248 4239 4721 -> 4402
+shortest-email th28 3670 3969 3598 -> 3745
+shortest-email th30 3905 4109 3566 -> 3860
+shortest-email th32 3661 3565 4163 -> 3796

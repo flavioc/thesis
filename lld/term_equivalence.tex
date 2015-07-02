@@ -1,0 +1,65 @@
+The first definition defines the equality between two multi-sets of terms.  Two
+multi-sets $A$ and $B$ are equal, $\feq{A}{B}$, when there a substitution
+$\theta$ that allows $A\theta$ and $B\theta$ to have the same
+constituent atoms. Each continuation frame builds a substitution $\Psi$ which
+can be used to determine if two terms are equal.
+
+\[
+\infer[\equiv p]
+{\feq{p, A}{q, B}}{\feq{A}{B} & p\theta \triangleq q\theta}
+\tab
+\infer[\equiv \bang p]
+{\feq{\bang p, A}{\bang p, B}}{\feq{A}{B} & \bang p \theta \triangleq
+\bang q\theta}
+\tab
+\infer[\equiv \one~L]
+{\feq{\one, A}{B}}{\feq{A}{B}}
+\]
+
+\[
+\infer[\equiv \one~R]
+{\feq{A}{\one, B}}{\feq{A}{B}}
+\tab
+\infer[\equiv \cdot]
+{\feq{\cdot}{\cdot}} {}
+\tab
+\infer[\equiv \otimes~L]
+{\feq{A \otimes B, C}{D}}{\feq{A, B, C}{D}}
+\tab
+\infer[\equiv \otimes~R]
+{\feq{A}{B \otimes C, D}}{\feq{A}{B, C, D}}
+\]
+
+\begin{theorem}[Match equivalence]
+
+If two multi-sets are equivalent, $\feq{A_1, \dotsc, A_n}{B_1, \dotsc, B_m}$,
+and we can match $A_1 \otimes \dotsb \otimes A_n$ in HLD such that
+$\mz{\Gamma}{\Delta}{(A_1 \otimes \dotsb \otimes A_n)\theta}$ then
+$\mz{\Gamma}{\Delta}{(B_1 \otimes \dotsb \otimes B_m)\theta}$ is also true.
+
+\end{theorem}
+\begin{proof}
+By straightforward induction on the first assumption.
+\end{proof}
+
+\begin{definition}[Split contexts]
+$split(\Omega)$ is defined as $split(\Omega) = times(flatten(\Omega))$, where:
+
+\begin{align}
+flatten(\cdot) = \cdot \\
+flatten(\one, \Omega) = flatten(\Omega) \\
+flatten(A \otimes B, \Omega) = flatten(A), flatten(B), flatten(\Omega) \\
+flatten(p, \Omega) = p, flatten(\Omega) \\
+flatten(\bang p, \Omega) = \bang p, flatten(\Omega)
+\end{align}
+
+And $times(A_1, \dotsc, A_n) = A_1 \otimes \dotsb \otimes A_n$.
+\end{definition}
+
+\begin{theorem}[Split equivalence]
+$\feqa{split(\Omega)}{\Omega}{\theta}{\theta}$.
+\end{theorem}
+\begin{proof}
+Induction on the structure of $\Omega$.
+\end{proof}
+

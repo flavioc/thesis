@@ -7,7 +7,7 @@ from operator import truediv
 from matplotlib import rcParams
 from numpy import nanmax
 
-max_threads = 20
+max_threads = 28
 
 def dataset2title(dataset, name):
    if not dataset:

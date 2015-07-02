@@ -114,7 +114,7 @@ models variable assignments, including variable names, values and their
 locations in the terms. This is important if we want to model variable
 assignments and matchings.}
 
-\subsubsection{Linear Continuation Frames}
+\subsubsection{Linear continuation frames}
 
 There are two types of continuation frames. Linear frames use the form
 $\lframe{\Delta}{\Delta''}{p(\widehat{x})}{\Omega; \Psi}{\Delta'}{\Omega'}$, where:
@@ -141,13 +141,13 @@ $\lframe{\Delta}{\Delta''}{p(\widehat{x})}{\Omega; \Psi}{\Delta'}{\Omega'}$, whe
       value).
 \end{description}
 
-\subsubsection{Persistent Continuation Frame}
+\subsubsection{Persistent continuation frame}
 
 Persistent frames are slightly different since they only need to keep track of
 remaining persistent candidates. They are structured as
-$\pframe{\Gamma''}{\Delta}{\bang
-   p(\widehat{x})}{\Omega; \Psi}{\Delta'}{\Omega'}$\footnote{We will use $p$
-      instead of $p(\widehat{x})$ for brevity.}:
+$\pframe{\Gamma''}{\Delta}{\bang p(\widehat{x})}{\Omega;
+\Psi}{\Delta'}{\Omega'}$\footnote{We will sometimes use $p$ in place of
+   $p(\widehat{x})$ for brevity.}:
 
 \begin{description}
    \item[$\bang p(\widehat{x})$] persistent atomic proposition that created
@@ -168,70 +168,7 @@ continuation frame to be well-formed.
 
 \subsubsection{Term equivalence}
 
-The first definition defines the equality between two multi-sets of terms.  Two
-multi-sets $A$ and $B$ are equal, $\feq{A}{B}$, when there a substitution
-$\theta$ that allows $A\theta$ and $B\theta$ to have the same
-constituent atoms. Each continuation frame builds a substitution $\Psi$ which
-can be used to determine if two terms are equal.
-
-\[
-\infer[\equiv p]
-{\feq{p, A}{q, B}}{\feq{A}{B} & p\theta \triangleq q\theta}
-\tab
-\infer[\equiv \bang p]
-{\feq{\bang p, A}{\bang p, B}}{\feq{A}{B} & \bang p \theta \triangleq
-\bang q\theta}
-\tab
-\infer[\equiv \one~L]
-{\feq{\one, A}{B}}{\feq{A}{B}}
-\]
-
-\[
-\infer[\equiv \one~R]
-{\feq{A}{\one, B}}{\feq{A}{B}}
-\tab
-\infer[\equiv \cdot]
-{\feq{\cdot}{\cdot}} {}
-\tab
-\infer[\equiv \otimes~L]
-{\feq{A \otimes B, C}{D}}{\feq{A, B, C}{D}}
-\tab
-\infer[\equiv \otimes~R]
-{\feq{A}{B \otimes C, D}}{\feq{A}{B, C, D}}
-\]
-
-\begin{theorem}[Match equivalence]
-
-If two multi-sets are equivalent, $\feq{A_1, \dotsc, A_n}{B_1, \dotsc, B_m}$,
-and we can match $A_1 \otimes \dotsb \otimes A_n$ in HLD such that
-$\mz{\Gamma}{\Delta}{(A_1 \otimes \dotsb \otimes A_n)\theta}$ then
-$\mz{\Gamma}{\Delta}{(B_1 \otimes \dotsb \otimes B_m)\theta}$ is also true.
-
-\end{theorem}
-\begin{proof}
-By straightforward induction on the first assumption.
-\end{proof}
-
-\begin{definition}[Split contexts]
-$split(\Omega)$ is defined as $split(\Omega) = times(flatten(\Omega))$, where:
-
-\begin{align}
-flatten(\cdot) = \cdot \\
-flatten(\one, \Omega) = flatten(\Omega) \\
-flatten(A \otimes B, \Omega) = flatten(A), flatten(B), flatten(\Omega) \\
-flatten(p, \Omega) = p, flatten(\Omega) \\
-flatten(\bang p, \Omega) = \bang p, flatten(\Omega)
-\end{align}
-
-And $times(A_1, \dotsc, A_n) = A_1 \otimes \dotsb \otimes A_n$.
-\end{definition}
-
-\begin{theorem}[Split equivalence]
-$\feqa{split(\Omega)}{\Omega}{\theta}{\theta}$.
-\end{theorem}
-\begin{proof}
-Induction on the structure of $\Omega$.
-\end{proof}
+\input{lld/term_equivalence}
 
 \subsubsection{Well-Formed Continuation Frames}
 
@@ -240,9 +177,9 @@ persistent contexts and a term $A$ that needs to be matched.
 
 \begin{definition}[Well-formed frame]
 
-Consider a triplet $A; \Gamma; \deltan$ where $A$ is a term, $\Gamma$ is a
-set of persistent resources and $\deltan$ a multi-set of linear
-resources. A frame $f$ is well-formed iff:
+Consider a triplet $A; \Gamma; \deltan$ where $A$ is a term, $\Gamma$ is a set
+of persistent resources and $\deltan$ a multi-set of linear resources. A frame
+$f$ is well-formed iff:
 
 \begin{enumerate}[leftmargin=*]
    \item Linear frame $f = \lframe{\Delta,
@@ -498,22 +435,28 @@ $\matstateb{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}{\Delta}{\Omega}{\Delta'
 \end{definition}
 
 \begin{definition}[Well-formed backtracking]
+
 $\contstate{A \lolli B}{\rulestk}{\lstack{C}}{\Gamma}$ is well-formed in
 relation to a triplet $A; \Gamma; \deltan$ iff $\lstack{C}$ is well-formed in
 relation to $A; \Gamma; \deltan$.
+
 \end{definition}
 
 \begin{definition}[Well-formed aggregate match]
+
 The matching state $\matstatea{\deltan}{\lstack{C};
-      \lstack{P}}{\Gamma}{\Delta}{\Omega}{\Delta' \rightarrow
-         \Omega'}{\Sigma}$
-is well-formed in relation to a triplet $A; \Gamma; \deltan$ iff:
+\lstack{P}}{\Gamma}{\Delta}{\Omega}{\Delta' \rightarrow \Omega'}{\Sigma}$ is
+well-formed in relation to a triplet $A; \Gamma; \deltan$ iff:
 
 \begin{itemize}[leftmargin=*]
+
    \item $\lstack{P}$ is composed solely of persistent frames;
-   \item $\lstack{C}$ is composed of either linear or persistent frames, but the first
-   frame is linear;
+
+   \item $\lstack{C}$ is composed of either linear or persistent frames, but the
+      first frame is linear;
+
    \item $\mz{\Gamma}{\Delta'}{\Omega}$ is valid;
+
    \item $\Delta, \Delta' = \deltan$;
    \item $\feqa{\Omega, \Omega'}{A}{\Psi}{\Psi}$;
    \item $\lstack{C}$ and $\lstack{P}$ are well-formed in relation to $A; \Gamma; \deltan$ and
@@ -524,45 +467,61 @@ is well-formed in relation to a triplet $A; \Gamma; \deltan$ iff:
 
 
 \begin{definition}[Well-formed aggregate backtracking]
+
 $\contstatea{\deltan}{\lstack{C} ; \lstack{P}}{\Gamma}{\Sigma}$ is well-formed
 in relation to a triplet $A; \Gamma; \deltan$ iff:
 
 \begin{itemize}[leftmargin=*]
+
    \item $\lstack{P}$ is composed solely of persistent frames.
-   \item $\lstack{C}$ is composed of either linear or persistent frames, but the first
-   frame is linear.
+
+   \item $\lstack{C}$ is composed of either linear or persistent frames, but the
+      first frame is linear.
+
    \item $\lstack{C}$ and $\lstack{P}$ are well-formed in relation to $A; \Gamma; \deltan$.
+
 \end{itemize}
 \end{definition}
 
 \begin{definition}[Well-formed stack update]
+
 $\fixstatea{\Delta}{\Xi; \Delta'}{\lstack{C}; \lstack{P}}{\Gamma}{\Sigma}$ is
 well-formed in relation to a triplet $A; \Gamma; \deltan$ iff:
 
 \begin{itemize}[leftmargin=*]
+
    \item $\lstack{P}$ is composed solely of persistent frames.
-   \item $\lstack{C}$ is composed of either linear or persistent frames, but the first
-   frame is linear.
-   \item $\lstack{C}$ and $\lstack{P}$ are well-formed in relation to $A; \Gamma; \deltan$.
+
+   \item $\lstack{C}$ is composed of either linear or persistent frames, but the
+      first frame is linear.
+
+   \item $\lstack{C}$ and $\lstack{P}$ are well-formed in relation to $A;
+      \Gamma; \deltan$.
+
    \item $\Delta, \Delta' = \deltan$
+
 \end{itemize}
 \end{definition}
 
 \begin{definition}[Well-formed aggregate derivation]
+
 $\derstatea{\Delta}{\Xi}{\gammanew}{\deltanew}{\Sigma}{\lstack{C};
-      \lstack{P}}{\Omega}$
-is well-formed in relation to a triplet $A; \Gamma; \deltan$ iff:
+\lstack{P}}{\Omega}$ is well-formed in relation to a triplet $A; \Gamma;
+\deltan$ iff:
 
 \begin{itemize}[leftmargin=*]
+
    \item $\lstack{P}$ is composed solely of persistent frames.
+
    \item $\lstack{C}$ is empty or has a single linear frame;
-   \item $\lstack{C}$ and $\lstack{P}$ are well-formed in relation to $A; \Gamma; \deltan$.
+
+   \item $\lstack{C}$ and $\lstack{P}$ are well-formed in relation to $A;
+      \Gamma; \deltan$.
+
 \end{itemize}
 
 \end{definition}
 
-For the theorems that follow, we always assume that the states are
-well-formed in relation to their main contexts and matching LHS, be it either a
-rule LHS or an aggregate LHS.
-
-
+For the theorems that follow, we always assume that the states are well-formed
+in relation to their main contexts and matching LHS, be it either a rule LHS or
+an aggregate LHS.
