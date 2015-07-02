@@ -7,7 +7,7 @@ programmer to control parallel scheduling and placement of data to further
 improve the program run time and scalability.  Since LM is based on solid
 logical foundations, we argue that we can also prove interesting properties of
 programs, including correctness and termination. We will support our thesis
-through five major contributions:
+through seven major contributions:
 
 \begin{itemize}
    
@@ -33,6 +33,19 @@ through five major contributions:
    runtime according to the state of the computation and to the state of the
    runtime in order to make better scheduling decisions so that programs can run
    faster.
+
+   \item Optional Explicit Parallelism
+
+   While LM can be classified as a programming language with implicit
+   parallelism, it introduces thread facts to support optional explicit
+   parallelism. Thread facts allow the programmer to reason about the state of
+   the underlying parallel architecture, namely the execution thread, by
+   managing facts about each thread. Thread facts can be used along with regular
+   facts belonging to nodes and coordination facts, allowing for the
+   implementation of customized parallel scheduling algorithms. We show how some
+   programs take advantage of this facility to create optimal scheduling
+   algorithms that are not possible in the limited context of implicit
+   parallelism.
    
    \item Provability
    
@@ -41,6 +54,16 @@ through five major contributions:
    programs. We also show that coordination facts do not change those
    correctness proofs of programs but only improve run time, scalability or
    memory usage.
+
+
+   \item Efficient Runtime and Compilation
+
+   We have implemented a runtime system with support for efficient data
+   structures for handling linear facts and a compiler that is designed to
+   transform inference rules into C++ code that make use of those data
+   structures. We have achieved a sequential performance that is less than one
+   order of magnitude slower than hand-written sequential C++ programs and is
+   competitive with some frameworks such as GraphLab~\cite{GraphLab2010}.
 
    \item Multicore Parallelism
    
