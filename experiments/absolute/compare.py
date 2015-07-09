@@ -40,7 +40,7 @@ for name in unopt.experiment_names():
       memunexp = memunopt.get_experiment(name, dataset)
       assert oexp
       assert uexp
-      assert moexp
+      assert moexp, "could not find %s-%s for memory optimized version" % (name, dataset)
       assert memunexp
 
       if first: first = False

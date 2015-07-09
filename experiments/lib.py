@@ -1,5 +1,6 @@
 
 import math
+import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import numpy as np
@@ -21,6 +22,8 @@ def dataset2title(dataset, name):
             '12': '12',
             '13': '13',
             '14': '14',
+            'small': 'Small',
+            'big': 'Big',
             '200': '200x200',
             '50': '50x50',
             '300': '300x300',
@@ -30,7 +33,9 @@ def dataset2title(dataset, name):
             'twitter': 'Twitter',
             'usairports500': 'US 500 Airports',
             'email': 'EU Email',
+            'gplus': 'Google Plus',
             'oclinks': 'OCLinks',
+            'pokec': 'Pokec Social Network',
             'celegans': 'Celegans',
             'hepph': 'Arxiv HEP-PH'}
    return table[dataset]
@@ -48,8 +53,9 @@ def sort_datasets(name, l):
       x = []
       move_from_list(x, l, 'usairports500')
       move_from_list(x, l, 'oclinks')
-      move_from_list(x, l, 'uspowergrid')
       move_from_list(x, l, 'email')
+      move_from_list(x, l, 'twitter')
+      move_from_list(x, l, 'uspowergrid')
       x.extend(l)
       return x
    else:
@@ -58,7 +64,7 @@ def sort_datasets(name, l):
 def name2title(name):
    table = {'greedy-graph-coloring': 'Greedy Graph Coloring',
             'shortest': 'MSSD',
-            '8queens': 'NQueens',
+            '8queens': 'N-Queens',
             'tree': "Tree",
             'tree-coord': "Tree (coordinated)",
             'min-max-tictactoe': "MiniMax",
@@ -79,11 +85,16 @@ def parse_name(name):
       return '8queens'
    if name.startswith('shortest-'):
       return 'shortest'
-   raise "parse_name"
+   if name.startswith('greedy-graph-coloring-'):
+      return 'greedy-graph-coloring'
+   if name.startswith('pagerank-'):
+      return 'pagerank'
+   print name
+   raise name
 
 def parse_dataset(name):
-   if name.startswith('min-max-tictactoe'):
-      return ''
+   if name == 'min-max-tictactoe':
+      return 'small'
    vec = name.split('-')
    last = vec[len(vec)-1]
    return last
@@ -123,7 +134,7 @@ class experiment_set(object):
 
    def experiment_names(self):
       s = {name:True for (name, dataset) in self.experiments.keys()}
-      return s.keys()
+      return sorted(s.keys(), key=name2title)
 
    def experiment_datasets_for(self, name):
       l = [dataset for (name2, dataset) in self.experiments.keys() if name == name2]
@@ -211,10 +222,13 @@ class experiment(object):
    def x_axis1(self):
       return [key for key in self.times.keys() if key <= max_threads]
 
-   def speedup_data(self, base=None):
+   def base_speedup_data(self, base=None):
       if not base:
          base = self.times[1]
-      return [None] + [float(base)/float(x) for th, x in self.times.iteritems() if th <= max_threads]
+      return [float(base)/float(x) for th, x in self.times.iteritems() if th <= max_threads]
+
+   def speedup_data(self, base=None):
+      return [None] + self.base_speedup_data(base)
 
    def time_data(self):
       return [float(x) for th, x in self.times.iteritems() if th <= max_threads]
@@ -409,6 +423,7 @@ class experiment(object):
    def create_scale(self, cexp, prefix):
       fig = plt.figure()
       ax = fig.add_subplot(111)
+      ax2 = ax.twinx()
 
       names = ('Scalability')
       formats = ('f4')
@@ -417,18 +432,32 @@ class experiment(object):
       ax.set_title(self.title, fontsize=titlefontsize)
       ax.yaxis.tick_left()
       ax.yaxis.set_label_position("left")
-      ax.set_ylabel('Execution Time', fontsize=ylabelfontsize)
+      ax2.yaxis.tick_right()
+      ax2.set_ylabel('Speedup', fontsize=ylabelfontsize, color='g')
+      ax2.set_ylim([0, self.max_speedup()])
+      ax.set_ylabel('Execution Time', fontsize=ylabelfontsize, color='r')
       ax.set_xlabel('Threads', fontsize=ylabelfontsize)
       ax.set_xlim([1, self.max_threads()])
       ax.set_ylim([0, self.max_time()])
       cmap = plt.get_cmap('gray')
 
+      ax.spines['left'].set_color('red')
+      ax2.spines['left'].set_color('red')
+      ax.spines['right'].set_color('green')
+      ax2.spines['right'].set_color('green')
+      [t.set_color('red') for t in ax.yaxis.get_ticklabels()]
+      [t.set_color('green') for t in ax2.yaxis.get_ticklabels()]
+
       ax.plot(self.x_axis(), self.time_data(),
-         label='Execution Time', linestyle='--', marker='^', color=cmap(0.1))
-      ax.plot(self.x_axis(), [cexp.get_time(1)] * len(self.x_axis()),
-        label='Linear', linestyle='-', color=cmap(0.2))
+         label='Execution Time', linestyle='--', marker='+', color='r')
+      ax2.plot(self.x_axis(), self.base_speedup_data(),
+         label='Speedup', linestyle='--', marker='o', color='g')
+      if cexp:
+         ax.plot(self.x_axis(), [cexp.get_time(1)] * len(self.x_axis()),
+           label='Linear', linestyle='-', color=cmap(0.2))
 
       setup_lines(ax, cmap)
+      setup_lines(ax2, cmap)
 
       name = prefix + self.create_filename()
       plt.savefig(name)

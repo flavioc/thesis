@@ -45,7 +45,6 @@ may deallocate an object that is part of another thread's allocator. However,
 this is not an issue since chunks are not garbage collected from the system,
 which allows another thread to reuse the pointer for a later allocation.
 
-\iffalse
 \subsection{Fact Allocation}
 
 Although threads only allocate from their own memory chunks, they may reuse
@@ -91,4 +90,3 @@ first element of the linked list for facts with the same size.
 be acquired.}
    \label{fig:implementation:fact_allocator}
 \end{figure}
-\fi

@@ -20,6 +20,7 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex ack.tex \
 		language/message_routing.tex language/graph_visit.tex \
 		language/applications.tex language/related_work.tex \
 		implementation.tex logic/related_work.tex \
+		implementation/performance.tex \
 		implementation/node.tex implementation/coord.tex \
 		implementation/overview.tex implementation/comp.tex \
 		implementation/parallelism.tex implementation/locks.tex \

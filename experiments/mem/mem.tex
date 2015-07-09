@@ -1,23 +1,25 @@
 \begin{tabular}{c | c || c | c | c || c c} \hline
 	\textbf{Program} & \textbf{Size} & \textbf{Average} & \textbf{Final} & \textbf{Malloc} & \textbf{\# Facts} & \textbf{Each} \\ \hline \hline
-	\multirow{4}{*}{MSSD}  & US 500 Airports & 35MB & 13MB & 151 & 255K & 0.05KB \\
-		 & OCLinks & 137MB & 58MB & 229 & 875K & 0.07KB \\
-		 & US Power Grid & 218MB & 273MB & 150 & 4M & 0.06KB \\
-		 & EU Email & 401MB & 334MB & 520 & 3M & 0.09KB \\
+	\multirow{4}{*}{Belief Propagation}  & 50x50 & 136MB & 268MB & 17 & 34K & 8.00KB \\
+		 & 200x200 & 2GB & 4GB & 21 & 557K & 8.78KB \\
+		 & 300x300 & 6GB & 12GB & 21 & 1256K & 10.55KB \\
+		 & 400x400 & 8GB & 16GB & 22 & 2M & 7.59KB \\
 	\hline
-	MiniMax  & - & 1778MB & 31KB & 129 & 2 & 15.50KB \\
+	\multirow{2}{*}{Heat Transfer}  & 80x80 & 8MB & 8MB & 12 & 63K & 0.14KB \\
+		 & 120x120 & 18MB & 19MB & 15 & 143K & 0.14KB \\
 	\hline
-	\multirow{4}{*}{Belief Propagation}  & 50x50 & 131MB & 264MB & 76 & 34K & 7.87KB \\
-		 & 200x200 & 2GB & 4GB & 101 & 557K & 8.66KB \\
-		 & 300x300 & 6GB & 12GB & 108 & 1256K & 10.43KB \\
-		 & 400x400 & 7GB & 15GB & 111 & 2M & 7.47KB \\
+	\multirow{5}{*}{MSSD}  & US 500 Airports & 53MB & 64MB & 384 & 164K & 0.40KB \\
+		 & OCLinks & 1384MB & 1722MB & 5735 & 2M & 0.80KB \\
+		 & EU Email & 1212MB & 1582MB & 2294 & 3M & 0.53KB \\
+		 & Twitter & 3GB & 4GB & 19775 & 4M & 1.03KB \\
+		 & US Power Grid & 1753MB & 5GB & 20339 & 24M & 0.23KB \\
 	\hline
-	\multirow{2}{*}{Heat Transfer}  & 80x80 & 8MB & 8MB & 89 & 63K & 0.14KB \\
-		 & 120x120 & 18MB & 19MB & 98 & 143K & 0.14KB \\
+	\multirow{2}{*}{MiniMax}  & Big & 14GB & 33KB & 20 & 2 & 16.50KB \\
+		 & Small & 1794MB & 33KB & 17 & 2 & 16.50KB \\
 	\hline
-	\multirow{4}{*}{NQueens}  & 11 & 1280KB & 671KB & 38 & 3K & 0.20KB \\
-		 & 12 & 4MB & 2MB & 40 & 14K & 0.20KB \\
-		 & 13 & 20MB & 14MB & 43 & 74K & 0.20KB \\
-		 & 14 & 95MB & 73MB & 46 & 366K & 0.20KB \\
+	\multirow{4}{*}{N-Queens}  & 11 & 7MB & 7MB & 97 & 3K & 2.45KB \\
+		 & 12 & 40MB & 43MB & 289 & 14K & 2.99KB \\
+		 & 13 & 201MB & 208MB & 543 & 74K & 2.87KB \\
+		 & 14 & 1169MB & 1232MB & 917 & 366K & 3.44KB \\
 	\hline
 \end{tabular}

@@ -1,23 +1,25 @@
 \begin{tabular}{c | c || c | c | c} \hline
 	\textbf{Program} & \textbf{Size} & \textbf{C++ Time} (s) & \textbf{LM} & \textbf{Other} \\ \hline \hline
-	\multirow{4}{*}{MSSD}  & US 500 Airports &  0.41  &  7.58  &  21.79 (Python) \\
-		 & OCLinks &  2.31  &  6.83  &  16.46 (Python) \\
-		 & US Power Grid &  8.26  &  2.97  &  14.79 (Python) \\
-		 & EU Email &  10.98  &  1.70  &  12.20 (Python) \\
+	\multirow{4}{*}{Belief Propagation}  & 50x50 &  3.16  &  1.48  &  1.08 (GraphLab) \\
+		 & 200x200 &  49.36  &  1.69  &  1.25 (GraphLab) \\
+		 & 300x300 &  135.56  &  1.47  &  1.25 (GraphLab) \\
+		 & 400x400 &  169.99  &  1.54  &  1.27 (GraphLab) \\
 	\hline
-	MiniMax  & - &  22.03  &  0.96  &  3.48 (Python) \\
+	\multirow{2}{*}{Heat Transfer}  & 80x80 &  4.62  &  7.59  &  - \\
+		 & 120x120 &  20.29  &  8.39  &  - \\
 	\hline
-	\multirow{4}{*}{Belief Propagation}  & 50x50 &  3.58  &  1.21  &  0.96 (GraphLab) \\
-		 & 200x200 &  47.73  &  1.45  &  1.29 (GraphLab) \\
-		 & 300x300 &  137.37  &  1.35  &  1.24 (GraphLab) \\
-		 & 400x400 &  166.61  &  1.43  &  1.30 (GraphLab) \\
+	\multirow{5}{*}{MSSD}  & US 500 Airports &  0.69  &  5.74  &  13.44 (Python) \\
+		 & OCLinks &  7.00  &  9.44  &  16.10 (Python) \\
+		 & EU Email &  13.47  &  2.19  &  9.80 (Python) \\
+		 & Twitter &  27.22  &  9.92  &  8.28 (Python) \\
+		 & US Power Grid &  55.33  &  5.19  &  10.99 (Python) \\
 	\hline
-	\multirow{2}{*}{Heat Transfer}  & 80x80 &  4.15  &  8.21  &  - \\
-		 & 120x120 &  16.68  &  9.15  &  - \\
+	\multirow{2}{*}{MiniMax}  & Big &  21.47  &  9.45  &  - \\
+		 & Small &  2.89  &  7.59  &  27.43 (Python) \\
 	\hline
-	\multirow{4}{*}{NQueens}  & 11 &  0.28  &  1.65  &  19.29 (Python) \\
-		 & 12 &  1.54  &  2.14  &  21.36 (Python) \\
-		 & 13 &  8.59  &  2.79  &  25.57 (Python) \\
-		 & 14 &  48.56  &  3.62  &  30.11 (Python) \\
+	\multirow{4}{*}{N-Queens}  & 11 &  0.28  &  2.49  &  20.36 (Python) \\
+		 & 12 &  1.42  &  3.52  &  24.30 (Python) \\
+		 & 13 &  7.90  &  4.83  &  27.85 (Python) \\
+		 & 14 &  47.90  &  6.00  &  31.52 (Python) \\
 	\hline
 \end{tabular}

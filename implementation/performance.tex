@@ -1,0 +1,270 @@
+To understand the absolute performance of LM programs, we measured their
+\emph{sequential} performance using a single thread of execution against
+hand-written sequential C++ programs. All C++ programs were compiled with the
+compilation flags that were used for LM in order to improve fairness. Arguably,
+compiled C/C++ programs are a good standard for understanding the baseline
+performance of new language runtimes, since compiled C/C++ programs tend to come
+up on top on several popular programming language
+benchmarks~\cite{language_benchmarks}.  Furthermore, the performance of
+sequential C++ programs is a better baseline for measuring the scalability of LM
+since these programs are sequential and thus provide a better baseline than the
+sequential run time of LM programs, which includes extra code for managing
+synchronization between multiple (inexistent) threads.
+
+In order to make our comparison more interesting, we also provide comparisons to
+the Python language and other relevant systems. Python is a \emph{scripting}
+programming language that is much slower than compiled C/C++ programs and thus
+is a good upper-bound in terms of performance.
+
+The goal of the evaluation is to understand the effectiveness of our compilation
+strategy and the effectiveness of our dynamic indexing algorithms, including the
+data structures (hash tables) which are used to store index logical facts. The
+LM programs used in the experiments are the following:
+
+\begin{itemize}
+   \item Multiple Single Shortest Distance (MSSD): a program that computes the
+      shortest distance from a subset of nodes of the graph to the all the nodes
+      in the graph. A modified version is presented in
+      Section~\ref{section:coord:rationale}.
+
+      
+    \item MiniMax: the AI algorithm for selecting the best player move in a
+       Tic-Tac-Toe game. The initial board was augmented in order to provide a
+       longer running benchmark. Program is presented in
+       Section~\ref{section:coord:minimax}.
+
+   \item Belief Propagation: a machine learning to denoise images. Program is
+      explained in Section~\ref{sec:coordination:bp}.
+
+    \item Heat Transfer: an asynchronous program that performs transfer of heat
+       between nodes. Program is explained in Section~\ref{section:coord:ht}.
+
+   \item N-Queens: the classic puzzle for placing queens on a chess board so
+      that no two queens threaten each other. Program is explained in
+      Section~\ref{section:coord:nqueens}.
+
+\end{itemize}
+
+Table~\ref{table:implementation:absolute} presents the comparison between LM and
+sequential C++ programs. Comparisons to other systems are shown under the
+\textbf{Other} column. Since we also want to assess the VM's scalability for
+different program sizes, we use different datasets in several programs.
+
+\begin{table}[ht]
+   \begin{center}
+      \input{experiments/absolute/runtime}
+   \end{center}
+
+   \caption{Experimental results comparing different programs against
+      hand-written versions in C++. For the C++ programs, we show the execution
+      time in seconds (\textbf{C++ Time (s)}). For the other approaches, we show
+      the overhead ratio compared with the corresponding C++ program. The
+      overhead numbers (\textbf{lower is better}) are computed by dividing the
+   execution time of the approach on that column by the execution time of the
+similar hand-written C++ program.}
+
+   \label{table:implementation:absolute}
+\end{table}
+
+For the MSSD program, we have used four datasets, which we describe as follows:
+
+\begin{itemize}
+   \item US 500 Airports~\cite{usairports,tnet}, a graph of the 500 top airports in the US with around
+      5000 connections. The shortest distance is calculated for all nodes;
+      
+   \item OCLinks~\cite{tnet,oclinks}, a facebook-like social network with around 2000 nodes and 20000 edges. The shortest
+      distance is calculated for all nodes;
+
+   \item US Power Grid~\cite{tnet,uspowergrid}, the power grid for western US with around 5000
+      nodes and 13000 edges. The shortest distance is calculated for all nodes;
+
+   \item Twitter~\cite{snapnets}, a graph with 81306 nodes and 1768149 edges.
+      The shortest distance is calculuated for 40 nodes; 
+
+   \item EU Email~\cite{snapnets}, a graph with 265000 nodes and 420000
+      edges. The shortest distance is calculated for 100 nodes;
+
+   \item Pokec~\cite{snapnets}, a large graph representing data from a popular
+      social network website in Slovakia. The graph has 1632803 nodes and 30622564
+      edges.
+
+\end{itemize}
+
+The Belief Propagation experiment is the program where LM performs the best when
+compared to the C++ version. We found out that the mathematical operations
+required to update the nodes belief values are expensive and make up a huge part
+of the total computation time. This is clearly shown in the low overhead
+numbers. We also compared our performance against the GraphLab and LM is only
+slightly slower, which is also a point in LM's favour.
+
+The Heat Transfer program behaves somewhat like Belief Propagation but LM is
+almost an order of magnitude slower than the C++ version. We think this is
+because the heat transfer computation is very small which tends to exacerbate
+slower and repeated fact derivations from and to different nodes in the graph.
+
+The C++'s MSSD programs applies the Dijkstra algorithm for each node we want to
+compute the shortest distance from. While the Dijkstra algorithm has a better
+complexity than the algorithm used in LM's algorithm, LM's algorithm is able to
+process distances from multiple sources at the same time. Our experiments show
+that the C++ program effectively beats LM's version by a large margin, but that
+gap is reduced when using more larger graphs such as EU Email.  The Python
+version also uses the Dijkstra algorithm and is one order of magnitude slower
+than the C++ version and usually slower than LM.
+
+For the MiniMax program, we used two different starting states, Small and Big,
+where the tree generated by Big is ten times larger than the one generated by
+Small. The C++ version of the MiniMax program uses a single recursive function
+that updates a single state as it is recursively called to generate the best
+score and corresponding move. The LM version is seven times slower due to the
+costs of creating new nodes using the exists construct and the large memory
+requirements as shown next. In Chapter~\ref{chapter:coordination} we will show
+how to improve the space complexity of the MiniMax program and the corresponding
+run time. An interesting aspect of the MiniMax program is that it does not use
+any persistent predicates and therefore does not use array data structures for
+managing facts, which have show to improve the run time of several programs in
+our experiments.
+
+The LM's N-Queens programs shows some scalability issues since the overhead
+ratio increases as the size of the problem increases. However, the same behavior
+is seen in the Python program. The C++ version uses a backtracking strategy to
+try out all the possibilities and uses a vector to store board states.  Since
+there is only at most $N$ (size of the board) vectors at the same time, it shows
+better behavior than all the other programs. However, we should note that a 3 to
+6-fold slowdown is a fairly good trade-off for a higher-level program that will
+execute faster when using more threads as we are going to observe next.
+
+From these results, it is possible to conclude that LM's virtual machine offers
+a decent performance when compared to hand-written C++ programs. We think these
+results originate from four main aspects of our system: efficient indexing, good
+locality with array data structures for persistent facts, an efficient memory
+allocator, and a good compilation scheme. As noted in~\cite{cost}, scalability
+should not be the sole focus of a parallel/distributed system such as LM. This
+is even more important in declarative languages which are known to suffer from
+performance issues when compared to systems programming languages such as C++.
+
+\subsubsection{Memory usage}
+
+To complete our comparison against the C++ programs, we have measured and
+compared the average memory used by both systems.
+Table~\ref{table:implementation:mem} presents the memory statistics for LM
+programs while Table~\ref{table:implementation:cmem} presents statistics for the
+C++ programs.
+
+In the Belief Propagation program, LM has a much higher resource usage than the
+corresponding C++ version. This is because the nodes in the LM's program keep a
+copy of the belief values of neighbor nodes, while the C++ program uses shared
+memory and the stack to read and compute the neighbors belief values.
+Interestingly, this issue does not happen in the Heat Transfer program, where
+heat values are integers and are shared between nodes, reducing the need to keep
+facts with unique lists around. Notably, the C++ memory usage is not much
+smaller than LM's.
+
+\begin{table}[ht]
+   \begin{center}
+      \input{experiments/mem/mem}
+   \end{center}
+   \caption{Memory statistics for LM programs. The meaning of each column is as
+      follows: column \textbf{Average} represents the average memory use of the
+      program; \textbf{Final} represents the memory usage after the program
+      completes; \textbf{Malloc} represents the number of \code{malloc}
+   operations requested to the operating system by the VM's memory allocator;
+   \textbf{\# Facts} represents the number of facts in the database after the
+   program completes; \textbf{Each} is the result of dividing \textbf{Final} by
+   \textbf{\# Facts} and represents the average memory required per fact.}
+   \label{table:implementation:mem}
+\end{table}
+
+\begin{table}[ht]
+   \begin{center}
+      \input{experiments/mem/c-mem}
+   \end{center}
+   \caption{Average memory usage of each C++ program.}
+   \label{table:implementation:cmem}
+\end{table}
+
+When the MiniMax program completes, there is only a single fact on the database
+that indicates the best player move. The MiniMax program is also the only
+program in this experiment that dynamically generates a (tree) graph, which is
+destroyed once the best move is found. The garbage collector implemented in the
+VM, which collects empty nodes, is able to delete the tree nodes (except the
+root) since the \textbf{Final} memory usage is much smaller than the
+\textbf{Average} statistic. However, because the garbage collector retains a
+small number of freed nodes that may be reused later, the average size per fact
+is 16.50KB, which also includes those freed nodes. Note that the memory usage of
+the C++ program is much better because it uses function calls to represent the
+tree structure of the MiniMax algorithm.
+
+The MSSD program shows that LM's VM requires at most one order of magnitude more
+memory than the corresponding C++ program. The ratio is larger when the graph
+and computed distances are smaller and this is due to the extra data structures
+required by the VM (i.e., the node data structure). In terms of average memory
+per fact, we see that the MSSD requires on average 500B, in which the hash table
+data structures used for indexing are a big part of. For the US Power Grid
+dataset, where 24 million facts are derived, the average memory per fact drops
+to just 230B, which is just seven times more than the 32B required to store a
+linear fact representing one shortest distance.
+
+Finally, for the N-Queens program, it is possible to immediately understand why
+there might be scalability issues when using a larger $N$ since the memory usage
+increases significantly. On the positive side, the average memory usage per fact
+remains the same for all data sets. In respect to the C++ program, it is
+expected that it should consume almost no memory because it uses the stack to
+compute the solutions.
+
+\subsubsection{Indexing and data structures}
+
+We now evaluate the impact of our dynamic indexing algorithm and related data
+structures. For this, we have rerun the previous experiments and compared the
+results against the optimized version.
+Table~\ref{table:implementation:compare_absolute} shows the comparison between
+the optimized version of the VM and the version of the VM with indexing
+disabled. From column \textbf{Run Time} shows that the MSSD program benefits
+from indexing because the unoptimized version is around 25 to 75 times slower
+than the version with indexing enabled. Since MSSD computes the shortest
+distance to multiple nodes, its rules require searching for the shortest
+distance facts of arbitrary nodes. All the other programs do not require index
+but also do not display any significant slowdown from using dynamic indexing. In
+terms of memory usage, the version with indexing uses slightly more memory,
+especially for MSSD program, where the US Power Grid dataset requires 50\% more
+memory due to the existence of hash tables used for supporting indexing.
+
+\begin{table}[ht]
+   \begin{center}
+      \input{experiments/absolute/compare-no-indexing}
+   \end{center}
+   \caption{Measuring the impact of dynamic indexing and related database data
+      structures. Column \textbf{Run Time} shows the slow down ratio of the
+      unoptimized version (numbers greater than 1 show indexing improvements).
+      Column \textbf{Average Memory} is the result of dividing the average
+      memory of the optimized version by the unoptimized version (large numbers
+      indicate that more memory is needed when using indexing mechanisms).}
+   \label{table:implementation:compare_absolute}
+\end{table}
+
+\iffalse
+\subsubsection{Array data structures}
+
+Another important implementation detail is the use of array data structures for
+storing persistent facts that are not derived by rule derivation but only exist
+as initial facts. These cases are detected by the compiler and allow the VM to
+improve memory locality and reduce memory usage by packing persistent facts in a
+contiguous memory area.
+
+\begin{table}[ht]
+   \begin{center}
+      \input{experiments/absolute/compare-no-arrays}
+   \end{center}
+
+   \caption{Measuring the impact of using array data structures for persistent
+      facts. Column \textbf{Run Time} shows the speedups obtained by using
+      arrays. Column \textbf{Average Memory} is the result of dividing the
+      average memory of the programs using arrays by the version without them
+      (e.g., numbers show memory usage reduction when using array data
+   structures).}
+
+   \label{table:implementation:compare_arrays}
+\end{table}
+
+I think we should remove this stuff XXX
+\fi
+
