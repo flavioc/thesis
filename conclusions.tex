@@ -103,14 +103,14 @@ parallelism.
 
 In our experiments, we noted that the memory layout of applications, especially
 the memory allocator, tends to have a significant effect on the overall
-performance. In modern architectures, good memory locality tends to beat
-efficient algorithms and in LM this is no different. Due to the use and storage
-of logical facts, the memory allocator is important for performance and
+performance. In modern architectures, good memory locality is as important as
+having efficient algorithms and in LM this is no different. Due to the use and
+storage of logical facts, the memory allocator is crucial for performance and
 scalability reasons. We have experimented with two allocators to analyze how
-sequential performance may affect scalability. It is our belief that it is more
-important to focus on faster sequential execution at the expense of scalability
-in order to make declarative parallel languages more competitive with sequential
-programs written in languages such as C++.
+performance and scalability may be affected by using different strategies. It is
+our belief that it is important to focus on faster sequential execution at the
+expense of scalability in order to make declarative parallel languages more
+competitive with sequential programs written in languages such as C++.
 
 \end{description}
 

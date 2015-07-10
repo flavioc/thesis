@@ -1,6 +1,11 @@
-In motivate the need for coordination, we present the Single Source Shortest
+To motivate the need for coordination, we present the Single Source Shortest
 Path~(SSSP), a concise program that can take advantage of custom scheduling
-policies to improve its performance. The SSSP program starts
+policies to improve its performance. Note that in
+Section~\ref{section:implementation:performance}, we have already mentioned the
+MSSD program which is essentially the SSSP modified to compute multiple shortest
+distances.
+
+The SSSP program starts
 (lines~\ref{line:coord:sssp_pred1}-\ref{line:coord:sssp_pred2}) with the
 declaration of the predicates. The first predicate, \code{edge}, is a persistent
 predicate that describes the relationship between the nodes of the graph, where
@@ -8,10 +13,10 @@ the third argument represents the weight of the edge.  The program computes the
 shortest distance from node \code{@1} to all other nodes in the graph. Every
 node has a \code{shortest} fact that is improved with new \code{relax} facts.
 Lines~\ref{line:coord:sssp_axioms1}-\ref{line:coord:sssp_axioms2} declare the
-initial facts of the program: \code{edge} facts describe the graph; \code{shortest(A,
-+00, [])} is the initial shortest distance (infinity) for all nodes; and
-\code{relax(@1, 0, [@1])} starts the algorithm by setting the distance from
-\code{@1} to \code{@1} to be 0.
+initial facts of the program: \code{edge} facts describe the graph;
+\code{shortest(A, +00, [])} is the initial shortest distance (infinity) for all
+nodes; and \code{relax(@1, 0, [@1])} starts the algorithm by setting the
+distance from \code{@1} to \code{@1} to be 0.
 
 \begin{figure}[ht]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\#\&]
@@ -88,15 +93,15 @@ Fig.~\ref{fig:shortest_path_program}~(c), is achieved.
 
 The SSSP program is concise and declarative but its performance depends on the
 order in which nodes are executed. If nodes with greater distances are
-prioritized over other nodes, the program will generate more \code{relax}
-facts since it will take longer to reach the shortest distances. From
+prioritized over other nodes, the program will generate more \code{relax} facts
+since it will take longer to reach the shortest distances. From
 Fig.~\ref{fig:shortest_path_program}, it is clear that the best scheduling is
-the following: \code{@1}, \code{@3}, \code{@2} and then \code{@4}, where
-only 4 \code{relax} facts are generated. If we had decided to process nodes in
-order \code{@1}, \code{@2}, \code{@4}, \code{@3}, \code{@4},
-\code{@2}, then 6 \code{relax} facts would have been generated.  The optimal
-solution for SSSP is to schedule the node with the shortest distance, which is
-essentially the Dijkstra shortest path algorithm~\cite{Dijkstra}. Note how it is
-possible to change the nature of the algorithm by simply changing the order of
-node computation, but still retain the declarative nature of the program.
+the following: \code{@1}, \code{@3}, \code{@2} and then \code{@4}, where only 4
+\code{relax} facts are generated. If we had decided to process nodes in order
+\code{@1}, \code{@2}, \code{@4}, \code{@3}, \code{@4}, \code{@2}, then 6
+\code{relax} facts would have been generated.  The optimal solution for SSSP is
+to schedule the node with the shortest distance, which is essentially the
+Dijkstra shortest path algorithm~\cite{Dijkstra}. Note how it is possible to
+change the nature of the algorithm by simply changing the order of node
+computation, but still retain the declarative nature of the program.
 
