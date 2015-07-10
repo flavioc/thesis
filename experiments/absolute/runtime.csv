@@ -26,25 +26,25 @@ shortest-uspowergrid python 607760
 shortest-email python 132003
 shortest-twitter python 225448
 
-8queens-11 th1 708 -> 708
-8queens-12 th1 5007 -> 5007
-8queens-13 th1 38205 -> 38205
-8queens-14 th1 287604 -> 287604
-shortest-usairports500 th1 3966 -> 3966
-shortest-oclinks th1 66083 -> 66083
-shortest-uspowergrid th1 287307 -> 287307
-shortest-email th1 29541 -> 29541
-shortest-twitter th1 270019 -> 270019
-new-heat-transfer-80 th1 35047 -> 35047
-new-heat-transfer-120 th1 170309 -> 170309
-belief-propagation-50 th1 4662 -> 4662
-belief-propagation-200 th1 83425 -> 83425
-belief-propagation-300 th1 198883 -> 198883
-belief-propagation-400 th1 262438 -> 262438
-min-max-tictactoe th1 21918 -> 21918
-min-max-tictactoe-big th1 202808 -> 202808
-
 belief-propagation-50 graphlab 3417
 belief-propagation-200 graphlab 61738
 belief-propagation-300 graphlab 169793
 belief-propagation-400 graphlab 216345
+
+shortest-oclinks th1 51408 -> 51408
+shortest-uspowergrid th1 311989 -> 311989
+shortest-email th1 27957 -> 27957
+new-heat-transfer-80 th1 33589 -> 33589
+new-heat-transfer-120 th1 143523 -> 143523
+belief-propagation-50 th1 4005 -> 4005
+belief-propagation-200 th1 67325 -> 67325
+belief-propagation-300 th1 183553 -> 183553
+belief-propagation-400 th1 229977 -> 229977
+min-max-tictactoe th1 21871 -> 21871
+min-max-tictactoe-big th1 189106 -> 189106
+8queens-11 th1 513 -> 513
+8queens-12 th1 4385 -> 4385
+8queens-13 th1 39430 -> 39430
+8queens-14 th1 307436 -> 307436
+shortest-twitter th1 233603 -> 233603
+shortest-usairports500 th1 1906 -> 1906

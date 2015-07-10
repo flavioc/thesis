@@ -1,0 +1,114 @@
+While our standard thread allocator performs and scales well, we also explored
+some alternative designs. In this section, we explore a design where we move the
+allocation decisions from the thread to the node itself, in order to store the
+facts of the same node close together and thus increase locality. However, this
+design requires locking since multiple threads may allocate facts from the same
+node. Our expectaction is that such costs will be offset by the increased
+locality and reduced cache misses when deriving rules.
+
+The fact allocator allocates pages of memory from the threaded allocator which
+are then used to allocate facts for that particular node. When a thread needs to
+allocate or deallocate a fact, it acquires the allocator lock of the target
+node's allocator and performs the allocation operation. There is a doubly-linked
+list of memory pages and each page contains facts of different sizes
+(predicates).
+
+\begin{figure}[ht]
+   \begin{center}
+      \includegraphics[width=0.7\linewidth]{figures/implementation/fact_allocator.pdf}
+   \end{center}
+   \caption{Fact allocator: each node has a pool of memory pages for allocating
+      logical facts. Each page contains: (1) several linked lists of free facts
+      of the same size (\code{free\_list}); (2) a reference count of used facts
+      (\code{refcount}); (3) a \code{ptr} pointer that points to unallocated
+      space in the page. In this figure, predicates \code{f} and \code{g} have
+   several deallocated facts that are ready to be used when a new fact needs to
+be acquired.}
+   \label{fig:implementation:fact_allocator}
+\end{figure}
+
+Figure~\ref{fig:implementation:fact_allocator} presents an example state of a
+fact allocator. The node has 3 memory pages, all connected using the \code{next}
+and \code{prev} pointers. Each page also has a reference count (\code{refcount})
+of the objects allocated in the page. If the reference count ever drops to zero,
+then the memory page is deallocated. Deallocated facts are kept on an ordered
+array for different sizes using the mechanism we implemented for the threaded
+allocator. We have decided to reference count objects in the fact allocator
+because it is more difficult to share objects between nodes and maintaining a
+reference count helps reduce memory usage.
+
+Figure~\ref{fig:implementation:node_results} presents the comparison between the
+threaded and fact allocator. The threaded allocator (in red) uses lines with
+plus markers, while the fact allocator (in green) uses lines with circular
+markers. In used the most relevant datasets since the performance was very
+similar for the other datasets.
+
+The first major observation from the comparison is that the threaded allocator
+is able to have better sequential performance than the fact allocator for most
+programs. This is probably the result of better locality for the threaded
+allocator because the threaded allocator does not need to create pages for each
+node and instead uses the thread pages to main all facts, reducing cache line
+misses. Having better performance makes the threaded allocator have slightly
+less scalability, but its performance still better or similar when using lots of
+threads (see GGC for an example).
+
+The second observation is in the N-Queens program, where the threaded allocator
+beats the fact allocator by a long margin in terms of scalability and
+performance. Note that the N-Queens program allocates plenty of lists and those
+lists are not allocated on a per node basis but on a thread basis, therefore the
+extra work required to maintain each fact allocator is not offset by increased
+locality because the threads need to traverse lists to find valid board states.
+
+Overall, the performance of both allocators is fairly similar, therefore we have
+decided to use the threaded allocator by default since it is simpler and offers
+good performance across the board. Furthermore, the threaded allocator requires
+less allocated memory because it enables more sharing between nodes.
+
+\begin{figure}[h]
+        \begin{subfigure}[b]{\smallplotsize\textwidth}
+                \includegraphics[width=\textwidth]{experiments/scalability/node-allocator-belief-propagation-400.png}
+                \label{fig:implementation:node_bp}
+        \end{subfigure}
+        ~
+        \begin{subfigure}[b]{\smallplotsize\textwidth}
+                \includegraphics[width=\textwidth]{experiments/scalability/node-allocator-greedy-graph-coloring-twitter.png}
+                \label{fig:implementation:node_ggc}
+        \end{subfigure}
+        ~
+        \begin{subfigure}[b]{\smallplotsize\textwidth}
+                \includegraphics[width=\textwidth]{experiments/scalability/node-allocator-new-heat-transfer-120.png}
+                \label{fig:implementation:node_ht}
+        \end{subfigure}
+        ~
+        \begin{subfigure}[b]{\smallplotsize\textwidth}
+                \includegraphics[width=\textwidth]{experiments/scalability/node-allocator-min-max-tictactoe-big.png}
+                \label{fig:implementation:node_minimax}
+        \end{subfigure}
+        ~
+        \begin{subfigure}[b]{\smallplotsize\textwidth}
+                \includegraphics[width=\textwidth]{experiments/scalability/node-allocator-shortest-uspowergrid.png}
+                \label{fig:implementation:node_sssp}
+        \end{subfigure}
+        ~
+        \begin{subfigure}[b]{\smallplotsize\textwidth}
+                \includegraphics[width=\textwidth]{experiments/scalability/node-allocator-shortest-twitter.png}
+                \label{fig:implementation:node_sssp}
+        \end{subfigure}\\
+        \begin{subfigure}[b]{\smallplotsize\textwidth}
+                \includegraphics[width=\textwidth]{experiments/scalability/node-allocator-pagerank-pokec.png}
+                \label{fig:implementation:node_pagerank}
+        \end{subfigure}
+        ~
+        \begin{subfigure}[b]{\smallplotsize\textwidth}
+                \includegraphics[width=\textwidth]{experiments/scalability/node-allocator-8queens-14.png}
+                \label{fig:implementation:node_queens}
+        \end{subfigure} \\
+        \caption{Comparing the threaded allocator described in
+        Section~\ref{section:implementation:allocation} against the fact
+        allocator. The threaded allocator is represented by plus markers, while
+        the fact allocator is represented by circular markers. Note that the two
+        speedup lines (right axis) use dashed lines, while the two lines
+        representing the run time (left axis) are contiguous.}
+
+        \label{fig:implementation:node_results}
+\end{figure}

@@ -1,300 +1,289 @@
-shortest-uspowergrid th1 287694 256018 289145 -> 277619
-shortest-uspowergrid th2 141131 144682 143152 -> 142988
-shortest-uspowergrid th4 65522 64701 64716 -> 64979
-shortest-uspowergrid th6 44417 42995 43162 -> 43524
-shortest-uspowergrid th8 32191 32688 30758 -> 31879
-shortest-uspowergrid th10 29366 28012 27798 -> 28392
-shortest-uspowergrid th12 22754 24196 23226 -> 23392
-shortest-uspowergrid th14 20713 20809 20073 -> 20531
-shortest-uspowergrid th16 18183 18547 17487 -> 18072
-shortest-uspowergrid th18 18891 19109 17755 -> 18585
-shortest-uspowergrid th20 17391 16358 17455 -> 17068
-shortest-uspowergrid th22 16119 15774 16335 -> 16076
-shortest-uspowergrid th24 15088 15878 15228 -> 15398
-shortest-uspowergrid th26 13436 12924 14153 -> 13504
-shortest-uspowergrid th28 12634 13516 14493 -> 13547
-shortest-uspowergrid th30 13828 12526 12990 -> 13114
-shortest-uspowergrid th32 12282 12626 12406 -> 12438
-
-shortest-twitter th1 271454 268326 270277 -> 270019
-shortest-twitter th2 173777 173724 174395 -> 173965
-shortest-twitter th4 99599 100299 99786 -> 99894
-shortest-twitter th6 69421 70853 69237 -> 69837
-shortest-twitter th8 54498 53115 53521 -> 53711
-shortest-twitter th10 45446 45294 45459 -> 45399
-shortest-twitter th12 40342 40266 40272 -> 40293
-shortest-twitter th14 37578 38057 36630 -> 37421
-shortest-twitter th16 36064 35158 35460 -> 35560
-shortest-twitter th18 32041 29334 29783 -> 30386
-shortest-twitter th20 31093 31579 31665 -> 31445
-shortest-twitter th22 28444 29253 28256 -> 28651
-shortest-twitter th24 26829 26717 26910 -> 26818
-shortest-twitter th26 24959 24419 23952 -> 24443
-shortest-twitter th28 23182 22683 23103 -> 22989
-shortest-twitter th30 23555 23424 24659 -> 23879
-shortest-twitter th32 22924 23496 23731 -> 23383
-shortest-email th1 30704 30124 30303 -> 30377
-shortest-email th2 19307 19764 20034 -> 19701
-shortest-email th4 13739 13607 13915 -> 13753
-shortest-email th6 10367 11095 10520 -> 10660
-shortest-email th8 9409 8815 7937 -> 8720
-shortest-email th10 7236 7015 7254 -> 7168
-shortest-email th12 6448 6622 6592 -> 6554
-shortest-email th14 5325 6536 5534 -> 5798
-shortest-email th16 4867 4991 5441 -> 5099
-shortest-email th18 4376 4594 4440 -> 4470
-shortest-email th20 4956 5221 4226 -> 4801
-shortest-email th22 4326 4613 5039 -> 4659
-shortest-email th24 4729 4412 4067 -> 4402
-shortest-email th26 3529 4339 3918 -> 3928
-shortest-email th28 3453 3846 4107 -> 3802
-shortest-email th30 3823 3495 3180 -> 3499
-shortest-email th32 3119 3421 3279 -> 3273
-
-
-shortest-usairports500 th1 2288 2289 2284 -> 2287
-shortest-usairports500 th2 1286 1263 1279 -> 1276
-shortest-usairports500 th4 828 742 790 -> 786
-shortest-usairports500 th6 544 630 545 -> 573
-shortest-usairports500 th8 485 451 500 -> 478
-shortest-usairports500 th10 447 408 401 -> 418
-shortest-usairports500 th12 416 377 372 -> 388
-shortest-usairports500 th14 340 336 368 -> 348
-shortest-usairports500 th16 297 334 271 -> 300
-shortest-usairports500 th18 301 288 298 -> 295
-shortest-usairports500 th20 276 300 285 -> 287
-shortest-usairports500 th22 260 255 267 -> 260
-shortest-usairports500 th24 276 268 280 -> 274
-shortest-usairports500 th26 257 293 226 -> 258
-shortest-usairports500 th28 280 251 251 -> 260
-shortest-usairports500 th30 255 249 244 -> 249
-shortest-usairports500 th32 250 240 321 -> 270
-
-shortest-oclinks th1 55704 49782 55550 -> 53678
-shortest-oclinks th2 43342 43232 43029 -> 43201
-shortest-oclinks th4 25443 24600 25654 -> 25232
-shortest-oclinks th6 19504 18919 19435 -> 19286
-shortest-oclinks th8 14555 13339 13535 -> 13809
-shortest-oclinks th10 13415 13282 13101 -> 13266
-shortest-oclinks th12 11887 12825 11958 -> 12223
-shortest-oclinks th14 11526 9781 10125 -> 10477
-shortest-oclinks th16 9399 8425 9648 -> 9157
-shortest-oclinks th18 8336 7350 7321 -> 7669
-shortest-oclinks th20 8274 7965 7811 -> 8016
-shortest-oclinks th22 8205 7965 7671 -> 7947
-shortest-oclinks th24 7248 7983 7385 -> 7538
-shortest-oclinks th26 6719 6693 6762 -> 6724
-shortest-oclinks th28 7246 6153 6503 -> 6634
-shortest-oclinks th30 6338 6349 6323 -> 6336
-shortest-oclinks th32 5445 5685 5626 -> 5585
-
-greedy-graph-coloring-gplus th1 404238 404084 404759 -> 404360
-greedy-graph-coloring-gplus th2 231579 231837 232310 -> 231908
-greedy-graph-coloring-gplus th4 114285 114468 114905 -> 114552
-greedy-graph-coloring-gplus th6 77267 77189 76673 -> 77043
-greedy-graph-coloring-gplus th8 57733 57579 56302 -> 57204
-greedy-graph-coloring-gplus th10 46091 46328 45263 -> 45894
-greedy-graph-coloring-gplus th12 37588 38499 37791 -> 37959
-greedy-graph-coloring-gplus th14 32724 33272 32808 -> 32934
-greedy-graph-coloring-gplus th16 28476 28983 28809 -> 28756
-greedy-graph-coloring-gplus th18 26615 26911 26962 -> 26829
-greedy-graph-coloring-gplus th20 24219 23854 24706 -> 24259
-greedy-graph-coloring-gplus th22 22145 23037 22567 -> 22583
-greedy-graph-coloring-gplus th24 20945 20950 21372 -> 21089
-greedy-graph-coloring-gplus th26 19506 19381 19793 -> 19560
-greedy-graph-coloring-gplus th28 18222 18390 18240 -> 18284
-greedy-graph-coloring-gplus th30 17347 17436 16908 -> 17230
-greedy-graph-coloring-gplus th32 16413 16350 16300 -> 16354
-greedy-graph-coloring-twitter th1 8908 8905 8922 -> 8911
-greedy-graph-coloring-twitter th2 5099 5105 5099 -> 5101
-greedy-graph-coloring-twitter th4 2485 2489 2489 -> 2487
-greedy-graph-coloring-twitter th6 1711 1711 1712 -> 1711
-greedy-graph-coloring-twitter th8 1255 1342 1248 -> 1281
-greedy-graph-coloring-twitter th10 1054 991 1019 -> 1021
-greedy-graph-coloring-twitter th12 861 866 924 -> 883
-greedy-graph-coloring-twitter th14 775 796 792 -> 787
-greedy-graph-coloring-twitter th16 694 698 676 -> 689
-greedy-graph-coloring-twitter th18 636 636 635 -> 635
-greedy-graph-coloring-twitter th20 612 635 601 -> 616
-greedy-graph-coloring-twitter th22 597 631 580 -> 602
-greedy-graph-coloring-twitter th24 594 558 561 -> 571
-greedy-graph-coloring-twitter th26 538 568 538 -> 548
-greedy-graph-coloring-twitter th28 532 527 539 -> 532
-greedy-graph-coloring-twitter th30 508 512 526 -> 515
-greedy-graph-coloring-twitter th32 494 496 490 -> 493
-
-8queens-13 th1 38288 38368 38290 -> 38315
-8queens-13 th2 19956 19802 20612 -> 20123
-8queens-13 th4 10247 10281 10664 -> 10397
-8queens-13 th6 7414 8017 7551 -> 7660
-8queens-13 th8 6307 6303 6829 -> 6479
-8queens-13 th10 5964 5636 5501 -> 5700
-8queens-13 th12 5259 5035 5245 -> 5179
-8queens-13 th14 4933 4666 4807 -> 4802
-8queens-13 th16 4590 5235 5524 -> 5116
-8queens-13 th18 4303 5737 4991 -> 5010
-8queens-13 th20 5241 4537 5146 -> 4974
-8queens-13 th22 4996 4393 5080 -> 4823
-8queens-13 th24 5522 4627 5097 -> 5082
-8queens-13 th26 4560 5135 4472 -> 4722
-8queens-13 th28 5115 4849 4863 -> 4942
-8queens-13 th30 5208 5793 5235 -> 5412
-8queens-13 th32 6054 5486 4686 -> 5408
-8queens-14 th1 288628 289214 288419 -> 288753
-8queens-14 th2 153921 151348 146702 -> 150657
-8queens-14 th4 69968 71489 76392 -> 72616
-8queens-14 th6 48543 52220 50906 -> 50556
-8queens-14 th8 43107 40670 44149 -> 42642
-8queens-14 th10 35417 37101 38868 -> 37128
-8queens-14 th12 34537 32698 32908 -> 33381
-8queens-14 th14 31246 32573 31030 -> 31616
-8queens-14 th16 33967 28301 28040 -> 30102
-8queens-14 th18 30207 32310 27316 -> 29944
-8queens-14 th20 30564 26690 32138 -> 29797
-8queens-14 th22 29349 31424 31498 -> 30757
-8queens-14 th24 39143 31461 30826 -> 33810
-8queens-14 th26 29281 30219 35767 -> 31755
-8queens-14 th28 34957 36883 29956 -> 33932
-8queens-14 th30 29978 28089 31507 -> 29858
-8queens-14 th32 30715 32738 30824 -> 31425
-
-belief-propagation-300 th1 196811 199186 195717 -> 197238
-belief-propagation-300 th2 72968 74260 72735 -> 73321
-belief-propagation-300 th4 35225 34855 34348 -> 34809
-belief-propagation-300 th6 17537 17893 17766 -> 17732
-belief-propagation-300 th8 12921 13341 12701 -> 12987
-belief-propagation-300 th10 9627 9382 9801 -> 9603
-belief-propagation-300 th12 7320 7118 7450 -> 7296
-belief-propagation-300 th14 5434 5238 5271 -> 5314
-belief-propagation-300 th16 5418 5115 5278 -> 5270
-belief-propagation-300 th18 4848 4608 4563 -> 4673
-belief-propagation-300 th20 4230 4341 4318 -> 4296
-belief-propagation-300 th22 3581 3582 3730 -> 3631
-belief-propagation-300 th24 3449 3529 3414 -> 3464
-belief-propagation-300 th26 2968 2941 3015 -> 2974
-belief-propagation-300 th28 2705 2827 2860 -> 2797
-belief-propagation-300 th30 2685 2597 2660 -> 2647
-belief-propagation-300 th32 2685 2636 2627 -> 2649
-
-belief-propagation-400 th1 264313 262663 270432 -> 265802
-belief-propagation-400 th2 129380 142949 137066 -> 136465
-belief-propagation-400 th4 55182 54853 56257 -> 55430
-belief-propagation-400 th6 27360 26921 27354 -> 27211
-belief-propagation-400 th8 21983 21536 21534 -> 21684
-belief-propagation-400 th10 15608 15313 15671 -> 15530
-belief-propagation-400 th12 11975 11957 11298 -> 11743
-belief-propagation-400 th14 9749 9867 9679 -> 9765
-belief-propagation-400 th16 8087 8200 7971 -> 8086
-belief-propagation-400 th18 6678 6580 6281 -> 6513
-belief-propagation-400 th20 6904 7021 7197 -> 7040
-belief-propagation-400 th22 5540 5459 5599 -> 5532
-belief-propagation-400 th24 5815 5484 5341 -> 5546
-belief-propagation-400 th26 4680 5002 4800 -> 4827
-belief-propagation-400 th28 4343 4346 4437 -> 4375
-belief-propagation-400 th30 4064 4219 4160 -> 4147
-belief-propagation-400 th32 4182 4168 4133 -> 4161
-min-max-tictactoe th1 22390 22229 23841 -> 22820
-min-max-tictactoe th2 13198 12822 13203 -> 13074
-min-max-tictactoe th4 7381 7116 7099 -> 7198
-min-max-tictactoe th6 5084 5487 4386 -> 4985
-min-max-tictactoe th8 3038 4550 3636 -> 3741
-min-max-tictactoe th10 3396 3916 2617 -> 3309
-min-max-tictactoe th12 3420 3370 2199 -> 2996
-min-max-tictactoe th14 2872 2917 2389 -> 2726
-min-max-tictactoe th16 2515 2391 2095 -> 2333
-min-max-tictactoe th18 3290 1674 1939 -> 2301
-min-max-tictactoe th20 2397 3010 2209 -> 2538
-min-max-tictactoe th22 1413 1701 1930 -> 1681
-min-max-tictactoe th24 1352 2509 1972 -> 1944
-min-max-tictactoe th26 1508 1789 1814 -> 1703
-min-max-tictactoe th28 1459 1294 1605 -> 1452
-min-max-tictactoe th30 2298 1175 1282 -> 1585
-min-max-tictactoe th32 1975 1169 1336 -> 1493
-
-new-heat-transfer-120 th1 178712 176405 176761 -> 177292
-new-heat-transfer-120 th2 114465 111664 111580 -> 112569
-new-heat-transfer-120 th4 55775 57918 55047 -> 56246
-new-heat-transfer-120 th6 40687 37649 42866 -> 40400
-new-heat-transfer-120 th8 30832 30636 40687 -> 34051
-new-heat-transfer-120 th10 24930 24628 29238 -> 26265
-new-heat-transfer-120 th12 21448 22261 22426 -> 22045
-new-heat-transfer-120 th14 17555 17556 17298 -> 17469
-new-heat-transfer-120 th16 18924 21454 17610 -> 19329
-new-heat-transfer-120 th18 16187 18946 20542 -> 18558
-new-heat-transfer-120 th20 20402 19672 19779 -> 19951
-new-heat-transfer-120 th22 15181 15316 14015 -> 14837
-new-heat-transfer-120 th24 13306 13138 14311 -> 13585
-new-heat-transfer-120 th26 13550 12525 15470 -> 13848
-new-heat-transfer-120 th28 12222 14005 12714 -> 12980
-new-heat-transfer-120 th30 11810 13652 11311 -> 12257
-new-heat-transfer-120 th32 11032 11383 11204 -> 11206
-new-heat-transfer-80 th1 37205 37219 36401 -> 36941
-new-heat-transfer-80 th2 25386 24478 24233 -> 24699
-new-heat-transfer-80 th4 12753 12912 13369 -> 13011
-new-heat-transfer-80 th6 9991 11781 9480 -> 10417
-new-heat-transfer-80 th8 6879 7081 8895 -> 7618
-new-heat-transfer-80 th10 5575 5570 5870 -> 5671
-new-heat-transfer-80 th12 5165 4957 8396 -> 6172
-new-heat-transfer-80 th14 4168 4828 4199 -> 4398
-new-heat-transfer-80 th16 5070 5301 4752 -> 5041
-new-heat-transfer-80 th18 5079 6685 5866 -> 5876
-new-heat-transfer-80 th20 6167 4363 5705 -> 5411
-new-heat-transfer-80 th22 3550 4114 3912 -> 3858
-new-heat-transfer-80 th24 4772 3539 4381 -> 4230
-new-heat-transfer-80 th26 5195 5581 3203 -> 4659
-new-heat-transfer-80 th28 3215 3944 3299 -> 3486
-new-heat-transfer-80 th30 3002 3324 2931 -> 3085
-new-heat-transfer-80 th32 3041 3381 4158 -> 3526
-
-min-max-tictactoe-big th1 207659 199797 189902 -> 199119
-min-max-tictactoe-big th2 101892 97037 95597 -> 98175
-min-max-tictactoe-big th4 52890 52505 52196 -> 52530
-min-max-tictactoe-big th6 36260 40295 37665 -> 38073
-min-max-tictactoe-big th8 32613 29343 33860 -> 31938
-min-max-tictactoe-big th10 25251 24792 25477 -> 25173
-min-max-tictactoe-big th12 18691 20912 20485 -> 20029
-min-max-tictactoe-big th14 19577 18827 19552 -> 19318
-min-max-tictactoe-big th16 18748 18360 17632 -> 18246
-min-max-tictactoe-big th18 19741 19880 20130 -> 19917
-min-max-tictactoe-big th20 15089 19652 16793 -> 17178
-min-max-tictactoe-big th22 16976 17326 18151 -> 17484
-min-max-tictactoe-big th24 17065 15499 18599 -> 17054
-min-max-tictactoe-big th26 15336 15328 18110 -> 16258
-min-max-tictactoe-big th28 16178 16153 12780 -> 15037
-min-max-tictactoe-big th30 15770 14093 15613 -> 15158
-min-max-tictactoe-big th32 11318 13005 13477 -> 12600
-
-pagerank-pokec th1 99025 99941 99162 -> 99376
-pagerank-pokec th2 66480 63718 64515 -> 64904
-pagerank-pokec th4 33643 33705 35479 -> 34275
-pagerank-pokec th6 22958 23420 22589 -> 22989
-pagerank-pokec th8 17590 17985 17833 -> 17802
-pagerank-pokec th10 15516 15246 14964 -> 15242
-pagerank-pokec th12 12724 13704 12696 -> 13041
-pagerank-pokec th14 11543 11202 11753 -> 11499
-pagerank-pokec th16 10731 10623 10760 -> 10704
-pagerank-pokec th18 10313 10383 10485 -> 10393
-pagerank-pokec th20 9969 9938 10378 -> 10095
-pagerank-pokec th22 9887 9782 9756 -> 9808
-pagerank-pokec th24 9665 9573 9500 -> 9579
-pagerank-pokec th26 9259 9521 9252 -> 9344
-pagerank-pokec th28 9064 9520 9087 -> 9223
-pagerank-pokec th30 8917 8877 8891 -> 8895
-pagerank-pokec th32 8530 8691 8660 -> 8627
-pagerank-gplus th1 53769 53550 54193 -> 53837
-pagerank-gplus th2 30238 30161 30006 -> 30135
-pagerank-gplus th4 13980 14352 14296 -> 14209
-pagerank-gplus th6 9501 9822 9735 -> 9686
-pagerank-gplus th8 7680 7368 7716 -> 7588
-pagerank-gplus th10 6191 6126 5803 -> 6040
-pagerank-gplus th12 5226 5144 5018 -> 5129
-pagerank-gplus th14 4621 4611 4638 -> 4623
-pagerank-gplus th16 4162 4213 4207 -> 4194
-pagerank-gplus th18 4395 4400 4359 -> 4384
-pagerank-gplus th20 4101 3666 4086 -> 3951
-pagerank-gplus th22 3499 3520 3695 -> 3571
-pagerank-gplus th24 3265 3265 3301 -> 3277
-pagerank-gplus th26 3238 3912 3304 -> 3484
-pagerank-gplus th28 2932 2986 3114 -> 3010
-pagerank-gplus th30 2927 3000 3028 -> 2985
-pagerank-gplus th32 2995 2955 2966 -> 2972
+shortest-uspowergrid th1 312444 -> 312444
+shortest-uspowergrid th2 154463 -> 154463
+shortest-uspowergrid th4 69434 -> 69434
+shortest-uspowergrid th6 47948 -> 47948
+shortest-uspowergrid th8 34676 -> 34676
+shortest-uspowergrid th10 30610 -> 30610
+shortest-uspowergrid th12 25856 -> 25856
+shortest-uspowergrid th14 21797 -> 21797
+shortest-uspowergrid th16 19805 -> 19805
+shortest-uspowergrid th18 19628 -> 19628
+shortest-uspowergrid th20 16663 -> 16663
+shortest-uspowergrid th22 16877 -> 16877
+shortest-uspowergrid th24 15912 -> 15912
+shortest-uspowergrid th26 15728 -> 15728
+shortest-uspowergrid th28 14725 -> 14725
+shortest-uspowergrid th30 14139 -> 14139
+shortest-uspowergrid th32 13319 -> 13319
+shortest-oclinks th1 51843 -> 51843
+shortest-oclinks th2 41455 -> 41455
+shortest-oclinks th4 23018 -> 23018
+shortest-oclinks th6 18646 -> 18646
+shortest-oclinks th8 12660 -> 12660
+shortest-oclinks th10 12424 -> 12424
+shortest-oclinks th12 10848 -> 10848
+shortest-oclinks th14 9819 -> 9819
+shortest-oclinks th16 7703 -> 7703
+shortest-oclinks th18 6425 -> 6425
+shortest-oclinks th20 7681 -> 7681
+shortest-oclinks th22 6609 -> 6609
+shortest-oclinks th24 6694 -> 6694
+shortest-oclinks th26 5737 -> 5737
+shortest-oclinks th28 5535 -> 5535
+shortest-oclinks th30 5927 -> 5927
+shortest-oclinks th32 5047 -> 5047
+greedy-graph-coloring-gplus th1 317819 -> 317819
+greedy-graph-coloring-gplus th2 192574 -> 192574
+greedy-graph-coloring-gplus th4 98045 -> 98045
+greedy-graph-coloring-gplus th6 66035 -> 66035
+greedy-graph-coloring-gplus th8 50693 -> 50693
+greedy-graph-coloring-gplus th10 39733 -> 39733
+greedy-graph-coloring-gplus th12 34500 -> 34500
+greedy-graph-coloring-gplus th14 29284 -> 29284
+greedy-graph-coloring-gplus th16 25291 -> 25291
+greedy-graph-coloring-gplus th18 23422 -> 23422
+greedy-graph-coloring-gplus th20 21363 -> 21363
+greedy-graph-coloring-gplus th22 19571 -> 19571
+greedy-graph-coloring-gplus th24 18109 -> 18109
+greedy-graph-coloring-gplus th26 17227 -> 17227
+greedy-graph-coloring-gplus th28 15991 -> 15991
+greedy-graph-coloring-gplus th30 14987 -> 14987
+greedy-graph-coloring-gplus th32 14142 -> 14142
+greedy-graph-coloring-twitter th1 5921 -> 5921
+greedy-graph-coloring-twitter th2 3554 -> 3554
+greedy-graph-coloring-twitter th4 1861 -> 1861
+greedy-graph-coloring-twitter th6 1311 -> 1311
+greedy-graph-coloring-twitter th8 964 -> 964
+greedy-graph-coloring-twitter th10 727 -> 727
+greedy-graph-coloring-twitter th12 658 -> 658
+greedy-graph-coloring-twitter th14 568 -> 568
+greedy-graph-coloring-twitter th16 526 -> 526
+greedy-graph-coloring-twitter th18 459 -> 459
+greedy-graph-coloring-twitter th20 460 -> 460
+greedy-graph-coloring-twitter th22 437 -> 437
+greedy-graph-coloring-twitter th24 454 -> 454
+greedy-graph-coloring-twitter th26 417 -> 417
+greedy-graph-coloring-twitter th28 429 -> 429
+greedy-graph-coloring-twitter th30 420 -> 420
+greedy-graph-coloring-twitter th32 440 -> 440
+8queens-13 th1 31713 -> 31713
+8queens-13 th2 19086 -> 19086
+8queens-13 th4 8363 -> 8363
+8queens-13 th6 5516 -> 5516
+8queens-13 th8 4598 -> 4598
+8queens-13 th10 3295 -> 3295
+8queens-13 th12 2992 -> 2992
+8queens-13 th14 2551 -> 2551
+8queens-13 th16 2625 -> 2625
+8queens-13 th18 2310 -> 2310
+8queens-13 th20 2365 -> 2365
+8queens-13 th22 2327 -> 2327
+8queens-13 th24 2202 -> 2202
+8queens-13 th26 2081 -> 2081
+8queens-13 th28 2284 -> 2284
+8queens-13 th30 2360 -> 2360
+8queens-13 th32 1963 -> 1963
+8queens-14 th1 310043 -> 310043
+8queens-14 th2 147639 -> 147639
+8queens-14 th4 70334 -> 70334
+8queens-14 th6 42950 -> 42950
+8queens-14 th8 31114 -> 31114
+8queens-14 th10 26031 -> 26031
+8queens-14 th12 20524 -> 20524
+8queens-14 th14 20164 -> 20164
+8queens-14 th16 19258 -> 19258
+8queens-14 th18 16251 -> 16251
+8queens-14 th20 15950 -> 15950
+8queens-14 th22 16059 -> 16059
+8queens-14 th24 14762 -> 14762
+8queens-14 th26 15286 -> 15286
+8queens-14 th28 14916 -> 14916
+8queens-14 th30 14866 -> 14866
+8queens-14 th32 13466 -> 13466
+belief-propagation-300 th1 181071 -> 181071
+belief-propagation-300 th2 66663 -> 66663
+belief-propagation-300 th4 33173 -> 33173
+belief-propagation-300 th6 16570 -> 16570
+belief-propagation-300 th8 12052 -> 12052
+belief-propagation-300 th10 8938 -> 8938
+belief-propagation-300 th12 6786 -> 6786
+belief-propagation-300 th14 5122 -> 5122
+belief-propagation-300 th16 4994 -> 4994
+belief-propagation-300 th18 4464 -> 4464
+belief-propagation-300 th20 4027 -> 4027
+belief-propagation-300 th22 3353 -> 3353
+belief-propagation-300 th24 3152 -> 3152
+belief-propagation-300 th26 2954 -> 2954
+belief-propagation-300 th28 2524 -> 2524
+belief-propagation-300 th30 2611 -> 2611
+belief-propagation-300 th32 2605 -> 2605
+belief-propagation-400 th1 236521 -> 236521
+belief-propagation-400 th2 120565 -> 120565
+belief-propagation-400 th4 49609 -> 49609
+belief-propagation-400 th6 25374 -> 25374
+belief-propagation-400 th8 20808 -> 20808
+belief-propagation-400 th10 15746 -> 15746
+belief-propagation-400 th12 11425 -> 11425
+belief-propagation-400 th14 9341 -> 9341
+belief-propagation-400 th16 7902 -> 7902
+belief-propagation-400 th18 6315 -> 6315
+belief-propagation-400 th20 6862 -> 6862
+belief-propagation-400 th22 5308 -> 5308
+belief-propagation-400 th24 5368 -> 5368
+belief-propagation-400 th26 4605 -> 4605
+belief-propagation-400 th28 4034 -> 4034
+belief-propagation-400 th30 3989 -> 3989
+belief-propagation-400 th32 4018 -> 4018
+min-max-tictactoe th1 21452 -> 21452
+min-max-tictactoe th2 12726 -> 12726
+min-max-tictactoe th4 6447 -> 6447
+min-max-tictactoe th6 5039 -> 5039
+min-max-tictactoe th8 3940 -> 3940
+min-max-tictactoe th10 3649 -> 3649
+min-max-tictactoe th12 2752 -> 2752
+min-max-tictactoe th14 2706 -> 2706
+min-max-tictactoe th16 3495 -> 3495
+min-max-tictactoe th18 2538 -> 2538
+min-max-tictactoe th20 2626 -> 2626
+min-max-tictactoe th22 2082 -> 2082
+min-max-tictactoe th24 1942 -> 1942
+min-max-tictactoe th26 1317 -> 1317
+min-max-tictactoe th28 1218 -> 1218
+min-max-tictactoe th30 1654 -> 1654
+min-max-tictactoe th32 1304 -> 1304
+min-max-tictactoe-big th1 195070 -> 195070
+min-max-tictactoe-big th2 96015 -> 96015
+min-max-tictactoe-big th4 62272 -> 62272
+min-max-tictactoe-big th6 34591 -> 34591
+min-max-tictactoe-big th8 30531 -> 30531
+min-max-tictactoe-big th10 29805 -> 29805
+min-max-tictactoe-big th12 22115 -> 22115
+min-max-tictactoe-big th14 19794 -> 19794
+min-max-tictactoe-big th16 17012 -> 17012
+min-max-tictactoe-big th18 22364 -> 22364
+min-max-tictactoe-big th20 18129 -> 18129
+min-max-tictactoe-big th22 14715 -> 14715
+min-max-tictactoe-big th24 16538 -> 16538
+min-max-tictactoe-big th26 15122 -> 15122
+min-max-tictactoe-big th28 17769 -> 17769
+min-max-tictactoe-big th30 13002 -> 13002
+min-max-tictactoe-big th32 12240 -> 12240
+pagerank-pokec th1 70932 -> 70932
+pagerank-pokec th2 46745 -> 46745
+pagerank-pokec th4 25351 -> 25351
+pagerank-pokec th6 16984 -> 16984
+pagerank-pokec th8 13862 -> 13862
+pagerank-pokec th10 11608 -> 11608
+pagerank-pokec th12 10408 -> 10408
+pagerank-pokec th14 8278 -> 8278
+pagerank-pokec th16 7544 -> 7544
+pagerank-pokec th18 8266 -> 8266
+pagerank-pokec th20 6898 -> 6898
+pagerank-pokec th22 6728 -> 6728
+pagerank-pokec th24 6498 -> 6498
+pagerank-pokec th26 6424 -> 6424
+pagerank-pokec th28 6178 -> 6178
+pagerank-pokec th30 6008 -> 6008
+pagerank-pokec th32 6017 -> 6017
+pagerank-gplus th1 25956 -> 25956
+pagerank-gplus th2 15995 -> 15995
+pagerank-gplus th4 8194 -> 8194
+pagerank-gplus th6 5977 -> 5977
+pagerank-gplus th8 4673 -> 4673
+pagerank-gplus th10 3907 -> 3907
+pagerank-gplus th12 3415 -> 3415
+pagerank-gplus th14 2981 -> 2981
+pagerank-gplus th16 2655 -> 2655
+pagerank-gplus th18 2616 -> 2616
+pagerank-gplus th20 2459 -> 2459
+pagerank-gplus th22 2233 -> 2233
+pagerank-gplus th24 2230 -> 2230
+pagerank-gplus th26 1953 -> 1953
+pagerank-gplus th28 1892 -> 1892
+pagerank-gplus th30 1796 -> 1796
+pagerank-gplus th32 1743 -> 1743
+new-heat-transfer-80 th1 33652 -> 33652
+new-heat-transfer-80 th2 23242 -> 23242
+new-heat-transfer-80 th4 12371 -> 12371
+new-heat-transfer-80 th6 10112 -> 10112
+new-heat-transfer-80 th8 6690 -> 6690
+new-heat-transfer-80 th10 6579 -> 6579
+new-heat-transfer-80 th12 5651 -> 5651
+new-heat-transfer-80 th14 5626 -> 5626
+new-heat-transfer-80 th16 4310 -> 4310
+new-heat-transfer-80 th18 5001 -> 5001
+new-heat-transfer-80 th20 6392 -> 6392
+new-heat-transfer-80 th22 5371 -> 5371
+new-heat-transfer-80 th24 3140 -> 3140
+new-heat-transfer-80 th26 3800 -> 3800
+new-heat-transfer-80 th28 3052 -> 3052
+new-heat-transfer-80 th30 2803 -> 2803
+new-heat-transfer-80 th32 3689 -> 3689
+new-heat-transfer-120 th1 143999 -> 143999
+new-heat-transfer-120 th2 108193 -> 108193
+new-heat-transfer-120 th4 55256 -> 55256
+new-heat-transfer-120 th6 45345 -> 45345
+new-heat-transfer-120 th8 30815 -> 30815
+new-heat-transfer-120 th10 29592 -> 29592
+new-heat-transfer-120 th12 21454 -> 21454
+new-heat-transfer-120 th14 18591 -> 18591
+new-heat-transfer-120 th16 14950 -> 14950
+new-heat-transfer-120 th18 14803 -> 14803
+new-heat-transfer-120 th20 14440 -> 14440
+new-heat-transfer-120 th22 14476 -> 14476
+new-heat-transfer-120 th24 13762 -> 13762
+new-heat-transfer-120 th26 14353 -> 14353
+new-heat-transfer-120 th28 12682 -> 12682
+new-heat-transfer-120 th30 10939 -> 10939
+new-heat-transfer-120 th32 9985 -> 9985
+shortest-twitter th1 199290 -> 199290
+shortest-twitter th2 166282 -> 166282
+shortest-twitter th4 99837 -> 99837
+shortest-twitter th6 70873 -> 70873
+shortest-twitter th8 58031 -> 58031
+shortest-twitter th10 46008 -> 46008
+shortest-twitter th12 45239 -> 45239
+shortest-twitter th14 41571 -> 41571
+shortest-twitter th16 37754 -> 37754
+shortest-twitter th18 31725 -> 31725
+shortest-twitter th20 32742 -> 32742
+shortest-twitter th22 28392 -> 28392
+shortest-twitter th24 27149 -> 27149
+shortest-twitter th26 23518 -> 23518
+shortest-twitter th28 21425 -> 21425
+shortest-twitter th30 23855 -> 23855
+shortest-twitter th32 22353 -> 22353
+shortest-email th1 28144 -> 28144
+shortest-email th2 18875 -> 18875
+shortest-email th4 13208 -> 13208
+shortest-email th6 10833 -> 10833
+shortest-email th8 8632 -> 8632
+shortest-email th10 7065 -> 7065
+shortest-email th12 6397 -> 6397
+shortest-email th14 4842 -> 4842
+shortest-email th16 4339 -> 4339
+shortest-email th18 4754 -> 4754
+shortest-email th20 4027 -> 4027
+shortest-email th22 4295 -> 4295
+shortest-email th24 4386 -> 4386
+shortest-email th26 3260 -> 3260
+shortest-email th28 3111 -> 3111
+shortest-email th30 2909 -> 2909
+shortest-email th32 2824 -> 2824
+shortest-usairports500 th1 1677 -> 1677
+shortest-usairports500 th2 939 -> 939
+shortest-usairports500 th4 624 -> 624
+shortest-usairports500 th6 475 -> 475
+shortest-usairports500 th8 363 -> 363
+shortest-usairports500 th10 369 -> 369
+shortest-usairports500 th12 307 -> 307
+shortest-usairports500 th14 244 -> 244
+shortest-usairports500 th16 242 -> 242
+shortest-usairports500 th18 206 -> 206
+shortest-usairports500 th20 199 -> 199
+shortest-usairports500 th22 182 -> 182
+shortest-usairports500 th24 165 -> 165
+shortest-usairports500 th26 166 -> 166
+shortest-usairports500 th28 179 -> 179
+shortest-usairports500 th30 141 -> 141
+shortest-usairports500 th32 158 -> 158

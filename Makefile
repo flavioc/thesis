@@ -10,7 +10,8 @@ FIGURES := $(wildcard figures/btree/btree_trace*.pdf) \
 	$(wildcard figures/sssp/coord*.pdf) \
 	$(wildcard figures/sssp/*.pdf) \
 	$(wildcard figures/implementation/*.pdf) \
-	$(wildcard figures/compiler/*.pdf)
+	$(wildcard figures/compiler/*.pdf) \
+	$(wildcard experiments/scalability/*.png)
 
 all: thesis.pdf
 
@@ -25,7 +26,8 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex ack.tex \
 		implementation/overview.tex implementation/comp.tex \
 		implementation/parallelism.tex implementation/locks.tex \
 		implementation/related_work.tex implementation/evaluation.tex \
-		implementation/scale.tex \
+		implementation/scale.tex implementation/allocator-compare.tex \
+		implementation/fact-allocator.tex implementation/scale.tex \
 		coordination/partitioning.tex coordination/scheduling.tex \
 		coordination/ht.tex language/bipartite.tex \
 		coordination/types.tex coordination/rationale.tex \
@@ -99,6 +101,15 @@ scale:
 	$(RE) experiments/scalability/plot.py \
 		experiments/scalability/runtime.csv \
 		experiments/absolute/runtime.csv experiments/scalability/
+allocator:
+	$(RE) experiments/scalability/compare-alloc.py \
+		experiments/scalability/runtime.csv \
+		experiments/scalability/malloc-results.csv \
+		experiments/scalability/malloc
+	$(RE) experiments/scalability/compare-alloc.py \
+		experiments/scalability/runtime.csv \
+		experiments/scalability/mixed-node-results.csv \
+		experiments/scalability/node
 	
 clean:
 	rm -f thesis.pdf *.bbl *.blg *.log *.lot \

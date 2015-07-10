@@ -58,6 +58,12 @@ def sort_datasets(name, l):
       move_from_list(x, l, 'uspowergrid')
       x.extend(l)
       return x
+   if name == 'min-max-tictactoe':
+      x = []
+      move_from_list(x, l, 'small')
+      move_from_list(x, l, 'big')
+      x.extend(l)
+      return x
    else:
       return l
 
@@ -419,6 +425,40 @@ class experiment(object):
 
    def max_threads(self):
       return max(x for x in self.times.keys() if x <= max_threads)
+
+   def allocator_compare(self, other_exp, prefix):
+      fig = plt.figure()
+      ax = fig.add_subplot(111)
+      ax2 = ax.twinx()
+
+      names = ('Scalability')
+      formats = ('f4')
+      titlefontsize = 22
+      ylabelfontsize = 20
+      ax.set_title(self.title, fontsize=titlefontsize)
+      ax.yaxis.tick_left()
+      ax.yaxis.set_label_position("left")
+      ax.set_ylabel('Execution Time', fontsize=ylabelfontsize)
+      ax.set_xlabel('Threads', fontsize=ylabelfontsize)
+      ax2.set_ylabel('Speedup', fontsize=ylabelfontsize)
+      ax.set_xlim([1, self.max_threads()])
+      ax.set_ylim([0, max(self.max_time(), other_exp.max_time())])
+      cmap = plt.get_cmap('gray')
+
+      ax.plot(self.x_axis(), self.time_data(),
+         label='Standard Allocator Run Time', linestyle='-', marker='+', color='r')
+      ax.plot(self.x_axis(), other_exp.time_data(),
+         label='Other Allocator Run Time', linestyle='--', marker='o', color='g')
+      ax2.plot(self.x_axis(), self.base_speedup_data(),
+            label='Standard Allocator Speedup', linestyle='--', marker='+', color='r')
+      ax2.plot(self.x_axis(), other_exp.base_speedup_data(),
+            label='Other Allocator Speedup', linestyle='-', marker='o', color='g')
+
+      setup_lines(ax, cmap)
+      setup_lines(ax2, cmap)
+
+      name = prefix + self.create_filename()
+      plt.savefig(name)
 
    def create_scale(self, cexp, prefix):
       fig = plt.figure()
