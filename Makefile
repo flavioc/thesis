@@ -110,6 +110,10 @@ allocator:
 		experiments/scalability/runtime.csv \
 		experiments/scalability/mixed-node-results.csv \
 		experiments/scalability/node
+	$(RE) experiments/scalability/compare-alloc.py \
+		experiments/scalability/runtime.csv \
+		experiments/scalability/fact-allocator-no-refs.csv \
+		experiments/scalability/no-refs
 	
 clean:
 	rm -f thesis.pdf *.bbl *.blg *.log *.lot \

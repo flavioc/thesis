@@ -43,27 +43,6 @@ plus markers, while the fact allocator (in green) uses lines with circular
 markers. In used the most relevant datasets since the performance was very
 similar for the other datasets.
 
-The first major observation from the comparison is that the threaded allocator
-is able to have better sequential performance than the fact allocator for most
-programs. This is probably the result of better locality for the threaded
-allocator because the threaded allocator does not need to create pages for each
-node and instead uses the thread pages to main all facts, reducing cache line
-misses. Having better performance makes the threaded allocator have slightly
-less scalability, but its performance still better or similar when using lots of
-threads (see GGC for an example).
-
-The second observation is in the N-Queens program, where the threaded allocator
-beats the fact allocator by a long margin in terms of scalability and
-performance. Note that the N-Queens program allocates plenty of lists and those
-lists are not allocated on a per node basis but on a thread basis, therefore the
-extra work required to maintain each fact allocator is not offset by increased
-locality because the threads need to traverse lists to find valid board states.
-
-Overall, the performance of both allocators is fairly similar, therefore we have
-decided to use the threaded allocator by default since it is simpler and offers
-good performance across the board. Furthermore, the threaded allocator requires
-less allocated memory because it enables more sharing between nodes.
-
 \begin{figure}[h]
         \begin{subfigure}[b]{\smallplotsize\textwidth}
                 \includegraphics[width=\textwidth]{experiments/scalability/node-allocator-belief-propagation-400.png}
@@ -112,3 +91,37 @@ less allocated memory because it enables more sharing between nodes.
 
         \label{fig:implementation:node_results}
 \end{figure}
+
+The first major observation from the comparison is that the threaded allocator
+is able to have better sequential performance than the fact allocator for most
+programs. This is probably the result of better locality for the threaded
+allocator because the threaded allocator does not need to create pages for each
+node and instead uses the thread pages to main all facts, reducing cache line
+misses. Having better performance makes the threaded allocator have slightly
+less scalability, but its performance still better or similar when using lots of
+threads (see GGC for an example).
+
+The second observation is in the N-Queens program, where the threaded allocator
+beats the fact allocator by a long margin in terms of scalability and
+performance. Note that the N-Queens program allocates plenty of lists and those
+lists are not allocated on a per node basis but on a thread basis, therefore the
+extra work required to maintain each fact allocator is not offset by increased
+locality because the threads need to traverse lists to find valid board states.
+
+To make our comparison more interesting, we also deactivated the reference
+counting mechanisms of the fact allocator and compared it against the threaded
+allocator. The complete comparison are shown in
+Fig.~\ref{fig:implementation:no_refs_results}. In a nutshell, it performs almost
+the same as the full featured fact allocator, except for programs which require
+more memory such as MiniMax and Heat Transfer. In the case of MiniMax, we were
+unable to completely execute the Big dataset since the VM required more memory
+than the available RAM, resulting in long execution times. This is the result of
+not collecting unused memory pages, which results in high memory usage.
+
+\input{implementation/no-refs}
+
+Overall, the performance of both allocators is fairly similar, therefore we have
+decided to use the threaded allocator by default since it is simpler and offers
+good performance across the board. Furthermore, the threaded allocator requires
+less allocated memory because it enables more sharing between nodes.
+

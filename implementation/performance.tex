@@ -216,15 +216,15 @@ structures. For this, we have rerun the previous experiments and compared the
 results against the optimized version.
 Table~\ref{table:implementation:compare_absolute} shows the comparison between
 the optimized version of the VM and the version of the VM with indexing
-disabled. From column \textbf{Run Time} shows that the MSSD program benefits
-from indexing because the unoptimized version is around 25 to 75 times slower
-than the version with indexing enabled. Since MSSD computes the shortest
-distance to multiple nodes, its rules require searching for the shortest
-distance facts of arbitrary nodes. All the other programs do not require index
-but also do not display any significant slowdown from using dynamic indexing. In
+disabled. Column \textbf{Run Time} shows that the MSSD program benefits from
+indexing because the unoptimized version is around 2 to 100 times slower than
+the version with indexing enabled. Since MSSD computes the shortest distance to
+multiple nodes, its rules require searching for the shortest distance facts of
+arbitrary nodes. All the other programs do not require significant indexing but
+also do not display any significant slowdown from using dynamic indexing. In
 terms of memory usage, the version with indexing uses slightly more memory,
-especially for MSSD program, where the US Power Grid dataset requires 50\% more
-memory due to the existence of hash tables used for supporting indexing.
+especially for MSSD program, which requires, on average, 50\% more memory due to
+the existence of hash tables used for supporting indexing.
 
 \begin{table}[ht]
    \begin{center}
