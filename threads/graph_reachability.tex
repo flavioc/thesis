@@ -97,7 +97,7 @@ do-search(A, Id, Node, ToReach),*hfill// Rule 4: node found and propagate search
 
 do-search(A, Id, Node, ToReach),*hfill// Rule 5: node not found and propagate search.
 !value(A, Val), ~ Val in ToReach // Not the node we are looking for.
-   -o {B | !edge(A, B) | do-search(B, ID, Node, ToReach)},*label#line:threads:reach_propagate2&
+   -o {B | !edge(A, B) -o do-search(B, ID, Node, ToReach)},*label#line:threads:reach_propagate2&
       visited(A, Id).*label#line:threads:reach_visit_visited2&
 \end{Verbatim}
 

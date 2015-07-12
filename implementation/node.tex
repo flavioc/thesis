@@ -84,27 +84,30 @@ in one of the four data structures:
    remove facts. The \code{prev} and \code{next} pointers are used to chain
    the facts of the linked list.
 
-\item \emph{Hash Table Data Structures} are used to improve lookup when linked
+\item \emph{Hash Tree Data Structures} are used to improve lookup when linked
    lists are too long and when we need to do search filtered by a fixed
    argument. The virtual machine decides which arguments are best to be indexed
    (see Section~\ref{sec:implementation:indexing}) and then uses a hash table
    indexed by the appropriate argument. If we need to go through all the facts,
-   we just iterate through all the facts in the table. For collisions, we use
-   the doubly linked list data structure mentioned above.
+   we just iterate through all the facts in the table. Facts are hashed by using
+   the indexed argument and each item in the table corresponds to a value that
+   contains a list of facts with such argument. When a hash bucket has too
+   many values, then the bucket is expanded from a linked list into another hash
+   table, creating a hash tree~\cite{Bagwell01idealhash}.
 
 \end{itemize}
 
 Figure~\ref{fig:implementation:hash_table} shows an example for a hash table
-data structure for a \code{p(int, int)} predicate with 4 linear facts indexed by
-the second argument. Note that for each bucket, facts are stored in a doubly
-linked list using the \code{prev} and \code{next} pointers of each fact.
+data structure for a \code{p(int, int)} predicate with 5 linear facts indexed by
+the second argument. Note that for each bucket, facts are indexed by the second
+argument into a either a list or another hash table.
 
 \begin{figure}[ht]
    \centering
    \includegraphics[width=0.6\textwidth]{figures/implementation/hash_table.pdf}
 
-   \caption{Hash table and doubly linked data structures for a \texttt{p(int,
-   int)} predicate containing the following facts: \code{p(0, 20)}, \code{p(1,
+   \caption{Hash tree data structure for a \texttt{p(int, int)} predicate
+   containing the following facts: \code{p(0, 20)}, \code{p(1, 20)}, \code{p(1,
    3)}, \code{p(2, 13)}, and \code{p(2, 43)}. Facts are indexed by computing
    $arg_2\mod{}10$ where $arg_2$ is the second argument of the fact.}
 

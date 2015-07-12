@@ -1,7 +1,7 @@
 Now that we have presented the coordination facts for LM, we are now in a
 position to use them in the SSSP program presented before.  The coordinated
 version of the SSSP~(Fig.~\ref{code:shortest_path_program_coord}) uses the
-coordination fact \texttt{set-priority} (line~\ref{line:coord:sssp_set}) and a
+coordination fact \code{set-priority} (line~\ref{line:coord:sssp_set}) and a
 global program directive to order priorities in ascending order
 (line~\ref{line:coord:sssp_asc}).
 
@@ -32,7 +32,7 @@ shortest(A, D1, P1), D1 <= D2, relax(A, D2, P2)\hfill// Rule 2: longer path.
 shortest(A, +00, []).\hfill// Initial facts.
 relax(@1, 0, [@1]).
 \end{Verbatim}
-   \caption{Shortest Path Program coordinated with \texttt{set-priority}.}
+   \caption{Shortest Path Program coordinated with \code{set-priority}.}
    \label{code:shortest_path_program_coord}
 \end{figure}
 
@@ -62,31 +62,33 @@ algorithm.
    \end{subfigure}
 \end{center}
 \caption{Graphical representation of the new SSSP program. (a) represents the
-   program after propagating initial distance at node \texttt{@1}, followed by
-   (b) where the first rule is applied in node \texttt{@3}. (c)
-   represents the result after retracting all the \texttt{relax} facts at node
-   \texttt{@2} and (d) is the final state of the program where all the shortest paths
+   program after propagating initial distance at node \code{@1}, followed by
+   (b) where the first rule is applied in node \code{@3}. (c)
+   represents the result after retracting all the \code{relax} facts at node
+   \code{@2} and (d) is the final state of the program where all the shortest paths
    have been computed.}
 \label{fig:coordination:new_sssp}
 \end{figure}
+
+\subsection{Experimental Results}
 
 \subsection{Proof Of Correctness}
 
 The most interesting property of the SSSP program presented in
 Fig.~\ref{code:shortest_path_program_coord} is that it remains provably correct,
-although it applies rules using a smarter ordering and the code remains
-declarative. We now show the complete proof of correctness.
+although it applies rules using a smarter ordering. We now show the complete
+proof of correctness.
 
 \begin{invariant}[Distance]
 
-\texttt{relax(A, D, P)} represents a valid distance \texttt{D} and a valid path
-\texttt{P} from node \texttt{@1} to node \texttt{A}. If the shortest distance to
-\texttt{@1} is $D'$, then $D >= D'$.
+\code{relax(A, D, P)} represents a valid distance \code{D} and a valid path
+\code{P} from node \code{@1} to node \code{A}. If the shortest distance to
+\code{@1} is $D'$, then $D >= D'$.
 
-\texttt{shortest(A, D, P)} represents a valid distance \texttt{D} and a valid
-path \texttt{P} from node \texttt{@1} to node \texttt{A}. If the shortest
-distance to \texttt{@1} is $D'$, then $D >= D'$. The \texttt{shortest} fact may
-also represent an invalid distance if \texttt{D = +00}, where \texttt{P = []}.
+\code{shortest(A, D, P)} represents a valid distance \code{D} and a valid
+path \code{P} from node \code{@1} to node \code{A}. If the shortest
+distance to \code{@1} is $D'$, then $D >= D'$. The \code{shortest} fact may
+also represent an invalid distance if \code{D = +00}, where \code{P = []}.
 
 \end{invariant}
 
@@ -110,9 +112,9 @@ ignored by rule 2.
    Consider that there is a set of nodes $S \in V$ where the shortest distances
    has been computed and a set $U \in V$ where it has not yet been reached.
    Sets are $S$ and $U$ are disjunct. At any given point, $\Sigma$ is the sum of
-   all current shortest distances. For the distance \texttt{+00} we assign the
+   all current shortest distances. For the distance \code{+00} we assign the
    value $\Sigma' + 1$, where $\Sigma'$ is the sum of the true shortest
-   distances of nodes reachable from \texttt{@1}.  Every rule inference will
+   distances of nodes reachable from \code{@1}.  Every rule inference will
    either:
 
    \begin{itemize}
@@ -124,20 +126,20 @@ ignored by rule 2.
          and potentially increase the number of facts in the database.
    \end{itemize}
 
-   Eventually, set $S = V$ and every \texttt{shortest(A, D, P)} will represent
-   the shortest distance from \texttt{A} to \texttt{@1} and \texttt{P} is its
+   Eventually, set $S = V$ and every \code{shortest(A, D, P)} will represent
+   the shortest distance from \code{A} to \code{@1} and \code{P} is its
    corresponding path.
 \end{theorem}
 
 \begin{proof}
    By nested induction on $\Sigma$ and on the number of facts in the database.
 
-   In the base case, we have \texttt{relax(@1, 0, [@1])} that will give us
-   the shortest distance for node \texttt{@1}, therefore $S = \{@1\}$ and
+   In the base case, we have \code{relax(@1, 0, [@1])} that will give us
+   the shortest distance for node \code{@1}, therefore $S = \{@1\}$ and
    $\Sigma$ is reduced.
 
    In the inductive case, we have a set $S'$ where the shortest distance was
-   reached and \texttt{relax} distances may have been propagated (Relaxation
+   reached and \code{relax} distances may have been propagated (Relaxation
    Lemma).
 
    Now consider the two rules of the program:
@@ -145,19 +147,19 @@ ignored by rule 2.
    \begin{itemize}
 
       \item Rule 1 will only apply at nodes in $U$. If the shortest
-         \texttt{relax} is selected, then the node is added to $S$, otherwise it
+         \code{relax} is selected, then the node is added to $S$, otherwise it
          stays in $U$ but improves the shortest path, reduces $\Sigma$ and
-         \texttt{relax} facts are generated (Relaxation Lemma).
+         \code{relax} facts are generated (Relaxation Lemma).
 
       \item Rule 2 is applied in either nodes of $S$ or $U$. For both sets, the rule
-         retracts the \texttt{relax} fact.
+         retracts the \code{relax} fact.
 
    \end{itemize}
 
    The case where rule 1 derives the true shortest distance happens when the
    node that minimizes $\argmin_t d(s \in S) + w(s, t)$ is selected, where
-   $d(x)$ is the distance to the node \texttt{@1} and $w(a, b)$ the weight of
-   the edge between $a$ and $b$. Using \texttt{set-priority} increases the
+   $d(x)$ is the distance to the node \code{@1} and $w(a, b)$ the weight of
+   the edge between $a$ and $b$. Using \code{set-priority} increases the
    probability of that node being selected, but it does not matter since
    the program always makes progress and the shortest distances will be
    eventually computed.
