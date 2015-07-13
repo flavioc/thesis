@@ -427,7 +427,7 @@ class experiment(object):
    def max_threads(self):
       return max(x for x in self.times.keys() if x <= max_threads)
 
-   def allocator_compare(self, other_exp, prefix):
+   def allocator_compare(self, other_exp, prefix, stdname, othername):
       fig = plt.figure()
       ax = fig.add_subplot(111)
       ax2 = ax.twinx()
@@ -446,14 +446,16 @@ class experiment(object):
       ax.set_ylim([0, max(self.max_time(), other_exp.max_time())])
       cmap = plt.get_cmap('gray')
 
-      ax.plot(self.x_axis(), self.time_data(),
+      stdtime, = ax.plot(self.x_axis(), self.time_data(),
          label='Standard Allocator Run Time', linestyle='-', marker='+', color='r')
-      ax.plot(self.x_axis(), other_exp.time_data(),
+      othertime, = ax.plot(self.x_axis(), other_exp.time_data(),
          label='Other Allocator Run Time', linestyle='--', marker='o', color='g')
-      ax2.plot(self.x_axis(), self.base_speedup_data(),
+      stdspeedup, = ax2.plot(self.x_axis(), self.base_speedup_data(),
             label='Standard Allocator Speedup', linestyle='--', marker='+', color='r')
-      ax2.plot(self.x_axis(), other_exp.base_speedup_data(),
+      otherspeedup, = ax2.plot(self.x_axis(), other_exp.base_speedup_data(),
             label='Other Allocator Speedup', linestyle='-', marker='o', color='g')
+      ax.legend([(stdtime, stdspeedup), (othertime, otherspeedup)], [stdname, othername],
+            loc=2, fontsize=18, markerscale=2)
 
       setup_lines(ax, cmap)
       setup_lines(ax2, cmap)

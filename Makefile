@@ -105,15 +105,18 @@ allocator:
 	$(RE) experiments/scalability/compare-alloc.py \
 		experiments/scalability/runtime.csv \
 		experiments/scalability/malloc-results.csv \
-		experiments/scalability/malloc
+		experiments/scalability/malloc \
+		"Threaded Alloc" "Malloc"
 	$(RE) experiments/scalability/compare-alloc.py \
 		experiments/scalability/runtime.csv \
 		experiments/scalability/mixed-node-results.csv \
-		experiments/scalability/node
+		experiments/scalability/node \
+		"Threaded Alloc" "Fact Alloc"
 	$(RE) experiments/scalability/compare-alloc.py \
 		experiments/scalability/runtime.csv \
 		experiments/scalability/fact-allocator-no-refs.csv \
-		experiments/scalability/no-refs
+		experiments/scalability/no-refs \
+		"Threaded Alloc" "Fact No Refs Alloc"
 	
 clean:
 	rm -f thesis.pdf *.bbl *.blg *.log *.lot \
