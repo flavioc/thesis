@@ -8,7 +8,7 @@ from operator import truediv
 from matplotlib import rcParams
 from numpy import nanmax
 
-max_threads = 28
+max_threads = 32
 
 def dataset2title(dataset, name):
    if not dataset:
@@ -112,6 +112,7 @@ def coordinated_program(name):
 
 class experiment_set(object):
    def add_experiment(self, name, dataset, threads, time):
+      threads = int(threads)
       try:
          exp = self.experiments[(name, dataset)]
          exp.add_time(threads, time)
@@ -226,18 +227,18 @@ class experiment(object):
       return self.x_axis1()
 
    def x_axis1(self):
-      return [key for key in self.times.keys() if key <= max_threads]
+      return [key for key in sorted(self.times) if key <= max_threads]
 
    def base_speedup_data(self, base=None):
       if not base:
          base = self.times[1]
-      return [float(base)/float(x) for th, x in self.times.iteritems() if th <= max_threads]
+      return [float(base)/float(self.times[th]) for th in sorted(self.times) if th <= max_threads]
 
    def speedup_data(self, base=None):
       return [None] + self.base_speedup_data(base)
 
    def time_data(self):
-      return [float(x) for th, x in self.times.iteritems() if th <= max_threads]
+      return [float(self.times[th]) for th in sorted(self.times) if th <= max_threads]
 
    def linear_speedup(self):
       return self.x_axis()
