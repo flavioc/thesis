@@ -30,6 +30,11 @@ belief-propagation-50 graphlab 3417
 belief-propagation-200 graphlab 61738
 belief-propagation-300 graphlab 169793
 belief-propagation-400 graphlab 216345
+shortest-usairports500 ligra 174
+shortest-oclinks ligra 2372
+shortest-uspowergrid ligra 16657
+shortest-email ligra 4364
+shortest-twitter ligra 7424
 
 shortest-oclinks th1 51408 -> 51408
 shortest-uspowergrid th1 311989 -> 311989

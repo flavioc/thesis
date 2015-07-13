@@ -16,6 +16,8 @@ try: py = expsets["python"]
 except: py = None
 try: gl = expsets["graphlab"]
 except: gl = None
+try: ligra = expsets["ligra"]
+except: ligra = None
 
 print "\\begin{tabular}{c | c || c | c | c} \\hline"
 print "\t\\textbf{Program} & \\textbf{Size} & \\textbf{C++ Time} (s) & \\textbf{LM} & \\textbf{Other} \\\\ \\hline \\hline"
@@ -37,6 +39,8 @@ for name in threaded.experiment_names():
       except KeyError: pyexp = None
       try: glexp = gl.get_experiment(name, dataset)
       except KeyError: glexp = None
+      try: ligraexp = ligra.get_experiment(name, dataset)
+      except KeyError: ligraexp = None
 
       if first: first = False
       else: print "\t\t",
@@ -48,8 +52,12 @@ for name in threaded.experiment_names():
       print " & ",
 
       if pyexp: print "%.2f (Python)" % float(pyexp.get_time(1) / cexp.get_time(1)),
-      elif glexp: print "%.2f (GraphLab)" % float(glexp.get_time(1) / cexp.get_time(1)),
-      else: print "-",
+
+      if glexp: print "%.2f (GraphLab)" % float(glexp.get_time(1) / cexp.get_time(1)),
+
+      if ligraexp: print "%.2f (Ligra)" % float(ligraexp.get_time(1) / cexp.get_time(1)),
+
+      if not pyexp and not glexp and not ligraexp: print "-",
 
       print "\\\\"
    print "\t\\hline"

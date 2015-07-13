@@ -666,12 +666,14 @@ def setup_lines(ax, cmap):
      ln.set_markersize(markersize)
      ln.set_markevery(markerspace)
 
+SPECIAL_SYSTEMS = ["c", "python", "graphlab", "ligra"]
+
 def parse_threads(sched):
-   if sched == "c" or sched == "python" or sched == "graphlab": return 1
+   if sched in SPECIAL_SYSTEMS: return 1
    else: return int(sched[2:])
 
 def parse_sched(sched):
-   if sched == "c" or sched == "python" or sched == "graphlab": return sched
+   if sched in SPECIAL_SYSTEMS: return sched
    else: return "th"
 
 def read_experiment_set(filename):
