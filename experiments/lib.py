@@ -30,6 +30,7 @@ def dataset2title(dataset, name):
             '400': '400x400',
             '80': '80x80',
             '120': '120x120',
+            'orkut': 'Orkut',
             'twitter': 'Twitter',
             'usairports500': 'US 500 Airports',
             'email': 'EU Email',

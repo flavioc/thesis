@@ -192,15 +192,15 @@ Fig.~\ref{fig:implementation:scale_sssp}. The amount of work required to compute
 the results of each dataset depends on the size of the graph and the number of
 nodes from which the distance must be computed. The first conclusion is that
 more work implies more scalability, and the US Power Grid dataset has a 20-fold
-speedup for 32 threads, the best from the 4 datasets used. The second conclusion is that
-all datasets are able to, at least, reach the execution speed of the corresponding
-C++ program. However, some datasets such as EU Email, are notoriously faster
-than C++ when using more than 5 threads, which is a fairly impressive result. We
-think this is because the number of edges, for this particular graph, is almost
-equal to the number of nodes. Furthermore, LM as a slight advantage over the C++
-program because, in LM, distances to different nodes are propagated at once,
-while in the C++ version, the Dijkstra algorithm runs in iterations - one for
-each node from which we want to calculate the distance from.
+speedup for 32 threads, the best from the 4 datasets used. The second conclusion
+is that all datasets are able to, at least, reach the execution speed of the
+corresponding C++ program. However, some datasets such as EU Email or Orkut, are
+notoriously faster than C++ when using more than 5 threads, which is a fairly
+impressive result.  We think this is because the number of source nodes is
+small. Furthermore, LM as a slight advantage over the C++ program because, in
+LM, distances to different nodes are propagated at once, while in the C++
+version, the Dijkstra algorithm runs in iterations - one for each node from
+which we want to calculate the distance from.
 
 \begin{figure}[]
         \centering
@@ -229,6 +229,12 @@ each node from which we want to calculate the distance from.
                 \label{fig:implementation:scale_sssp_uspowergrid}
                 \caption{Graph with around 5000 nodes and 13000 edges. The
                 shortest distance is calculated for all nodes.}
+        \end{subfigure}\\
+        \begin{subfigure}[b]{\plotsize\textwidth}
+                \includegraphics[width=\textwidth]{experiments/scalability/scale-shortest-orkut.png}
+                \label{fig:implementation:scale_sssp_orkut}
+                \caption{Graph with 3072441 nodes and 117185083 edges. The shortest
+                   distance is calculuated for 1 node.}
         \end{subfigure}\\
         \caption{Scalability for the MSSD program. The LM system scales better
         when there is more work to do, with the US Power Grid dataset being the
