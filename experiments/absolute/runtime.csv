@@ -27,6 +27,7 @@ shortest-email python 132003
 shortest-twitter python 225448
 shortest-orkut python 1190481
 shortest-orkut c 281591
+shortest-livejournal c 221910
 
 belief-propagation-50 graphlab 3417
 belief-propagation-200 graphlab 61738
@@ -38,6 +39,7 @@ shortest-uspowergrid ligra 16657
 shortest-email ligra 4364
 shortest-twitter ligra 7424
 shortest-orkut ligra 64500
+shortest-livejournal ligra 45000
 
 shortest-oclinks th1 51408 -> 51408
 shortest-uspowergrid th1 311989 -> 311989
@@ -57,4 +59,4 @@ min-max-tictactoe-big th1 189106 -> 189106
 shortest-twitter th1 233603 -> 233603
 shortest-usairports500 th1 1906 -> 1906
 shortest-orkut th1 467038 -> 467038
-
+shortest-livejournal th1 972560 -> 972560
