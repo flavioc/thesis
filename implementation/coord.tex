@@ -1,4 +1,4 @@
-In order to support priorities and static/moving nodes, the work queue of each
+In order to support priorities and node partitioning, the work queue of each
 thread presented in Fig.~\ref{fig:implementation:vm_overview} must be extended.
 For that, we updated the queue implementation to include two pairs of queues:
 a pair of doubly linked lists known as the \emph{standard queue} and a pair of
@@ -51,7 +51,7 @@ threads.
 To minimize inter-thread communication, node priorities are implemented at the
 thread level. Thus, when a thread picks the highest priority node from the
 priority queue, it is only the highest priority with respect to the set of nodes
-owned by the thread and not the highest priority node in the whole program.  
+owned by the thread and not the highest priority node in the whole graph.
 
 \subsection{Node State Machine}\label{sec:node_state_machine}
 
@@ -61,14 +61,14 @@ We review the states of the state machine presented in
 Fig.~\ref{fig:implementation:node_states}:
 
 \begin{itemize}
-   \item \textbf{running}: the node is deriving rules.
-   \item \textbf{inactive}: the node is inactive, i.e., it has no new facts and is not in any
+   \item \textbf{running}: The node is deriving rules.
+   \item \textbf{inactive}: The node is inactive, i.e., it has no new facts and is not in any
    queue for processing.
-   \item \textbf{active}: the node has new facts and is in some queue waiting
+   \item \textbf{active}: The node has new facts and is in some queue waiting
    to be processed.
-   \item \textbf{stealing}: the node has just been stolen and is in the process of being
+   \item \textbf{stealing}: The node has just been stolen and is in the process of being
    moved to another thread.
-   \item \textbf{coordinating}: the node is moving from one queue to another.
+   \item \textbf{coordinating}: The node is moving from one queue to another.
 \end{itemize}
 
 \begin{figure}[ht]
@@ -83,8 +83,29 @@ Fig.~\ref{fig:implementation:node_states}:
 \subsection{Communication And Locks}
 
 When a thread $T_1$ needs to perform coordination operations to a node in thread
-$T_2$ then it needs to synchronize with $T_2$. The target node lock always needs
-to be acquired.  Optionally, we may need to also lock the queues of the current
-thread $T_1$ or $T_2$.  Note that both the standard queue and priority
+$T_2$ then it needs to synchronize with $T_2$. The target node \emph{Main Lock}
+needs to be acquired. Optionally, we may need to also lock the queues of the
+current thread $T_1$ or $T_2$. Note that both the standard queue and priority
 queue have separate locks in order to allow concurrent manipulation of the two
 data structures.
+
+\subsection{Coordination Instructions}\label{section:coordination:coord_instrs}
+
+Coordination facts are implemented as API calls to the virtual machine which
+implement the appropriate operations. Sensing facts read information about the
+state of the virtual machine while action facts lock and update the appropriate
+underlying data structures such as the node data structure or the thread's
+queues.
+
+For the coordination facts \code{set-priority} and \code{add-priority}, we
+coalesce multiple operations into a single operation, when such operations are
+directed to the same node and when they happen during a single node execution.
+As an example, if a node derives two \code{set-priority} facts that change the
+priority of node \code{@1} to \code{1} and \code{2}, the virtual machine
+coalesces the two instructions into a single \code{set-priority} that is applied
+with value \code{2} (the higher priority) after all the candidate rules of the
+node are executed. The reason for this optimization is that nodes are executed
+in several times and in short bursts during the lifetime of the program,
+therefore immediately applying each and every coordination instruction is not
+cost effective. We aim to reduce the amount of locking and movement of nodes
+inside the queues due to priority updates.

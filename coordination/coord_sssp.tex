@@ -154,6 +154,28 @@ from its subgraph and not from the whole graph. The best ratios are then seen
 when using only a single thread since the sole thread is able to make global
 decisions.
 
+Table~\ref{table:coordination:sssp_stats} presents fact statistics of the
+regular and coordinated versions of MSSD when executed using 1 thread. We
+gathered the number of facts derived, number of facts deleted, number of facts
+sent (to other nodes) and the final number of facts. As expected, there is a
+reduction in the number of facts derived in all the programs. There is also a
+clear correlation between the reduction in facts processed and the speedup
+achieved using coordination, with datasets such as EU Email with little gains
+with coordination due to a small reduction in the number of facts.
+
+\begin{table}[ht]
+   \begin{center}
+      \input{experiments/coordination/sssp-stats}
+   \end{center}
+   \caption{Fact statistics for the MSSD program. For each dataset, we gathered
+   the number of facts derived, number of facts deleted, number of facts sent to
+other nodes and total number of facts in the database when the program
+terminates.}
+   \label{table:coordination:sssp_stats}
+\end{table}
+
+\input{coordination/sssp_unbuffered}
+
 \subsection{Proof Of Correctness}
 
 \input{coordination/proof_sssp}

@@ -131,6 +131,15 @@ class experiment_set(object):
          self.experiments[(name, dataset)] = exp
          exp.add_mem(threads, vec)
 
+   def add_stat_experiment(self, name, dataset, threads, facts_derived, facts_deleted, facts_sent, facts_end):
+      try:
+         exp = self.experiments[(name, dataset)]
+         exp.add_fact_stats(threads, facts_derived, facts_deleted, facts_sent, facts_end)
+      except KeyError:
+         exp = experiment(name, dataset)
+         self.experiments[(name, dataset)] = exp
+         exp.add_fact_stats(threads, facts_derived, facts_deleted, facts_sent, facts_end)
+
    def add_c_mem_experiment(self, name, dataset, threads, avg):
       try:
          exp = self.experiments[(name, dataset)]
@@ -216,6 +225,19 @@ class experiment(object):
       self.add_memory_in_use(nthreads, int(vec[2]))
       self.add_num_mallocs(nthreads, int(vec[3]))
       self.add_num_facts(nthreads, int(vec[4]))
+
+   def add_facts_derived(self, nthreads, num): self.facts_derived[nthreads] = num
+   def get_facts_derived(self, nthreads): return self.facts_derived[nthreads]
+   def add_facts_deleted(self, nthreads, num): self.facts_deleted[nthreads] = num
+   def get_facts_deleted(self, nthreads): return self.facts_deleted[nthreads]
+   def add_facts_sent(self, nthreads, num): self.facts_sent[nthreads] = num
+   def get_facts_sent(self, nthreads): return self.facts_sent[nthreads]
+
+   def add_fact_stats(self, nthreads, facts_derived, facts_deleted, facts_sent, facts_end):
+      self.add_facts_derived(nthreads, facts_derived)
+      self.add_facts_deleted(nthreads, facts_deleted)
+      self.add_facts_sent(nthreads, facts_sent)
+      self.add_num_facts(nthreads, facts_end)
 
    def add_time(self, nthreads, time):
       assert(nthreads)
@@ -636,7 +658,9 @@ class experiment(object):
       self.memory_in_use = {}
       self.num_mallocs = {}
       self.num_facts = {}
-
+      self.facts_derived = {}
+      self.facts_deleted = {}
+      self.facts_sent = {}
 
 def setup_lines(ax, cmap):
    lines = ax.lines
@@ -659,6 +683,18 @@ def parse_sched(sched):
    if sched in SPECIAL_SYSTEMS: return sched
    else: return "th"
 
+def read_experiment_line(vec):
+   first = vec[0]
+   sched = vec[1]
+   threads = parse_threads(sched)
+   sched = parse_sched(sched)
+   if first.endswith("-coord"):
+      first = first[:-len("-coord")]
+      sched = "coord"
+   name = parse_name(first)
+   dataset = parse_dataset(first)
+   return sched, threads, name, dataset
+
 def read_experiment_set(filename):
    expsets = {}
    with open(filename, "r") as fp:
@@ -668,17 +704,8 @@ def read_experiment_set(filename):
          if line.startswith("#") or line.startswith(";"): continue
          vec = line.split(" ")
          if len(vec) < 2: continue
-         first = vec[0]
-         sched = vec[1]
-         threads = parse_threads(sched)
-         sched = parse_sched(sched)
-         if first.endswith("-coord"):
-            first = first[:-len("-coord")]
-            sched = "coord"
-         name = parse_name(first)
-         dataset = parse_dataset(first)
+         sched, threads, name, dataset = read_experiment_line(vec)
          time = int(vec[len(vec)-1])
-         #print name, sched, threads, dataset
          try:
             exp = expsets[sched]
          except KeyError:
@@ -696,15 +723,7 @@ def read_mem_experiment_set(filename):
          if line.startswith("#") or line.startswith(";"): continue
          vec = line.split(" ")
          if len(vec) < 2: continue
-         first = vec[0]
-         sched = vec[1]
-         threads = parse_threads(sched)
-         sched = parse_sched(sched)
-         if first.endswith("-coord"):
-            first = first[:-len("-coord")]
-            sched = "coord"
-         name = parse_name(first)
-         dataset = parse_dataset(first)
+         sched, threads, name, dataset = read_experiment_line(vec)
          rest = vec[2:]
          try:
             exp = expsets[sched]
@@ -717,6 +736,39 @@ def read_mem_experiment_set(filename):
             exp.add_mem_experiment(name, dataset, threads, rest)
    return expsets
 
+def clean_line(line):
+   return line.rstrip("\n").lstrip(" ").rstrip(" ")
+
+def read_stats_experiment_set(filename):
+   expsets = {}
+   with open(filename, "r") as fp:
+      while True:
+         line = fp.readline()
+         if not line:
+            break
+         line = clean_line(line)
+         if line == "": continue
+         if line.startswith("#") or line.startswith(";"): continue
+         vec = line.split(" ")
+         if len(vec) < 2: continue
+         sched, threads, name, dataset = read_experiment_line(vec)
+         rest = vec[2:]
+         try:
+            exp = expsets[sched]
+         except KeyError:
+            exp = experiment_set()
+            expsets[sched] = exp
+         l = clean_line(fp.readline()).split(' ')
+         facts_derived = int(l[1])
+         l = clean_line(fp.readline()).split(' ')
+         facts_sent = int(l[1])
+         l = clean_line(fp.readline()).split(' ')
+         facts_deleted = int(l[1])
+         l = clean_line(fp.readline()).split(' ')
+         facts_end = int(l[1])
+         exp.add_stat_experiment(name, dataset, threads, facts_derived, facts_deleted, facts_sent, facts_end)
+   return expsets
+
 def next_readable(s):
    if s == '':
       return 'K'
@@ -727,10 +779,14 @@ def next_readable(s):
    elif s == 'G':
       return 'T'
 
-def readable_number(num, start, extension, div):
+def readable_number(num, start, extension, div, rest = 0):
    if num > 2000:
-      return readable_number(num / div, next_readable(start), extension, div)
+      return readable_number(num / div, next_readable(start), extension, div, num % div)
    else:
+      if rest > 0:
+         while rest > 10:
+            rest = rest / 10
+         return str(num) + "." + str(rest) + start + extension
       return str(num) + start + extension
 
 def readable_mem(num):

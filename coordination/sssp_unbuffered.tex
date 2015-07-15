@@ -1,0 +1,48 @@
+
+\begin{figure}[]
+        \centering
+        \begin{subfigure}[b]{\plotsize\textwidth}
+                \includegraphics[width=\textwidth]{experiments/coordination/unbuffered-shortest-email.png}
+                \label{fig:coordination:coord_unbuffered_sssp_email}
+                \caption{Graph with 265000 nodes and 420000 edges. The shortest
+                distance is calculated for 100 nodes.}
+        \end{subfigure}
+        ~
+        \begin{subfigure}[b]{\plotsize\textwidth}
+                \includegraphics[width=\textwidth]{experiments/coordination/unbuffered-shortest-oclinks.png}
+                \label{fig:coordination:coord_unbuffered_sssp_oclinks}
+                \caption{Graph with around 2000 nodes and 20000 edges. The shortest
+                   distance is calculated for all nodes.}
+        \end{subfigure} \\
+        \begin{subfigure}[b]{\plotsize\textwidth}
+                \includegraphics[width=\textwidth]{experiments/coordination/unbuffered-shortest-twitter.png}
+                \label{fig:coordination:coord_unbuffered_sssp_twitter}
+                \caption{Graph with 81306 nodes and 1768149 edges. The shortest
+                   distance is calculuated for 40 nodes.}
+        \end{subfigure}
+        ~
+        \begin{subfigure}[b]{\plotsize\textwidth}
+                \includegraphics[width=\textwidth]{experiments/coordination/unbuffered-shortest-uspowergrid.png}
+                \label{fig:coordination:coord_unbuffered_sssp_uspowergrid}
+                \caption{Graph with around 5000 nodes and 13000 edges. The
+                shortest distance is calculated for all nodes.}
+        \end{subfigure}\\
+        \begin{subfigure}[b]{\plotsize\textwidth}
+                \includegraphics[width=\textwidth]{experiments/coordination/unbuffered-shortest-orkut.png}
+                \label{fig:coordination:coord_unbuffered_sssp_orkut}
+                \caption{Graph with 3072441 nodes and 117185083 edges. The shortest
+                   distance is calculated for two nodes.}
+        \end{subfigure}
+        ~
+        \begin{subfigure}[b]{\plotsize\textwidth}
+                \includegraphics[width=\textwidth]{experiments/coordination/unbuffered-shortest-livejournal.png}
+                \label{fig:coordination:coord_unbuffered_sssp_livejournal}
+                \caption{Graph with around 4847571 nodes and 68993773 edges. The
+                shortest distance is calculated for two nodes.}
+        \end{subfigure}\\
+
+        \caption{Scalability for the MSSD program when not coalescing
+        coordination directives.}
+
+        \label{fig:coordination:results_sssp_unbuffered}
+\end{figure}

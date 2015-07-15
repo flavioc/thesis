@@ -2,7 +2,8 @@
 EXPERIMENT_FILES := experiments/absolute/runtime.tex \
 	experiments/mem/mem.tex experiments/mem/c-mem.tex \
 	experiments/absolute/compare-no-indexing.tex \
-	experiments/absolute/compare-no-arrays.tex
+	experiments/absolute/compare-no-arrays.tex \
+	experiments/coordination/sssp-stats.tex
 
 FIGURES := $(wildcard figures/btree/btree_trace*.pdf) \
 	$(wildcard figures/message/message_trace*.pdf) \
@@ -97,6 +98,14 @@ experiments/absolute/compare-no-arrays.tex: experiments/lib.py experiments/absol
 		experiments/mem/mem.csv experiments/mem/no-arrays.csv > \
 		experiments/absolute/compare-no-arrays.tex
 
+experiments/coordination/sssp-stats.tex: experiments/lib.py experiments/coordination/stats-table.py \
+	experiments/coordination/sssp-regular-stats.csv \
+	experiments/coordination/sssp-coord-stats.csv
+	$(RE) experiments/coordination/stats-table.py \
+		experiments/coordination/sssp-regular-stats.csv \
+		experiments/coordination/sssp-coord-stats.csv > \
+		experiments/coordination/sssp-stats.tex
+
 scale:
 	$(RE) experiments/scalability/plot.py \
 		experiments/scalability/runtime.csv \
@@ -104,9 +113,14 @@ scale:
 coord:
 	$(RE) experiments/coordination/compare.py \
 		experiments/scalability/runtime.csv \
-		experiments/coordination/sssp.csv \
+		experiments/coordination/sssp-coord.csv \
 		experiments/absolute/runtime.csv \
 		experiments/coordination/cmp-
+	$(RE) experiments/coordination/compare.py \
+		experiments/scalability/runtime.csv \
+		experiments/coordination/sssp-coord-unbuffered.csv \
+		experiments/absolute/runtime.csv \
+		experiments/coordination/unbuffered-
 allocator:
 	$(RE) experiments/scalability/compare-alloc.py \
 		experiments/scalability/runtime.csv \
