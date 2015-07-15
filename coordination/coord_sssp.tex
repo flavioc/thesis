@@ -1,13 +1,13 @@
 Now that we have presented the coordination facts for LM, we are now in a
 position to use them in the SSSP program presented before.  The coordinated
-version of the SSSP~(Fig.~\ref{code:shortest_path_program_coord}) uses the
-coordination fact \code{set-priority} (line~\ref{line:coord:sssp_set}) and a
-global program directive to order priorities in ascending order
+version of the SSSP presented in Fig.~\ref{code:shortest_path_program_coord}
+uses the coordination fact \code{set-priority} (line~\ref{line:coord:sssp_set})
+and a global program directive to order priorities in ascending order
 (line~\ref{line:coord:sssp_asc}).
 
 When run with one thread, the algorithm behaves like Dijkstra's shortest path
 algorithm~\cite{Dijkstra}. When using multiple threads, each thread will pick
-the shortest distance from their subset of nodes.  While this does not yield the
+the shortest distance from their subset of nodes. While this does not yield the
 optimal program with relation to 1 thread, it allows for parallel execution and
 locally avoids unnecessary work. The result scales well and it is close to
 Dijkstra's algorithm.
@@ -71,6 +71,15 @@ algorithm.
 \end{figure}
 
 \subsection{Experimental Results}
+
+In order to experiment with the coordinated SSSP program, we extend it to
+support the computation of shortest distances from multiple sources. This
+modified version was already used in
+Section~\ref{section:implementation:performance} for measuring the performance
+of LM's VM. MSSD is not only more interesting than SSSP but also allows us to do
+a performance comparison.
+
+Figure~\ref{fig:coordination:sssp_results}
 
 \subsection{Proof Of Correctness}
 

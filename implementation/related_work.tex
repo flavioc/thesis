@@ -35,34 +35,35 @@ and OR-parallelism.
 programming and therefore requires different evaluation strategies than those
 used by Prolog, which is a backwards-chaining logic programming language.
 Arguably, the most well-known strategy for Datalog programs with recursive rules
-is the \emph{Semi-Na\"{\i}ve Fixpoint}~\cite{Balbin:1987:GDA:34657.34661}
-   algorithm, where the computation is split into iterations and the facts
-   generated in the previous generation are used as inputs to derive the facts
-   in the next iteration. The advantage of this mechanism is that no redundant
-   computations are performed, which could happen in the case of recursive rules
-   but is avoided when the next iteration only uses new facts derived by the
-   previous iteration. In the context of the P2
-   system~\cite{Loo-condie-garofalakis-p2}, which was created for developing
-   declarative networking programs, the previous strategy is not suitable since
-   it is centralized, therefore a new strategy called \emph{Pipelined
-      Semi-Na\"{\i}ve}~(PSN) evaluation was developed for distributed
-      computation. PSN evaluation evaluates one fact at the time by firing any
-      rule that is derivable using the new fact and older facts. If the new fact
-      is already in the database, then the fact is not used for derivation since
-      it would derive redudant facts.
+is the \emph{Semi-Na\"{\i}ve Fixpoint}
+algorithm~\cite{Balbin:1987:GDA:34657.34661}, where the computation is split
+into iterations and the facts generated in the previous generation are used as
+inputs to derive the facts in the next iteration. The advantage of this
+mechanism is that no redundant computations are performed, which could happen in
+the case of recursive rules but is avoided when the next iteration only uses new
+facts derived by the previous iteration.
+   
+In the context of the P2 system~\cite{Loo-condie-garofalakis-p2}, which was
+created for developing declarative networking programs, the previous strategy is
+not suitable since it is centralized, therefore a new strategy called
+\emph{Pipelined Semi-Na\"{\i}ve}~(PSN) evaluation was developed for distributed
+computation. PSN evaluation evaluates one fact at the time by firing any rule
+that is derivable using the new fact and older facts. If the new fact is already
+in the database, then the fact is not used for derivation since it would derive
+redudant facts.
 
- Our evaluation strategy used in this chapter is similar to PSN, however, it
- considers the whole database of facts when firing rules due to the existence of
- rule priorities. For instance, when a node fires a rule, new facts added for
- the local node are considered as a whole in order to select the next inference
- rule. In the case of PSN, each new fact would be considered separately. Still,
- PSN and the LM strategy are both asynchronous strategies which take advantage
- of the nature of distributed and parallel architectures, respectively. Finally,
- an important distinction that should be made between PSN and LM is that PSN is
- for logic programs with only persistent facts, which results in deterministic
- results, however because LM uses linear facts, it follows a \emph{don't care}
- or \emph{committed choice} non-determinism, which may result in different
- results depending on the order of computations.
+ LM's evaluation strategy is similar to PSN, however, it considers the whole
+ database of facts when firing rules due to the existence of rule priorities.
+ For instance, when a node fires a rule, new facts added for the local node are
+ considered as a whole in order to select the next inference rule. In the case
+ of PSN, each new fact would be considered separately. Still, PSN and the LM
+ strategy are both asynchronous strategies which take advantage of the nature of
+ distributed and parallel architectures, respectively. Finally, an important
+ distinction that should be made between PSN and LM is that PSN is for logic
+ programs with only persistent facts, which results in deterministic results,
+ however because LM uses linear facts, it follows a \emph{don't care} or
+ \emph{committed choice} non-determinism, which may result in different results
+ depending on the order of computations.
 
 \paragraph{CHR implementations} Many basic optimizations used in the LM compiler
 such as join optimizations and the use of different data structures for indexing

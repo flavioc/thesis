@@ -97,7 +97,6 @@ def parse_name(name):
       return 'greedy-graph-coloring'
    if name.startswith('pagerank-'):
       return 'pagerank'
-   print name
    raise name
 
 def parse_dataset(name):
@@ -513,35 +512,6 @@ class experiment(object):
          s = s + "-" + self.dataset
       return s + ".png"
 
-   def create_speedup(self, prefix):
-      fig = plt.figure()
-      ax = fig.add_subplot(111)
-
-      names = ('Speedup')
-      formats = ('f4')
-      titlefontsize = 22
-      ylabelfontsize = 20
-      ax.set_title(self.title, fontsize=titlefontsize)
-      ax.yaxis.tick_right()
-      ax.yaxis.set_label_position("right")
-      ax.set_ylabel('Speedup', fontsize=ylabelfontsize)
-      ax.set_xlabel('Threads', fontsize=ylabelfontsize)
-      max_value_threads = max(x for x in self.times.keys() if x <= max_threads)
-      ax.set_xlim([0, max_value_threads])
-      ax.set_ylim([0, self.max_speedup()])
-
-      cmap = plt.get_cmap('gray')
-
-      ax.plot(self.x_axis(), self.speedup_data(),
-         label='Speedup', linestyle='--', marker='^', color=cmap(0.1))
-      ax.plot(self.x_axis(), self.linear_speedup(),
-        label='Linear', linestyle='-', color=cmap(0.2))
-
-      setup_lines(ax, cmap)
-
-      name = prefix + self.name + ".png"
-      plt.savefig(name)
-
    def create_comparison_coord_system(self, prefix, coord, system, coord_system, system_name='GraphLab', title=None):
       fig = plt.figure()
       ax = fig.add_subplot(111)
@@ -611,36 +581,47 @@ class experiment(object):
       name = prefix + self.name + ".png"
       plt.savefig(name)
 
-   def create_speedup_compare(self, prefix, other):
+   def coordination_compare(self, coord_exp, cexp, prefix):
       fig = plt.figure()
       ax = fig.add_subplot(111)
+      ax2 = ax.twinx()
 
-      names = ('Speedup')
+      names = ('Scalability')
       formats = ('f4')
       titlefontsize = 22
       ylabelfontsize = 20
       ax.set_title(self.title, fontsize=titlefontsize)
-      ax.yaxis.tick_right()
-      ax.yaxis.set_label_position("right")
-      ax.set_ylabel('Speedup', fontsize=ylabelfontsize)
+      ax.yaxis.tick_left()
+      ax.yaxis.set_label_position("left")
+      ax.set_ylabel('Execution Time', fontsize=ylabelfontsize)
       ax.set_xlabel('Threads', fontsize=ylabelfontsize)
-      max_value_threads = max(x for x in self.times.keys() if x <= max_threads)
-      ax.set_xlim([0, max_value_threads])
-      ax.set_ylim([0, self.max_speedup()])
-
+      ax2.set_ylabel('Speedup', fontsize=ylabelfontsize)
+      ax.set_xlim([1, self.max_threads()])
+      ax.set_ylim([0, max(self.max_time(), coord_exp.max_time())])
       cmap = plt.get_cmap('gray')
 
-      new, = ax.plot(self.x_axis(), self.speedup_data(),
-         label='New Speedup', linestyle='--', marker='^', color=cmap(0.1))
-      old, = ax.plot(self.x_axis(), other.speedup_data(),
-         label='Old Speedup', linestyle='--', marker='+', color=cmap(0.6))
-      ax.plot(self.x_axis(), self.linear_speedup(),
-        label='Linear', linestyle='-', color=cmap(0.2))
-      ax.legend([new, old], ["New Version", "Old Version"], loc=2, fontsize=20, markerscale=2)
+      regtime, = ax.plot(self.x_axis(), self.time_data(),
+         label='Regular Run Time', linestyle='-', marker='+', color='r')
+      coordtime, = ax.plot(self.x_axis(), coord_exp.time_data(),
+         label='Coordinated Run Time', linestyle='--', marker='o', color='g')
+      coordspeedup, = ax2.plot(self.x_axis(), coord_exp.base_speedup_data(self.get_time(1)),
+            label='Coordinated Speedup', linestyle='--', marker='+', color='g')
+      if cexp:
+         ctime, = ax.plot(self.x_axis(), [cexp.get_time(1)] * len(self.x_axis()),
+           label='Linear', linestyle='-', color=cmap(0.2))
+
+      lines = [(regtime), coordtime, coordspeedup]
+      labels = ["Regular", "Coordinated", "Regular(1)/Coordinated(t)"]
+      if cexp:
+        lines.append(ctime)
+        labels.append("C++")
+
+      ax.legend(lines, labels, loc=2, fontsize=18, markerscale=2)
 
       setup_lines(ax, cmap)
+      setup_lines(ax2, cmap)
 
-      name = prefix + self.name + ".png"
+      name = prefix + self.create_filename()
       plt.savefig(name)
 
    def __init__(self, name, dataset):
@@ -687,12 +668,17 @@ def read_experiment_set(filename):
          if line.startswith("#") or line.startswith(";"): continue
          vec = line.split(" ")
          if len(vec) < 2: continue
-         name = parse_name(vec[0])
-         dataset = parse_dataset(vec[0])
+         first = vec[0]
          sched = vec[1]
-         time = int(vec[len(vec)-1])
          threads = parse_threads(sched)
          sched = parse_sched(sched)
+         if first.endswith("-coord"):
+            first = first[:-len("-coord")]
+            sched = "coord"
+         name = parse_name(first)
+         dataset = parse_dataset(first)
+         time = int(vec[len(vec)-1])
+         #print name, sched, threads, dataset
          try:
             exp = expsets[sched]
          except KeyError:
@@ -710,12 +696,16 @@ def read_mem_experiment_set(filename):
          if line.startswith("#") or line.startswith(";"): continue
          vec = line.split(" ")
          if len(vec) < 2: continue
-         name = parse_name(vec[0])
-         dataset = parse_dataset(vec[0])
+         first = vec[0]
          sched = vec[1]
-         rest = vec[2:]
          threads = parse_threads(sched)
          sched = parse_sched(sched)
+         if first.endswith("-coord"):
+            first = first[:-len("-coord")]
+            sched = "coord"
+         name = parse_name(first)
+         dataset = parse_dataset(first)
+         rest = vec[2:]
          try:
             exp = expsets[sched]
          except KeyError:

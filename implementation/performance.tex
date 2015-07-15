@@ -1,30 +1,28 @@
 To understand the absolute performance of LM programs, we measured their
-\emph{sequential} performance using a single thread of execution against
+performance using a single thread of execution against
 hand-written sequential C++ programs~\footnote{All programs available on
 \url{http://github.com/flavioc/misc}.}. All C++ programs were compiled with the
 compilation flags that were used for LM in order to improve fairness. Arguably,
 compiled C/C++ programs are a good standard for understanding the baseline
 performance of new language runtimes, since compiled C/C++ programs tend to come
 up on top on several popular programming language
-benchmarks~\cite{language_benchmarks}.  Furthermore, the performance of
-sequential C++ programs is a better baseline for measuring the scalability of LM
-since these programs are sequential and thus provide a better baseline than the
-sequential run time of LM programs, which includes extra code for managing
-synchronization between multiple (inexistent) threads.
+benchmarks~\cite{language_benchmarks}. Furthermore, a sequential C++ program is
+also a better baseline since it does not include any synchronization or
+communication code.
 
 In order to make our comparison more interesting, we also provide comparisons to
 the Python language and other relevant systems. Python is a \emph{scripting}
 programming language that is much slower than compiled C/C++ programs and thus
-is a good upper-bound in terms of performance.
+can be seen as a good upper-bound in terms of performance.
 
 The goal of the evaluation is to understand the effectiveness of our compilation
 strategy and the effectiveness of our dynamic indexing algorithms, including the
-data structures (hash tables) which are used to store index logical facts. The
-LM programs used in the experiments are the following:
+data structures (hash tables) used to index logical facts. We used the following
+programs in our experiments:
 
 \begin{itemize}
    \item Multiple Single Shortest Distance (MSSD): a program that computes the
-      shortest distance from a subset of nodes of the graph to the all the nodes
+      shortest distance from a subset of nodes of the graph to all the nodes
       in the graph. A modified version is presented in
       Section~\ref{section:coord:rationale}.
 
@@ -34,22 +32,22 @@ LM programs used in the experiments are the following:
        longer running benchmark. Program is presented in
        Section~\ref{section:coord:minimax}.
 
-   \item Belief Propagation: a machine learning to denoise images. Program is
-      explained in Section~\ref{sec:coordination:bp}.
+   \item Belief Propagation: a machine learning algorithm to denoise images. Program is
+      presented in Section~\ref{sec:coordination:bp}.
 
     \item Heat Transfer: an asynchronous program that performs transfer of heat
-       between nodes. Program is explained in Section~\ref{section:coord:ht}.
+       between nodes. Program is presented in Section~\ref{section:coord:ht}.
 
    \item N-Queens: the classic puzzle for placing queens on a chess board so
-      that no two queens threaten each other. Program is explained in
+      that no two queens threaten each other. Program is presented in
       Section~\ref{section:coord:nqueens}.
 
 \end{itemize}
 
 Table~\ref{table:implementation:absolute} presents the comparison between LM and
 sequential C++ programs. Comparisons to other systems are shown under the
-\textbf{Other} column. Since we also want to assess the VM's scalability for
-different program sizes, we use different datasets in several programs.
+\textbf{Other} column. Since we also want to assess the VM's scalability, we use
+different dataset sizes for several programs.
 
 \begin{table}[ht]
    \begin{center}
@@ -67,7 +65,7 @@ similar hand-written C++ program.}
    \label{table:implementation:absolute}
 \end{table}
 
-For the MSSD program, we have used four datasets, which we describe as follows:
+For the MSSD program, we have used seven datasets:
 
 \begin{itemize}
    \item US 500 Airports~\cite{usairports,tnet}, a graph of the 500 top airports in the US with around
@@ -110,7 +108,7 @@ almost an order of magnitude slower than the C++ version. We think this is
 because the heat transfer computation is very small which tends to exacerbate
 slower and repeated fact derivations from and to different nodes in the graph.
 
-The C++'s MSSD programs applies the Dijkstra algorithm for each node we want to
+The C++'s MSSD version applies the Dijkstra algorithm for each node we want to
 compute the shortest distance from. While the Dijkstra algorithm has a better
 complexity than the algorithm used in LM's algorithm, LM's algorithm is able to
 process distances from multiple sources at the same time. Our experiments show
@@ -119,11 +117,11 @@ gap is reduced when using more larger graphs such as EU Email. The Python
 version also uses the Dijkstra algorithm and is one order of magnitude slower
 than the C++ version and usually slower than LM. We also wrote the MSSD program
 in the Ligra system~\cite{Shun:2013:LLG:2517327.2442530}\footnote{Available at
-\url{http://github.com/flavioc/ligra}.}, an efficient and scalable framework
-for writing graph-based programs. Our experiments show that Ligra is, on
-average, three times as fast as our C++ program, which means that LM is
-around 15 times slower than Ligra. Note that we compiled Ligra without
-parallel support.
+   \url{http://github.com/flavioc/ligra}.}, an efficient and scalable framework
+   for writing graph-based programs. Our experiments show that Ligra is, on
+   average, three times as fast as our C++ program, which means that LM is
+   around 15 times slower than Ligra. Note that we compiled Ligra without
+   parallel support.
 
 For the MiniMax program, we used two different starting states, Small and Big,
 where the tree generated by Big is ten times larger than the one generated by
@@ -153,7 +151,7 @@ should not be the sole focus of a parallel/distributed system such as LM. This
 is even more important in declarative languages which are known to suffer from
 performance issues when compared to systems programming languages such as C++.
 
-\subsubsection{Memory usage}
+\subsection{Memory usage}
 
 To complete our comparison against the C++ programs, we have measured and
 compared the average memory used by both systems.
@@ -222,11 +220,11 @@ remains the same for all data sets. In respect to the C++ program, it is
 expected that it should consume almost no memory because it uses the stack to
 compute the solutions.
 
-\subsubsection{Indexing and data structures}
+\subsection{Indexing and data structures}
 
 We now evaluate the impact of our dynamic indexing algorithm and related data
-structures. For this, we have rerun the previous experiments and compared the
-results against the optimized version.
+structures. For this, we have rerun the previous experiments without indexing
+and compared the results against the optimized version.
 Table~\ref{table:implementation:compare_absolute} shows the comparison between
 the optimized version of the VM and the version of the VM with indexing
 disabled. Column \textbf{Run Time} shows that the MSSD program benefits from

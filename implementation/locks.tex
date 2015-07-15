@@ -1,47 +1,101 @@
 
-In addition to the node locks, namely the \emph{Node Lock} and \emph{Db Lock},
-which were described in Section~\ref{sec:data_structures}, we also have the
-\emph{Queue Lock}, which is a per queue lock used to protect the work queue from
-simultaneous access. Note that all those locks are implemented as ticket
-spin-locks.
-
-We summarize the synchronization hotspots of the VM by describing how the locks
-are used in order to implement several operations:
+We now summarize the synchronization hotspots of the VM by describing how the locks
+are used in order to implement different operations:
 
 \begin{itemize}
 
    \item \textbf{New Facts}: We use the node's \emph{Main Lock} and then attempt
       to lock the \emph{DB Lock}. If the \emph{Db Lock} cannot be used, then the
-      new facts are added to the \emph{Fact Buffer}, otherwise the node data
-      structure is updated with new facts. If the target node is not currently
+      new facts are added to the \emph{Fact Buffer}, otherwise the node database
+      structures are updated with new facts. If the target node is not currently
       in any work queue, we lock the destination work queue and then add the
       node and change the state of the node to \textbf{active}. Finally, if the
       target thread that owns the target node is \textbf{idle}, we activate it
-      by updating its state flag to \textbf{active}.
+      by updating its state flag to \textbf{active}. The complete pseudo-code
+      for this operation is shown in Fig.~\ref{alg:multicore:new_fact}.
+
+\begin{figure}
+\begin{algorithm}[H]
+   \KwData{Target Node N, Fact F}
+   $N.main\_lock.lock()$\;
+   $TTH \longleftarrow N.Owner$\;
+   \eIf{$N.db\_lock.try\_lock()$}{
+      \tcc{New Fact (1)}
+      $N.DB.add\_fact(F)$\;
+      $N.rule\_engine.new\_fact(F)$\;
+      $N.db\_lock.unlock()$\;
+   }{
+      \tcc{New Fact (2)}
+      $N.FactBuffer.add\_fact(F)$\;
+   }
+   \tcc{Activate node}
+   \If{$N.state == inactive$}{
+      $TTH.work\_queue.lock()$\;
+      $TTH.work\_queue.push(N)$\;
+      $TTH.work\_queue.unlock()$\;
+      $N.state \longleftarrow active$\;
+      \If{$TTH.State == idle$}{
+         $TTH.become\_active()$\;
+      }
+   }
+   $N.main\_lock.unlock()$\;
+\end{algorithm}
+\caption{Synchronization code for sending a fact to another node.}
+ \label{alg:multicore:new_fact}
+\end{figure}
+
 
    \item \textbf{Node Stealing}: For node stealing, we acquire the lock of the
-      target thread's queue and then copy the stolen node pointers to a temporary
-      buffer. For each node, we use the \emph{Main Lock} to update its
+      target thread's queue and then copy the stolen node pointers to a
+      temporary buffer. For each node, we use the \emph{Main Lock} to update its
       \emph{Owner} attribute and then add it to the thread's work queue.
+      Figure~\ref{alg:multicore:steal_nodes} presents the pseudo-code for this
+      synchronization mechanism. Note that when using $pop\_half(stealing)$, the
+      \emph{Work Queue} will (unsafely) change the state of the nodes to
+      \textbf{stealing}. When adding the new functionality presented in
+      Chapter~\ref{chapter:coordination}, the node stealing loop in the
+      pseudo-code must have an extra check for cases when the node's owner
+      is updated using coordination facts.
 
-   \item \textbf{Next Node}: When a thread is \textbf{active} state, it locks
-      its work queue by acquiring the \emph{Queue Lock} and then removing the
-      first from the queue. The \emph{Main Lock} is then acquired momentarily in
-      order to update the node state flag.
+\begin{figure}
+\begin{algorithm}[H]
+   \KwData{Source Thread TH, Target Thread TTH}
+   $TTH.work\_queue.lock()$\;
+   $nodes \longleftarrow TTH.work\_queue.pop\_half(stealing)$\;
+   $TTH.work\_queue.unlock()$\;
+   \For{$node \; in \; nodes$}{
+      $node.main\_lock.lock()$\;
+      $node.owner \longleftarrow TH$\;
+      $node.state \longleftarrow active$\;
+      $node.main\_lock.unlock()$\;
+   }
+   $TH.work\_queue.push(nodes)$\;
+\end{algorithm}
+\caption{Synchronization code for sending a fact to another node.}
+ \label{alg:multicore:steal_nodes}
+\end{figure}
 
-   \item \textbf{Node Computation}: The \emph{DB Lock} is acquired before
-      any rule is executed on the node since node computation manipulates the
-      database. The lock is released when all candidate rules are executed.
+   \item \textbf{Node Computation}: The \emph{DB Lock} is acquired before any
+      rule is executed on the node since node computation manipulates the
+      database. The lock is released when all candidate rules are executed. The
+      initial pseudo-code for the \code{process\_node} procedure in
+      Fig.~\ref{alg:multicore:process_node} shows this synchronization protocol.
 
    \item \textbf{Node Completion}: Once node computation is completed and all
       candidate rules have been executed, the \emph{Main Lock} is acquired in
       order to change the state flag. Note that if newer facts have been derived
       by other nodes, computation is resumed on the current node instead of
-      using another node from the work queue.
+      using another node from the \emph{Work Queue}. The final section of
+      \code{process\_node} in Fig.~\ref{alg:multicore:process_node} shows this
+      synchronization protocol.
 
 \end{itemize}
 
-In order to manipulate the state flag of each thread (see
+All the locks in the VM are implemented using Mellor-Crummey and Scott~(MCS)
+spinlocks~\cite{Mellor-Crummey:1991}, which is a fair and contention-free
+spinlock implementation that uses a FIFO queue to implement spinlock operations.
+
+In order to manipulate the \emph{State} flag of each thread (see
 Section~\ref{sec:implementation:parallelism}) we do not use locks but instead
 manipulate the state flag using lock-free \emph{compare-and-swap} operations to
 implement a state machine.

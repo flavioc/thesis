@@ -101,6 +101,12 @@ scale:
 	$(RE) experiments/scalability/plot.py \
 		experiments/scalability/runtime.csv \
 		experiments/absolute/runtime.csv experiments/scalability/
+coord:
+	$(RE) experiments/coordination/compare.py \
+		experiments/scalability/runtime.csv \
+		experiments/coordination/sssp.csv \
+		experiments/absolute/runtime.csv \
+		experiments/coordination/cmp-
 allocator:
 	$(RE) experiments/scalability/compare-alloc.py \
 		experiments/scalability/runtime.csv \

@@ -1,15 +1,33 @@
-This chapter describes the multicore aspects of the LM's virtual machine and
-provides a detailed experimental evaluation. First, we give an overview of how
-local node computation and parallelism are integrated to provide a scalable
-implementation, with a focus on locking and memory allocation. We conclude the
-chapter with an evaluation section that evaluates the performance, memory usage
-and scalability of our implementation.
+This chapter describes the multicore aspects of LM's virtual machine and
+provides a detailed experimental evaluation. First, we describe how local node
+computation and parallelism are integrated, with a focus on locking and memory
+allocation, and then we evaluate the performance, memory usage and scalability
+of our implementation.
 
 \section{Parallelism}\label{sec:implementation:parallelism}
 \input{implementation/parallelism}
-
-\section{Communication And Locking}
 \input{implementation/locks}
+
+\section{Runtime Data Structures And Garbage Collection}
+
+LM supports recursive types such as lists, arrays and structures. These compound
+data structures are immutable and shared between multiple facts. Such structures
+are stored in the heap of the VM and are managed through reference counting. For
+instance, each list is a \emph{cons cell} with 3 fields: \texttt{tail}, the
+pointer to the next element of the list; \texttt{head}, the element stored by
+this element of the list; and \texttt{refs}, which counts the number of pointers
+to this list element in the VM. The list is deleted from the heap whenever
+\texttt{refs} is decremented to zero.
+
+Nodes are also subject to garbage collection. If the database of a node becomes
+empty and there are no references to the node from other logical facts, then the
+node is deleted from the program. We keep around a small number of freed nodes
+that can be reused immediately if another node is created. We avoid garbage
+collection schemes based on tracing since objects are created and discarded in
+very specific points of the virtual machine. A reference counting mechanism is
+thus more appropriate than a parallel tracing garbage collector which would
+entail pausing the execution of the program to garbage collect all the unused
+objects.
 
 \section{Memory Allocation}\label{section:implementation:allocation}
 \input{implementation/allocation}

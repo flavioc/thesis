@@ -15,7 +15,7 @@ except:
    sys.exit(1)
 
 print "\\begin{tabular}{c | c || c | c | c || c c} \\hline"
-print "\t\\textbf{Program} & \\textbf{Size} & \\textbf{Average} & \\textbf{Final} & \\textbf{Malloc} & \\textbf{\\# Facts} & \\textbf{Each} \\\\ \\hline \\hline"
+print "\t\\textbf{Program} & \\textbf{Size} & \\textbf{Average} & \\textbf{Final} & \\textbf{\# Malloc} & \\textbf{\\# Facts} & \\textbf{Each} \\\\ \\hline \\hline"
 
 for name in threaded.experiment_names():
    datasets = threaded.experiment_datasets_for(name)

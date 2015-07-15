@@ -15,6 +15,9 @@ shortest-oclinks c 6999
 shortest-uspowergrid c 55326
 shortest-email c 13472
 shortest-twitter c 27217
+shortest-orkut c 281591
+shortest-livejournal c 221910
+
 min-max-tictactoe python 79154
 8queens-11 python 5782
 8queens-12 python 34537
@@ -26,8 +29,7 @@ shortest-uspowergrid python 607760
 shortest-email python 132003
 shortest-twitter python 225448
 shortest-orkut python 1190481
-shortest-orkut c 281591
-shortest-livejournal c 221910
+shortest-livejournal python 1274983 -> 1274983
 
 belief-propagation-50 graphlab 3417
 belief-propagation-200 graphlab 61738

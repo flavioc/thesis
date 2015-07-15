@@ -1,16 +1,16 @@
 In this section, we evaluate the performance and scalability of the VM. The main
-goals of this evaluation are as follows:
+goals of our evaluation are:
 
 \begin{itemize}
    \item Compare the performance of LM programs against hand-written
       imperative C++ programs;
-   \item Evaluate the scalability of said LM programs when using up to 20 cores
-      concurrently;
+   \item Evaluate the scalability of LM programs when using up to 32 cores
+      in parallel;
    \item Understand the impact and effectiveness of our dynamic indexing
       algorithm and its indexing data structures used for logical facts (namely,
       hash tables);
-   \item Understand the impact of the thread allocator and fact allocator on scalability and
-      multicore performance;
+   \item Understand the impact of the memory allocator on scalability and
+      multicore performance and compare it against alternative designs;
 \end{itemize}
 
 For our experimental setup, we used a computer with a 24 (4x6) Core AMD
@@ -20,7 +20,7 @@ the Linux Kernel 3.15.10-201.fc20.x86\_64. The C++ compiler used is the GCC
 -march=x86-64}.  All experiments were executed 3 times and the running times
 were averaged.
 
-\subsection{Performance}\label{section:implementation:performance}
+\subsection{Sequential Performance}\label{section:implementation:performance}
 \input{implementation/performance}
 
 \subsection{Scalability}

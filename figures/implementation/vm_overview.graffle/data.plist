@@ -7,7 +7,7 @@
 	<key>ApplicationVersion</key>
 	<array>
 		<string>com.omnigroup.OmniGraffle6</string>
-		<string>161.5.0.232794</string>
+		<string>161.7.0.237426</string>
 	</array>
 	<key>AutoAdjust</key>
 	<true/>
@@ -3042,7 +3042,7 @@ Hash Table}</string>
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{331.70002365112305, 201.04166698455811}, {97, 24}}</string>
+			<string>{{326.70002365112305, 203.04166698455811}, {104, 24}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -3067,6 +3067,8 @@ Hash Table}</string>
 			</dict>
 			<key>ID</key>
 			<integer>119</integer>
+			<key>Rotation</key>
+			<real>355</real>
 			<key>Style</key>
 			<dict>
 				<key>fill</key>
@@ -3095,7 +3097,7 @@ Hash Table}</string>
 {\colortbl;\red255\green255\blue255;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720
 
-\f0\fs24 \cf0 New fact (1)}</string>
+\f0\fs24 \cf0 New facts (1)}</string>
 			</dict>
 			<key>Wrap</key>
 			<string>NO</string>
@@ -5243,7 +5245,7 @@ Hash Table}</string>
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2015-06-10 20:55:55 +0000</string>
+	<string>2015-07-14 17:35:21 +0000</string>
 	<key>Modifier</key>
 	<string>Flávio Cruz</string>
 	<key>NotesVisible</key>
