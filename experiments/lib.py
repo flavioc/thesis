@@ -160,6 +160,9 @@ class experiment_set(object):
       l = sort_datasets(name, l)
       return l
 
+   def threads_for_experiment(self, name, dataset):
+      return self.experiments[(name, dataset)].get_threads()
+
    def experiment_datasets(self):
       return [dataset for (name, dataset) in self.experiments.keys()]
 
@@ -251,6 +254,12 @@ class experiment(object):
 
    def x_axis1(self):
       return [key for key in sorted(self.times) if key <= max_threads]
+
+   def get_threads(self):
+      times = self.x_axis1()
+      if not times:
+         times = [key for key in sorted(self.total_memory) if key <= max_threads]
+      return times
 
    def base_speedup_data(self, base=None):
       if not base:

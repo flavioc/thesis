@@ -140,31 +140,24 @@ through the retraction of \code{new-score} incoming facts.
 
 \begin{figure}[ht]
    \begin{center}
-      \begin{tabular}[b]{ | c | c | c |}
-         \hline
-         \textbf{\# T} & \textbf{Reg} & \textbf{Coord} \\ \hline \hline
-         1 & 4.85GB & 0.38MB \\ \hline
-         2 & 5.29GB & 0.65MB \\ \hline
-         4 & 5.88GB & 1.28MB \\ \hline
-         8 & 5.66GB & 2.42MB \\ \hline
-         16 & 5.04GB & 4.68MB \\ \hline
-         \end{tabular}
+      \input{experiments/coordination/minmax-mem}
    \end{center}
 
-   \caption{(a) Memory usage and (b) scalability of the regular and coordinated
-versions of MiniMax.}
+   \caption{Comparing the memory usage of the regular and coordinated MiniMax
+   programs.}
    \label{results:memory_minmax}
 \end{figure}
 
-In Fig.~\ref{results:memory_minmax} we compare the memory usage and scalability
-of the coordinated MiniMax against the regular MiniMax. The coordinated version
-uses significantly less memory (at most 4.68MB for 16 threads) than the regular
-version (around 5.04GB). Note that as the number of threads goes up, memory
-usage also goes up. This is an artifact of our parallel memory allocator that
-allocates large chunks of memory beforehand. In terms of scalability, our
-experimental results show that the coordinated version running on 16 threads is
-almost 4 times faster than the hand-written sequential C program, while the
-regular version is barely as fast as the same C program.
+In Fig.~\ref{results:memory_minmax} we compare the memory usage of the
+coordinated MiniMax program against the regular MiniMax program. The coordinated
+version uses significantly less memory than the regular version. As the number
+of the threads increases, the average memory usage of the regular version
+decreases because there are more threads that are able to complete different
+parts of the tree at the same time. The same thing happens for the coordinated
+version, but at a much smaller scale since threads are exploring the tree in a
+depth-first fashion. Finally, as expected, there is also also a large reduction
+in the number of \code{malloc}'s called by the threaded allocator in the
+coordinated version.
 
 The run time and scalability results are presented in
 Fig.~\ref{fig:coordination:results_minmax}. There is a clear performance

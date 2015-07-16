@@ -3,7 +3,8 @@ EXPERIMENT_FILES := experiments/absolute/runtime.tex \
 	experiments/mem/mem.tex experiments/mem/c-mem.tex \
 	experiments/absolute/compare-no-indexing.tex \
 	experiments/absolute/compare-no-arrays.tex \
-	experiments/coordination/sssp-stats.tex
+	experiments/coordination/sssp-stats.tex \
+	experiments/coordination/minmax-mem.tex
 
 FIGURES := $(wildcard figures/btree/btree_trace*.pdf) \
 	$(wildcard figures/message/message_trace*.pdf) \
@@ -105,6 +106,14 @@ experiments/coordination/sssp-stats.tex: experiments/lib.py experiments/coordina
 		experiments/coordination/sssp-regular-stats.csv \
 		experiments/coordination/sssp-coord-stats.csv > \
 		experiments/coordination/sssp-stats.tex
+
+experiments/coordination/minmax-mem.tex: experiments/lib.py experiments/coordination/mem-table.py \
+	experiments/coordination/minmax-mem.csv \
+	experiments/coordination/minmax-coord-mem.csv
+	$(RE) experiments/coordination/mem-table.py \
+		experiments/coordination/minmax-mem.csv \
+		experiments/coordination/minmax-coord-mem.csv > \
+		experiments/coordination/minmax-mem.tex
 
 scale:
 	$(RE) experiments/scalability/plot.py \

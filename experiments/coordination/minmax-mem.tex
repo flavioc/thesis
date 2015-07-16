@@ -1,0 +1,20 @@
+\begin{tabular}{c | c || c c | c c | c c} \hline
+	 \multirow{2}{*}{\textbf{Size}} & \multirow{2}{*}{\textbf{Threads}} & \multicolumn{2}{c|}{\textbf{Average}} & \multicolumn{2}{c|}{\textbf{Final}} & \multicolumn{2}{c}{\textbf{\# Malloc}}\\
+	 & & Regular & Coord & Regular & Coord & Regular & Coord\\ \hline \hline
+\multirow{7}{*}{Small}  & 1 &  1794.8MB & 38KB &  33KB & 33KB &  42 & 11\\
+ & 2 &  869.4MB & 35KB &  64KB & 65KB &  80 & 22\\
+ & 4 &  436.2MB & 34KB &  128KB & 129KB &  152 & 44\\
+ & 8 &  198.6MB & 32KB &  254KB & 258KB &  284 & 88\\
+ & 16 &  65.3MB & 33KB &  508KB & 514KB &  513 & 172\\
+ & 24 &  40.5MB & 32KB &  761KB & 770KB &  742 & 256\\
+ & 32 &  24.4MB & 32KB &  1014KB & 1022KB &  953 & 335\\
+\hline
+\multirow{7}{*}{Big}  & 1 &  14.5GB & 43KB &  33KB & 33KB &  48 & 12\\
+ & 2 &  7.2GB & 35KB &  64KB & 65KB &  92 & 24\\
+ & 4 &  2.4GB & 36KB &  128KB & 130KB &  172 & 45\\
+ & 8 &  1748.3MB & 33KB &  254KB & 258KB &  331 & 89\\
+ & 16 &  665.10MB & 34KB &  508KB & 515KB &  620 & 177\\
+ & 24 &  271.3MB & 35KB &  761KB & 771KB &  871 & 265\\
+ & 32 &  193.5MB & 34KB &  1014KB & 1027KB &  1123 & 353\\
+\hline
+\end{tabular}
