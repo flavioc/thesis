@@ -164,7 +164,35 @@ usage also goes up. This is an artifact of our parallel memory allocator that
 allocates large chunks of memory beforehand. In terms of scalability, our
 experimental results show that the coordinated version running on 16 threads is
 almost 4 times faster than the hand-written sequential C program, while the
-regular version is barely as fast as the same C program. XXX
+regular version is barely as fast as the same C program.
+
+The run time and scalability results are presented in
+Fig.~\ref{fig:coordination:results_minmax}. There is a clear performance
+improvement when coordinating the MiniMax program due to the low memory usage.
+For the Big dataset, we now need only 5 threads to reach the performance of the
+sequential C++ program and, when using 32 threads, the LM program is more than
+four times faster than the C++ version. The use of coordination facts allows us
+to improve the execution of this declarative program and make it run
+significantly faster than it would be otherwise.
+
+\begin{figure}[]
+        \centering
+        \begin{subfigure}[b]{\plotsize\textwidth}
+           \includegraphics[width=\textwidth]{experiments/coordination/cmp-min-max-tictactoe-small.png}
+           \label{fig:coordination:coord_minimax_small}
+        \end{subfigure}
+        ~
+        \begin{subfigure}[b]{\plotsize\textwidth}
+           \includegraphics[width=\textwidth]{experiments/coordination/cmp-min-max-tictactoe-big.png}
+           \label{fig:coordination:coord_minimax_big}
+        \end{subfigure} \\
+
+        \caption{Scalability for the MiniMax program when using coordination.}
+
+        \label{fig:coordination:results_minmax}
+\end{figure}
+
+
 
 To prove that the MiniMax code shown in Fig.~\ref{code:coord:minimax} computes
 the best score along with the best possible move that the \code{root-player} can

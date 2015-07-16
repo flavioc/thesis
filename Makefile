@@ -121,6 +121,11 @@ coord:
 		experiments/coordination/sssp-coord-unbuffered.csv \
 		experiments/absolute/runtime.csv \
 		experiments/coordination/unbuffered-
+	$(RE) experiments/coordination/compare.py \
+		experiments/scalability/runtime.csv \
+		experiments/coordination/minmax-coord.csv \
+		experiments/absolute/runtime.csv \
+		experiments/coordination/cmp-
 allocator:
 	$(RE) experiments/scalability/compare-alloc.py \
 		experiments/scalability/runtime.csv \
