@@ -135,6 +135,16 @@ coord:
 		experiments/coordination/minmax-coord.csv \
 		experiments/absolute/runtime.csv \
 		experiments/coordination/cmp-
+	$(RE) experiments/coordination/compare.py \
+		experiments/scalability/runtime.csv \
+		experiments/coordination/ht-coord0.csv \
+		experiments/absolute/runtime.csv \
+		experiments/coordination/cmp-
+	$(RE) experiments/coordination/compare.py \
+		experiments/scalability/runtime.csv \
+		experiments/coordination/ht-coord.csv \
+		experiments/absolute/runtime.csv \
+		experiments/coordination/cmpnew-
 allocator:
 	$(RE) experiments/scalability/compare-alloc.py \
 		experiments/scalability/runtime.csv \

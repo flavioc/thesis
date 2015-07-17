@@ -700,6 +700,9 @@ def read_experiment_line(vec):
    if first.endswith("-coord"):
       first = first[:-len("-coord")]
       sched = "coord"
+   if first.endswith("-coord0"):
+      first = first[:-len("-coord0")]
+      sched = "coord"
    name = parse_name(first)
    dataset = parse_dataset(first)
    return sched, threads, name, dataset
