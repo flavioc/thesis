@@ -83,7 +83,7 @@ increased errors in the computed heat values.
 new-heat(A, New, Old)
 fabs(New - Old) <= epsilon,
 \underline[thread-id(A, T)]
-   -o {B, T | !edge(A, B), \underline[thread-id(B, T)] |\label[line:coord:ht_better_comp1]
+   -o {B, T | !edge(A, B), \underline[thread-id(B, T)] -o\label[line:coord:ht_better_comp1]
          new-neighbor-heat(B, A, New), \underline[thread-id(B, T)]},\label[line:coord:ht_better_comp2]
       \underline[thread-id(A, T)].
 \end{Verbatim}

@@ -33,35 +33,35 @@ thread facts. These kinds of programs use only explicit parallelism.
 
 \begin{figure}
 \begin{algorithm}[H]
-\KwData{Thread TH, THREADS}
-\While{true}{
-  $node \longleftarrow TH.work\_queue.pop\_node()$ \;
-  \uIf{$node$}{
-        \tcc{Have to use the thread's node}
+   \KwData{Thread TH}
+   \While{true}{
+      $TH.work\_queue.lock()$\;
+      $node \longleftarrow TH.work\_queue.pop\_node()$ \;
+      $TH.work\_queue.unlock()$\;
+      \uIf{$node$}{
         \underline{$TH.process\_node(node, TH.my\_node)$}\;
-  }
-  \Else{
-     $target \longleftarrow random(len(THREADS))$\;
-     $i \longleftarrow 0$\;
-     \For{$i < len(THREADS)$}{
-        $target \longleftarrow (target + 1) \% len(THREADS)$\;
-        $nodes = THREADS[target].steal\_half()$\;
-        \If{$len(nodes) > 0$}{                                                                                                    $TH.work\_queue.add\_to\_queue(nodes)$\;
-           break\;
-        }
-        $i \longleftarrow i + 1$\;
-     }
-     \If{$len(TH.work\_queue) == 0$}{
+      }
+      \Else{
         \tcc{The thread's node may have candidate rules using incoming thread facts}
         \underline{$TH.process\_node(nil, TH.my\_node)$}\;
-        $TH.become\_idle()$\;
-        \If{$TH.synchronize\_termination()$}{
-           \Return{}\;
-        }
-        $TH.become\_active()$\;
-     }
-  }
-}
+        \tcc{Attempt to steal some nodes.}
+         \If{$\bang TH.steal\_nodes()$}{
+            $TH.become\_idle()$\;
+            \While{$len(TH.work\_queue) == 0$}{
+               \tcc{Try to terminate}
+               \If{$TH.synchronize\_termination()$}{
+                  \textbf{terminate}\;
+               }
+               \If{$TH.steal\_nodes()$}{
+                  \tcc{Thread is still in the stealing state}
+                  break\;
+               }
+            }
+            \tcc{There's new nodes in the queue.}
+            $TH.become\_active()$\;
+         }
+      }
+ }
 \end{algorithm}
 \caption{Thread work loop updated to take into account thread-based facts.
 New and modified code is underlined.}
