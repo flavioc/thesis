@@ -145,6 +145,17 @@ coord:
 		experiments/coordination/ht-coord.csv \
 		experiments/absolute/runtime.csv \
 		experiments/coordination/cmpnew-
+	$(RE) experiments/coordination/queens.py \
+		experiments/scalability/runtime.csv \
+		experiments/coordination/queens.csv \
+		experiments/absolute/runtime.csv \
+		experiments/coordination/
+	$(RE) experiments/coordination/queens.py \
+		experiments/scalability/runtime.csv \
+		experiments/coordination/queens13.csv \
+		experiments/absolute/runtime.csv \
+		experiments/coordination/
+
 allocator:
 	$(RE) experiments/scalability/compare-alloc.py \
 		experiments/scalability/runtime.csv \

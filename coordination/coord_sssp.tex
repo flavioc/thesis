@@ -3,7 +3,8 @@ position to use them in the SSSP program presented before.  The coordinated
 version of the SSSP presented in Fig.~\ref{code:shortest_path_program_coord}
 uses the coordination fact \code{set-priority} (line~\ref{line:coord:sssp_set})
 and a global program directive to order priorities in ascending order
-(line~\ref{line:coord:sssp_asc}).
+(line~\ref{line:coord:sssp_asc}). The proof of correctness for this program is
+presented in Appendix~\ref{appendix:proofs:sssp}.
 
 When run with one thread, the algorithm behaves like Dijkstra's shortest path
 algorithm~\cite{Dijkstra}. When using multiple threads, each thread will pick
@@ -202,6 +203,3 @@ number of nodes and the coalescing optimization becomes worthy.
 
 \input{coordination/sssp_unbuffered}
 
-\subsection{Proof Of Correctness}
-
-\input{coordination/proof_sssp}

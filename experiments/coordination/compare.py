@@ -3,8 +3,8 @@
 import sys
 from lib import *
 
-if len(sys.argv) != 5:
-   print "usage: compare.py <regular runtime> <coordinated runtime> <sequential runtime> <prefix>"
+if len(sys.argv) < 5:
+   print "usage: compare.py <regular runtime> <coordinated runtime> <sequential runtime> <prefix> [name]"
    sys.exit(1)
 
 regular_sets = read_experiment_set(sys.argv[1])
@@ -27,6 +27,10 @@ for name in regular_threaded.experiment_names():
       coord_exp = coord_threaded.get_experiment(name, dataset)
       c_exp = cexp_set.get_experiment(name, dataset)
       if regular_exp and coord_exp:
-         regular_exp.coordination_compare(coord_exp, c_exp, sys.argv[4])
+         if len(sys.argv) == 6:
+            name = sys.argv[5]
+         else:
+            name = None
+         regular_exp.coordination_compare(coord_exp, c_exp, sys.argv[4], name)
 
 sys.exit(0)

@@ -1,9 +1,8 @@
-We have seen in Section~\ref{sec:coordination:bp} that the Loopy Belief
-Propagation program can obtain significant benefits from using different
-evaluation strategies due to the inherient non-determinism of LBP.  The proposed
-asynchronous approach has shown to be an improvement over the synchronous
-version because it leads to faster convergence time. An improved evaluation
-strategy is the Splash Belief
+\input{coordination/bp}
+
+The proposed asynchronous approach has shown to be an improvement over the
+synchronous version because it leads to faster convergence time. An improved
+evaluation strategy is the Splash Belief
 Propagation~(SBP)~\cite{Gonzalez+al:aistats09paraml}, where belief values are
 computed by first building a tree and then updating the beliefs of each node
 twice, first from the leaves to the root and then from the root to the leaves

@@ -73,6 +73,10 @@ def name2title(name):
    table = {'greedy-graph-coloring': 'Greedy Graph Coloring',
             'shortest': 'MSSD',
             '8queens': 'N-Queens',
+            '8queens-top': 'N-Queens',
+            '8queens-top-static': 'N-Queens',
+            '8queens-bottom': 'N-Queens',
+            '8queens-bottom-static': 'N-Queens',
             'tree': "Tree",
             'tree-coord': "Tree (coordinated)",
             'min-max-tictactoe': "MiniMax",
@@ -80,7 +84,11 @@ def name2title(name):
             'splash-bp-400': "Belief Propagation (400x400 with Splashes)",
             'pagerank': 'PageRank',
             'new-heat-transfer': 'Heat Transfer'}
-   return table[name]
+   try:
+      return table[name]
+   except KeyError:
+      print "could not find", name
+      return ''
 
 def parse_name(name):
    if name.startswith('belief-propagation'):
@@ -89,8 +97,12 @@ def parse_name(name):
       return 'new-heat-transfer'
    if name.startswith('min-max-tictactoe'):
       return 'min-max-tictactoe'
-   if name.startswith('8queens-'):
-      return '8queens'
+   if name.startswith('8queens'):
+      vec = name.split('-')
+      if len(vec) == 2:
+         return vec[0]
+      else:
+         return vec[0] + '-' + '-'.join(vec[2:])
    if name.startswith('shortest-'):
       return 'shortest'
    if name.startswith('greedy-graph-coloring-'):
@@ -103,6 +115,8 @@ def parse_dataset(name):
    if name == 'min-max-tictactoe':
       return 'small'
    vec = name.split('-')
+   if name.startswith('8queens'):
+      return vec[1]
    last = vec[len(vec)-1]
    return last
 
@@ -587,7 +601,7 @@ class experiment(object):
       titlefontsize = 22
       ylabelfontsize = 20
       if not title:
-         title = self.title
+         title = self.title_name
       ax.set_title(title, fontsize=titlefontsize)
       ax.yaxis.tick_right()
       ax.yaxis.set_label_position("right")
@@ -612,7 +626,7 @@ class experiment(object):
       name = prefix + self.name + ".png"
       plt.savefig(name)
 
-   def coordination_compare(self, coord_exp, cexp, prefix):
+   def coordination_compare(self, coord_exp, cexp, prefix, name_coord = None, max_speedup = None):
       fig = plt.figure()
       ax = fig.add_subplot(111)
       ax2 = ax.twinx()
@@ -621,7 +635,13 @@ class experiment(object):
       formats = ('f4')
       titlefontsize = 22
       ylabelfontsize = 20
-      ax.set_title(self.title, fontsize=titlefontsize)
+      if name_coord:
+         ax.set_title(self.name + " (" + name_coord + " " + self.dataset + ")", fontsize=titlefontsize)
+      else:
+         ax.set_title(self.title, fontsize=titlefontsize)
+      if not name_coord:
+         name_coord = "Coordinated"
+
       ax.yaxis.tick_left()
       ax.yaxis.set_label_position("left")
       ax.set_ylabel('Execution Time', fontsize=ylabelfontsize)
@@ -629,20 +649,22 @@ class experiment(object):
       ax2.set_ylabel('Speedup', fontsize=ylabelfontsize)
       ax.set_xlim([1, self.max_threads()])
       ax.set_ylim([0, max(self.max_time(), coord_exp.max_time())])
+      if max_speedup:
+         ax2.set_ylim([0, max_speedup])
       cmap = plt.get_cmap('gray')
 
       regtime, = ax.plot(self.x_axis(), self.time_data(),
          label='Regular Run Time', linestyle='-', marker='+', color='r')
-      coordtime, = ax.plot(self.x_axis(), coord_exp.time_data(),
-         label='Coordinated Run Time', linestyle='--', marker='o', color='g')
-      coordspeedup, = ax2.plot(self.x_axis(), coord_exp.base_speedup_data(self.get_time(1)),
-            label='Coordinated Speedup', linestyle='--', marker='+', color='g')
+      coordtime, = ax.plot(coord_exp.x_axis(), coord_exp.time_data(),
+         label=name_coord + ' Run Time', linestyle='--', marker='o', color='g')
+      coordspeedup, = ax2.plot(coord_exp.x_axis(), coord_exp.base_speedup_data(self.get_time(1)),
+            label=name_coord + ' Speedup', linestyle='--', marker='+', color='g')
       if cexp:
          ctime, = ax.plot(self.x_axis(), [cexp.get_time(1)] * len(self.x_axis()),
            label='Linear', linestyle='-', color=cmap(0.2))
 
       lines = [(regtime), coordtime, coordspeedup]
-      labels = ["Regular", "Coordinated", "Regular(1)/Coordinated(t)"]
+      labels = ["Regular", name_coord, "Regular(1)/" + name_coord + "(t)"]
       if cexp:
         lines.append(ctime)
         labels.append("C++")
@@ -658,9 +680,11 @@ class experiment(object):
    def __init__(self, name, dataset):
       self.name = name
       self.dataset = dataset
-      self.title = name2title(name)
+      self.title_name = name2title(name)
       if dataset:
-         self.title = self.title + " (" + dataset2title(dataset, name) + ")"
+         self.title = self.title_name + " (" + dataset2title(dataset, name) + ")"
+      else:
+         self.title = self.title_name
       self.times = {}
       self.total_memory_average = {}
       self.total_memory = {}
