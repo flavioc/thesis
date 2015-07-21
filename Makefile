@@ -172,6 +172,11 @@ allocator:
 		experiments/scalability/fact-allocator-no-refs.csv \
 		experiments/scalability/no-refs \
 		"Threaded Alloc" "Fact No Refs Alloc"
+
+thread:
+	$(RE) experiments/threads/compare.py \
+		experiments/threads/search.csv \
+		experiments/threads/cmp-
 	
 clean:
 	rm -f thesis.pdf *.bbl *.blg *.log *.lot \

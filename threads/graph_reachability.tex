@@ -255,4 +255,33 @@ addition, the use of linear logic programming makes it easier to prove
 properties of the program since computation is done by applying controlled
 changes to the state.
 
+\begin{figure}[]
+        \centering
+        \begin{subfigure}[b]{\plotsize\textwidth}
+           \includegraphics[width=\textwidth]{experiments/threads/cmp-search-facebook.png}
+           \caption{}
+           \label{fig:threads:search_facebook}
+        \end{subfigure}
+        ~
+        \begin{subfigure}[b]{\plotsize\textwidth}
+           \includegraphics[width=\textwidth]{experiments/threads/cmp-search-twitter.png}
+           \caption{}
+           \label{fig:threads:search_twitter}
+        \end{subfigure} \\
+        \begin{subfigure}[b]{\plotsize\textwidth}
+           \includegraphics[width=\textwidth]{experiments/threads/cmp-search-random.png}
+           \caption{}
+           \label{fig:threads:search_random}
+        \end{subfigure} ~
+        \begin{subfigure}[b]{\plotsize\textwidth}
+           \includegraphics[width=\textwidth]{experiments/threads/cmp-search-pokec.png}
+           \caption{}
+           \label{fig:threads:search_pokec}
+        \end{subfigure} \\
+        \caption{Scalability for the N-Queens 14 program when using different
+        scheduling and partitioning policies.}
+        \label{fig:coordination:results_queens-14}
+\end{figure}
+
+
 \clearpage

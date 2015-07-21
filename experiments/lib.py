@@ -24,6 +24,8 @@ def dataset2title(dataset, name):
             '14': '14',
             'small': 'Small',
             'big': 'Big',
+            'facebook': 'Facebook',
+            'random': 'Random',
             '200': '200x200',
             '50': '50x50',
             '300': '300x300',
@@ -72,6 +74,7 @@ def sort_datasets(name, l):
 def name2title(name):
    table = {'greedy-graph-coloring': 'Greedy Graph Coloring',
             'shortest': 'MSSD',
+            'search': 'Graph Reachability',
             '8queens': 'N-Queens',
             '8queens-top': 'N-Queens',
             '8queens-top-static': 'N-Queens',
@@ -91,6 +94,8 @@ def name2title(name):
       return ''
 
 def parse_name(name):
+   if name.startswith('search-'):
+      return 'search'
    if name.startswith('belief-propagation'):
       return 'belief-propagation'
    if name.startswith('new-heat-transfer'):
@@ -119,11 +124,6 @@ def parse_dataset(name):
       return vec[1]
    last = vec[len(vec)-1]
    return last
-
-def coordinated_program(name):
-   if name == 'belief-propagation-400':
-      return 'splash-bp-400'
-   return name + '-coord'
 
 class experiment_set(object):
    def add_experiment(self, name, dataset, threads, time):
@@ -626,6 +626,53 @@ class experiment(object):
       name = prefix + self.name + ".png"
       plt.savefig(name)
 
+   def threads_compare(self, coord_exp, cexp, prefix):
+      fig = plt.figure()
+      ax = fig.add_subplot(111)
+      ax2 = ax.twinx()
+
+      names = ('Scalability')
+      formats = ('f4')
+      titlefontsize = 22
+      ylabelfontsize = 20
+      ax.set_title(self.title, fontsize=titlefontsize)
+      name_coord = 'Threads'
+
+      ax.yaxis.tick_left()
+      ax.yaxis.set_label_position("left")
+      ax.set_ylabel('Execution Time', fontsize=ylabelfontsize)
+      ax.set_xlabel('Threads', fontsize=ylabelfontsize)
+      ax2.set_ylabel('Speedup', fontsize=ylabelfontsize)
+      ax.set_xlim([1, self.max_threads()])
+      ax.set_ylim([0, max(self.max_time(), coord_exp.max_time())])
+      cmap = plt.get_cmap('gray')
+
+      regtime, = ax.plot(self.x_axis(), self.time_data(),
+         label='Regular Run Time', linestyle='-', marker='+', color='r')
+      coordtime, = ax.plot(coord_exp.x_axis(), coord_exp.time_data(),
+         label=name_coord + ' Run Time', linestyle='--', marker='o', color='g')
+      coordspeedup, = ax2.plot(coord_exp.x_axis(), coord_exp.base_speedup_data(self.get_time(1)),
+            label=name_coord + ' Speedup', linestyle='--', marker='+', color='g')
+      regspeedup, = ax2.plot(self.x_axis(), self.base_speedup_data(),
+            label='Regular Speedup', linestyle='--', marker='+', color='r')
+      if cexp:
+         ctime, = ax.plot(self.x_axis(), [cexp.get_time(1)] * len(self.x_axis()),
+           label='Linear', linestyle='-', color=cmap(0.2))
+
+      lines = [(regtime), coordtime, regspeedup, coordspeedup]
+      labels = ["Regular", name_coord, "Regular(1)/Regular(t)", "Regular(1)/" + name_coord + "(t)"]
+      if cexp:
+        lines.append(ctime)
+        labels.append("C++")
+
+      ax.legend(lines, labels, loc=2, fontsize=18, markerscale=2)
+
+      setup_lines(ax, cmap)
+      setup_lines(ax2, cmap)
+
+      name = prefix + self.create_filename()
+      plt.savefig(name)
+
    def coordination_compare(self, coord_exp, cexp, prefix, name_coord = None, max_speedup = None):
       fig = plt.figure()
       ax = fig.add_subplot(111)
@@ -724,6 +771,9 @@ def read_experiment_line(vec):
    if first.endswith("-coord"):
       first = first[:-len("-coord")]
       sched = "coord"
+   if first.endswith("-threads"):
+      first = first[:-len("-threads")]
+      sched = "threads"
    if first.endswith("-coord0"):
       first = first[:-len("-coord0")]
       sched = "coord"
