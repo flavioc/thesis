@@ -12,7 +12,12 @@ try: regular = sets["th"]
 except: sys.exit(1)
 
 try: thread = sets["threads"]
-except: sys.exit(1)
+except:
+   try:
+      thread = sets["coord"]
+   except KeyError:
+      print "no threaded datasets"
+      sys.exit(1)
 
 for name in regular.experiment_names():
    datasets = regular.experiment_datasets_for(name)

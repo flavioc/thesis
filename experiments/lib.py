@@ -22,6 +22,11 @@ def dataset2title(dataset, name):
             '12': '12',
             '13': '13',
             '14': '14',
+            '50000C2000G': '50000 C / 2000 G',
+            '500000C2000G': '0.5M C / 2000 G',
+            '500000C64G': '0.5M C / 64 G',
+            '1M4000C-low': '1M C / 4000 G / Low Variability',
+            '1M4000C-high': '1M C / 4000 G / High Variability',
             'small': 'Small',
             'big': 'Big',
             'facebook': 'Facebook',
@@ -86,6 +91,7 @@ def name2title(name):
             'belief-propagation': "Belief Propagation",
             'splash-bp-400': "Belief Propagation (400x400 with Splashes)",
             'pagerank': 'PageRank',
+            'powergrid': 'PowerGrid',
             'new-heat-transfer': 'Heat Transfer'}
    try:
       return table[name]
@@ -94,6 +100,8 @@ def name2title(name):
       return ''
 
 def parse_name(name):
+   if name.startswith('powergrid'):
+      return 'powergrid'
    if name.startswith('search-'):
       return 'search'
    if name.startswith('belief-propagation'):
@@ -122,8 +130,23 @@ def parse_dataset(name):
    vec = name.split('-')
    if name.startswith('8queens'):
       return vec[1]
+   if name.startswith('powergrid'):
+      s = "-".join(vec[1:])
+      if s == "1000000-2": return "1M4000C-high"
+      if s == "1000000": return "1M4000C-low"
+      if s == "500000": return "500000C2000G"
+      if s == "500000-64": return "500000C64G"
+      if s == "50000": return "50000C2000G"
+      return s
    last = vec[len(vec)-1]
    return last
+
+def sort_string(item):
+   try:
+      val = int(item.partition(' ')[0])
+      return (val if len(item) > 0 and item[0].isdigit() else float('inf'), item)
+   except:
+      return (float('inf'), item)
 
 class experiment_set(object):
    def add_experiment(self, name, dataset, threads, time):
@@ -169,8 +192,7 @@ class experiment_set(object):
 
    def experiment_datasets_for(self, name):
       l = [dataset for (name2, dataset) in self.experiments.keys() if name == name2]
-      l = sorted(l, key=lambda item: (int(item.partition(' ')[0])
-                                        if len(item) > 0 and item[0].isdigit() else float('inf'), item))
+      l = sorted(l, key=sort_string)
       l = sort_datasets(name, l)
       return l
 

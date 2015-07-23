@@ -1,4 +1,4 @@
-Consider a powergrid with $C$ consumers and $G$ generators. We are interested
+Consider a power grid with $C$ consumers and $G$ generators. We are interested
 in connecting each consumer to a single generator, but each generator has a
 limited capacity and the consumer draws a certain amount of power from the
 generator. A valid powergrid is built in such a way that all consumers are
@@ -16,7 +16,7 @@ generator.
    \label{fig:threads:powergrid}
 \end{wrapfigure}
 
-A straightforward distributed implementation for the powergrid problem requires
+A straightforward distributed implementation for the PowerGrid problem requires
 that each consumer is able to connect to a any generator. Once a generator
 receives a connection request, it may or may not accept it. If the generator has
 no power available for the new consumer, it will disconnect from it and the
@@ -96,7 +96,7 @@ disconnect(C, G), connected(C, G)*hfill// Rule 7: finish disconnection.
 connected-to-list(G, []). fails(G, 0).*hfill// Initial facts.
 disconnected(C). reconnect(C). !generators(C, all-generators).
 \end{Verbatim}
-\caption{LM code for the regular powergrid program.}
+\caption{LM code for the regular PowerGrid program.}
 \label{code:threads:powergrid}
 \end{figure}
 
@@ -111,7 +111,7 @@ our solution, we will partition the set of generators $G$ among the threads in
 the system and make each thread assume the ownership of its generators. The
 thread can then process consumers with a global view over its set of generators,
 allowing the immediate assignment iof consumers to generators.
-Figure~\ref{fig:threads:powergrid} shows how a powergrid configuration is
+Figure~\ref{fig:threads:powergrid} shows how a PowerGrid configuration is
 re-configured to take into account the number of available threads.
 
 The LM code using thread facts shown in Fig.~\ref{code:threads:powergridt} uses
@@ -189,8 +189,37 @@ disconnect(C, G), connected(C, G)
 thread-total-capacity(T, 0, 0).*hfill// Initial facts.
 fails(G, 0).  disconnected(C).  reconnect(C).  !generators(C, all-generators).  start(G).
 \end{Verbatim}
-\caption{LM code for the optimized powergrid program.}
+\caption{LM code for the optimized PowerGrid program.}
 \label{code:threads:powergridt}
 \end{figure}
+
+\begin{figure}[]
+        \centering
+        \begin{subfigure}[b]{\plotsize\textwidth}
+           \includegraphics[width=\textwidth]{experiments/threads/cmp-powergrid-500000C2000G.png}
+           \caption{}
+           \label{fig:threads:powergrid1}
+        \end{subfigure}
+        ~
+        \begin{subfigure}[b]{\plotsize\textwidth}
+           \includegraphics[width=\textwidth]{experiments/threads/cmp-powergrid-500000C64G.png}
+           \caption{}
+           \label{fig:threads:powergrid2}
+        \end{subfigure} \\
+        \begin{subfigure}[b]{\plotsize\textwidth}
+           \includegraphics[width=\textwidth]{experiments/threads/cmp-powergrid-1M4000C-low.png}
+           \caption{}
+           \label{fig:threads:powergrid3}
+        \end{subfigure} ~
+        \begin{subfigure}[b]{\plotsize\textwidth}
+           \includegraphics[width=\textwidth]{experiments/threads/cmp-powergrid-1M4000C-high.png}
+           \caption{}
+           \label{fig:threads:powergrid4}
+        \end{subfigure} \\
+        \caption{Measuring the performance of the PowerGrid program
+        when using thread facts.}
+        \label{fig:coordination:results_powergrid}
+\end{figure}
+
 
 \clearpage

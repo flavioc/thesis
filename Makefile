@@ -177,6 +177,9 @@ thread:
 	$(RE) experiments/threads/compare.py \
 		experiments/threads/search.csv \
 		experiments/threads/cmp-
+	$(RE) experiments/threads/compare.py \
+		experiments/threads/powergrid.csv \
+		experiments/threads/cmp-
 	
 clean:
 	rm -f thesis.pdf *.bbl *.blg *.log *.lot \
