@@ -1,7 +1,7 @@
 As already explained in Chapter~\ref{chapter:implementation}, the set of nodes
 of an LM program is seen as a graph data structure $G = (V, E)$ with nodes $V$
 and edges $E$ where threads $T$ perform work. Our implementation also allows
-threads to steal nodes from other threads in order to improve scalability.
+threads to steal nodes from other threads in order to improve load balancing.
 However, there are many scheduling details that are left undefined. How should a
 thread schedule the computation of its sub-graph? Is node stealing beneficial to
 all programs? What is the best sub-graph partitioning for a given LM program?
@@ -11,7 +11,7 @@ partitioning policies. This is an important functionality because LM uses linear
 logic and thus the order in which nodes are scheduled can impact the performance
 and even the results of the program.
 
-\section{Rationale}\label{section:coord:rationale}
+\section{Motivation}\label{section:coord:rationale}
 
 \input{coordination/rationale}
 
@@ -62,6 +62,4 @@ In this chapter we presented the current set of coordination directives,
 implemented as sensing and action facts. The use of such facilities allows the
 programmer to write derivation rules that change how the runtime system
 schedules computation thus improving the executing time and possibly the final
-program results. As future work, we intend to extend the set of available
-directives and write additional programs using coordination.
-
+program results.

@@ -1,8 +1,6 @@
 We provide several coordination facts for dealing with node partitioning among
 the running threads. Since each node is placed in some thread, the partitioning
-facts revolve around thread placement.
-
-In terms of action facts, we have the
+facts revolve around thread placement.  In terms of action facts, we have the
 following:
 
 \begin{itemize}
@@ -12,15 +10,15 @@ following:
    \item \code{set-affinity(node A, node B)}: Places node \texttt{B} in
    the thread of node \texttt{A}.
 
-   \item \code{set-moving(node A)}: Allows node \texttt{A} to move freely
-   between threads.
-
    \item \code{set-static(node A)}: Forces node \texttt{A} to stay in the
    same thread indefinitely.
 
+   \item \code{set-moving(node A)}: Allows node \texttt{A} to move freely
+   between threads.
+
 \end{itemize}
 
-As an example of \texttt{set-thread}, consider the graph in
+As an example of \texttt{set-thread}, consider again the graph in
 Fig.~\ref{fig:coordination:priorities}. If a coordination fact
 \texttt{set-thread(@2, T1)} is derived, then node \texttt{@2} will become part
 of the sub-graph of thread \texttt{T1}. The result is shown in
@@ -35,24 +33,24 @@ Fig.~\ref{fig:coordination:partitioning}.
 \label{fig:coordination:partitioning}
 \end{figure}
 
-
 Sensing facts retrieve information about node placement and are specified as
 follows:
 
 \begin{itemize}
 
-   \item \code{thread-id(node A, thread T)}: Store at node \texttt{A} which
-      thread \texttt{T}, \texttt{B} is running on.
+   \item \code{thread-id(node A, thread T)}: Linear fact that maps node \code{A}
+      to thread \code{T} which \code{A} belongs to. Fact \code{set-thread}
+      implicitly updates fact \code{thread-id}.
 
+   \item \code{is-static(node A)}: Fact available at node \texttt{A} if
    \item \code{is-moving(node A)}: Fact available at node \texttt{A} if
       \texttt{A} is allowed to move between threads.
 
-   \item \code{is-static(node A)}: Fact available at node \texttt{A} if
       \texttt{A} is not allowed to move between threads.
 
-   \item \code{just-moved(node A)}: Linear fact derived after the
-      \code{set-thread} action is performed and the node is running on the
-      target thread.
+   \item \code{just-moved(node A)}: Linear fact derived by the
+      \code{set-thread} action if, at that moment, the node \code{A} is running
+      on the target thread.
 
 \end{itemize}
 

@@ -15,45 +15,50 @@ The following list presents the action facts available to manipulate the
 scheduling decisions of the system:
 
 \begin{itemize}
-   \item \code{set-priority(node A, float F)}: This sets the
-   temporary priority of \texttt{A} to \texttt{F}. If \texttt{A} has priority
-   \texttt{F'}, we only change the priority if \texttt{F} is higher. The programmer
-   can decide if priorities are to be ordered in ascending or descending order.
-   \item \code{add-priority(node A, float F)}: Increases,
-   temporarily, the priority of node \texttt{A} by \texttt{F}.
+
+   \item \code{set-priority(node A, float F)}: Sets the temporary priority of
+      node \code{A} to \code{F}.  The programmer can decide if priorities
+      are to be ordered in ascending or descending order, thus if node \code{A}
+      has priority \code{G}, we only change it to \code{F} is \code{F > G}
+      (ascending order) or \code{F < G} (descending order).
+
+   \item \code{add-priority(node A, float F)}: Increases the temporary priority
+      of node \code{A} by \code{F}.
+
    \item \code{remove-priority(node A)}: Removes the temporary priority from node
-   \texttt{A}.
+   \code{A}.
+
    \item \code{schedule-next(node A)}: Changes the temporary priority of node
-   \texttt{A} to be $+\infty$.
-   \item \code{set-default-priority(node, float)}: Sets the default
-   priority of the node.
+   \code{A} to be $+\infty$.
+
+   \item \code{set-default-priority(node A, float F)}: Sets the default
+      priority of node \code{A} to \code{F}.
+
    \item \code{stop-program()}: Immediately stops the execution of the whole program.
+
 \end{itemize}
 
-LM provides the sensing facts \code{priority(node A, float P)} and
-\code{default-priority(node A, float DP)} in order to provide the priority
-\code{P} or the default priority \code{DP} of node \code{A}, respectively.
-Sensing facts can only be used in the body of rules and are exempt from the
-constraint that forces every fact used in the body to have the same first
-argument. Also note that when sensing facts are used to prove new facts, they
-are re-derived automatically. All the coordination facts are linear and are
-consumed when used in the body of a rule.  The system creates the necessary code
-to re-derive them without programmer interaction. Likewise,
-\texttt{set-priority} and \texttt{set-default-priority} update the value of
-\texttt{priority} facts by retracting and re-asserting them but this is done
-automatically by the runtime system.
+LM also provides two sensing facts \code{priority(node A, float P)} and
+\code{default-priority(node A, float P)}, which consult, respectively, the
+temporary priority or default priority \code{P} of node \code{A}.  Sensing facts
+can only be used in the body of rules and are exempt from the constraint that
+forces every fact used in the body to have the same first argument. Also note
+that when sensing facts are used to prove new facts, they are re-derived
+automatically. All coordination facts are linear and thus consumed when used in
+the body of a rule.  The system creates the necessary code to re-derive them
+without programmer interaction. Likewise, \code{set-priority} and
+\code{set-default-priority} update the value of \code{priority} facts by
+retracting and re-asserting them but this is done implicitely by the runtime
+system.
 
-The priorities assigned to nodes are respected on a thread basis, therefore a
+The priorities assigned to nodes are followed on a per-thread basis, therefore a
 thread will always pick the highest priority node on its sub-graph but not the
 highest priority node of the whole graph.
-Figure~\ref{fig:coordination:priorities} shows a graph that is being processed
-by two threads \texttt{T0} and \texttt{T1}. The order for \texttt{T0} will be
-\texttt{@0}, \texttt{1}, \texttt{@3}, \texttt{@2} and for thread \texttt{T1} it
-will be \texttt{@4}, \texttt{@6}, \texttt{@5}.  Priorities can also be seen as
-hints because they do not provide a global ordering but only a local ordering
-that is somewhat similar to the global ordering. The only exception is
-\texttt{schedule-next}, which, when the target node is located in the current
-thread, will always be enforced.
+Figure~\ref{fig:coordination:priorities} shows an example of a graph being
+processed by two threads, \code{T0} and \code{T1}. The order for \code{T0} will
+be \code{@0}, \code{@1}, \code{@3}, \code{@2} and for thread \code{T1} it will
+be \code{@4}, \code{@6}, \code{@5}. Priorities can also be seen as hints because
+they do not provide a global ordering but only a per-thread ordering.
 
 Note that priorities of nodes can be set from any node in the graph, even if those nodes
 live on different threads. Of course, this implies communication between
@@ -64,7 +69,7 @@ threads.
    \includegraphics[width=0.6\textwidth]{figures/coordination/priorities.pdf}
 \end{center}
 \caption{Priorities with sub-graph partitioning. Priorities are used on a
-   per-thread basis therefore thread \texttt{T0} schedules \texttt{@0} to
-   execute, while \texttt{T1} schedules node \texttt{@4}.}
+   per-thread basis therefore thread \code{T0} schedules \code{@0} to
+   execute, while \code{T1} schedules node \code{@4}.}
 \label{fig:coordination:priorities}
 \end{figure}
