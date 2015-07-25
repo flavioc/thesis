@@ -33,14 +33,13 @@ as sensing or action facts but are still important:
 
 \begin{itemize}
 
-   \item \texttt{priority @order ORDER.} \texttt{ORDER} can be either
-      \texttt{asc} or \texttt{desc}. This defines if node's are to be selected
-      by the smallest or the greatest priority, respectively.
+   \item \texttt{priority @order ORDER} (\texttt{ORDER} can be either \code{asc}
+      or \code{desc}): Defines if priorities are to be selected by the smallest
+      or the greatest value, respectively.
 
-   \item \texttt{priority @initial P.} The \texttt{initial} statement informs
-      the runtime system that all nodes must start with priority $P$.
-      Alternatively, the programmer can define an \texttt{set-priority(A, P)}
-      axiom.
+   \item \texttt{priority @initial P}: Informs the runtime system that all nodes
+      must start with priority $P$.  Alternatively, the programmer can define an
+      \texttt{set-priority(A, P)} axiom.
 
 \end{itemize}
 
