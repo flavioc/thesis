@@ -1,11 +1,12 @@
 To motivate the need for coordination, we use the Single Source Shortest
 Path~(SSSP) program, a concise program that, as we will see, can take advantage
 of custom scheduling policies to improve its performance.
-Figure~\ref{code:shortest_path_program} shows a possible implementation in LM,
-and Fig.~\ref{fig:shortest_path_program} shows its graphical representation.
-Note that in Section~\ref{section:implementation:performance}, we have already
-presented the MSSD program which is essentially the SSSP program modified to compute
-multiple shortest distances.
+Figure~\ref{code:shortest_path_program} and Figure~\ref{code:coord:sssp_init}
+shows a possible implementation in LM, and Fig.~\ref{fig:shortest_path_program}
+shows its graphical representation. Note that in
+Section~\ref{section:implementation:performance}, we have already presented the
+MSSD program which is essentially the SSSP program modified to compute multiple
+shortest distances.
 
 The SSSP program starts with the declaration of the predicates~
 (lines~\ref{line:coord:sssp_pred1}-\ref{line:coord:sssp_pred2}). The first
@@ -16,11 +17,11 @@ node in the first argument. Predicate \code{relax} also represents a valid path,
 but, is instead used to improve the distance in \code{shortest}.  The program
 computes the shortest distance from node \code{@1} by improving the distance in
 the \code{shortest} facts, until the shortest distance is reached in all nodes.
-Lines~\ref{line:coord:sssp_axioms1}-\ref{line:coord:sssp_axioms2} declare the
-initial facts of the program: \code{edge} facts describe the graph;
-\code{shortest(A, +00, [])} is the initial shortest distance (infinity) for all
-nodes; and \code{relax(@1, 0, [@1])} starts the algorithm by setting the
-distance from \code{@1} to \code{@1} to be 0.
+In Fig.~\ref{code:coord:sssp_init}, we declare an example set of initial facts
+for the program: \code{edge} facts describe the graph; \code{shortest(A, +00,
+[])} is the initial shortest distance (infinity) for all nodes; and
+\code{relax(@1, 0, [@1])} starts the algorithm by setting the distance from
+\code{@1} to \code{@1} to be 0.
 
 \begin{figure}[ht]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\#\&]
@@ -34,17 +35,38 @@ shortest(A, D1, P1), D1 > D2, relax(A, D2, P2)*label#line:coord:sssp_first1&*hfi
 
 shortest(A, D1, P1), D1 <= D2, relax(A, D2, P2)*label#line:coord:sssp_second1&*hfill// Rule 2: longer path
    -o shortest(A, D1, P1).*label#line:coord:sssp_second2&
-
-!edge(@1, @2, 3). !edge(@1, @3, 1).*label#line:coord:sssp_axioms1&*hfill// Initial facts
-!edge(@3, @2, 1). !edge(@3, @4, 5).
-!edge(@2, @4, 1).
-shortest(A, +00, []).
-relax(@1, 0, [@1]).*label#line:coord:sssp_axioms2&
 \end{Verbatim}
 \caption{Single Source Shortest Path program code.}
 \label{code:shortest_path_program}
 \end{figure}
 
+\begin{figure}[ht]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\#\&]
+!edge(@1, @2, 3). !edge(@1, @3, 1).
+!edge(@3, @2, 1). !edge(@3, @4, 5).
+!edge(@2, @4, 1).
+shortest(A, +00, []).
+relax(@1, 0, [@1]).
+\end{Verbatim}
+\caption{Initial facts for the SSSP program.}
+\label{code:coord:sssp_init}
+\end{figure}
+
+\iffalse
+\begin{figure}[ht]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\#\&]
+!edge(@1, @2, 3). !edge(@1, @3, 1).
+!edge(@3, @2, 1). !edge(@3, @4, 5).
+!edge(@2, @4, 1).
+shortest(@1, 0, []).
+shortest(@2, 2, [@1, @3, @2]).
+shortest(@3, 1, [@1, @3]).
+shortest(@4, 3, [@1, @3, @2, @4]).
+\end{Verbatim}
+\caption{Final database of facts for the SSSP program.}
+\label{code:coord:sssp_end}
+\end{figure}
+\fi
 \begin{figure}
 \begin{center}
    \begin{subfigure}[b]{0.49\textwidth}

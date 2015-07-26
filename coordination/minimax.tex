@@ -42,8 +42,12 @@ node \code{B} using the \code{exists} language construct. We link \code{B} with
 \code{A} using \code{parent(B, A)} and kickstart the recursive expansion of node
 \code{B} by deriving a \code{play} fact. Finally, the rule in
 lines~\ref{line:coord:minimax_expand11}-\ref{line:coord:minimax_expand2} is for
-the case when the current player cannot play in the current game position. The
-full proof of correctness is presented in
+the case when the current player cannot play in the current game position.
+
+At the end of execution, there should be a single fact, namely, \code{score(@1,
+Score, Play)}, where \code{Score} is the MiniMax score for the best play
+\code{Play} that can be made by the main player for the initial game state. Note
+that the full proof of correctness of the MiniMax program is presented in
 Appendix~\ref{appendix:proofs:minimax}.
 
 \iffalse

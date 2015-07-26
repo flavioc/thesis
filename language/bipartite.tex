@@ -56,8 +56,8 @@ possible states that a node can be in, namely:
 \begin{itemize}
    \item $U$ (\code{uncolored} nodes)
    \item $F$ (\code{fail} nodes)
-   \item $C_{1}$ (\code{colored(A, 1)} nodes)
-   \item $C_{2}$ (\code{colored(A, 2)} nodes)
+   \item $C_{1}$ ($\mathtt{colored}(A, 1)$ nodes)
+   \item $C_{2}$ ($\mathtt{colored}(A, 2)$ nodes)
 \end{itemize}
 \end{invariant}
 \begin{proof}
@@ -65,9 +65,9 @@ Initially, all nodes start in set $U$. All the 4 rules of the programs either
 keep the node in the same set or exchange the node with another set.
 \end{proof}
 
-A bipartite graph is one where in every \code{edge(a, b)}, there is a valid
-   assignment that makes \code{a} member of set $C_{1}$ or $C_{2}$ and node
-   \code{b} member of either $C_{2}$ or $C_{1}$ respectively.
+A bipartite graph is one where in every $\mathtt{edge}(a, b)$, there is a valid
+   assignment that makes $a$ member of set $C_{1}$ or $C_{2}$ and node
+   $b$ member of either $C_{2}$ or $C_{1}$ respectively.
 
 \begin{variant}[Bipartiteness
    Convergence]\label{language:lemma:bipartite_convergence}
@@ -79,6 +79,7 @@ A bipartite graph is one where in every \code{edge(a, b)}, there is a valid
       \item Set $U$ will decrease and set $C_{1}$ or $C_{2}$ will
          increase, with a potential increase in the number of \code{visit}
          facts.
+
       \item Set $C_{1}$ or $C_{2}$ will stay the same, while the number
          of \code{visit} facts will be reduced.
 

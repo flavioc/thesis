@@ -109,22 +109,24 @@ happens to the database given the presence of some logical facts.
 
 \begin{lemma}[Split lemma]
 
-If a \code{split(A, Pivot, L, Small, Great)} fact exists then it will be
-consumed and a \code{split(A, Pivot, [], Small' ++ Small, Great' ++ Great)} fact
-will be derived, where the elements of \code{Small'} are lesser or equal than \code{Pivot} and
-the elements of \code{Great'} are greater than \code{Pivot}.
+If a $\mathtt{split}(A, Pivot, L, Small, Great)$ fact exists then it will be
+consumed to derive a $\mathtt{split}(A, Pivot, [], Small' ++ Small, Great' ++
+Great)$ fact, where the elements of $Small'$ are lesser or equal than $Pivot$
+and the elements of $Great'$ are greater than $Pivot$.
 
 \end{lemma}
 \begin{proof}
-By induction on the size of \code{L}.
+By induction on the size of $L$.
 \end{proof}
 
 \begin{theorem}[Sort theorem]
-If a \code{down(A, L)} fact exists then it will be consumed and a \code{up(A,
-L')} fact will be derived, where \code{L'} is the sorted list of \code{L}.
+
+If a $\mathtt{down}(A, L)$ fact exists then it will be consumed and a
+$\mathtt{up}(A, L')$ fact will be derived, where $L'$ is the sorted list of $L$.
+
 \end{theorem}
 \begin{proof}
-By induction on the size of \code{L}.
+By induction on the size of $L$.
 
 The base cases are proven trivially (rules 1-4).
 
@@ -133,9 +135,9 @@ In the inductive case we start with rule 5:
 down(A, [Pivot | Xs]) -o split(A, Pivot, Xs, [], []).
 \end{Verbatim}
 
-and necessarily derive \code{split(A, Pivot, Xs, [], [])}. Using the split
-lemma, then we get \code{split(A, Pivot, [], Smaller, Greater)}, which leads us
-to use the rule 6::
+and necessarily derive $\mathtt{split}(A, Pivot, Xs, [], [])$. Using the split
+lemma, then we get a $\mathtt{split}(A, Pivot, [], Smaller, Greater)$ fact,
+which leads us to use rule 6:
 
 \begin{Verbatim}[fontsize=\codesize]
 split(A, Pivot, [], Smaller, Greater) -o
@@ -143,20 +145,20 @@ split(A, Pivot, [], Smaller, Greater) -o
                  down(B, Smaller), down(C, Greater), waitpivot(A, Pivot, B, C)).
 \end{Verbatim}
 
-and derive \code{back(B, A)}, \code{back(C, A)}, \code{down(B, Smaller)},
-\code{down(C, Greater)} and \code{waitpivot(A, Pivot, B, C)}. The semantics of
-LM ensure that \code{B} and \code{C} are fresh node addresses, therefore those
-new facts will be derived on nodes with no facts. We know that \code{Smaller}
-and \code{Greater} are both smaller (in size) than \code{L}, so, if we use the
-induction hypothesis, we get \code{up(B, Smaller')} and \code{up(C, Greater')}.
-These last two facts will be applied using the following rule:
+and then derive $\mathtt{back}(B, A)$, $\mathtt{back}(C, A)$, $\mathtt{down}(B,
+Smaller)$, $\mathtt{down}(C, Greater)$ and also a $\mathtt{waitpivot}(A, Pivot, B, C)$ fact. The semantics of LM ensure that $B$ and $C$ are fresh node
+addresses, therefore those new facts will be derived on nodes with no facts. We
+know that $Smaller$ and $Greater$ are both smaller (in size) than $L$, so, if we
+use the induction hypothesis, we get $\mathtt{up}(B, Smaller')$ and
+$\mathtt{up}(C, Greater')$.  These last two facts will be applied using the
+following rule:
 
 \begin{Verbatim}[fontsize=\codesize]
 up(A, L), back(A, B) -o sorted(B, A, L).
 \end{Verbatim}
 
-thus, generating \code{sorted(A, B, Smaller')} and \code{sorted(A, C,
-Greater')}. In the continuation, we can use only the rule that accepts
+thus generating $\mathtt{sorted}(A, B, Smaller')$ and $\mathtt{sorted}(A, C,
+Greater')$. In the continuation, we can use only the rule that accepts
 \code{sorted} and \code{waitpivot} facts:
 
 \begin{Verbatim}[fontsize=\codesize]
@@ -166,10 +168,10 @@ sorted(A, NodeGreater, Greater)
    -o up(A, Smaller ++ [Pivot | Greater]). // Append the lists.
 \end{Verbatim}
 
-returning \code{up(A, Smaller' ++ [Pivot | Greater'])}.  We know that
-\code{Smaller' ++ [Pivot | Greater']} is sorted since \code{Small'} contains the
-sorted list of elements lesser or equal than \code{Pivot} and \code{Greater'}
-the elements greater than \code{Pivot}.
+returning $\mathtt{up}(A, Smaller' ++ [Pivot | Greater'])$.  We know that
+$Smaller' ++ [Pivot | Greater']$ is sorted since $Small'$ contains the sorted
+list of elements lesser or equal than $Pivot$ and $Greater'$ the elements
+greater than $Pivot$.
 
 \end{proof}
 

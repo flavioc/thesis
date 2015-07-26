@@ -98,7 +98,7 @@ the rules. First, we define what is a visit graph:
 \begin{definition}[Visit graph]
 A visit graph is an ordered pair $G = (N, E)$ comprising a set $N$ of nodes together
 with a set $E$ of edges. Set $E$ contains pairs $(A, B)$ that correspond to
-facts \code{\bang edge(A, B)}. For every pair $(A, B) \in E$ there is also a
+facts $\bang \mathtt{edge}(A, B)$. For every pair $(A, B) \in E$ there is also a
 pair $(B, A) \in E$, representing an undirected edge.
 \end{definition}
 
@@ -180,7 +180,7 @@ Proof by induction.
    \item Inductive case: assume a set $V'$ and a set $U'$ that contains the
    \code{visited} and \code{unvisited} nodes, respectively. Since the graph
    is connected, there must be a node $a \in V'$ that is connected to a node $b
-   \in U'$. Using the Edge visits lemma, a \code{visit(b)} fact is generated,
+   \in U'$. Using the Edge visits lemma, a $\mathtt{visit}(b)$ fact is generated,
    swapping $b$ from $U'$ to $V'$.
 \end{itemize}
 

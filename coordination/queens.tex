@@ -105,13 +105,33 @@ language expression \code{1}
 (lines~\ref{line:coord:queens_empty1},~\ref{line:coord:queens_empty2}
 and~\ref{line:coord:queens_empty3}). If there are no conflicts, this means that
 it is possible to add a queen to the current state
-(line~\ref{line:coord:queens_add}). The fact \code{send-down} is used to
-either complete the computation of a valid state
+(line~\ref{line:coord:queens_add}). The fact \code{send-down} is used to either
+complete the computation of a valid state
 (lines~\ref{line:coord:queens_complete1}-\ref{line:coord:queens_complete2}) or
 to propagate the state to the row below
 (lines~\ref{line:coord:queens_down1}-\ref{line:coord:queens_down2}) as shown in
-Fig.~\ref{coordination:fig:nqueens}. The full proof of correctness for the
-N-Queens program is presented in Appendix~\ref{appendix:proofs:nqueens}.
+Fig.~\ref{coordination:fig:nqueens}.  An example final database for the 8-Queens
+problem is presented in Fig.~\ref{code:coordination:8queens}, where only 8 valid
+states of the possible 92 states are shown. The full proof of correctness for
+the N-Queens program is presented in Appendix~\ref{appendix:proofs:nqueens}.
+
+\begin{figure}[h!]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\#\&]
+final-state(@57, [7, 0, 6, 4, 5, 7, 4, 5, 3, 2, 2, 6, 1, 1, 0, 3]).*hfill// States at square (7, 0)
+final-state(@57, [7, 0, 6, 5, 5, 7, 4, 2, 3, 6, 2, 3, 1, 1, 0, 4])
+final-state(@57, [7, 0, 6, 6, 5, 3, 4, 5, 3, 7, 2, 1, 1, 4, 0, 2])
+final-state(@57, [7, 0, 6, 6, 5, 4, 4, 7, 3, 1, 2, 3, 1, 5, 0, 2])
+
+(...)
+
+final-state(@63, [7, 7, 6, 1, 5, 3, 4, 0, 3, 6, 2, 4, 1, 2, 0, 5])*hfill// States at square (7, 7)
+final-state(@63, [7, 7, 6, 1, 5, 4, 4, 2, 3, 0, 2, 6, 1, 3, 0, 5])
+final-state(@63, [7, 7, 6, 2, 5, 0, 4, 5, 3, 1, 2, 4, 1, 6, 0, 3])
+final-state(@63, [7, 7, 6, 3, 5, 0, 4, 2, 3, 5, 2, 1, 1, 6, 0, 4])
+\end{Verbatim}
+  \caption{Final database for the 8-Queens program.}
+  \label{code:coordination:8queens}
+\end{figure}
 
 Since computation goes from the top row to the bottom row, not all static
 placements of nodes to threads will perform equally well. This is especially
