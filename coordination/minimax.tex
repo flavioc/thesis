@@ -11,12 +11,20 @@ the scores of each node. To select the best move for player 1, the algorithm
 picks the move maximized at the root node.
 
 Figure~\ref{code:coord:minimax} shows LM's code for the MiniMax program using
-coordination facts. The program starts with a root node (with the initial game state) that
-is expanded with the available moves at each level. The graph of the program is
-dynamic since nodes are created and then deleted once they are no longer
-needed. The latter happens when the leaf scores are computed or when a node
-fully minimizes or maximizes the children scores. When the program ends, only
-the root node has facts in its database.
+coordination facts. The following predicates are specified: \code{parent}
+connects nodes to represent a tree; \code{score(A, Score, Play)} and
+\code{new-score(A, Score, Play)} represent the score of a node, along with the
+game move in the \code{Play} argument; \code{minimize} and \code{maximize} are
+counters that either maximize or minimize the scores coming from the children
+nodes; \code{expand} expands and creates children in the current node; and
+\code{play} kickstarts the MiniMax expansion and computation at the current node.
+
+The LM program starts with a root node (with the initial game state) that is
+expanded with the available moves at each level. The graph of the program is
+dynamic since nodes are created and then deleted once they are no longer needed.
+The latter happens when the leaf scores are computed or when a node fully
+minimizes or maximizes the children scores. When the program ends, only the root
+node has facts in its database.
 
 The first two rules in
 lines~\ref{line:coord:minimax_play1}-\ref{line:coord:minimax_play2} check if the

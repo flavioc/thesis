@@ -8,12 +8,14 @@ presented the MSSD program which is essentially the SSSP program modified to com
 multiple shortest distances.
 
 The SSSP program starts with the declaration of the predicates~
-(lines~\ref{line:coord:sssp_pred1}-\ref{line:coord:sssp_pred2}).  The first
-predicate, \code{edge}, is a persistent predicate that describes the
-relationship between the nodes of the graph, where the third argument represents
-the weight of the edge.  The program computes the shortest distance from node
-\code{@1} to all other nodes in the graph. Every node has a \code{shortest} fact
-that is improved with new \code{relax} facts.
+(lines~\ref{line:coord:sssp_pred1}-\ref{line:coord:sssp_pred2}). The first
+predicate, \code{edge}, is a persistent predicate that describes the edges of
+graph and the third argument is the weight of each edge. Predicate
+\code{shortest} represents a valid distance and path from node \code{@1} to the
+node in the first argument. Predicate \code{relax} also represents a valid path,
+but, is instead used to improve the distance in \code{shortest}.  The program
+computes the shortest distance from node \code{@1} by improving the distance in
+the \code{shortest} facts, until the shortest distance is reached in all nodes.
 Lines~\ref{line:coord:sssp_axioms1}-\ref{line:coord:sssp_axioms2} declare the
 initial facts of the program: \code{edge} facts describe the graph;
 \code{shortest(A, +00, [])} is the initial shortest distance (infinity) for all

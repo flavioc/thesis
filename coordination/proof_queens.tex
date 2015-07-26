@@ -4,7 +4,7 @@ of square/node $A$.
 
 \begin{lemma}[test-y lemma]
 
-From a fact \code{test-y}$(A, Y, State, OriginalState)$, there are two possible
+From a fact \code{test-y}$(A, Y, State, OrigState)$, there are two possible
 scenarios:
 
 \begin{itemize}
@@ -12,7 +12,7 @@ scenarios:
       there is a coordinate $(X', Y) \in State$.
    \item The \code{test-y} fact is retracted and is used to derive a
       \code{test-diag-left}$(A, X_0 - 1, Y_0 - 1,
-      OriginalState, OriginalState)$ fact since 
+      OrigState, OrigState)$ fact since 
       there is no such coordinate $(X', Y) \in State$.
 \end{itemize}
 
@@ -28,7 +28,7 @@ Third rule: by induction.
 \end{proof}
 
 \begin{lemma}[test-diag-left lemma]
-   From a fact \code{test-diag-left}$(A, X, Y, State, OriginalState)$, there are
+   From a fact \code{test-diag-left}$(A, X, Y, State, OrigState)$, there are
   two possible scenarios:
    
   \begin{itemize}
@@ -36,7 +36,7 @@ Third rule: by induction.
         retracted and there is a coordinate $(x', y') \in State$, where $x' = X
         - a$ and $y' = Y - a$, where $a$ is non-negative.
      \item The \code{test-diag-left} is retracted and is used to derive a
-        \code{test-diag-right}$(A, X_0 - 1, Y_0 + 1, OriginalState, OriginalState)$
+        \code{test-diag-right}$(A, X_0 - 1, Y_0 + 1, OrigState, OrigState)$
         fact since there is no $(x', y')$ coordinate as specified above.
   \end{itemize}
 \end{lemma}
@@ -51,7 +51,7 @@ Third rule: by induction.
 \end{proof}
 
 \begin{lemma}[test-diag-right lemma]
-From a fact \code{test-diag-right}$(A, X, Y, State, OriginalState)$, there are
+From a fact \code{test-diag-right}$(A, X, Y, State, OrigState)$, there are
 two possible scenarios:
 
 \begin{itemize}
@@ -59,7 +59,7 @@ two possible scenarios:
       retracted and there is a coordinate $(x', y') \in State$, where $x' = X -
       a$ and $y' = Y + a$, where $a$ is non-negative.
    \item The \code{test-diag-right} fact is retracted and the fact
-      \code{send-down}$(A, [(X_0, Y_0) | OriginalState])$ is derived.
+      \code{send-down}$(A, [(X_0, Y_0) | OrigState])$ is derived.
 \end{itemize}
 \end{lemma}
 

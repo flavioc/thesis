@@ -7,19 +7,33 @@ problem by assigning incomplete boards as tasks to threads.  Our approach is
 unusual since we see the squares of the board as the LM's nodes of the program,
 where each square can communicate with other 4 squares: the adjacent right and
 the adjacent left on the same row, and the first non-diagonal square to the
-right and to the left on the row below.  To represent a partial/valid board
+right and to the left on the row below. To represent a partial/valid board
 state, we use a list of integers, where each pair of integers represents a
 coordinate in which a queen is placed. For example $[1, 2, 0, 0]$ means that a
 queen is placed in square $(0, 0)$ and another in square $(1, 2)$. At any given
 time, many partial board states may use the same squares and each square can
 belong to several board states.
 
-Figure~\ref{code:coordination:nqueens} presents our solution.
-Appendix~\ref{appendix:proofs:nqueens}.
-An empty state is instantiated in the top-left square
-(line~\ref{line:coord:queens_axiom}) and is then propagated to all squares in
-the same row (rule in
-lines~\ref{line:coord:queens_propr1}-\ref{line:coord:queens_propr2}). Once a
+Figure~\ref{code:coordination:nqueens} presents our solution. The predicates
+\code{left}, \code{right}, \code{down-left} and \code{down-right} represent each
+square's four connections to the squares on the same row and to the row below.
+Predicate \code{coord} represents the coordinate of the given square.
+Predicates \code{propagate-left} and \code{propagate-right} propagate a given
+board state to the left or to the right in the current row of the board.
+Predicates \code{test-y}, \code{test-diag-left} and \code{test-diag-right} take
+one valid board state (last argument) and then determine if the current square
+is able to add itself to that state by checking the three restrictions of the
+N-Queens puzzle. Predicate \code{new-state} represent a new valid board state in
+the current square, while \code{send-down} forces a square to send a new state
+to the squares in the row below. Finally, predicate \code{final-state}
+represents a full board state. Once the program completes, the last row of
+squares of the board should have a several \code{final-state} facts which
+represent all the distinct solutions to the puzzle.
+
+In terms of facts and rules, we have an initial fact that represents an empty
+state (line~\ref{line:coord:queens_axiom}), which is instantiated in the
+top-left square and must be propagated to all squares in the same row (rule in
+lines~\ref{line:coord:queens_propr1}-\ref{line:coord:queens_propr2}). If a
 square $S$ receives a new state $L$, it checks if $S$ can be incorporated into
 $L$. For that, it checks if there is no queen on $S$'s column (rules in lines
 \ref{line:coord:queens_col1}-\ref{line:coord:queens_col2}), if there is no queen
@@ -39,8 +53,8 @@ type linear propagate-right(node, state).
 type linear test-y(node, int, state, state).
 type linear test-diag-left(node, int, int, state, state).
 type linear test-diag-right(node, int, int, state, state).
-type linear send-down(node, state).
 type linear new-state(node, state).
+type linear send-down(node, state).
 type linear final-state(node, state).
 
 propagate-left(A, State)*hfill// Rule 1: propagate to the left
@@ -91,13 +105,13 @@ language expression \code{1}
 (lines~\ref{line:coord:queens_empty1},~\ref{line:coord:queens_empty2}
 and~\ref{line:coord:queens_empty3}). If there are no conflicts, this means that
 it is possible to add a queen to the current state
-(line~\ref{line:coord:queens_add}). The fact \code{send-down/2} is used to
+(line~\ref{line:coord:queens_add}). The fact \code{send-down} is used to
 either complete the computation of a valid state
 (lines~\ref{line:coord:queens_complete1}-\ref{line:coord:queens_complete2}) or
 to propagate the state to the row below
 (lines~\ref{line:coord:queens_down1}-\ref{line:coord:queens_down2}) as shown in
 Fig.~\ref{coordination:fig:nqueens}. The full proof of correctness for the
-N-Queens program is presented in
+N-Queens program is presented in Appendix~\ref{appendix:proofs:nqueens}.
 
 Since computation goes from the top row to the bottom row, not all static
 placements of nodes to threads will perform equally well. This is especially

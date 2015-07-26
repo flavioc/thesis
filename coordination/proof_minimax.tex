@@ -10,8 +10,8 @@ If a fact $\mathtt{expand}(A, FirstGame, RestGame, ND,
 NextPlayer, Play, Depth)$ exists then $\exists_n$ where $n$ is the number of
 available plays that $NextPlayer$ can make on the remaining game state
 $RestGame$. The initial $\mathtt{expand}$ fact is retracted and generates $n$
-children $B$ with facts $\mathtt{play}(B, Game', OtherPlayer, Play', Depth + 1)$
-and $\mathtt{parent}(B, A)$, where $OtherPlayer =
+children $B$ with facts $\mathtt{play}(B, Game', OPlayer, Play', Depth + 1)$
+and $\mathtt{parent}(B, A)$, where $OPlayer =
 \mathtt{next-player}(NextPlayer)$, $Play'$ is the index of an empty position in
 $RestGame$ plus the length of $FirstGame$, and $Game'$ represents the
 concatenation of $FirstGame$ and $RestGame$ where an empty position has been
@@ -59,14 +59,14 @@ the program's rule to realize one of the following scenarios:
 
    \item There exists a number $n$ of available plays for $NextPlayer$ in
       $Game$, which generate $n$ new children $B$ where each $B$ will have facts
-      $\mathtt{play}(B, Game', OtherPlayer, Play, Depth + 1)$ and
+      $\mathtt{play}(B, Game', OPlayer, Play,$$ Depth + 1)$ and
       $\mathtt{parent}(B, A)$. Furthermore, from the use of the initial
       $play$ fact, one of the following facts is derived:
 
 \begin{itemize}
-   \item $\mathtt{maximize}(A, N, mininf, 0)$ is derived (if $NextPlayer =
+   \item $\mathtt{maximize}(A, N, -\infty, 0)$ is derived (if $NextPlayer =
       root-player$);
-   \item $\mathtt{minimize}(A, N, maxinf, 0)$ (otherwise).
+   \item $\mathtt{minimize}(A, N, \infty, 0)$ (otherwise).
 \end{itemize}
 
 Note that $Game'$ is an updated $Game$ state where an empty position is played
@@ -91,12 +91,12 @@ We now prove that the minimization and maximization rules work given the right
 amount of scores available.
 
 \begin{lemma}[Maximize Lemma]
-Given a fact $\mathtt{maximize}(A, N, BestScore, BestPlay)$ and $N$ facts
-\code{new-score}$(A, OtherScore, OtherPlay)$, the program's rule will retract
+Given a fact $\mathtt{maximize}(A, N, BScore, BPlay)$ and $N$ facts
+\code{new-score}$(A, OScore, OPlay)$, the program's rule will retract
 them all and generate a single 
-$\mathtt{score}(A, BestScore', BestPlay')$ fact where $BestScore'$ is the
-highest score from $BestScore$ or $OtherScore'$ and
-$BestPlay'$ is the corresponding play.
+$\mathtt{score}(A, BScore', BPlay')$ fact where $BScore'$ is the
+highest score from $BScore$ or $OScore'$ and
+$BPlay'$ is the corresponding play.
 \end{lemma}
 \begin{proof}
 By induction on the number of \code{new-score} facts.
@@ -104,33 +104,34 @@ By induction on the number of \code{new-score} facts.
 Case 1 ($N = 0$): trivial by applying the rule in
 line~\ref{line:coord:minimax_maximize2}.
 
-Case 2 ($N > 0$): by picking an arbitrary \code{new-score}$(A, OtherScore,
-OtherPlay)$ fact.
+Case 2 ($N > 0$): by picking an arbitrary \code{new-score}$(A, OScore,
+OPlay)$ fact.
 
 \begin{itemize}
    \item Sub case 2.1
       (lines~\ref{line:coord:minimax_maximize_rule11}-\ref{line:coord:minimax_maximize_rule12})
 
-      If $BestScore < OtherScore$ then we derive $\mathtt{maximize}(A, N-1,
-      OtherScore, OtherPlay)$. Use induction to get the final \code{score} fact.
+      If $BScore < OScore$ then we derive $\mathtt{maximize}(A, N-1,
+      OScore, OPlay)$. Use induction to get the final \code{score} fact.
 
    \item Sub case 2.2
       (lines~\ref{line:coord:minimax_maximize_rule21}-\ref{line:coord:minimax_maximize_rule22})
 
-      If $BestScore >= OtherScore$ then we derive $\mathtt{maximize}(A, N-1,
-      BestScore, BestPlay)$. Use induction to get the final \code{score} fact.
+      If $BScore >= OScore$ then we derive $\mathtt{maximize}(A, N-1,
+      BScore, BPlay)$. Use induction to get the final \code{score} fact.
 
 \end{itemize}
 
 \end{proof}
 
 \begin{lemma}[Minimize Lemma]
-Given a fact $\mathtt{minimize}(A, N, BestScore, BestPlay)$ and $N$ 
-\code{new-score}$(A, OtherScore, OtherPlay)$ facts, the program's rules will
-retract all those facts and derive a single
-$\mathtt{score}(A, BestScore', BestPlay')$ fact where $BestScore'$ is the
-lowest score from either $BestScore$ or the $N$ $OtherScore$ and
-$BestPlay'$ is the corresponding play.
+
+Given a fact $\mathtt{minimize}(A, N, BScore, BPlay)$ and $N$
+\code{new-score}$(A, OScore, OPlay)$ facts, the program's rules will retract all
+those facts and derive a single $\mathtt{score}(A, BScore', BPlay')$ fact
+where $BScore'$ is the lowest score from either $BScore$ or the $N$
+$OScore$ and $BPlay'$ is the corresponding play.
+
 \end{lemma}
 
 Finally, we are in a position to prove that a \code{play} fact is retracted and
@@ -143,7 +144,7 @@ For every $\mathtt{play}(A, Game, NextPlayer, LastPlay, Depth)$ fact, we either
 get a \code{score} fact (leaf case) or a recursive alternate maximization or
 minimization (depending if \code{NextPlayer = root-player} or otherwise) of the
 children nodes. This max/minimization also results in a $\mathtt{score}(A,
-Score, BestPlay)$ fact where $Score$ is the max/minimum and $BestPlay$ is the
+Score, BPlay)$ fact where $Score$ is the max/minimum and $BPlay$ is the
 corresponding play for that score.
 
 \end{theorem}
@@ -153,25 +154,25 @@ positions on the state $Game$.
 
 Case 1 (no free positions or game is final): direct score.
 
-Case 2 (available positions): $n$ children nodes $B$ are created with a
-$\mathtt{play}(B, Game', \mathtt{next-player}(NextPlayer), X, Play, Depth + 1)$
-fact, where $Game'$ has position $X$ filled up. We apply induction on the
-\code{play} fact of each child $B$ to get a $\mathtt{score}(B, Score, Play)$
-fact. Since we also derived a $\mathtt{parent}(B, A)$ fact, rule in
-line~\ref{line:coord:minimax_new} eventually executes, deriving
-$\mathtt{new-score}(A, Score, Play)$.
+Case 2 (available positions): $n$ children nodes $B$ are created with two facts:
+$\mathtt{parent}(B, A)$ and $\mathtt{play}(B, Game',$
+\code{next-player}$(NextPlayer), X, Play, Depth + 1)$, where $Game'$ has
+position $X$ filled up. We apply induction on the \code{play} fact of each child
+$B$ to get a $\mathtt{score}(B, Score, Play)$ fact. Since we also derived a
+$\mathtt{parent}(B, A)$ fact, rule in line~\ref{line:coord:minimax_new}
+eventually executes, deriving $\mathtt{new-score}(A, Score, Play)$.
 
-We also derived $\mathtt{maximize}(A, N, mininf, 0)$ fact (or \code{minimize})
+We also derived $\mathtt{maximize}(A, N, -\infty, 0)$ fact (or \code{minimize})
 and $n$ \code{new-score} facts from the $n$ children nodes, from which we apply
-the Maximize Lemma to get $\mathtt{score}(A, BestScore, BestPlay)$.
+the Maximize Lemma to get $\mathtt{score}(A, BScore, BPlay)$.
 
 \end{proof}
 
 \begin{corollary}[MiniMax]
 
 Starting from a $\mathtt{play}(\mathtt{@0}, initial-game, root-player, 0, 1)$
-fact, the fact $\mathtt{score}(A, BestScore, BestPlay)$ is eventually derived,
-where $BestPlay$ represents the best play which player $root-player$ is able to
+fact, the fact $\mathtt{score}(A, BScore, BPlay)$ is eventually derived,
+where $BPlay$ represents the best play which player $root-player$ is able to
 make that minimizes the possible loss for a worst case scenario given
 $initial-game$.
 
