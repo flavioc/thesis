@@ -31,13 +31,8 @@ processed(A, N)
 message(A, Content, []),*label{line:language:message_second1}*hfill// Rule 2
 processed(A, N)
    -o processed(A, N + 1).*label{line:language:message_second2}
-
-!edge(@1, @2). !edge(@2, @3). !edge(@3, @4). !edge(@1, @3).*label{line:language:message_axioms}*hfill// Initial facts
-processed(@1, 0). processed(@2, 0). processed(@3, 0). processed(@4, 0).
-message(@1, "hello world", [@3, @4]).*label{line:language:message_message}
 \end{Verbatim}
-\caption{Code for routing messages in a graph. There is only one message ("hello
-world") to route through nodes \code{@3} and \code{@4}.}
+\caption{Code for routing messages in a graph.}
 \label{code:language:message}
 \end{figure}
 
@@ -48,7 +43,7 @@ and $R_1, \cdots, R_m$ is \emph{right-hand side}~(RHS) of the rule. The meaning
 of a rule is then as follows: if facts $L_1, \cdots, L_n$ are present in the
 database then consume all the facts $L_i$ that are linear facts and derive the
 facts $R_1, \cdots, R_m$ from the RHS. Note that in the rules, the LHS of each
-rule uses only facts from the same node (epresented by \code{A} in both rules),
+rule uses only facts from the same node (represented by \code{A} in both rules),
 but the rule's RHS may derive facts that belong to other nodes (case of \code{B}
 in the first rule) if a node variable is instantiated in the LHS.
 
@@ -63,14 +58,26 @@ the head node \code{B}.  When the route list is empty, the message has reached
 its destination and thus it is simply consumed (second rule in lines
 \ref{line:language:message_second1}-\ref{line:language:message_second2}).
 
-The initial facts of the program are declared in
-lines~\ref{line:language:message_axioms}-\ref{line:language:message_message}.
-The \code{edge} facts describe the structure of the graph, where the node in the
-first argument has a direct connection with the node in the second argument.
-Node literals are represented using the syntax \code{@N}, where \code{N} is an
-non-negative number. In line~\ref{line:language:message_message} we declare the
-message that needs to be routed with the content \code{"hello world"} and a
-route list with the nodes \code{@3} and \code{@4}.
+The initial facts of the program are presented in
+Fig.~\ref{code:language:message_facts}. The \code{edge} facts describe the
+structure of the graph, where the node in the first argument has a direct
+connection with the node in the second argument. Node literals are represented
+using the syntax \code{@N}, where \code{N} is an non-negative number. We also
+declare the message that needs to be routed with the content \code{"hello
+world"} and a route list with the nodes \code{@3} and \code{@4}.
+
+\begin{figure}[h!]
+\begin{Verbatim}[numbers=left,commandchars=\*\{\},fontsize=\codesize]
+!edge(@1, @2). !edge(@2, @3).
+!edge(@3, @4). !edge(@1, @3).
+processed(@1, 0). processed(@2, 0).
+processed(@3, 0). processed(@4, 0).
+message(@1, "hello world", [@3, @4]).
+\end{Verbatim}
+\caption{Initial facts for the message routing program. There is only one message ("hello
+world") to route through nodes \code{@3} and \code{@4}.}
+\label{code:language:message_facts}
+\end{figure}
 
 In Fig.~\ref{fig:message_trace} we present an execution trace of the message
 routing program. The database is represented as a graph structure where the
