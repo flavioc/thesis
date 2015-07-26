@@ -1,30 +1,21 @@
 The N-Queens puzzle is the problem of placing N chess queens on an NxN
-chessboard so that no pair of two queens attack each other~\cite{8queens}. The
+chessboard so that no pair of queens attack each other~\cite{8queens}. The
 specific challenge of finding all the distinct solutions to this problem is a
 good benchmark in designing parallel algorithms.  Most popular parallel
 implementations of the N-Queens problem distribute the search space of the
 problem by assigning incomplete boards as tasks to threads.  Our approach is
-unusual since the squares of the board as the tasks of program.
-Figure~\ref{code:coordination:nqueens} presents our solution.  The full proof of
-correctness for the N-Queens program is presented in
+unusual since we see the squares of the board as the LM's nodes of the program,
+where each square can communicate with other 4 squares: the adjacent right and
+the adjacent left on the same row, and the first non-diagonal square to the
+right and to the left on the row below.  To represent a partial/valid board
+state, we use a list of integers, where each pair of integers represents a
+coordinate in which a queen is placed. For example $[1, 2, 0, 0]$ means that a
+queen is placed in square $(0, 0)$ and another in square $(1, 2)$. At any given
+time, many partial board states may use the same squares and each square can
+belong to several board states.
+
+Figure~\ref{code:coordination:nqueens} presents our solution.
 Appendix~\ref{appendix:proofs:nqueens}.
-
-In the LM program, the graph nodes are the squares of the chessboard and each
-square can communicate with other 4 squares: the adjacent right and the adjacent
-left on the same row, and the first non-diagonal square to the right and to the
-left on the row below.  To represent a partial/valid board state, we use a list
-of integers, where each pair of integers represents a coordinate in which a
-queen is placed. For example $[1, 2, 0, 0]$ means that a queen is placed in
-square $(0, 0)$ and another in square $(1, 2)$. At any given time, many partial
-states can be using the same squares.  Each square can also have many states at
-the same time.
-
-\begin{figure}[ht!]
-\includegraphics[width=0.4\textwidth]{figures/coordination/nqueens.pdf}
-\caption{Concurrent propagation of N-Queens states.}
-\label{coordination:fig:nqueens}
-\end{figure}
-
 An empty state is instantiated in the top-left square
 (line~\ref{line:coord:queens_axiom}) and is then propagated to all squares in
 the same row (rule in
@@ -37,6 +28,64 @@ lines~\ref{line:coord:queens_ldiag1}-\ref{line:coord:queens_ldiag2}) and if
 there is no queen on $S$'s right diagonal (rules in
 lines~\ref{line:coord:queens_rdiag1}-\ref{line:coord:queens_rdiag2}).
 
+\begin{figure}[h!]
+\begin{Verbatim}[numbers=left,fontsize=\scriptsize,commandchars=\*\#\&]
+type list int state.*hfill// Type declaration
+type left(node, node).  type right(node, node).*hfill// Predicate declaration
+type down-left(node, node).  type down-right(node, node).
+type coord(node, int, int).
+type linear propagate-left(node, state).
+type linear propagate-right(node, state).
+type linear test-y(node, int, state, state).
+type linear test-diag-left(node, int, int, state, state).
+type linear test-diag-right(node, int, int, state, state).
+type linear send-down(node, state).
+type linear new-state(node, state).
+type linear final-state(node, state).
+
+propagate-left(A, State)*hfill// Rule 1: propagate to the left
+  -o {L | !left(A, L), L <> A -o propagate-left(L, State)}, new-state(A, State).
+propagate-right(A, State)*label#line:coord:queens_propr1&*hfill// Rule 2: propagate to the right
+  -o {R | !right(A, R), R <> A -o propagate-right(R, State)}, new-state(A, State).*label#line:coord:queens_propr2&
+
+new-state(A, State), !coord(A, X, Y) -o test-y(A, Y, State, State).*hfill// Rule 3: check if queen can be added
+
+// check if there is no queen on the same column*label#line:coord:queens_col1&
+test-y(A, Y, [], State), !coord(A, OX, OY)*hfill// Rule 4: check vertical
+  -o test-diag-left(A, OX - 1, OY - 1, State, State).
+test-y(A, Y, [X, Y1 | RestState], State), Y = Y1*hfill// Rule 5: check vertical
+  -o 1. // fail*label#line:coord:queens_empty1&
+test-y(A, Y, [X, Y1 | RestState], State), Y <> Y1*hfill// Rule 6: check vertical
+  -o test-y(A, Y, RestState, State).*label#line:coord:queens_col2&
+
+// check if there is no queen on the left diagonal*label#line:coord:queens_ldiag1&
+test-diag-left(A, X, Y, _, State), X < 0 || Y < 0, !coord(A, OX, OY)*hfill// Rule 7: check left diagonal
+  -o test-diag-right(A, OX - 1, OY + 1, State, State).
+test-diag-left(A, X, Y, [X1, Y1 | RestState], State), X = X1, Y = Y1*hfill// Rule 8: check left diagonal
+  -o 1. // fail*label#line:coord:queens_empty2&
+test-diag-left(A, X, Y, [X1, Y1 | RestState], State), X <> X1 || Y <> Y1*hfill// Rule 9: check left diagonal
+  -o test-diag-left(A, X - 1, Y - 1, RestState, State).*label#line:coord:queens_ldiag2&
+
+// check if there is no queen on the right diagonal*label#line:coord:queens_rdiag1&
+test-diag-right(A, X, Y, [], State), X < 0 || Y >= size, !coord(A, OX, OY)*hfill// Rule 10: check right diagonal
+  -o send-down(A, [OX, OY | State]). // add new queen*label#line:coord:queens_add&
+test-diag-right(A, X, Y, [X1, Y1 | RestState], State), X = X1, Y = Y1*hfill// Rule 11: check right diagonal
+  -o 1. // fail*label#line:coord:queens_empty3&
+test-diag-right(A, X, Y, [X1, Y1 | RestState], State), X <> X1 || Y <> Y1*hfill// Rule 12: check right diagonal
+  -o test-diag-right(A, X - 1, Y + 1, RestState, State).*label#line:coord:queens_rdiag2&
+
+send-down(A, State), !coord(A, size - 1, _)*label#line:coord:queens_complete1&*hfill// Rule 13: final state
+  -o final-state(A, State).*label#line:coord:queens_complete2&
+send-down(A, State), !coord(A, CX, _), CX <> size - 1*label#line:coord:queens_down1&*hfill// Rule 14: propagate the state down
+  -o {B | !down-right(A, B), B <> A -o propagate-right(B, State)},
+     {B | !down-left(A, B), B <> A -o propagate-left(B, State)}.*label#line:coord:queens_down2&
+
+propagate-right(@0, []).*label#line:coord:queens_axiom&*hfill// Initial fact
+\end{Verbatim}
+  \caption{N-Queens problem solved in LM.}
+  \label{code:coordination:nqueens}
+\end{figure}
+
 If there is any conflict, we do not derive anything and for that we use the
 language expression \code{1}
 (lines~\ref{line:coord:queens_empty1},~\ref{line:coord:queens_empty2}
@@ -47,18 +96,27 @@ either complete the computation of a valid state
 (lines~\ref{line:coord:queens_complete1}-\ref{line:coord:queens_complete2}) or
 to propagate the state to the row below
 (lines~\ref{line:coord:queens_down1}-\ref{line:coord:queens_down2}) as shown in
-Fig.~\ref{coordination:fig:nqueens}.
+Fig.~\ref{coordination:fig:nqueens}. The full proof of correctness for the
+N-Queens program is presented in
 
 Since computation goes from the top row to the bottom row, not all static
 placements of nodes to threads will perform equally well. This is especially
-true because the bottom rows perform the most work.  The best placement
-is then to split the board vertically with axiom \code{set-thread(A, vertical(X,
-Y))} so each thread gets the same number of columns, where \code{X} and \code{Y}
-are the coordinates of a particular square. Our experiments show that, on a
-shared memory system, it does not matter much if we start with a bad placement
-since node stealing overcomes those issues by load balancing dynamically.
+true because the bottom rows perform the most work.  The best placement is then
+to split the board vertically with axiom \code{set-thread(A, vertical(X, Y,
+side, side))} so each thread gets the same number of columns, where
+\code{vertical} is a function that accepts the coordinates \code{X} and \code{Y}
+and the \code{size} of the board and then returns the thread for node \code{A}.
+Our experiments show that, on a shared memory system, it does not matter much if
+we start with a bad placement since node stealing overcomes those issues by load
+balancing dynamically.
 
-However, the N Queens program incrementally builds and shares lists representing
+\begin{figure}[ht!]
+\includegraphics[width=0.4\textwidth]{figures/coordination/nqueens.pdf}
+\caption{Propagation of states using the \code{send-down} fact.}
+\label{coordination:fig:nqueens}
+\end{figure}
+
+However, the N-Queens program incrementally builds and shares lists representing
 valid board states that are transmitted from top to bottom. In order to improve
 memory locality, we should then manipulate board states that share a significant
 number of elements because each board state needs to be iterated before being
@@ -102,64 +160,6 @@ this particular combination has the smallest number of cache misses. This
 indicates that it is helpful to match the problem to the number of available
 CPU's in the system in order to increase memory locality.
 
-
-\begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\scriptsize,commandchars=\*\#\&]
-type list int state.*hfill// Type declaration.
-type left(node, node).  type right(node, node).*hfill// Predicate declaration.
-type down-left(node, node).  type down-right(node, node).
-type coord(node, int, int).
-type linear propagate-left(node, state).
-type linear propagate-right(node, state).
-type linear test-y(node, int, state, state).
-type linear test-diag-left(node, int, int, state, state).
-type linear test-diag-right(node, int, int, state, state).
-type linear send-down(node, state).
-type linear new-state(node, state).
-type linear final-state(node, state).
-
-propagate-left(A, State)*hfill// Rule 1: propagate to the left.
-  -o {L | !left(A, L), L <> A -o propagate-left(L, State)}, new-state(A, State).
-propagate-right(A, State)*label#line:coord:queens_propr1&*hfill// Rule 2: propagate to the right.
-  -o {R | !right(A, R), R <> A -o propagate-right(R, State)}, new-state(A, State).*label#line:coord:queens_propr2&
-
-new-state(A, State), !coord(A, X, Y) -o test-y(A, Y, State, State).*hfill// Rule 3: check if queen can be added.
-
-// check if there is no queen on the same column*label#line:coord:queens_col1&
-test-y(A, Y, [], State), !coord(A, OX, OY)*hfill// Rule 4: check vertical.
-  -o test-diag-left(A, OX - 1, OY - 1, State, State).
-test-y(A, Y, [X, Y1 | RestState], State), Y = Y1*hfill// Rule 5: check vertical.
-  -o 1. // fail*label#line:coord:queens_empty1&
-test-y(A, Y, [X, Y1 | RestState], State), Y <> Y1*hfill// Rule 6: check vertical.
-  -o test-y(A, Y, RestState, State).*label#line:coord:queens_col2&
-
-// check if there is no queen on the left diagonal*label#line:coord:queens_ldiag1&
-test-diag-left(A, X, Y, _, State), X < 0 || Y < 0, !coord(A, OX, OY)*hfill// Rule 7: check left diagonal.
-  -o test-diag-right(A, OX - 1, OY + 1, State, State).
-test-diag-left(A, X, Y, [X1, Y1 | RestState], State), X = X1, Y = Y1*hfill// Rule 8: check left diagonal.
-  -o 1. // fail*label#line:coord:queens_empty2&
-test-diag-left(A, X, Y, [X1, Y1 | RestState], State), X <> X1 || Y <> Y1
-  -o test-diag-left(A, X - 1, Y - 1, RestState, State).*label#line:coord:queens_ldiag2&*hfill// Rule 9: check left diagonal.
-
-// check if there is no queen on the right diagonal*label#line:coord:queens_rdiag1&
-test-diag-right(A, X, Y, [], State), X < 0 || Y >= size, !coord(A, OX, OY)*hfill// Rule 10: check right diagonal.
-  -o send-down(A, [OX, OY | State]). // add new queen*label#line:coord:queens_add&
-test-diag-right(A, X, Y, [X1, Y1 | RestState], State), X = X1, Y = Y1*hfill// Rule 11: check right diagonal.
-  -o 1. // fail*label#line:coord:queens_empty3&
-test-diag-right(A, X, Y, [X1, Y1 | RestState], State), X <> X1 || Y <> Y1*hfill// Rule 12: check right diagonal.
-  -o test-diag-right(A, X - 1, Y + 1, RestState, State).*label#line:coord:queens_rdiag2&
-
-send-down(A, State), !coord(A, size - 1, _)*label#line:coord:queens_complete1&*hfill// Rule 13: final state.
-  -o final-state(A, State).*label#line:coord:queens_complete2&
-send-down(A, State), !coord(A, CX, _), CX <> size - 1*label#line:coord:queens_down1&*hfill// Rule 14: propagate the state down.
-  -o {B | !down-right(A, B), B <> A -o propagate-right(B, State)},
-     {B | !down-left(A, B), B <> A -o propagate-left(B, State)}.*label#line:coord:queens_down2&
-
-propagate-right(@0, []).*label#line:coord:queens_axiom&*hfill// Initial fact.
-\end{Verbatim}
-  \caption{N-Queens problem solved in LM.}
-  \label{code:coordination:nqueens}
-\end{figure}
 
 \begin{figure}[]
         \centering

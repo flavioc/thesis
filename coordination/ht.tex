@@ -1,5 +1,5 @@
 In the Heat Transfer~(HT) algorithm, we have a graph where heat values are
-exchanged between nodes. The program stops when the new heat values $H_i$
+exchanged between nodes. The program stops when, for every node $i$, the new heat values $H_i$
 differ only a small $\epsilon$ from the old values $H_{i-1}$, where $\delta =
 |H_i - H_{i-1}| \le \epsilon$. The algorithm works asynchronously, i.e., heat
 values are updated using information as it arrives from neighboring nodes. This
@@ -7,18 +7,17 @@ increases concurrency since nodes do not need to synchronize between
 iterations.
 
 Figure~\ref{code:coord:ht} shows the HT rules that send new heat values to
-neighbor nodes. In the first rule we added \code{add-priority} action fact to
+neighbor nodes. In the first rule we added a \code{add-priority} action fact to
 increase the priority of the neighbor nodes for the case when the current node
 has a large $\delta$. The idea is to prioritize the computation of heat values
 of nodes (using \code{update}) that have a neighbor that changed significantly.
 Multiple \code{add-priority} facts will increase the priority of a node so that
-nodes with multiple large deltas will have more priority.
+nodes with multiple large deltas will have higher priority.
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\[\]]
 new-heat(A, New, Old),
-Delta = fabs(New - Old),
-Delta > epsilon
+fabs(New - Old) > epsilon
    -o {B | !edge(A, B) -o
          new-neighbor-heat(B, A, New),
          update(B), \underline[add-priority(B, Delta)]}.
@@ -62,7 +61,7 @@ its own (ever decreasing) subgraph.
 \end{figure}
 
 
-To further improve locality, we can split the second rule to avoid sending small
+To further improve locality, we modify the second rule to avoid sending small
 $\delta$ values if the target node is in another thread
 (Fig.~\ref{code:coord:ht_better}). We use \code{thread-id} to retrieve the
 thread \code{T} of the node \code{A} and match the \code{thread-id} of each
@@ -80,6 +79,12 @@ increased errors in the computed heat values.
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\[\]]
+new-heat(A, New, Old),
+fabs(New - Old) > epsilon
+   -o {B | !edge(A, B) -o
+         new-neighbor-heat(B, A, New),
+         update(B), \underline[add-priority(B, Delta)]}.
+
 new-heat(A, New, Old)
 fabs(New - Old) <= epsilon,
 \underline[thread-id(A, T)]

@@ -1,58 +1,63 @@
 The most interesting property of the SSSP program presented in
 Fig.~\ref{code:shortest_path_program_coord} is that it remains provably correct,
-although it applies rules using a smarter ordering. We now show the complete
+although it applies rules using a different ordering. We now show the complete
 proof of correctness.
 
 \begin{invariant}[Distance]
 
-\code{relax(A, D, P)} represents a valid distance \code{D} and a valid path
-\code{P} from node \code{@1} to node \code{A}. If the shortest distance to
+   $\mathtt{relax}(A, D, P)$ represents a valid distance $D$ and a valid path
+   $P$ from node $\mathtt{@1}$ to node $A$. If the shortest distance to
 \code{@1} is $D'$, then $D >= D'$.
 
-\code{shortest(A, D, P)} represents a valid distance \code{D} and a valid
-path \code{P} from node \code{@1} to node \code{A}. If the shortest
+$\mathtt{shortest}(A, D, P)$ represents a valid distance $D$ and a valid
+path $P$ from node \code{@1} to node $A$. If the shortest
 distance to \code{@1} is $D'$, then $D >= D'$. The \code{shortest} fact may
-also represent an invalid distance if \code{D = +00}, where \code{P = []}.
+also represent an invalid distance if $D = \infty$, where $P = []$.
 
 \end{invariant}
 
 \begin{proof}
-By mutual induction. All the initial facts are valid and rule 1 and 2 validate the
-invariant using the inductive hypothesis.
+
+By mutual induction. All the initial facts are valid and the first
+(lines~\ref{line:coord:ssspfirst1}-\ref{line:coord:ssspfirst2}) and second rules
+(lines~\ref{line:coord:ssspsecond1}-\ref{line:coord:ssspsecond2}) of the program
+validate the invariant using the inductive hypothesis.
+
 \end{proof}
 
 \begin{lemma}[Relaxation]
-Every new improved distance will be propagated to the neighbor nodes exactly once.
+Shorter distances are propagated to the neighbor nodes exactly once.
 \end{lemma}
+
 \begin{proof}
-By rule 1, we know that when the distance is relaxed, we keep the new shorter
-distance and propagate the distances. Every new distance that is longer will be
-ignored by rule 2.
+By the first rule, we know that for a new shorter distance, we keep the shorter
+distance and propagate it. By the second rule, longer distances are ignored.
 \end{proof}
 
 \begin{theorem}[Correctness]
 
-   Assume a graph $G = (V, E)$ where $W_{e \in E) >= 0}$ (positive weights).
-   Consider that there is a set of nodes $S \in V$ where the shortest distances
-   has been computed and a set $U \in V$ where it has not yet been reached.
-   Sets are $S$ and $U$ are disjunct. At any given point, $\Sigma$ is the sum of
-   all current shortest distances. For the distance \code{+00} we assign the
-   value $\Sigma' + 1$, where $\Sigma'$ is the sum of the true shortest
-   distances of nodes reachable from \code{@1}.  Every rule inference will
-   either:
+   Assume a graph $G = (V, E)$ where $w(a, b) >= 0$ and $(a, b) \in E$ (positive
+   weights). Consider that there is a set of nodes $S \in V$ where the shortest
+   distance has been computed and a set $U \in V$ where the shortest distance
+   has not been computed yet. Sets are $S$ and $U$ are disjunct. At any given
+   point, $\Sigma$ is the sum of all current distances. For the
+   distance $\infty$ we assign the value $\Sigma' + 1$, where $\Sigma'$ is the
+   largest shortest distance of any node reachable from \code{@1}. Every rule
+   inference will either:
 
    \begin{itemize}
       \item Maintain the size of $S$ and reduce the total number of facts in
          the database.
       \item Increase the size of $S$, reduce $\Sigma$ and potentially increase the number of
          facts in the database.
-      \item Maintain the size of $S$, decrease $\Sigma$
+      \item Maintain the size of $S$, reduce $\Sigma$
          and potentially increase the number of facts in the database.
    \end{itemize}
 
-   Eventually, set $S = V$ and every \code{shortest(A, D, P)} will represent
-   the shortest distance from \code{A} to \code{@1} and \code{P} is its
-   corresponding path.
+   Eventually, set $S = V$ and every $\mathtt{shortest}(A, D, P)$ will represent
+   the shortest distance from $A$ to \code{@1} and $P$ is its corresponding
+   path.
+
 \end{theorem}
 
 \begin{proof}
@@ -70,21 +75,22 @@ ignored by rule 2.
 
    \begin{itemize}
 
-      \item Rule 1 will only apply at nodes in $U$. If the shortest
+      \item The first rule will only apply at nodes in $U$. If the shortest
          \code{relax} is selected, then the node is added to $S$, otherwise it
          stays in $U$ but improves the shortest path, reduces $\Sigma$ and
          \code{relax} facts are generated (Relaxation Lemma).
 
-      \item Rule 2 is applied in either nodes of $S$ or $U$. For both sets, the rule
-         retracts the \code{relax} fact.
+      \item The second rule is applied in either nodes of $S$ or $U$. For both
+         sets, the rule retracts the \code{relax} fact.
 
    \end{itemize}
 
-   The case where rule 1 derives the true shortest distance happens when the
-   node that minimizes $\argmin_t d(s \in S) + w(s, t)$ is selected, where
-   $d(x)$ is the distance to the node \code{@1} and $w(a, b)$ the weight of
-   the edge between $a$ and $b$. Using \code{set-priority} increases the
-   probability of that node being selected, but it does not matter since
-   the program always makes progress and the shortest distances will be
-   eventually computed.
+   The case where the first rule derives the shortest \code{relax} distance to
+   node $t \in U$ happens when some node $s \in S$ which minimizes $\argmin_t
+   d(s) + w(s, t)$ is selected, where $d(s)$ is the shortest distance to node
+   \code{@1} and $w(s, t)$ the weight of the edge between $(s, t)$.
+   Using \code{set-priority} increases the probability of that node being
+   selected, but it does not matter since the program always makes progress and
+   the shortest distances will be eventually computed.
+
 \end{proof}

@@ -6,26 +6,21 @@
 	<integer>0</integer>
 	<key>ApplicationVersion</key>
 	<array>
-		<string>com.omnigroup.OmniGrafflePro</string>
-		<string>139.18.0.187838</string>
+		<string>com.omnigroup.OmniGraffle6</string>
+		<string>161.7.0.237426</string>
 	</array>
 	<key>AutoAdjust</key>
 	<true/>
 	<key>BackgroundGraphic</key>
 	<dict>
 		<key>Bounds</key>
-		<string>{{0, 0}, {559, 783}}</string>
+		<string>{{0, 0}, {559.28997802734375, 782.8900146484375}}</string>
 		<key>Class</key>
 		<string>SolidGraphic</string>
 		<key>ID</key>
 		<integer>2</integer>
 		<key>Style</key>
 		<dict>
-			<key>shadow</key>
-			<dict>
-				<key>Draws</key>
-				<string>NO</string>
-			</dict>
 			<key>stroke</key>
 			<dict>
 				<key>Draws</key>
@@ -46,9 +41,9 @@
 	<key>Creator</key>
 	<string>Flavio Cruz</string>
 	<key>DisplayScale</key>
-	<string>1 0/72 in = 1 0/72 in</string>
+	<string>1 in = 1 in</string>
 	<key>GraphDocumentVersion</key>
-	<integer>8</integer>
+	<integer>12</integer>
 	<key>GraphicsList</key>
 	<array>
 		<dict>
@@ -68,6 +63,11 @@
 			</array>
 			<key>Style</key>
 			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
 				<key>stroke</key>
 				<dict>
 					<key>HeadArrow</key>
@@ -105,6 +105,11 @@
 			</array>
 			<key>Style</key>
 			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
 				<key>stroke</key>
 				<dict>
 					<key>HeadArrow</key>
@@ -137,13 +142,18 @@
 			<integer>55</integer>
 			<key>Points</key>
 			<array>
-				<string>{150.0989784435115, 98.10714371227867}</string>
+				<string>{150.09897844482981, 98.107143711296956}</string>
 				<string>{139.5, 106}</string>
 				<string>{108.41738633013102, 107.64680936531681}</string>
-				<string>{103.89131746601021, 111.24668902647478}</string>
+				<string>{103.89131747579046, 111.2466890186959}</string>
 			</array>
 			<key>Style</key>
 			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
 				<key>stroke</key>
 				<dict>
 					<key>HeadArrow</key>
@@ -153,8 +163,6 @@
 					<key>Legacy</key>
 					<true/>
 					<key>LineType</key>
-					<integer>1</integer>
-					<key>Pattern</key>
 					<integer>1</integer>
 					<key>TailArrow</key>
 					<string>0</string>
@@ -183,6 +191,11 @@
 			</array>
 			<key>Style</key>
 			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
 				<key>stroke</key>
 				<dict>
 					<key>HeadArrow</key>
@@ -215,13 +228,18 @@
 			<integer>53</integer>
 			<key>Points</key>
 			<array>
-				<string>{175.89147367429896, 98.742874574186345}</string>
+				<string>{175.89147366050895, 98.742874563229535}</string>
 				<string>{185, 105.98002178225397}</string>
 				<string>{215, 106.98002178225397}</string>
-				<string>{220.11083413757703, 111.10275513515015}</string>
+				<string>{220.11083414935302, 111.10275514464945}</string>
 			</array>
 			<key>Style</key>
 			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
 				<key>stroke</key>
 				<dict>
 					<key>HeadArrow</key>
@@ -231,8 +249,6 @@
 					<key>Legacy</key>
 					<true/>
 					<key>LineType</key>
-					<integer>1</integer>
-					<key>Pattern</key>
 					<integer>1</integer>
 					<key>TailArrow</key>
 					<string>0</string>
@@ -256,13 +272,18 @@
 			<integer>52</integer>
 			<key>Points</key>
 			<array>
-				<string>{114.09045872950807, 63.541688887565655}</string>
+				<string>{114.09045872192094, 63.541688892879591}</string>
 				<string>{103.91738633013102, 70.666787583062785}</string>
 				<string>{73.917386330131023, 71.666787583062785}</string>
-				<string>{67.540678266834476, 77.657643580276869}</string>
+				<string>{67.540678248876162, 77.657643597148535}</string>
 			</array>
 			<key>Style</key>
 			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
 				<key>stroke</key>
 				<dict>
 					<key>HeadArrow</key>
@@ -290,8 +311,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>51</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -320,8 +339,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>50</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -350,8 +367,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>49</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -380,8 +395,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>48</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -410,8 +423,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>47</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -440,8 +451,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>46</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -470,8 +479,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>45</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -500,8 +507,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>44</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -530,8 +535,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>43</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -560,8 +563,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>42</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -590,8 +591,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>41</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -620,8 +619,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>40</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -650,8 +647,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>39</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -680,8 +675,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>38</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -710,8 +703,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>37</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -740,8 +731,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>36</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -780,6 +769,11 @@
 			</array>
 			<key>Style</key>
 			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
 				<key>stroke</key>
 				<dict>
 					<key>HeadArrow</key>
@@ -817,6 +811,11 @@
 			</array>
 			<key>Style</key>
 			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
 				<key>stroke</key>
 				<dict>
 					<key>HeadArrow</key>
@@ -854,6 +853,11 @@
 			</array>
 			<key>Style</key>
 			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
 				<key>stroke</key>
 				<dict>
 					<key>HeadArrow</key>
@@ -886,13 +890,18 @@
 			<integer>32</integer>
 			<key>Points</key>
 			<array>
-				<string>{139.91738633013102, 63.019978217746001}</string>
+				<string>{139.91738633957866, 63.019978223977418}</string>
 				<string>{150.5, 70}</string>
 				<string>{180.5, 71}</string>
-				<string>{187.14644661612834, 77.646446616128344}</string>
+				<string>{187.14644660940672, 77.646446609406723}</string>
 			</array>
 			<key>Style</key>
 			<dict>
+				<key>shadow</key>
+				<dict>
+					<key>Draws</key>
+					<string>NO</string>
+				</dict>
 				<key>stroke</key>
 				<dict>
 					<key>HeadArrow</key>
@@ -920,8 +929,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>30</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -950,8 +957,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>29</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -980,8 +985,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>28</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -1010,8 +1013,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>27</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -1040,8 +1041,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>26</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -1070,8 +1069,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>25</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -1100,8 +1097,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>24</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -1130,8 +1125,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>23</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -1160,8 +1153,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>22</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -1178,8 +1169,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>21</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -1196,8 +1185,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>20</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -1214,8 +1201,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>19</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -1232,8 +1217,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>18</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -1250,8 +1233,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>17</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -1268,8 +1249,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>16</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -1286,8 +1265,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>15</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -1304,8 +1281,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>14</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -1322,8 +1297,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>13</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -1340,8 +1313,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>12</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -1358,8 +1329,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>11</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -1376,8 +1345,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>6</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -1394,8 +1361,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>5</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -1412,8 +1377,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>4</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -1430,8 +1393,6 @@
 			<string>ShapedGraphic</string>
 			<key>ID</key>
 			<integer>3</integer>
-			<key>Shape</key>
-			<string>Rectangle</string>
 			<key>Style</key>
 			<dict>
 				<key>shadow</key>
@@ -1477,6 +1438,8 @@
 		<real>0.0</real>
 		<key>layoutEngine</key>
 		<string>dot</string>
+		<key>neatoLineLength</key>
+		<real>0.20000000298023224</real>
 		<key>neatoSeparation</key>
 		<real>0.0</real>
 		<key>twopiSeparation</key>
@@ -1489,9 +1452,9 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2014-05-20 15:41:04 +0000</string>
+	<string>2015-07-25 19:59:37 +0000</string>
 	<key>Modifier</key>
-	<string>Flavio Cruz</string>
+	<string>Flávio Cruz</string>
 	<key>NotesVisible</key>
 	<string>NO</string>
 	<key>Orientation</key>
@@ -1520,12 +1483,12 @@
 		<key>NSPaperSize</key>
 		<array>
 			<string>size</string>
-			<string>{595, 842}</string>
+			<string>{595.28997802734375, 841.8900146484375}</string>
 		</array>
 		<key>NSPrintReverseOrientation</key>
 		<array>
-			<string>int</string>
-			<string>0</string>
+			<string>coded</string>
+			<string>BAtzdHJlYW10eXBlZIHoA4QBQISEhAhOU051bWJlcgCEhAdOU1ZhbHVlAISECE5TT2JqZWN0AIWEASqEhAFxlwCG</string>
 		</array>
 		<key>NSRightMargin</key>
 		<array>
@@ -1562,29 +1525,22 @@
 	<dict>
 		<key>CurrentSheet</key>
 		<integer>0</integer>
-		<key>ExpandedCanvases</key>
-		<array>
-			<dict>
-				<key>name</key>
-				<string>Canvas 1</string>
-			</dict>
-		</array>
+		<key>Expanded_Canvases</key>
+		<array/>
 		<key>Frame</key>
-		<string>{{373, 70}, {693, 808}}</string>
-		<key>ListView</key>
+		<string>{{793, 84}, {989, 808}}</string>
+		<key>ShowInfo</key>
 		<true/>
-		<key>OutlineWidth</key>
-		<integer>142</integer>
-		<key>RightSidebar</key>
-		<false/>
 		<key>ShowRuler</key>
 		<true/>
 		<key>Sidebar</key>
 		<true/>
 		<key>SidebarWidth</key>
-		<integer>120</integer>
+		<integer>200</integer>
+		<key>TopSlabHeight</key>
+		<real>250</real>
 		<key>VisibleRegion</key>
-		<string>{{0, 0}, {558, 669}}</string>
+		<string>{{0, 0}, {475, 663}}</string>
 		<key>Zoom</key>
 		<real>1</real>
 		<key>ZoomValues</key>

@@ -21,7 +21,7 @@ except:
    sys.exit(1)
 
 print "\\begin{tabular}{c | c || c c | c c | c c} \\hline"
-print "\t \\multirow{2}{*}{\\textbf{Size}} & \\multirow{2}{*}{\\textbf{Threads}} & \\multicolumn{2}{c|}{\\textbf{Average}} & \\multicolumn{2}{c|}{\\textbf{Final}} & \\multicolumn{2}{c}{\\textbf{\# Malloc}}\\\\"
+print "\t \\multirow{2}{*}{\\textbf{Dataset}} & \\multirow{2}{*}{\\textbf{Threads}} & \\multicolumn{2}{c|}{\\textbf{Average}} & \\multicolumn{2}{c|}{\\textbf{Final}} & \\multicolumn{2}{c}{\\textbf{\# Malloc}}\\\\"
 print "\t & & Regular & Coord & Regular & Coord & Regular & Coord\\\\ \\hline \\hline"
 
 ALLOWED_THREADS = [1, 2, 4, 8, 16, 24, 32]

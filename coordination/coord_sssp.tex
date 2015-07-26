@@ -14,14 +14,14 @@ type linear relax(node, int, list int).
 
 \underline{priority @order asc}.\label{line:coord:sssp_asc}
 
-shortest(A, D1, P1), D1 > D2, relax(A, D2, P2)\hfill// Rule 1: newly improved path
+shortest(A, D1, P1), D1 > D2, relax(A, D2, P2)\hfill// Rule 1: newly improved path\label{line:coord:ssspfirst1}
    -o shortest(A, D2, P2),
       \{B, W | !edge(A, B, W) -o
          relax(B, D2 + W, P2 ++ [B]),
-         \underline{set-priority(B, float(D2 + W))}\}.\label{line:coord:sssp_set}
+         \underline{set-priority(B, float(D2 + W))}\}.\label{line:coord:sssp_set}\label{line:coord:ssspfirst2}
 
-shortest(A, D1, P1), D1 <= D2, relax(A, D2, P2)\hfill// Rule 2: longer path
-   -o shortest(A, D1, P1).
+shortest(A, D1, P1), D1 <= D2, relax(A, D2, P2)\hfill// Rule 2: longer path\label{line:coord:ssspsecond1}
+   -o shortest(A, D1, P1).\label{line:coord:ssspsecond2}
 
 shortest(A, +00, []).\hfill// Initial facts
 relax(@1, 0, [@1]).
