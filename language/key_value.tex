@@ -1,30 +1,30 @@
 
 \begin{figure}[ht]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\{\}]
-type left(node, node).*label{line:language:dict_header1}*hfill // Predicate declaration.
+type left(node, node).*label{line:language:dict_header1}*hfill // Predicate declaration
 type right(node, node).
 type linear value(node, int Key, string Value).
 type linear replace(node, int Key, string Value).*label{line:language:dict_header2}
 
-replace(A, K, New),*label{line:language:dict_first1}*hfill// Rule 1: we found our key.
+replace(A, K, New),*label{line:language:dict_first1}*hfill// Rule 1: we found our key
 value(A, K, Old)
    -o value(A, K, New).*label{line:language:dict_first2}
 
-replace(A, RKey, RValue),*label{line:language:dict_second1}*hfill// Rule 2: go left.
+replace(A, RKey, RValue),*label{line:language:dict_second1}*hfill// Rule 2: go left
 value(A, Key, Value),
 RKey < Key,
 !left(A, B)
    -o value(A, Key, Value),
       replace(B, RKey, RValue).*label{line:language:dict_second2}
 
-replace(A, RKey, RValue),*label{line:language:dict_third1}*hfill// Rule 3: go right.
+replace(A, RKey, RValue),*label{line:language:dict_third1}*hfill// Rule 3: go right
 value(A, Key, Value),
 RKey > Key,
 !right(A, B)
    -o value(A, Key, Value),
       replace(B, RKey, RValue). *label{line:language:dict_third2}
 
-!left(@0, @1).     !right(@0, @2).*hfill// Initial facts.*label{line:language:dict_axioms1}
+!left(@0, @1).     !right(@0, @2).*hfill// Initial facts*label{line:language:dict_axioms1}
 !left(@1, @3).     !right(@1, @4). 
 !left(@2, @5).     !right(@2, @6).
 

@@ -18,21 +18,21 @@ documentation purposes.
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,commandchars=\*\{\},fontsize=\codesize]
-type edge(node, node Neighbor).*label{line:language:message_pred1}*hfill// Predicate declaration.
+type edge(node, node Neighbor).*label{line:language:message_pred1}*hfill// Predicate declaration
 type linear message(node, string Content, list node Routing).
 type linear processed(node, int Total).*label{line:language:message_pred2}
 
-message(A, Content, [B | L]),*label{line:language:message_first1}*hfill// Rule 1.
+message(A, Content, [B | L]),*label{line:language:message_first1}*hfill// Rule 1
 !edge(A, B),
 processed(A, N)
    -o processed(A, N + 1),
       message(B, Content, L).*label{line:language:message_first2}
 
-message(A, Content, []),*label{line:language:message_second1}*hfill// Rule 2.
+message(A, Content, []),*label{line:language:message_second1}*hfill// Rule 2
 processed(A, N)
    -o processed(A, N + 1).*label{line:language:message_second2}
 
-!edge(@1, @2). !edge(@2, @3). !edge(@3, @4). !edge(@1, @3).*label{line:language:message_axioms}*hfill// Initial facts.
+!edge(@1, @2). !edge(@2, @3). !edge(@3, @4). !edge(@1, @3).*label{line:language:message_axioms}*hfill// Initial facts
 processed(@1, 0). processed(@2, 0). processed(@3, 0). processed(@4, 0).
 message(@1, "hello world", [@3, @4]).*label{line:language:message_message}
 \end{Verbatim}

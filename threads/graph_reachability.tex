@@ -67,10 +67,10 @@ propagated to neighbor nodes does not include \code{1}.}
 
 \begin{figure}[h]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\#\&]
-type int id.*hfill// Type declaration.
+type int id.*hfill// Type declaration
 type list int reach-list.
 
-type edge(node, node).*hfill// Predicate declaration.
+type edge(node, node).*hfill// Predicate declaration
 type value(node, int).
 type linear search(node, id, reach-list).
 type linear do-search(node, id, node, reach-list).
@@ -78,24 +78,24 @@ type linear lookup(node, id, reach-list, int Val).
 type linear new-lookup(node, id, int Val).
 type linear visited(node, id).
 
-search(A, Id, ToReach)*label#line:threads:reach_lookup1&*hfill// Rule 1: initialize search.
+search(A, Id, ToReach)*label#line:threads:reach_lookup1&*hfill// Rule 1: initialize search
    -o do-search(A, Id, A, ToReach),
       lookup(A, Id, ToReach, []).*label#line:threads:reach_lookup2&
 
-lookup(A, Id, ToReach, Found), new-lookup(A, Id, Val)*hfill// Rule 2: new reachable node found.
+lookup(A, Id, ToReach, Found), new-lookup(A, Id, Val)*hfill// Rule 2: new reachable node found
    -o lookup(A, Id, remove(ToReach, Val), [Val | Found]).
 
-do-search(A, Id, Node, ToReach),*label#line:threads:reach_visit1&*hfill// Rule 3: node has already seen this search.
+do-search(A, Id, Node, ToReach),*label#line:threads:reach_visit1&*hfill// Rule 3: node has already seen this search
 visited(A, Id) // Already visited for this search.
    -o visited(A, Id). *label#line:threads:reach_visit2&
 
-do-search(A, Id, Node, ToReach),*hfill// Rule 4: node found and propagate search.
+do-search(A, Id, Node, ToReach),*hfill// Rule 4: node found and propagate search
 !value(A, Val), Val in ToReach // New node was found.
    -o visited(A, Id),*label#line:threads:reach_visit_visited1&
       new-lookup(Node, Id, Val),
       {B | !edge(A, B) -o do-search(B, Id, Node, remove(ToReach, Val))}.*label#line:threads:reach_propagate&
 
-do-search(A, Id, Node, ToReach),*hfill// Rule 5: node not found and propagate search.
+do-search(A, Id, Node, ToReach),*hfill// Rule 5: node not found and propagate search
 !value(A, Val), ~ Val in ToReach // Not the node we are looking for.
    -o {B | !edge(A, B) -o do-search(B, ID, Node, ToReach)},*label#line:threads:reach_propagate2&
       visited(A, Id).*label#line:threads:reach_visit_visited2&
@@ -193,20 +193,20 @@ pruning the search space.
 
 \begin{figure}[h]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\#\&]
-search(A, Id, ToReach),*label#line:threads:reacht_start1&*hfill// Rule 1: initialize search.
+search(A, Id, ToReach),*label#line:threads:reacht_start1&*hfill// Rule 1: initialize search
 *textbf#!thread-list(T, L)&, Owner = nth(L, Id % @threads) // Allocate search to a thread.
    -o {T2 | *textbf#!thread(T, T2)& -o *textbf#thread-search(T2, Id, ToReach, Owner)&},*label#line:threads:reacht_threads&
       do-search(A, Id).*label#line:threads:reacht_start2&
 
-*textbf#thread-search(T, Id, [], Owner)&, *label#line:threads:reacht_prune1&*hfill// Rule 2: search completed.
+*textbf#thread-search(T, Id, [], Owner)&, *label#line:threads:reacht_prune1&*hfill// Rule 2: search completed
 do-search(A, Id)
    -o *textbf#thread-search(T, Id, [], Owner)&. *label#line:threads:reacht_prune2&
 
-do-search(A, Id),*hfill// Rule 3: node already visited.
+do-search(A, Id),*hfill// Rule 3: node already visited
 visited(A, Id) // Already visited.
    -o visited(A, Id).
 
-do-search(A, Id),*label#line:threads:reacht_check1&*label#line:bfs_join1&*hfill// Rule 4: node found.
+do-search(A, Id),*label#line:threads:reacht_check1&*label#line:bfs_join1&*hfill// Rule 4: node found
 *textbf#thread-search(T, Id, ToReach, Owner)&,*label#line:threads:reacht_join2&
 !value(A, Val), Val in ToReach
    -o *textbf#thread-search(T, Id, remove(ToReach, Val), Owner)&,
@@ -214,27 +214,27 @@ do-search(A, Id),*label#line:threads:reacht_check1&*label#line:bfs_join1&*hfill/
       {B | !edge(A, B) -o do-search(B, Id)},
       visited(A, Id).
 
-do-search(A, Id),*hfill// Rule 5: node not found but propagate search.
+do-search(A, Id),*hfill// Rule 5: node not found but propagate search
 *textbf#thread-search(T, Id, ToReach, Owner)&,
 !value(A, Val), ~ Val in ToReach
    -o *textbf#thread-search(T, Id, ToReach, Owner)&,
       visited(A, Id),
       {B | !edge(A, B) -o do-search(B, Id)}.*label#line:threads:reacht_check2&
 
-*textbf#remove-thread-search(T, Id, Val), thread-search(T, Id, ToReach, Owner)&*hfill// Rule 6: node found.
+*textbf#remove-thread-search(T, Id, Val), thread-search(T, Id, ToReach, Owner)&*hfill// Rule 6: node found
    *textbf#-o thread-search(T, Id, remove(ToReach, Val), Owner),&
       *textbf#check-results(T, Id).&
 
-*textbf#check-results(T, Id),&*label#line:threads:reacht_reached1&*hfill// Rule 7: search is completed.
+*textbf#check-results(T, Id),&*label#line:threads:reacht_reached1&*hfill// Rule 7: search is completed
 *textbf#thread-search(T, Id, [], Owner)&
    *textbf#-o thread-search(A, Id, [], Owner),&
       *textbf#{B | !other-thread(T, B) -o signal-thread(B, Id)}.&*label#line:threads:reacht_reached2&
 
- *textbf#check-results(T, Id),&*hfill// Rule 8: search not completed yet.
+ *textbf#check-results(T, Id),&*hfill// Rule 8: search not completed yet
  *textbf#thread-search(T, Id, ToReach, Owner), ToReach <> []&
    *textbf#-o thread-search(T, Id, ToReach, Owner).&
 
-*textbf#signal-thread(T, Id),&*hfill// Rule 9: thread knows search is done.*label#line:threads:reacht_knows1&
+*textbf#signal-thread(T, Id),&*hfill// Rule 9: thread knows search is done*label#line:threads:reacht_knows1&
 *textbf#thread-search(T, Id, ToReach, Owner)&
    *textbf#-o thread-search(T, Id, [], Owner).& *label#line:threads:reacht_knows2&
 \end{Verbatim}

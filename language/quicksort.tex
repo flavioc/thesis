@@ -43,42 +43,42 @@ of an \code{up} fact (line~\ref{line:language:qs_up}).
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\{\}]
-type linear down(node, list int).*hfill// Predicate declaration.
+type linear down(node, list int).*hfill// Predicate declaration
 type linear up(node, list int).
 type linear sorted(node, node, list int).
 type linear back(node, node).
 type linear split(node, int list int, list int, list int).
 type linear waitpivot(node, int, node, node).
 
-down(A, []) -o up(A, []).*label{line:language:qs_small1}*hfill// Rule 1: empty list.
+down(A, []) -o up(A, []).*label{line:language:qs_small1}*hfill// Rule 1: empty list
 
-down(A, [X]) -o up(A, [X]).*hfill// Rule 2: single element list.
+down(A, [X]) -o up(A, [X]).*hfill// Rule 2: single element list
 
-down(A, [X, Y]), X < Y -o up(A, [X, Y]).*hfill// Rule 3: two element list.
+down(A, [X, Y]), X < Y -o up(A, [X, Y]).*hfill// Rule 3: two element list
 
-down(A, [X, Y]), X >= Y -o up(A, [Y, X]).*label{line:language:qs_small2}*hfill// Rule 4: two element list.
+down(A, [X, Y]), X >= Y -o up(A, [Y, X]).*label{line:language:qs_small2}*hfill// Rule 4: two element list
 
-down(A, [Pivot | Xs])*label{line:language:qs_complex}*hfill// Rule 5: lists with more than two elements.
+down(A, [Pivot | Xs])*label{line:language:qs_complex}*hfill// Rule 5: lists with more than two elements
    -o split(A, Pivot, Xs, [], []).
 
-split(A, Pivot, [], Smaller, Greater) -o*label{line:language:qs_exists1}*hfill// Rule 6: create nodes to sort sublists.
+split(A, Pivot, [], Smaller, Greater) -o*label{line:language:qs_exists1}*hfill// Rule 6: create nodes to sort sublists
    exists B, C. (back(B, A), back(C, A),
                  down(B, Smaller), down(C, Greater), waitpivot(A, Pivot, B, C)).*label{line:language:qs_exists2}
 
-split(A, Pivot, [X | Xs], Smaller, Greater), X <= Pivot*label{line:language:qs_split1}*hfill// Rule 7: split case 1.
+split(A, Pivot, [X | Xs], Smaller, Greater), X <= Pivot*label{line:language:qs_split1}*hfill// Rule 7: split case 1
    -o split(A, Pivot, Xs, [Y | Smaller], Greater).
 
-split(A, Pivot, [X | Xs], Smaller, Greater), X > Pivot*hfill// Rule 8: split case 2.
+split(A, Pivot, [X | Xs], Smaller, Greater), X > Pivot*hfill// Rule 8: split case 2
    -o split(A, Pivot, Xs, Smaller, [Y | Greater]).*label{line:language:qs_split2}
    
-waitpivot(A, Pivot, NodeSmaller, NodeGreater),*label{line:language:qs_sorted1}*hfill// Rule 9: merge sublists.
+waitpivot(A, Pivot, NodeSmaller, NodeGreater),*label{line:language:qs_sorted1}*hfill// Rule 9: merge sublists
 sorted(A, NodeSmaller, Smaller),
 sorted(A, NodeGreater, Greater)
    -o up(A, Smaller ++ [Pivot | Greater]).*label{line:language:qs_sorted2}*label{line:language:qs_up} // Append the lists.
 
-up(A, L), back(A, B) -o sorted(B, A, L).*label{line:language:qs_back}*hfill// Rule 10: send list to parent.
+up(A, L), back(A, B) -o sorted(B, A, L).*label{line:language:qs_back}*hfill// Rule 10: send list to parent
 
-down(@0, initial_list).*label{line:language:qs_axiom}*hfill// Initial facts.
+down(@0, initial_list).*label{line:language:qs_axiom}*hfill// Initial facts
 \end{Verbatim}
   \caption{Quick-Sort program written in LM.}
   \label{language:code:quicksort}

@@ -37,39 +37,39 @@ approach in order to limit the size of the cache.
 
 \begin{figure}[ht]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\{\}]
-type left(node, node).*hfill// Predicate declaration.
+type left(node, node).*hfill// Predicate declaration
 type right(node, node).
 type linear value(node, int Key, string Value).
 type linear replace(node, int Key, string Value).
 type linear cache(thread, node, int).
 type linear cache-size(thread, int).
 
-replace(A, Key, RValue),*hfill*label{line:threads:kv_rule1_start}// Rule 1: key exists and is also in the cache.
+replace(A, Key, RValue),*hfill*label{line:threads:kv_rule1_start}// Rule 1: key exists and is also in the cache
 value(A, Key, Value),
 *textbf{cache(T, A, Key)}
    -o value(A, Key, RValue).
       *textbf{cache(T, A, Key)}.*label{line:threads:kv_rule1_end}
 
-replace(A, Key, RValue),*label{line:threads:kv_rule2_start}*hfill// Rule 2: key exists and is not in the cache.
+replace(A, Key, RValue),*label{line:threads:kv_rule2_start}*hfill// Rule 2: key exists and is not in the cache
 value(A, Key, Value),
 *textbf{cache-size(T, Total)}
    -o value(A, Key, RValue),
       *textbf{cache-size(T, Total + 1)},
       *textbf{cache(T, A, Key)}.*label{line:threads:kv_rule2_end}
 
-replace(A, RKey, RValue),*label{line:threads:kv_rule3_start}*hfill// Rule 3: cached by the thread.
+replace(A, RKey, RValue),*label{line:threads:kv_rule3_start}*hfill// Rule 3: cached by the thread
 *textbf{cache(T, TargetNode, RKey)}
    -o replace(TargetNode, RKey, RValue),
       *textbf{cache(T, TargetNode, RKey)}.*label{line:threads:kv_rule3_end}
 
-replace(A, RKey, RValue),*hfill// Rule 4: go left.
+replace(A, RKey, RValue),*hfill// Rule 4: go left
 value(A, Key, Value),
 !left(A, B),
 RKey < Key
    -o value(A, Key, Value),
       replace(B, RKey, RValue).
 
-replace(A, RKey, RValue),*hfill// Rule 5: go right.
+replace(A, RKey, RValue),*hfill// Rule 5: go right
 value(A, Key, Value),
 !right(A, B),
 RKey > Key

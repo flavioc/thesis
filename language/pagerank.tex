@@ -84,35 +84,35 @@ is derived and a PageRank value is generated for iteration \code{Iter}.
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\[\]]
-type outbound(node, node, float).\hfill// Predicate declaration.
+type outbound(node, node, float).\hfill// Predicate declaration
 type numInbound(node, int).
 type linear pagerank(node, float, int).
 type linear accumulator(node, float Acc, int Left, int Iteration).
 type linear neighbor-pagerank(node, node Neighbor, float Rank, int Iteration).
 type linear start(node).
 
-const damping = 0.85.\hfill// probability of user following a link in the current page.\label[line:language:spagerank_const1]
-const iterations = str2int(@arg1).\hfill// iterations to compute.
+const damping = 0.85.\hfill// probability of user following a link in the current page\label[line:language:spagerank_const1]
+const iterations = str2int(@arg1).\hfill// iterations to compute
 const pages = @world.\hfill// number of pages in the graph.\label[line:language:spagerank_const2]
 
-start(A), !numInbound(A, T)\label[line:language:spagerank_first1]\hfill// Rule 1: initialize pagerank and accumulator.
+start(A), !numInbound(A, T)\label[line:language:spagerank_first1]\hfill// Rule 1: initialize pagerank and accumulator
    -o accumulator(A, 0.0, T, 1), pagerank(A, 1.0 / float(pages), 0).\label[line:language:spagerank_first2]
 
-pagerank(A, V, Iter), // propagate new pagerank value\label[line:language:spagerank_second1]\hfill// Rule 2: propagate pagerank.
+pagerank(A, V, Iter), // propagate new pagerank value\label[line:language:spagerank_second1]\hfill// Rule 2: propagate pagerank
 Iter < iterations
    -o {B, W | !outbound(A, B, W) -o neighbor-pagerank(B, A, V * W, Iter + 1)}.\label[line:language:spagerank_second2]
 
-neighbor-pagerank(A, B, V, Iter),\label[line:language:spagerank_fourth1]\hfill// Rule 3: accumulate neighbor's value.
+neighbor-pagerank(A, B, V, Iter),\label[line:language:spagerank_fourth1]\hfill// Rule 3: accumulate neighbor's value
 accumulator(A, Acc, T, Iter)
    -o accumulator(A, Acc + V, T - 1, Iter).\label[line:language:spagerank_fourth2]
 
-accumulator(A, Acc, 0, Iter),\label[line:language:spagerank_third1]\hfill// Rule 4: generate new pagerank.
+accumulator(A, Acc, 0, Iter),\label[line:language:spagerank_third1]\hfill// Rule 4: generate new pagerank
 !numInbound(A, T),
 V = damping + (1.0 - damping) * Acc,
 Iter <= iterations
    -o pagerank(A, V, Iter), accumulator(A, 0.0, T, Iter + 1).\label[line:language:spagerank_third2]
 	
-start(A).\hfill// Initial facts.
+start(A).\hfill// Initial facts
 \end{Verbatim}
 \caption{Synchronous PageRank program.}
 \label{language:code:pagerank}

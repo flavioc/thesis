@@ -21,25 +21,25 @@ already failed (line~\ref{line:language:bc_fourth}).
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\[\]]
-type edge(node, node).*hfill// Predicate declaration.
+type edge(node, node).*hfill// Predicate declaration
 type linear visit(node, int).
 type linear uncolored(node).
 type linear colored(node, int).
 type linear fail(node).
 
-fun next(int X) : int = if X <> 1 then 1 else 2 end.*hfill// Function declaration.
+fun next(int X) : int = if X <> 1 then 1 else 2 end.*hfill// Function declaration
 
-visit(A, P), uncolored(A)*label[line:language:bc_first1]*hfill// Rule 1: coloring a node.
+visit(A, P), uncolored(A)*label[line:language:bc_first1]*hfill// Rule 1: coloring a node
    -o {B | !edge(A, B) -o visit(B, next(P))},
       colored(A, P).*label[line:language:bc_first2]
 
-visit(A, P), colored(A, P) -o colored(A, P).*label[line:language:bc_second]*hfill// Rule 2: node is already colored.
+visit(A, P), colored(A, P) -o colored(A, P).*label[line:language:bc_second]*hfill// Rule 2: node is already colored
 
-visit(A, P1), colored(A, P2), P1 <> P2 -o fail(A).*label[line:language:bc_third]*hfill// Rule 3: graph is not bipartite.
+visit(A, P1), colored(A, P2), P1 <> P2 -o fail(A).*label[line:language:bc_third]*hfill// Rule 3: graph is not bipartite
 
-visit(A, P), fail(A) -o fail(A).*label[line:language:bc_fourth]*hfill// Rule 4: graph is still not bipartite.
+visit(A, P), fail(A) -o fail(A).*label[line:language:bc_fourth]*hfill// Rule 4: graph is still not bipartite
 
-visit(@1, 1).*label[line:language:bc_axiom]*hfill// Initial facts.
+visit(@1, 1).*label[line:language:bc_axiom]*hfill// Initial facts
 \end{Verbatim}
   \caption{Bipartiteness Checking program.}
   \label{language:code:bichecking}

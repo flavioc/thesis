@@ -1,17 +1,17 @@
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\[\]]
-type edge(node, node).*hfill// Predicate declaration.
+type edge(node, node).*hfill// Predicate declaration
 type linear visit(node).
 type linear unvisited(node).
 type linear visited(node).
 
-visit(A), unvisited(A) -o*label[line:language:visit_first1]*hfill // Rule 1: visit node.
+visit(A), unvisited(A) -o*label[line:language:visit_first1]*hfill // Rule 1: visit node
    visited(A), {B | !edge(A, B) -o visit(B)}.*label[line:language:visit_first2]*label[line:language:visit_comprehension]
 
-visit(A), visited(A) -o visited(A).*label[line:language:visit_second]*hfill // Rule 2: node already visited.
+visit(A), visited(A) -o visited(A).*label[line:language:visit_second]*hfill // Rule 2: node already visited
 
-!edge(@1, @2). !edge(@2, @3). !edge(@1, @4). !edge(@2, @4).*hfill// Initial facts.
+!edge(@1, @2). !edge(@2, @3). !edge(@1, @4). !edge(@2, @4).*hfill// Initial facts
 !edge(@2, @1). !edge(@3, @2). !edge(@4, @1). !edge(@4, @2).
 unvisited(@1). unvisited(@2). unvisited(@3). unvisited(@4).
 

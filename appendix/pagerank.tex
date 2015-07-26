@@ -36,7 +36,7 @@ number.
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\#\&]
-type outbound(node, node, float).\hfill// Predicate declaration.
+type outbound(node, node, float).\hfill// Predicate declaration
 type numInbound(node, int).
 type linear pagerank(node, float, int).
 type linear neighbor-pagerank(node, node Neighbor, float Rank, int Iteration).
@@ -44,17 +44,17 @@ type linear new-neighbor-pagerank(node, node Neighbor, float Rank, int Iteration
 type linear sum-ranks(node, float).
 type linear update(A).
 
-new-neighbor-pagerank(A, B, New, Iteration),\label#line:language:apagerank_update1&\hfill// Rule 1: update neighbor value.
+new-neighbor-pagerank(A, B, New, Iteration),\label#line:language:apagerank_update1&\hfill// Rule 1: update neighbor value
 neighbor-pagerank(A, B, Old, OldIteration),
 Iteration > OldIteration
    -o neighbor-pagerank(A, B, New, Iteration).
 
-new-neighbor-pagerank(A, B, New, Iteration),\hfill// Rule 2: update neighbor value.
+new-neighbor-pagerank(A, B, New, Iteration),\hfill// Rule 2: update neighbor value
 neighbor-pagerank(A, B, Old, OldIteration),
 Iteration <= OldIteration
    -o neighbor-pagerank(A, B, Old, OldIteration).\label#line:language:apagerank_update2&
 
-sum-ranks(A, Acc),\label#line:language:apagerank_new1&\hfill// Rule 3: propagate new pagerank.
+sum-ranks(A, Acc),\label#line:language:apagerank_new1&\hfill// Rule 3: propagate new pagerank
 NewRank = damping/float(pages) + (1.0 - damping) * Acc,
 pagerank(A, OldRank, Iteration)
       -o pagerank(A, NewRank, Iteration + 1),
@@ -62,14 +62,14 @@ pagerank(A, OldRank, Iteration)
                OldRank) * W -o new-neighbor-pagerank(B, A, NewRank, Iteration + 1),
                if Delta > bound then update(B) end}.\label#line:language:apagerank_new2&
 
-update(A), update(A) -o update(A).\hfill// Rule 4: prune update facts.
+update(A), update(A) -o update(A).\hfill// Rule 4: prune update facts
 
-update(A),\label#line:language:apagerank_new1&\hfill// Rule 5: start update process.
+update(A),\label#line:language:apagerank_new1&\hfill// Rule 5: start update process
 !numInbound(A, T)
    -o [sum => V; B, Val, Iter | neighbor-pagerank(A, B, Val, Iter),
          V = Val/float(T) -o neighbor-pagerank(A, B, Val, Iter) -> sum-ranks(A, V)].\label#line:language:apagerank_new2&
 
-pagerank(A, 1.0 / float(pages), 0).\hfill// Initial facts.
+pagerank(A, 1.0 / float(pages), 0).\hfill// Initial facts
 update(A).
 neighbor-pagerank(A, B, 1.0 / float(pages), 0). // pagerank of B is ...
 \end{Verbatim}
