@@ -8,3 +8,29 @@ take advantage of them.
 \subsection{Heat Transfer}\label{section:coord:ht}
 \input{coordination/ht}
 
+\subsection{Remarks}
+
+We have showed four applications that make use of the new coordination
+facilities of LM. Coordination makes it possible for programmers to
+fine tune the scheduling and load balancing of declarative programs in
+the same way that regular LM computation is accomplished.
+
+In the Single Source Shortest Path program, we demonstrated that coordination
+makes it easy to avoid redundant computations and thus significantly reduce the
+run time of several, relatively large, datasets.
+
+In the MiniMax program, we used default priorities to minimize the memory usage
+of the program and allow the declarative program to be far more competitive
+with the corresponding program implemented in C++.
+
+In the N-Queens program, we used partitioning facts to pin columns of the chess
+board to threads and then improve the scalability of the program for
+configurations where the number of columns is equal to the number of threads.
+The partitioning mechanism allows the programmer to improve the locality of the
+program by deciding where nodes and computation should be placed during
+execution.
+
+Finally, in the Heat Transfer program, we made use of both scheduling and
+partitioning facts to improve performance and reduce inter-thread communication.
+The sensing facts for partitioning makes it trivial to selectively do
+computation by reasoning about the state of the underlying parallel system.

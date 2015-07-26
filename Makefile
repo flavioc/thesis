@@ -33,6 +33,7 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex ack.tex \
 		coordination/partitioning.tex coordination/scheduling.tex \
 		coordination/ht.tex language/bipartite.tex \
 		coordination/proof_sssp.tex coordination/proof_queens.tex \
+		coordination/proof_minimax.tex \
 		coordination/types.tex coordination/rationale.tex \
 		coordination/coord_sssp.tex coordination/programs.tex \
 		coordination/minimax.tex coordination/queens.tex \

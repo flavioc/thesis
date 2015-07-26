@@ -1,6 +1,7 @@
 
-In this section, we explore programming languages and programming models that
-allow coordination and/or scheduling of computation and/or processing units.
+In this section, we explore other programming languages and programming models
+which also support some kind of coordination primitives that allow explicit
+scheduling and load balancing of work between available processing units.
 
 \subsection{Programming Languages}
 
@@ -10,8 +11,8 @@ programming divides execution in two parts: \emph{computation}, where the actual
 computation is performed, and \emph{coordination}, which deals with
 communication and cooperation between processing units. This paradigm attempts
 to clearly distinguish between these two parts by providing abstractions for
-coordination in an attempt to provide architecture and system-independent forms
-of communication.
+coordination as a way to provide architecture and system-independent forms of
+communication.
 
 We can identify two main types of coordination models:
 
@@ -19,7 +20,7 @@ We can identify two main types of coordination models:
    \item[Data-Driven:]
    
    In a data-driven model, the state of the computation depends on both the data
-   being received or transmitted by the processes and the current configuration
+   being received or transmitted by the available processes and the current configuration
    of the coordinated processes. The coordinated process is not only responsible
    for reading and manipulating the data but is also responsible for
    coordinating itself and/or other processes. Each process must intermix the
@@ -68,19 +69,23 @@ components.
 
 The original Meld~\cite{ashley-rollman-iclp09} can also be seen as a kind of
 data-driven coordination language. The important distinction is that in Meld
-there's no explicit coordination directives. When Meld rules are activated they
+there is no explicit coordination directives. When Meld rules are activated they
 may derive facts that need to be sent to a neighboring robot. In turn, this will
 activate computation on the neighbor. Robot communication is implemented by
 \emph{localizing} the program rules and then by creating \emph{communication
 rules}.
 
 The LM language also implements communication rules, however it goes further
-because some facts, action facts, can change how the processing units schedule
-nodes to be executed, namely, which node is to be computed next, which may in
-turn change the program's final result. This result in a more complete
-inter-play between coordination code and data.
+because some facts, e.g., action facts, can change how the processing units
+schedule nodes to be executed, which may in turn change the program's final
+results or convergence rate. This results in a more complete inter-play between
+coordination code and data.
 
 \subsection{Programming Models}
+
+In this section, we describe models, systems and domain specific languages that
+also support coordination but cannot be classified as programming languages on
+their own right.
 
 The Galois~\cite{Pingali:2011:TPA:1993316.1993501} programming model implements
 autonomous scheduling by default, where activities may be rolled back in case of
@@ -102,8 +107,8 @@ concept of runtime coordination with the introduction of a flexible approach to 
 scheduling policies for Galois programs. This approach was motivated by the fact
 that some algorithms can be executed faster if computations use better
 scheduling strategies. The scheduling language specifies 3 main scheduler types:
-\texttt{FIFO} (First-In First-Out), \texttt{LIFO} (Last-In First-Out) and
-\texttt{OrderedByMetric} (order activities by some metric). These schedulers can
+FIFO (First-In First-Out), LIFO (Last-In First-Out) and
+OrderedByMetric (order activities by some metric). These schedulers can
 be composed and synthesized without requiring users to write complex concurrent
 code.
 
