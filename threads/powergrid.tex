@@ -31,20 +31,6 @@ of \emph{node}, that is, $consumer <: node$ and $generator <: node$.  These
 subtypes allow us to declare initial facts that only apply to either the
 \code{consumer} or \code{generator} subtype.
 
-All consumers start with a \code{reconnect} axiom that is used in
-lines~\ref{line:threads:pg_connect1}-\ref{line:threads:pg_connect2} in order to
-randomly select a generator from list \code{L}. Afterwards, the generator
-receives a \code{connect} fact which is used in
-lines~\ref{line:threads:pg_gen1}-\ref{line:threads:pg_gen2} when the generator
-has enough power for the new consumer. When there is not enough power
-(\code{Used + Power > Total}), the generator disconnects the consumer in
-lines~\ref{line:threads:pg_fail1}-\ref{line:threads:pg_fail2}. Note that each
-generator mantains a \code{fail} fact that counts the number of times the
-consumers have failed to connected. If there is too many failures, then the
-generator decides to disconnect one consumer already connected in
-lines~\ref{line:threads:pg_recon1}-\ref{line:threads:pg_recon2}, allowing for
-different combinations to happen.
-
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\scriptsize,commandchars=*\#\&]
 node generator.*label#line:threads:pg_decl1&*hfill// Type declaration
@@ -100,6 +86,90 @@ disconnected(C). reconnect(C). !generators(C, all-generators).
 \label{code:threads:powergrid}
 \end{figure}
 
+An example PowerGrid configuration with its initial facts is presented in
+Fig.~\ref{code:threads:powergrid_init}. Consumers have a persistent fact
+\code{!power(A, P)}, where \code{P} is the amount of power required by the
+consumer. Consumers also start with a
+\code{reconnect} fact that is used in
+lines~\ref{line:threads:pg_connect1}-\ref{line:threads:pg_connect2} in order to
+randomly select a generator from list \code{L} in the \code{!generators(A, L)}
+fact. The generators have a \code{connect-to-list(A, L)} fact that manages the
+list of connected consumers. The generator fact \code{capacity(A, Total, Used)},
+stores the \code{Total} capacity of the generator and the amount of power
+currently being \code{Used} (\code{Used < Total} at any point in the program).
+
+Consumers and generators complete a connection when the generator receives a
+\code{connect} fact which is used in
+lines~\ref{line:threads:pg_gen1}-\ref{line:threads:pg_gen2} when the generator
+has enough power for the new consumer. When there is not enough power
+(\code{Used + Power > Total}), the generator disconnects the consumer in
+lines~\ref{line:threads:pg_fail1}-\ref{line:threads:pg_fail2}. Note that each
+generator mantains a \code{fail} fact that counts the number of times the
+consumers have failed to connected. If there is too many failures, then the
+generator decides to disconnect one consumer already connected in
+lines~\ref{line:threads:pg_recon1}-\ref{line:threads:pg_recon2}, allowing for
+different combinations to happen. In Fig.~\ref{code:threads:powergrid_final} we
+present the final database of the example PowerGrid configuration, which shows
+that all consumers have been able to find a suitable generator.
+
+\begin{figure}[h!]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\#\&]
+const generators = [@7, @8, @9, @10].
+
+reconnect(@1). !generators(@1, generators).
+reconnect(@2). !generators(@1, generators).
+reconnect(@3). !generators(@1, generators).
+reconnect(@4). !generators(@1, generators).
+reconnect(@5). !generators(@1, generators).
+reconnect(@6). !generators(@1, generators).
+!power(@1, 5).
+!power(@2, 10).
+!power(@3, 5).
+!power(@4, 10).
+!power(@5, 10).
+!power(@6, 5).
+
+connected-to-list(@7, []).
+connected-to-list(@8, []).
+connected-to-list(@9, []).
+connected-to-list(@10, []).
+capacity(@7, 15, 0). fail(@7, 0).
+capacity(@8, 15, 0). fail(@8, 0).
+capacity(@9, 10, 0). fail(@9, 0).
+capacity(@10, 5, 0). fail(@10, 0).
+\end{Verbatim}
+\caption{Initial facts for a PowerGrid configuration of 6 consumers and 4 generators.}
+\label{code:threads:powergrid_init}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\#\&]
+connected(@1, @7).
+connected(@2, @7).
+connected(@3, @8).
+connected(@4, @8).
+connected(@5, @9).
+connected(@6, @10).
+!power(@1, 5).
+!power(@2, 10).
+!power(@3, 5).
+!power(@4, 10).
+!power(@5, 10).
+!power(@6, 5).
+
+connected-to-list(@7, [@1, @2]). connected-to(@7, @1, 5). connected-to(@7, @2, 10).
+connected-to-list(@8, [@3, @4]). connected-to(@8, @3, 5). connected-to(@8, @4, 10).
+connected-to-list(@9, [@5]). connected-to(@9, @5, 10).
+connected-to-list(@10, [@6]). connected-to(@10, @6, 5).
+capacity(@7, 15, 15).
+capacity(@8, 15, 15).
+capacity(@9, 10, 10).
+capacity(@10, 5, 5).
+\end{Verbatim}
+\caption{Final facts for a PowerGrid configuration of 6 consumers and 4 generators.}
+\label{code:threads:powergrid_final}
+\end{figure}
+
 The issue with the distributed implementation presented in
 Fig.~\ref{code:threads:powergrid} is that it lacks a global view of the problem,
 which introduces inneficiencies and more communication between consumers and
@@ -111,8 +181,9 @@ our solution, we will partition the set of generators $G$ among the threads in
 the system and make each thread assume the ownership of its generators. The
 thread can then process consumers with a global view over its set of generators,
 allowing the immediate assignment iof consumers to generators.
-Figure~\ref{fig:threads:powergrid} shows how a PowerGrid configuration is
-re-configured to take into account the number of available threads.
+Figure~\ref{fig:threads:powergrid} shows how the example PowerGrid configuration
+presented previously is re-configured to take into account the number of
+available threads.
 
 The LM code using thread facts shown in Fig.~\ref{code:threads:powergridt} uses
 4 thread predicates: \code{thread-connected-to} and
@@ -125,7 +196,7 @@ generators to their corresponding threads using \code{set-thread}. Once the
 generator is executing on the proper thread, the rule in
 lines~\ref{line:threads:pgt_moved1}-\ref{line:threads:pgt_moved2} is derived
 with the \code{just-moved} coordination fact and the state of the thread is
-initialized.  Consumers connect with the thread's generators with the rule in
+initialized. Consumers connect with the thread's generators with the rule in
 lines~\ref{line:threads:pgt_con1}-\ref{line:threads:pgt_con2} by selecting the
 first generator with enough power and then updating the state of the thread.
 Otherwise, if the thread does not have a suitable generator, a generator is
@@ -167,7 +238,7 @@ NewUsed = Used + Power, NewUsed <= Total
    -o thread-capacity(T, G, Total, NewUsed),
       thread-total-capacity(T, TotalCapacity, TotalUsed + Power),
       fails(G, max(Fails - 1, 0)), thread-connected-to(T, G, C, Power),
-      thread-connected-to-list(T, G, [C | L]).
+      thread-connected-to-list(T, G, [C | L]).*label#line:threads:pgt_gen11&
 
 connect(G, C, Power), thread-capacity(T, G, Total, Used), Used + Power > Total, fails(G, Fails)
    -o thread-capacity(T, G, Total, Used), disconnect(C, G), fails(G, Fails + 1).*label#line:threads:pgt_gen2&
@@ -192,6 +263,70 @@ fails(G, 0).  disconnected(C).  reconnect(C).  !generators(C, all-generators).  
 \caption{LM code for the optimized PowerGrid program.}
 \label{code:threads:powergridt}
 \end{figure}
+
+The experimental results for the PowerGrid program are presented in
+Fig.~\ref{fig:threads:results_powergrid}. In the plots, separated by dataset, we
+show the run time of the version without thread facts (\textbf{Regular}) and the
+version using thread facts called \textbf{Threads}. We also show the speedup of
+the \textbf{Threads} and \textbf{Regular} versions when using the
+\textbf{Regular} version with 1 thread.  We experimented with four datasets:
+
+\begin{enumerate}
+      \item 0.5 M C / 2000 G: Half a million consumers connected to 2000
+         generators. This is the baseline dataset.
+
+      \item 0.5 M C / 64 G: Half a million consumers connected to 64
+         generators. This is similar to the previous dataset, but the number of
+         generators is much smaller.
+
+      \item 1 M C / 4000 G / Low Variability: 1 million consumers connected to
+         4000 generators. The capacity of each generator has low variability so
+         that each generator has a similar capacity.
+
+      \item 1 M C / 4000 G / High Variability: 1 million consumers connected to
+         4000 generators. The capacity of each generator has high variability so
+         that some generators have no capacity or three times the average the
+         capacity.
+
+\end{enumerate}
+
+All the datasets were generated randomly so that the total capacity of the
+generators is about 2\% more than the required consumer capacity. The capacity
+of each generator is generated randomly and, except for the last two datasets,
+the capacity is between 0 and twice the average capacity (total capacity divided
+by number of generators).
+
+The first important observation relates to the first two datasets. In the 0.5 M
+C / 2000 G, the \textbf{Threads} version has more than a 150-fold speedup for 32
+threads while the 0.5 M C / 64 G dataset only reaches a 70-fold speedup. Having
+only 64 generators instead of 2000 makes it harder scale the program since
+there's only a few generators to distribute among threads. However, it must be
+noted that the 64 G dataset performs proportionally faster when using 1 thread
+than the 2000 G dataset since that one thread has a small number of generators
+to choose from when processing consumers. The rule that assigns generators to
+consumers (lines~\ref{line:threads:pgt_gen1}-\ref{line:threads:pgt_gen11}) needs
+to iterate through all the generators to find one with enough power to handle
+the consumer, therefore, a smaller number of generators is a clear advantage
+over having many generators in the case of using just 1 thread.
+
+The second important observation relates the last two datasets where we
+experimented with the capacity variability of the generators. For the Low
+Variability dataset, the consumers have very identical capacities, while in the
+High Variability dataset, generators have a more variable capacity, which should
+make it harder for the algorithm to find a valid generator/consumer assignment.
+Our results show exactly that: the Low Variability shows a very small difference
+between the \textbf{Regular} and \textbf{Threads} version, while in the High
+Variability dataset, the \textbf{Threads} version is much faster than the
+\textbf{Regular} version. However, for the High Variability dataset, we were
+expecting a speedup that was closer to the 0.5 M C / 2000 G dataset, since the
+number of generators is much higher. Furthermore, if we compare the run times of
+the \textbf{Regular} and \textbf{Threads} version when using 1 thread, we notice
+that the \textbf{Threads} version is actually slower. As noted before, this may
+be due to the fact that the LM rule for assigning generators to consumers needs
+to perform a linear scan on the available generators to find a suitable
+generator which then negatively impacts performance. This is a clear drawback of
+the logic programming model that could potentially be solved by maintaining a
+sorted list of \texttt{thread-capacity} facts.
 
 \begin{figure}[]
         \centering
@@ -218,7 +353,7 @@ fails(G, 0).  disconnected(C).  reconnect(C).  !generators(C, all-generators).  
         \end{subfigure} \\
         \caption{Measuring the performance of the PowerGrid program
         when using thread facts.}
-        \label{fig:coordination:results_powergrid}
+        \label{fig:threads:results_powergrid}
 \end{figure}
 
 
