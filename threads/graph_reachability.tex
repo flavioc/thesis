@@ -249,39 +249,64 @@ of traffic between threads, which would actually make the program perform worse.
 Our final solution is a good trade off since it only forces threads to
 coordinate when pruning can actually happen.
 
-The graph reachability program shows how to introduce complex coordination
-policies between threads by reasoning about the state of each thread. In
-addition, the use of linear logic programming makes it easier to prove
-properties of the program since computation is done by applying controlled
-changes to the state.
+Figure~\ref{fig:threads:results_search} presents experimental results of the
+graph reachability program using 4 different datasets. Except for Random, all
+the datasets were already used in the MSSD program and were presented before.
+The Random dataset is randomly generated graph with about 50000 nodes and a
+million edges.  In the plots, we show the run time of the version without thread
+facts (\textbf{Regular}) and the version using thread facts called
+\textbf{Threads}. We also show the speedup of the \textbf{Threads} and
+\textbf{Regular} versions when using the \textbf{Regular} version with 1 thread.
+
+Our results indicate that using thread facts produces a significant reduction in
+run time. This is especially true in the case of datasets with large number of
+edges, since less facts are produced and propagated in the graph when the
+threads know that the search has been completed. The results also show that, in
+the case of the Facebook dataset in which the number of queries is the same as
+the number of nodes, the use of thread facts does not produce great improvements
+due to the costs of managing the reachability results on each thread's database.
+These costs are related to the need to index and lookup \code{thread-search}
+facts on the \code{Id} argument every time a node is inspected.
 
 \begin{figure}[]
         \centering
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/threads/cmp-search-facebook.png}
-           \caption{}
+           \caption{Facebook has 2000 nodes and 20000 edges. The dataset makes
+           2000 graph queries to 5\% of the graph's nodes.}
            \label{fig:threads:search_facebook}
         \end{subfigure}
-        ~
+        \spacing
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/threads/cmp-search-twitter.png}
-           \caption{}
+           \caption{Twitter has 81306 nodes and 1768149 edges. The dataset makes
+           100 graph queries to 1\% of the graph's nodes.}
            \label{fig:threads:search_twitter}
         \end{subfigure} \\
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/threads/cmp-search-random.png}
-           \caption{}
+           \caption{Random is a graph with 50000 nodes and 1052674
+              edges. The dataset makes 20 graph queries
+              to 5\% of the graph's nodes.}
            \label{fig:threads:search_random}
-        \end{subfigure} ~
+        \end{subfigure}
+        \spacing
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/threads/cmp-search-pokec.png}
-           \caption{}
+           \caption{Pokec has 1632803 nodes and 30622564 edges. The dataset
+           makes 3 graph queries to 1\% of the graph's nodes.}
            \label{fig:threads:search_pokec}
         \end{subfigure} \\
         \caption{Measuring the performance of the graph reachability program
         when using thread facts.}
-        \label{fig:coordination:results_queens-14}
+        \label{fig:threads:results_search}
 \end{figure}
+
+The graph reachability program shows how to introduce complex coordination
+policies between threads by reasoning about the state of each thread. In
+addition, the use of linear logic programming makes it easier to prove
+properties of the program since computation is done by applying controlled
+changes to the state.
 
 
 \clearpage
