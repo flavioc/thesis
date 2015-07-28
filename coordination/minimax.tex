@@ -171,14 +171,16 @@ coordinated MiniMax program against the regular MiniMax program. The
 the program, the \textbf{Final} indicates the amount of memory used at the end
 of the program, while the \textbf{\# Malloc} column represents the number of
 calls made to the \code{malloc} function by the threaded allocator. The
-coordinated version uses significantly less memory than the regular version. As
-the number of the threads increases, the average memory usage of the regular
-version decreases because there are more threads that are able to complete
-different parts of the tree at the same time. The same thing happens for the
-coordinated version, but at a much smaller scale since threads are exploring the
-tree in a depth-first fashion. Finally, as expected, there is also a large
-reduction in the number of \code{malloc}'s called by the threaded allocator in
-the coordinated version.
+coordinated version uses significantly less memory than the regular version.
+Both the Big and the Small dataset use about the same memory when using
+coordination, which is an excellent result since the Big dataset is ten times
+larger than the Small dataset.  As the number of the threads increases, the
+average memory usage of the regular version decreases because there are more
+threads that are able to complete different parts of the tree at the same time.
+The same thing happens for the coordinated version, but at a much smaller scale
+since threads are exploring the tree in a depth-first fashion. Finally, as
+expected, there is also a large reduction in the number of \code{malloc}'s
+called by the threaded allocator in the coordinated version.
 
 The run time and scalability results are presented in
 Fig.~\ref{fig:coordination:results_minmax}. There is a clear performance
