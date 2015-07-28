@@ -198,7 +198,7 @@ empty nodes is able to delete the tree nodes (except the root) and the
 \textbf{Final} memory usage reflects that since it is much smaller than the
 \textbf{Average} statistic. However, because the garbage collector retains a
 small number of freed nodes that may be reused later, the average size per fact
-is 16.50KB, which also includes those freed nodes. Note that the memory usage of
+is 15KB, which also includes those freed nodes. Note that the memory usage of
 the C++ program is much better because it uses function calls to represent the
 tree structure of the MiniMax algorithm.
 
@@ -207,10 +207,10 @@ memory than the corresponding C++ program. The ratio is larger when the graph
 and computed distances are smaller and this is due to the extra data structures
 required by the VM (i.e., the node data structure). In terms of average memory
 per fact, we see that the MSSD requires on average 100B, in which the hash table
-data structures used for indexing are a big part of. For the US Power Grid
-dataset, where 24 million facts are derived, the average memory per fact is
-exactly 100B, which is just three times more than the 32B required to store a
-linear fact representing one shortest distance.
+data structures used for indexing are a big part of. For the Orkut dataset,
+where 100 million facts are derived, the average memory per fact is exactly 30B,
+which is about the 32B required to store a particular linear fact for
+representing one shortest distance.
 
 Finally, for the N-Queens program, the results show why there are scalability
 issues when using a larger $N$ since the memory usage increases significantly.
