@@ -1,16 +1,16 @@
-In the last chapter, we introduced new language facilities that can be used by
-the programmer to coordinate execution. This new approach retains the implicit
-parallelism of the standard LM language but it does not allow the programmer to
-fully reason about the underlying parallel architecture. The only architecture
-reasoning allowed relates to node partitioning and movement between threads. In
-principle, it should be advantageous to reason about thread state, that is, to
-perform rule inference about facts stored on each thread and allow threads to
-communicate and coordinate between them depending on their current state. This
-would introduce a kind of explicit parallelism into an implicitly parallel
-language such as LM. However, this explicit parallelism remains declarative
-since it should remain easy to prove properties about the thread's state.
+In the previous chapter, we introduced new language facilities that can be used
+by the programmer to coordinate execution. While these facilities retain the
+implicit parallelism of the language, they do not allow the programmer to fully
+reason about the underlying parallel architecture since the only reasoning
+allowed relates to node partitioning and movement between threads. In principle,
+it should be advantageous to reason about thread state, that is, to perform rule
+inference about facts stored on each thread and allow threads to communicate and
+coordinate between them depending on their current state. This would introduce a
+kind of explicit parallelism into the implicit parallel model of LM.
+However, this explicit parallelism should remain declarative in order to be easy
+sto prove properties about the thread's state.
 
-\section{Rationale: Graph Searching}
+\section{Motivational Example: Graph Searching}
 \input{threads/graph_reachability}
 
 \section{Implementation Changes}

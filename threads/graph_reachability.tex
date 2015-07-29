@@ -1,12 +1,52 @@
 Consider the problem of checking if a set of nodes $S$ in a graph $G$ is
 reachable from an arbitrary node $N$. An obvious solution to this problem is to
 start at $N$, gather all the neighbor nodes into a list and then recursively
-visit all those reachable nodes, until $S$ is covered. This reduces to a
-problem of performing a breadth or depth-first search on graph $G$. However,
-this solution is sequential and does not have much concurrency.  An alternative
+visit all those reachable nodes, until $S$ is covered. This reduces to a problem
+of performing a breadth or depth-first search on graph $G$. However, this
+solution is sequential and does not have much concurrency.  An alternative
 solution to the problem is to recursively propagate the search to all neighbors
 and aggregate the results in the node where the search started.  The code for
-this solution is shown in Fig.~\ref{code:threads:reach_simple}.
+this later solution is shown in Fig.~\ref{code:threads:reach_simple}.
+
+\begin{figure}[h]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\#\&]
+type int id.*hfill// Type declaration
+type list int reach-list.
+
+type edge(node, node).*hfill// Predicate declaration
+type value(node, int).
+type linear search(node, id, reach-list).
+type linear do-search(node, id, node, reach-list).
+type linear lookup(node, id, reach-list, int Val).
+type linear new-lookup(node, id, int Val).
+type linear visited(node, id).
+
+search(A, Id, ToReach)*label#line:threads:reach_lookup1&*hfill// Rule 1: initialize search
+   -o do-search(A, Id, A, ToReach),
+      lookup(A, Id, ToReach, []).*label#line:threads:reach_lookup2&
+
+lookup(A, Id, ToReach, Found), new-lookup(A, Id, Val)*hfill// Rule 2: new reachable node found
+   -o lookup(A, Id, remove(ToReach, Val), [Val | Found]).
+
+do-search(A, Id, Node, ToReach),*label#line:threads:reach_visit1&*hfill// Rule 3: node has already seen this search
+visited(A, Id) // Already visited for this search.
+   -o visited(A, Id). *label#line:threads:reach_visit2&
+
+do-search(A, Id, Node, ToReach),*hfill// Rule 4: node found and propagate search
+!value(A, Val), Val in ToReach // New node was found.
+   -o visited(A, Id),*label#line:threads:reach_visit_visited1&
+      new-lookup(Node, Id, Val),
+      {B | !edge(A, B) -o do-search(B, Id, Node, remove(ToReach, Val))}.*label#line:threads:reach_propagate&
+
+do-search(A, Id, Node, ToReach),*hfill// Rule 5: node not found and propagate search
+!value(A, Val), ~ Val in ToReach // Not the node we are looking for.
+   -o {B | !edge(A, B) -o do-search(B, ID, Node, ToReach)},*label#line:threads:reach_propagate2&
+      visited(A, Id).*label#line:threads:reach_visit_visited2&
+\end{Verbatim}
+
+\caption{LM code to perform reachability checking on a graph.}
+\label{code:threads:reach_simple}
+\end{figure}
 
 Each distinct reachability search is represented by a number (\code{Id}) and a
 \code{search} axiom. Associated to each search \code{Id} is a list of nodes to
@@ -63,46 +103,6 @@ to reach nodes \code{@1}, \code{@2}, and \code{@3} from node \code{@1}. Since
 \code{@1} is part of the target nodes, the fact \code{do-search}
 propagated to neighbor nodes does not include \code{1}.}
 \label{fig:threads:reach_example}
-\end{figure}
-
-\begin{figure}[h]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\#\&]
-type int id.*hfill// Type declaration
-type list int reach-list.
-
-type edge(node, node).*hfill// Predicate declaration
-type value(node, int).
-type linear search(node, id, reach-list).
-type linear do-search(node, id, node, reach-list).
-type linear lookup(node, id, reach-list, int Val).
-type linear new-lookup(node, id, int Val).
-type linear visited(node, id).
-
-search(A, Id, ToReach)*label#line:threads:reach_lookup1&*hfill// Rule 1: initialize search
-   -o do-search(A, Id, A, ToReach),
-      lookup(A, Id, ToReach, []).*label#line:threads:reach_lookup2&
-
-lookup(A, Id, ToReach, Found), new-lookup(A, Id, Val)*hfill// Rule 2: new reachable node found
-   -o lookup(A, Id, remove(ToReach, Val), [Val | Found]).
-
-do-search(A, Id, Node, ToReach),*label#line:threads:reach_visit1&*hfill// Rule 3: node has already seen this search
-visited(A, Id) // Already visited for this search.
-   -o visited(A, Id). *label#line:threads:reach_visit2&
-
-do-search(A, Id, Node, ToReach),*hfill// Rule 4: node found and propagate search
-!value(A, Val), Val in ToReach // New node was found.
-   -o visited(A, Id),*label#line:threads:reach_visit_visited1&
-      new-lookup(Node, Id, Val),
-      {B | !edge(A, B) -o do-search(B, Id, Node, remove(ToReach, Val))}.*label#line:threads:reach_propagate&
-
-do-search(A, Id, Node, ToReach),*hfill// Rule 5: node not found and propagate search
-!value(A, Val), ~ Val in ToReach // Not the node we are looking for.
-   -o {B | !edge(A, B) -o do-search(B, ID, Node, ToReach)},*label#line:threads:reach_propagate2&
-      visited(A, Id).*label#line:threads:reach_visit_visited2&
-\end{Verbatim}
-
-\caption{LM code to perform reachability checking on a graph.}
-\label{code:threads:reach_simple}
 \end{figure}
 
 \subsection{Language Changes}

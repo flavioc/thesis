@@ -48,7 +48,7 @@ line~\ref{line:threads:model_owner}, which assigns a node to a thread;
 \code{available-work(A, F)} on line~\ref{line:threads:model_available}, where
 \code{F = true} if node \code{A} has initial facts, otherwise \code{F = false};
 \code{active(T)} on line~\ref{line:threads:model_active} to mark each thread as
-\emph{active}; and \code{moving(A)} on line~\ref{line:threads:model_moving} so
+\emph{active}; and \code{is-moving(A)} on line~\ref{line:threads:model_moving} so
 that all nodes can move between threads.
 
 Each program rule is translated as shown in
@@ -82,18 +82,21 @@ node, the node changes to \code{running(T, A)} and thread \code{T} changes to
 Finally, the rule in
 lines~\ref{line:threads:model_steal1}-\ref{line:threads:model_steal2} allows for
 threads to steal nodes owned by other threads. If a node is not currently being
-executed (\code{inactive(A)}), can be moved (\code{moving(A)}), and is owned by
+executed (\code{inactive(A)}), can be moved (\code{is-moving(A)}), and is owned by
 another thread \code{Other} (\code{owner(A, Other)}), then the thread owner is
 updated, potentially allowing the previous rule to execute.
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\#\&]
-type linear running(thread, node). type linear inactive(node).
-type linear priority(node, float). type linear default-priority(node, float).
+type linear running(thread, node).
+type linear inactive(node).
+type linear priority(node, float).
+type linear default-priority(node, float).
 type linear available-work(node, bool).
-type linear active(thread).  type linear idle(thread).
+type linear active(thread).
+type linear idle(thread).
 type linear owner(node, thread).
-type linear moving(node).
+type linear is-moving(node).
 
 owner(A, T). // Initially node assignment.\label#line:threads:model_owner&
 available-work(A, F). // Some nodes have available work.\label#line:threads:model_available&
@@ -170,9 +173,11 @@ always done by thread that derives the coordination fact for efficiency reasons.
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\#\&]
-type linear static(node).  type linear moving(node).
+type linear is-static(node).
+type linear is-moving(node).
 type linear set-priority(node, float).
-type linear just-moved(node). type linear move-to-thread(node, thread).
+type linear just-moved(node).
+type linear move-to-thread(node, thread).
 
 // Priority facts.
 priority(A, initial-priority).\label#line:threads:model_prio&
@@ -187,15 +192,15 @@ set-priority(A, P1), priority(A, P2), P2 >= P1
    -o priority(A, P2).\label#line:threads:model_set2&
 
 running(T, A), set-thread(A, T),\label#line:threads:model_thread1&
-available-work(A, _), moving(A)
+available-work(A, _), is-moving(A)
    -o available-work(A, true),
-      inactive(A), static(A),
+      inactive(A), is-static(A),
       just-moved(A).
 
 inactive(A), set-thread(A, T),
-owner(A, TOld), moving(A),
+owner(A, TOld), is-moving(A),
 available-work(A, _)
-   -o static(A), owner(A, T), just-moved(A),
+   -o is-static(A), owner(A, T), just-moved(A),
       available-work(A, true).\label#line:threads:model_thread2&
 \end{Verbatim}
 \caption{Modeling the operational semantics for coordination facts as a LM program.}
