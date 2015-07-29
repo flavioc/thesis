@@ -309,25 +309,6 @@ to iterate through all the generators to find one with enough power to handle
 the consumer, therefore, a smaller number of generators is a clear advantage
 over having many generators in the case of using just 1 thread.
 
-The second important observation relates the last two datasets where we
-experimented with the capacity variability of the generators. For the Low
-Variability dataset, the consumers have very identical capacities, while in the
-High Variability dataset, generators have a more variable capacity, which should
-make it harder for the algorithm to find a valid generator/consumer assignment.
-Our results show exactly that: the Low Variability shows a very small difference
-between the \textbf{Regular} and \textbf{Threads} version, while in the High
-Variability dataset, the \textbf{Threads} version is much faster than the
-\textbf{Regular} version. However, for the High Variability dataset, we were
-expecting a speedup that was closer to the 0.5 M C / 2000 G dataset, since the
-number of generators is much higher. Furthermore, if we compare the run times of
-the \textbf{Regular} and \textbf{Threads} version when using 1 thread, we notice
-that the \textbf{Threads} version is actually slower. As noted before, this may
-be due to the fact that the LM rule for assigning generators to consumers needs
-to perform a linear scan on the available generators to find a suitable
-generator which then negatively impacts performance. This is a clear drawback of
-the logic programming model that could potentially be solved by maintaining a
-sorted list of \texttt{thread-capacity} facts.
-
 \begin{figure}[]
         \centering
         \begin{subfigure}[b]{\plotsize\textwidth}
@@ -356,5 +337,51 @@ sorted list of \texttt{thread-capacity} facts.
         \label{fig:threads:results_powergrid}
 \end{figure}
 
+The second important observation relates the last two datasets where we
+experimented with the capacity variability of the generators. For the Low
+Variability dataset, the consumers have very identical capacities, while in the
+High Variability dataset, generators have a more variable capacity, which should
+make it harder for the algorithm to find a valid generator/consumer assignment.
+Our results show exactly that: the Low Variability shows a very small difference
+between the \textbf{Regular} and \textbf{Threads} version, while in the High
+Variability dataset, the \textbf{Threads} version is much faster than the
+\textbf{Regular} version. However, for the High Variability dataset, we were
+expecting a speedup that was closer to the 0.5 M C / 2000 G dataset, since the
+number of generators is much higher. Furthermore, if we compare the run times of
+the \textbf{Regular} and \textbf{Threads} version when using 1 thread, we notice
+that the \textbf{Threads} version is actually slower. As noted before, this may
+be due to the fact that the LM rule for assigning generators to consumers needs
+to perform a linear scan on the available generators to find a suitable
+generator which then negatively impacts performance. This is a clear drawback of
+the logic programming model that could potentially be solved by maintaining a
+sorted list of \texttt{thread-capacity} facts.
 
-\clearpage
+
+In Table~\ref{table:threads:powergrid_stats}, we present several fact statistics
+that compare the \textbf{Regular} version with the \textbf{Threads} version when
+executing with multiple threads. The \textbf{\# Derived} column indicates the
+number of derived facts, \textbf{\# Deleted} indicates the number of retracted
+facts, while \textbf{\# Final} is the number of facts in the database after the
+program terminates. The table results clearly show that using thread-based facts
+results in a decrease in the number of generated facts, which is more
+significant in the 0.5M C / 2000 G dataset (10-fold reduction). The table also
+explains why this dataset performs much better than the 1M C / 4000 G High
+Variability dataset, which only sees a 2-fold reduction in derived facts.
+
+When comparing the number of facts derived when using a different number of
+threads, the overall trend indicates that having more threads slightly increases
+the number of derived facts. This is especially true for the 0.5 M C / 64 G
+datasets, where twice as many facts are generated when using 32 threads when
+compared to 1 thread.
+
+\begin{table}[ht]
+   \begin{center}
+      \input{experiments/threads/powergrid-stats}
+   \end{center}
+
+   \caption{Measuring the reduction in derived facts when using thread-based
+   facts.}
+   \label{table:threads:powergrid_stats}
+\end{table}
+
+%\clearpage

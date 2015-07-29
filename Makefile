@@ -4,7 +4,8 @@ EXPERIMENT_FILES := experiments/absolute/runtime.tex \
 	experiments/absolute/compare-no-indexing.tex \
 	experiments/absolute/compare-no-arrays.tex \
 	experiments/coordination/sssp-stats.tex \
-	experiments/coordination/minmax-mem.tex
+	experiments/coordination/minmax-mem.tex \
+	experiments/threads/powergrid-stats.tex
 
 FIGURES := $(wildcard figures/btree/btree_trace*.pdf) \
 	$(wildcard figures/message/message_trace*.pdf) \
@@ -116,6 +117,12 @@ experiments/coordination/minmax-mem.tex: experiments/lib.py experiments/coordina
 		experiments/coordination/minmax-mem.csv \
 		experiments/coordination/minmax-coord-mem.csv > \
 		experiments/coordination/minmax-mem.tex
+
+experiments/threads/powergrid-stats.tex: experiments/lib.py experiments/threads/thread-stats-table.py \
+	experiments/threads/powergrid-stats.csv
+	$(RE) experiments/threads/thread-stats-table.py \
+		experiments/threads/powergrid-stats.csv > \
+		experiments/threads/powergrid-stats.tex
 
 scale:
 	$(RE) experiments/scalability/plot.py \

@@ -67,6 +67,15 @@ def sort_datasets(name, l):
       move_from_list(x, l, 'uspowergrid')
       x.extend(l)
       return x
+   if name == 'powergrid':
+      x = []
+      move_from_list(x, l, '50000C2000G')
+      move_from_list(x, l, '500000C2000G')
+      move_from_list(x, l, '500000C64G')
+      move_from_list(x, l, '1M4000C-low')
+      move_from_list(x, l, '1M4000C-high')
+      x.extend(l)
+      return x
    if name == 'min-max-tictactoe':
       x = []
       move_from_list(x, l, 'small')
@@ -295,6 +304,8 @@ class experiment(object):
       times = self.x_axis1()
       if not times:
          times = [key for key in sorted(self.total_memory) if key <= max_threads]
+      if not times:
+         times = [key for key in sorted(self.num_facts) if key <= max_threads]
       return times
 
    def base_speedup_data(self, base=None):
