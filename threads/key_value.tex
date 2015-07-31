@@ -1,4 +1,4 @@
-In Section~\ref{sec:language:key_value} we have presented an algorithm for
+In Section~\ref{sec:language:key_value}, we have presented an algorithm for
 replacing a key's value in a BST dictionary. To make the program more
 interesting, we consider a sequence of $n$ lookup or replace operations for
 different keys in the BST (which may or may not be repeated). A single lookup or
@@ -21,10 +21,12 @@ rules that handle the following cases:
 
 \begin{enumerate}
       \item A key is found and is also in the cache
-         (lines~\ref{line:threads:kv_rule1_start}-\ref{line:threads:kv_rule2_end})
+         (lines~\ref{line:threads:kv_rule1_start}-\ref{line:threads:kv_rule2_end}
+         in Fig.~\ref{code:threads:btree_lookup_cache});
 
       \item A key is found but is not in the cache
-         (lines~\ref{line:threads:kv_rule2_start}-\ref{line:threads:kv_rule2_end});
+         (lines~\ref{line:threads:kv_rule2_start}-\ref{line:threads:kv_rule2_end}
+         in Fig.~\ref{code:threads:btree_lookup_cache});
 
       \item A key is in the cache, therefore a \code{replace} fact is
          derived in the target node
@@ -46,21 +48,21 @@ type linear cache-size(thread, int).
 
 replace(A, Key, RValue),*hfill*label{line:threads:kv_rule1_start}// Rule 1: key exists and is also in the cache
 value(A, Key, Value),
-*textbf{cache(T, A, Key)}
+*underline{cache(T, A, Key)}
    -o value(A, Key, RValue).
-      *textbf{cache(T, A, Key)}.*label{line:threads:kv_rule1_end}
+      *underline{cache(T, A, Key)}.*label{line:threads:kv_rule1_end}
 
 replace(A, Key, RValue),*label{line:threads:kv_rule2_start}*hfill// Rule 2: key exists and is not in the cache
 value(A, Key, Value),
-*textbf{cache-size(T, Total)}
+*underline{cache-size(T, Total)}
    -o value(A, Key, RValue),
-      *textbf{cache-size(T, Total + 1)},
-      *textbf{cache(T, A, Key)}.*label{line:threads:kv_rule2_end}
+      *underline{cache-size(T, Total + 1)},
+      *underline{cache(T, A, Key)}.*label{line:threads:kv_rule2_end}
 
 replace(A, RKey, RValue),*label{line:threads:kv_rule3_start}*hfill// Rule 3: cached by the thread
-*textbf{cache(T, TargetNode, RKey)}
+*underline{cache(T, TargetNode, RKey)}
    -o replace(TargetNode, RKey, RValue),
-      *textbf{cache(T, TargetNode, RKey)}.*label{line:threads:kv_rule3_end}
+      *underline{cache(T, TargetNode, RKey)}.*label{line:threads:kv_rule3_end}
 
 replace(A, RKey, RValue),*hfill// Rule 4: go left
 value(A, Key, Value),
@@ -76,8 +78,36 @@ RKey > Key
    -o value(A, Key, Value),
       replace(B, RKey, RValue).
 \end{Verbatim}
-\caption{LM program for performing lookups in a BST with a thread cache.}
+\caption{LM program for performing lookups in a BST extended to use a thread cache.}
 \label{code:threads:btree_lookup_cache}
+\end{figure}
+
+\begin{table}[ht]
+   \begin{center}
+      \input{experiments/threads/key-value-stats}
+   \end{center}
+
+   \caption{Fact statistics for the \textbf{Regular} version and the
+   \textbf{Cached} version.}
+   \label{results:threads:key_value}
+\end{table}
+
+\begin{figure}[]
+        \centering
+        \begin{subfigure}[b]{\plotsize\textwidth}
+           \includegraphics[width=\textwidth]{experiments/threads/cmp-key-value-19-ten.png}
+           \label{fig:threads:key_value_19}
+        \end{subfigure}
+        ~
+        \begin{subfigure}[b]{\plotsize\textwidth}
+           \includegraphics[width=\textwidth]{experiments/threads/cmp-key-value-21-ten.png}
+           \label{fig:threads:key_value_21}
+        \end{subfigure} \\
+
+        \caption{Scalability for the Binary Search Tree program when using
+        thread based facts.}
+
+        \label{fig:threads:results_key_value}
 \end{figure}
 
 \clearpage

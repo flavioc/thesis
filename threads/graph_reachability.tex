@@ -33,13 +33,13 @@ visited(A, Id) // Already visited for this search.
    -o visited(A, Id). *label#line:threads:reach_visit2&
 
 do-search(A, Id, Node, ToReach),*hfill// Rule 4: node found and propagate search
-!value(A, Val), Val in ToReach // New node was found.
+!value(A, Val), Val in ToReach*hfill// New node was found.
    -o visited(A, Id),*label#line:threads:reach_visit_visited1&
       new-lookup(Node, Id, Val),
       {B | !edge(A, B) -o do-search(B, Id, Node, remove(ToReach, Val))}.*label#line:threads:reach_propagate&
 
 do-search(A, Id, Node, ToReach),*hfill// Rule 5: node not found and propagate search
-!value(A, Val), ~ Val in ToReach // Not the node we are looking for.
+!value(A, Val), ~ Val in ToReach*hfill// Not the node we are looking for.
    -o {B | !edge(A, B) -o do-search(B, ID, Node, ToReach)},*label#line:threads:reach_propagate2&
       visited(A, Id).*label#line:threads:reach_visit_visited2&
 \end{Verbatim}
@@ -97,27 +97,30 @@ using thread-based facts, we first present the changes required in the language.
 \begin{center}
    \includegraphics[width=0.9\linewidth]{figures/threads/reach.pdf}
 \end{center}
-\caption{Performing reachability checks on a graph using nodes \code{@6}
-(\code{Id = 1}) and \code{@1} (\code{Id = 0}). Search with \code{Id = 0} wants
+
+\caption{Performing reachability checks on a graph using nodes \code{@1}
+(\code{Id = 0}) and \code{@6} (\code{Id = 1}).  Search with \code{Id = 0} wants
 to reach nodes \code{@1}, \code{@2}, and \code{@3} from node \code{@1}. Since
-\code{@1} is part of the target nodes, the fact \code{do-search}
-propagated to neighbor nodes does not include \code{1}.}
+\code{@1} is part of the target nodes, the fact \code{do-search} propagated to
+neighbor nodes does not include \code{1}.}
+
 \label{fig:threads:reach_example}
 \end{figure}
 
 \subsection{Language Changes}
 
-The existence of coordination facts such as \code{thread-id} and
-\code{set-thread} brings some awareness about the underlying parallel system,
-however, including the type \code{thread} for predicate arguments, which refers
-to a thread in the system. We introduce the concept of \emph{thread facts},
-which are logical facts stored at the thread level, meaning that, each thread
-is now an entity with its own logical facts. The type \code{thread} is also now
-the type of the first argument of \emph{thread predicates}, indicating that the
-predicate is related and, is to be stored in a specific thread. We also view
-the thread facts as forming a separate graph from the data graph, a graph of
-the processing elements which are operating on the data graph.
-
+In the previous chapter, we presented coordination facts such as
+\code{thread-id} and \code{set-thread} that already bring some awareness about
+the underlying parallel system. Furthermore, such facts also introduce the
+\code{thread} type for predicate arguments, which refers to a thread in the
+system that is related to a core in a multi core processor. We now introduce the
+concept of \emph{thread facts}, which are logical facts stored at the thread
+level, meaning that, each thread is now an entity with its own logical facts.
+The type \code{thread} is also now the type of the first argument of
+\emph{thread predicates}, indicating that the predicate is related and is to be
+stored in a specific thread. We also view the available threads as forming a
+separate graph from the data graph, a graph of the processing units which are
+operating on the data graph.
 
 The introduction of thread facts increases the expressiveness of the system in
 the sense that it is now possible to write inference rules that reason about the
@@ -141,11 +144,15 @@ executing node \code{N}. The \code{running} fact is implicitly retracted and
 asserted every time the thread selects a different node for execution. This
 makes our implementation efficient since a thread does not need to look for
 nodes that match mixed rules and it is then the scheduling of the program that
-drives the matching of such rules. Figure~\ref{fig:coord:thread_facts}
-represents a schematic view of the two graph data structures of a program with
-three threads: thread $T1$ is executing node \code{@5}, $T2$ is executing node
-\code{@4}, and $T3$ is executing node \code{@3}. Note that every thread has
-access to its own facts and to the node facts.
+drives the matching of such rules.
+
+\subsection{Graph Of Threads}
+
+Figure~\ref{fig:coord:thread_facts} represents a schematic view of the two graph
+data structures of a program with three threads: thread $T1$ is executing node
+\code{@5}, $T2$ is executing node \code{@4}, and $T3$ is executing node
+\code{@3}. Note that every thread has access to its own facts and to the node
+facts.
 
 \begin{figure}[ht]
    \includegraphics[width=0.6\linewidth]{figures/threads/threads.pdf}
@@ -157,13 +164,37 @@ access to its own facts and to the node facts.
    \label{fig:coord:thread_facts}
 \end{figure}
 
+We added several helpful predicates that allow the programmer to inspect the
+graph of threads and reason about the state of computation as it relates to
+threads:
+
+\begin{itemize}
+   \item \code{\bang thread-list(T, L)}: Fact instantiated in all threads where
+      \code{L} is a list of all threads executing in the system.
+
+   \item \code{\bang other-thread(T1, T2)}: Connects thread \code{T1} to all the
+      other threads \code{T2} executing in the system. Note that in
+      Fig.~\ref{fig:coord:thread_facts}, we use \code{\bang other-thread} fact
+      to specify the graph of threads.
+
+   \item \code{\bang leader-thread(T, TLeader)}: Fact instantiated in all
+      threads where \code{TLeader} refers to a selected thread (usually the
+      first thread in \code{L} of \code{\bang thread-list(T, L)}).
+
+   \item \code{running(T, A)}: Used to retrieve the current node \code{A}
+      running on thread \code{T}.
+\end{itemize}
+
+With the exception of \code{running}, every other fact is added at the beginning
+of the program as a persistent fact.
+
 \subsection{Reachability With Thread Facts}
 
 We know update the graph reachability program presented in
 Fig.~\ref{code:threads:reach_simple} to use thread facts in order to avoid
 needless searches on the graph. The search process is still done concurrently as
 before, but the search state is now stored in each thread, allowing the thread
-to store partial results and coordinate with other threads. The code for the new
+to store partial results and coordinate with other threads. The code for this new
 version is shown in Fig.~\ref{code:threads:reach_threads}.
 
 Lines~\ref{line:threads:reacht_start1}-\ref{line:threads:reacht_start2} start
@@ -194,8 +225,8 @@ pruning the search space.
 \begin{figure}[h]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\#\&]
 search(A, Id, ToReach),*label#line:threads:reacht_start1&*hfill// Rule 1: initialize search
-*textbf#!thread-list(T, L)&, Owner = nth(L, Id % @threads) // Allocate search to a thread.
-   -o {T2 | *textbf#!thread(T, T2)& -o *textbf#thread-search(T2, Id, ToReach, Owner)&},*label#line:threads:reacht_threads&
+*textbf#!thread-list(T, L)&, Owner = nth(L, Id % @threads)*hfill// Allocate search to a thread.
+   -o {T2 | *textbf#!other-thread(T, T2)& -o *textbf#thread-search(T2, Id, ToReach, Owner)&},*label#line:threads:reacht_threads&
       do-search(A, Id).*label#line:threads:reacht_start2&
 
 *textbf#thread-search(T, Id, [], Owner)&, *label#line:threads:reacht_prune1&*hfill// Rule 2: search completed
@@ -210,7 +241,7 @@ do-search(A, Id),*label#line:threads:reacht_check1&*label#line:bfs_join1&*hfill/
 *textbf#thread-search(T, Id, ToReach, Owner)&,*label#line:threads:reacht_join2&
 !value(A, Val), Val in ToReach
    -o *textbf#thread-search(T, Id, remove(ToReach, Val), Owner)&,
-      *textbf#remove-thread-search(Owner, Id, Val)&, // Tell owner thread about it.*label#line:threads:reacht_remove&
+      *textbf#remove-thread-search(Owner, Id, Val)&,*hfill// Tell owner thread about it.*label#line:threads:reacht_remove&
       {B | !edge(A, B) -o do-search(B, Id)},
       visited(A, Id).
 

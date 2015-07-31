@@ -17,7 +17,7 @@ generator.
 \end{wrapfigure}
 
 A straightforward distributed implementation for the PowerGrid problem requires
-that each consumer is able to connect to a any generator. Once a generator
+that each consumer is able to connect to any generator. Once a generator
 receives a connection request, it may or may not accept it. If the generator has
 no power available for the new consumer, it will disconnect from it and the
 consumer must select another generator. This randomized algorithm works but may
@@ -26,13 +26,13 @@ generators. Figure~\ref{code:threads:powergrid} shows the LM code for this
 solution. Consumer and generators node types are declared in
 lines~\ref{line:threads:pg_decl1}-\ref{line:threads:pg_decl2} using the
 \code{node} declaration, allowing us to have different predicates for consumers
-and predicates. The \code{generator} and \code{consumer} types become a subtype
+and predicates. The \code{consumer} and \code{generator} types become a subtype
 of \emph{node}, that is, $consumer <: node$ and $generator <: node$.  These
 subtypes allow us to declare initial facts that only apply to either the
 \code{consumer} or \code{generator} subtype.
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\scriptsize,commandchars=*\#\&]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\#\&]
 node generator.*label#line:threads:pg_decl1&*hfill// Type declaration
 node consumer.*label#line:threads:pg_decl2&
 type linear capacity(generator, int Total, int Used).*hfill// Predicate declaration
@@ -178,19 +178,19 @@ communication patterns between the nodes.  As we have seen before, thread local
 facts are an excellent mechanism to introduce a global view of the problem
 without complicating the original algorithm written in a declarative style. For
 our solution, we will partition the set of generators $G$ among the threads in
-the system and make each thread assume the ownership of its generators. The
+the system and make each thread assume the ownership of its generators. Each
 thread can then process consumers with a global view over its set of generators,
-allowing the immediate assignment iof consumers to generators.
-Figure~\ref{fig:threads:powergrid} shows how the example PowerGrid configuration
+allowing the immediate assignment of consumers to generators.
+Figure~\ref{fig:threads:powergrid} shows how the example PowerGrid 
 presented previously is re-configured to take into account the number of
 available threads.
 
 The LM code using thread facts shown in Fig.~\ref{code:threads:powergridt} uses
 4 thread predicates: \code{thread-connected-to} and
 \code{thread-connected-to-list} assign consumers to the generators owned by the
-thread; \code{thread-capacity} stores the capacity of the thread's generators;
-and \code{thread-total-capacity} provides a capacity overview of the generators.
-The program starts with the rule in
+thread; \code{thread-capacity} stores the capacity of each generator assigned to
+the thread; and \code{thread-total-capacity} provides a capacity overview of all
+the generators owned by the thread.  The program starts with the rule in
 lines~\ref{line:threads:pgt_start1}-\ref{line:threads:pgt_start2} by moving
 generators to their corresponding threads using \code{set-thread}. Once the
 generator is executing on the proper thread, the rule in
@@ -200,13 +200,13 @@ initialized. Consumers connect with the thread's generators with the rule in
 lines~\ref{line:threads:pgt_con1}-\ref{line:threads:pgt_con2} by selecting the
 first generator with enough power and then updating the state of the thread.
 Otherwise, if the thread does not have a suitable generator, a generator is
-randomly selected using the method shown before. For such cases, the thread
+randomly selected using the method described before. For such cases, the thread
 assigned with the selected generator will derive the rules in
 lines~\ref{line:threads:pgt_gen1}-\ref{line:threads:pgt_gen2} and the thread
 state is updated accordingly.
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\scriptsize,commandchars=*\#\&]
+\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\#\&]
 type linear thread-connected-to(thread, generator, consumer, int).*hfill// Predicate declaration
 type linear thread-connected-to-list(thread, generator, list consumer).
 type linear thread-capacity(thread, generator, int, int).

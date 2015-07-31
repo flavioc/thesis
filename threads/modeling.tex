@@ -1,9 +1,9 @@
-The introduction of thread-based facts allows for explicit parallelism in a
-language that is purely implicit. This introduces issues when attempting to
-prove the correctness of programs because the behavior of threads and the
-scheduling strategy is now also part of the program logic. Some of this behavior
-is hidden from programs because it is part of how coordination facts and thread
-scheduling works on the virtual machine.
+The introduction of thread-based facts allows for explicit scheduling and even
+explicit parallelism in a language that is purely implicit. This introduces
+issues when attempting to prove the correctness of programs because the behavior
+of threads and the scheduling strategy is now also part of the program logic.
+Some of this behavior is hidden from programs because it is part of how
+coordination facts and thread scheduling works on the virtual machine.
 
 Consider the SBP program in Fig.~\ref{code:threads:sbp} where in
 lines~\ref{line:threads:splash_part1}-\ref{line:threads:splash_part2} the graph
@@ -98,47 +98,43 @@ type linear idle(thread).
 type linear owner(node, thread).
 type linear is-moving(node).
 
-owner(A, T). // Initially node assignment.\label#line:threads:model_owner&
-available-work(A, F). // Some nodes have available work.\label#line:threads:model_available&
-moving(A). // All nodes can be stolen.\label#line:threads:model_moving&
-active(T). // All threads are active.\label#line:threads:model_active&
+owner(A, T). \hfill// Initially node assignment.\label#line:threads:model_owner&
+available-work(A, F). \hfill// Some nodes have available work.\label#line:threads:model_available&
+moving(A). \hfill// All nodes can be stolen.\label#line:threads:model_moving&
+active(T). \hfill// All threads are active.\label#line:threads:model_active&
 
-// Program rules go here.\label#line:threads:model_rule1&
-\underline#node-fact(A, Y)&,
+\underline#node-fact(A, Y)&,\label#line:threads:model_rule1&\hfill // Program rules go here.
 \underline#other-fact(A, B)&,
 running(T, A), available-work(B, _)
    -o \underline#remote-fact(B)&, \underline#local-fact(A)&,
       running(T, A),
       available-work(B, true).\label#line:threads:model_rule2&
 
-// Switching to another node.\label#line:threads:model_drop_node1&
-active(T), running(T, A), priority(A, Prio),
+active(T), running(T, A), priority(A, Prio), \hfill// Switching to another node.\label#line:threads:model_drop_node1&
 default-priority(A, DefPrio), available-work(A, T)
    -o inactive(A), priority(A, DefPrio),
       default-priority(A, DefPrio),
       available-work(A, false), idle(T).\label#line:threads:model_drop_node2&
 
-// Select next node to be processed.\label#line:threads:model_next_node1&
-[max => Prio |
+[max => Prio | \hfill// Select next node to be processed.\label#line:threads:model_next_node1&
    idle(T), owner(A, T),
    priority(A, Prio), available-work(A, true)]
    -o active(T), owner(A, T),
       running(T, A), available-work(A, false),
       priority(A, Prio).\label#line:threads:model_next_node2&
 
-// Attempt to steal a node.\label#line:threads:model_steal1&
-idle(T), !other-thread(T, Other)
+idle(T), !other-thread(T, Other) \hfill// Attempt to steal a node.\label#line:threads:model_steal1&
 owner(A, Other), inactive(A),
 available-work(A, true),
 moving(A)
    -o idle(T), owner(A, T), moving(A),
       inactive(A), available-work(A, true).\label#line:threads:model_steal2&
 \end{Verbatim}
-\caption{Modeling the operational semantics as a LM program.}
+\caption{Modeling the operational semantics as a LM program. The underlined code
+represents how an example rule \code{node-fact(A, Y), other-fact(A, B) -o remote-fact(B),
+local-fact(A)} needs to be translated for modelling the semantics.}
 \label{code:threads:modeling}
 \end{figure}
-
-\subsection{Scheduling}
 
 We now model several coordination facts presented in
 Chapter~\ref{chapter:coordination} using LM rules. We focus on
@@ -179,8 +175,7 @@ type linear set-priority(node, float).
 type linear just-moved(node).
 type linear move-to-thread(node, thread).
 
-// Priority facts.
-priority(A, initial-priority).\label#line:threads:model_prio&
+priority(A, initial-priority).\label#line:threads:model_prio&\hfill// Priority facts.
 default-priority(A, initial-priority).\label#line:threads:model_defprio&
 
 schedule-next(A) -o set-priority(A, +00).\label#line:threads:model_snext&
@@ -203,6 +198,7 @@ available-work(A, _)
    -o is-static(A), owner(A, T), just-moved(A),
       available-work(A, true).\label#line:threads:model_thread2&
 \end{Verbatim}
-\caption{Modeling the operational semantics for coordination facts as a LM program.}
+\caption{Modeling the operational semantics for coordination facts as a LM
+program.}
 \label{code:threads:modeling_scheduling}
 \end{figure}

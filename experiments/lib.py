@@ -22,6 +22,9 @@ def dataset2title(dataset, name):
             '12': '12',
             '13': '13',
             '14': '14',
+            '19-twenty': '19 levels / 20',
+            '19-ten': '19 levels',
+            '21-ten': '21 levels',
             '50000C2000G': '50000 C / 2000 G',
             '500000C2000G': '0.5M C / 2000 G',
             '500000C64G': '0.5M C / 64 G',
@@ -101,14 +104,17 @@ def name2title(name):
             'splash-bp-400': "Belief Propagation (400x400 with Splashes)",
             'pagerank': 'PageRank',
             'powergrid': 'PowerGrid',
+            'key-value': 'Binary Search Tree',
             'new-heat-transfer': 'Heat Transfer'}
    try:
       return table[name]
    except KeyError:
-      print "could not find", name
+      raise name
       return ''
 
 def parse_name(name):
+   if name.startswith('key-value'):
+      return 'key-value'
    if name.startswith('powergrid'):
       return 'powergrid'
    if name.startswith('search-'):
@@ -139,6 +145,8 @@ def parse_dataset(name):
    vec = name.split('-')
    if name.startswith('8queens'):
       return vec[1]
+   if name.startswith('key-value'):
+      return vec[len(vec)-2] + "-" + vec[len(vec)-1]
    if name.startswith('powergrid'):
       s = "-".join(vec[1:])
       if s == "1000000-2": return "1M4000C-high"
@@ -801,6 +809,8 @@ def read_experiment_line(vec):
    sched = vec[1]
    threads = parse_threads(sched)
    sched = parse_sched(sched)
+   if first.startswith('key-value-all'):
+      sched = "threads"
    if first.endswith("-coord"):
       first = first[:-len("-coord")]
       sched = "coord"

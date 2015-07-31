@@ -3,17 +3,21 @@
 from lib import *
 import sys
 
-if len(sys.argv) != 2:
-   print "usage: thread-stats-table.py <csv file>"
+if len(sys.argv) != 3:
+   print "usage: thread-stats-table.py <csv file> <title>"
    sys.exit(1)
 
 expsets = read_stats_experiment_set(sys.argv[1])
 try: regs = expsets["th"]
 except: sys.exit(1)
 try: coords = expsets["coord"]
-except: sys.exit(1)
+except:
+   try:
+      coords = expsets["threads"]
+   except:
+      sys.exit(1)
 
-coord_name = "Threads"
+coord_name = sys.argv[2]
 print "\\begin{tabular}{c | c || c c | c c | c c} \\hline"
 print "\t \\multirow{2}{*}{\\textbf{Dataset}} & \\multirow{2}{*}{\\textbf{Threads}} & \\multicolumn{2}{c|}{\\textbf{\# Derived}} & \\multicolumn{2}{c|}{\\textbf{\# Deleted}} & \\multicolumn{2}{c}{\\textbf{\# Final}}\\\\"
 print "\t & & Regular & " + coord_name + " & Regular & " + coord_name + " & Regular & " + coord_name + "\\\\ \\hline \\hline"
