@@ -1,9 +1,9 @@
-The introduction of thread-based facts allows for explicit scheduling and even
-explicit parallelism in a language that is purely implicit. This introduces
-issues when attempting to prove the correctness of programs because the behavior
-of threads and the scheduling strategy is now also part of the program logic.
-Some of this behavior is hidden from programs because it is part of how
-coordination facts and thread scheduling works on the virtual machine.
+The introduction of thread-based facts allows for explicit, but declarative,
+parallelism in a language that used mostly implicit parallelism. This
+introduces issues when attempting to prove the correctness of programs because
+the behavior of threads and the scheduling strategy is now also part of the
+program logic.  Some of this behavior is hidden from programs because it is part
+of how coordination facts and thread scheduling works on the virtual machine.
 
 Consider the SBP program in Fig.~\ref{code:threads:sbp} where in
 lines~\ref{line:threads:splash_part1}-\ref{line:threads:splash_part2} the graph
@@ -47,9 +47,9 @@ First, we define the initial facts: \code{owner(A, T)} on
 line~\ref{line:threads:model_owner}, which assigns a node to a thread;
 \code{available-work(A, F)} on line~\ref{line:threads:model_available}, where
 \code{F = true} if node \code{A} has initial facts, otherwise \code{F = false};
-\code{active(T)} on line~\ref{line:threads:model_active} to mark each thread as
-\emph{active}; and \code{is-moving(A)} on line~\ref{line:threads:model_moving} so
-that all nodes can move between threads.
+\code{is-moving(A)} on line~\ref{line:threads:model_moving} so that all nodes
+can move between threads; and \code{active(T)} on
+line~\ref{line:threads:model_active} to mark each thread as \emph{active};
 
 Each program rule is translated as shown in
 lines~\ref{line:threads:model_rule1}-\ref{line:threads:model_rule2}. The
