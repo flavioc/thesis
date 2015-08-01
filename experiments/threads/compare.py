@@ -3,8 +3,8 @@
 import sys
 from lib import *
 
-if len(sys.argv) != 3:
-   print "usage: compare.py <runtime> <prefix>"
+if len(sys.argv) != 4:
+   print "usage: compare.py <runtime> <prefix> <title>"
    sys.exit(1)
 
 sets = read_experiment_set(sys.argv[1])
@@ -25,6 +25,6 @@ for name in regular.experiment_names():
    for dataset in datasets:
       regular_exp = regular.get_experiment(name, dataset)
       thread_exp = thread.get_experiment(name, dataset)
-      regular_exp.threads_compare(thread_exp, None, sys.argv[2])
+      regular_exp.threads_compare(thread_exp, None, sys.argv[2], sys.argv[3])
 
 sys.exit(0)

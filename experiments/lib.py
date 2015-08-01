@@ -105,6 +105,7 @@ def name2title(name):
             'pagerank': 'PageRank',
             'powergrid': 'PowerGrid',
             'key-value': 'Binary Search Tree',
+            'splash-bp': 'Splash Belief Propagation',
             'new-heat-transfer': 'Heat Transfer'}
    try:
       return table[name]
@@ -113,6 +114,8 @@ def name2title(name):
       return ''
 
 def parse_name(name):
+   if name.startswith('splash-bp'):
+      return 'splash-bp'
    if name.startswith('key-value'):
       return 'key-value'
    if name.startswith('powergrid'):
@@ -344,7 +347,7 @@ class experiment(object):
       return float(m) * 1.1
 
    def get_improvement(self, reg):
-      return [float(reg.get_time(th))/float(c) for th, c in self.times.iteritems() if th <= max_threads]
+      return [float(reg.get_time(th))/float(self.times[th]) for th in sorted(self.times) if th <= max_threads]
 
    def create_coord_improv(self, prefix, coordinated):
       fig = plt.figure()
@@ -667,7 +670,7 @@ class experiment(object):
       name = prefix + self.name + ".png"
       plt.savefig(name)
 
-   def threads_compare(self, coord_exp, cexp, prefix):
+   def threads_compare(self, coord_exp, cexp, prefix, name_coord):
       fig = plt.figure()
       ax = fig.add_subplot(111)
       ax2 = ax.twinx()
@@ -677,7 +680,8 @@ class experiment(object):
       titlefontsize = 22
       ylabelfontsize = 20
       ax.set_title(self.title, fontsize=titlefontsize)
-      name_coord = 'Threads'
+      if not name_coord:
+         name_coord = 'Threads'
 
       ax.yaxis.tick_left()
       ax.yaxis.set_label_position("left")
@@ -705,6 +709,77 @@ class experiment(object):
       if cexp:
         lines.append(ctime)
         labels.append("C++")
+
+      ax.legend(lines, labels, loc=2, fontsize=18, markerscale=2)
+
+      setup_lines(ax, cmap)
+      setup_lines(ax2, cmap)
+
+      name = prefix + self.create_filename()
+      plt.savefig(name)
+
+   def compare_splashbp(self, sbp, glbp, glsbp, prefix):
+      fig = plt.figure()
+      ax = fig.add_subplot(111)
+
+      names = ('Scalability')
+      formats = ('f4')
+      titlefontsize = 22
+      ylabelfontsize = 20
+      ax.set_title("LBP / SBP Ratio (" + self.dataset + ")", fontsize=titlefontsize)
+
+      ax.yaxis.tick_left()
+      ax.yaxis.set_label_position("left")
+      ax.set_ylabel('Ratio', fontsize=ylabelfontsize)
+      ax.set_xlabel('Threads', fontsize=ylabelfontsize)
+      ax.set_xlim([1, self.max_threads()])
+      ax.set_ylim([0, max(max(sbp.get_improvement(self)), max(glsbp.get_improvement(glbp)))])
+      cmap = plt.get_cmap('gray')
+
+      lmratio, = ax.plot(self.x_axis(), sbp.get_improvement(self), label='LM', linestyle='-', marker='+', color='r')
+      glratio, = ax.plot(self.x_axis(), glsbp.get_improvement(glbp), label='GraphLab', linestyle='--', marker='o', color='g')
+
+      lines = [lmratio, glratio]
+      labels = ["LM", "GraphLab"]
+
+      ax.legend(lines, labels, loc=2, fontsize=18, markerscale=2)
+
+      setup_lines(ax, cmap)
+
+      name = prefix + self.create_filename()
+      plt.savefig(name)
+
+   def compare_graphlab(self, glexp, prefix):
+      fig = plt.figure()
+      ax = fig.add_subplot(111)
+      ax2 = ax.twinx()
+
+      names = ('Scalability')
+      formats = ('f4')
+      titlefontsize = 22
+      ylabelfontsize = 20
+      ax.set_title(self.title, fontsize=titlefontsize)
+
+      ax.yaxis.tick_left()
+      ax.yaxis.set_label_position("left")
+      ax.set_ylabel('Execution Time', fontsize=ylabelfontsize)
+      ax.set_xlabel('Threads', fontsize=ylabelfontsize)
+      ax2.set_ylabel('Speedup', fontsize=ylabelfontsize)
+      ax.set_xlim([1, self.max_threads()])
+      ax.set_ylim([0, max(self.max_time(), glexp.max_time())])
+      cmap = plt.get_cmap('gray')
+
+      regtime, = ax.plot(self.x_axis(), self.time_data(),
+         label='LM Run Time', linestyle='-', marker='+', color='r')
+      regspeedup, = ax2.plot(self.x_axis(), self.base_speedup_data(),
+            label='LM Speedup', linestyle='--', marker='+', color='r')
+      gltime, = ax.plot(glexp.x_axis(), glexp.time_data(),
+         label='GraphLab Run Time', linestyle='--', marker='o', color='g')
+      glspeedup, = ax2.plot(glexp.x_axis(), glexp.base_speedup_data(glexp.get_time(1)),
+            label='GraphLab Speedup', linestyle='--', marker='+', color='g')
+
+      lines = [(regtime), gltime, regspeedup, glspeedup]
+      labels = ["LM", "GraphLab", "LM(1)/LM(t)", "GraphLab(1)/GraphLab(t)"]
 
       ax.legend(lines, labels, loc=2, fontsize=18, markerscale=2)
 
@@ -802,6 +877,7 @@ def parse_threads(sched):
 
 def parse_sched(sched):
    if sched in SPECIAL_SYSTEMS: return sched
+   elif sched.startswith('gl'): return 'gl'
    else: return "th"
 
 def read_experiment_line(vec):

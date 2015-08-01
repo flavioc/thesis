@@ -15,7 +15,8 @@ FIGURES := $(wildcard figures/btree/btree_trace*.pdf) \
 	$(wildcard figures/sssp/*.pdf) \
 	$(wildcard figures/implementation/*.pdf) \
 	$(wildcard figures/compiler/*.pdf) \
-	$(wildcard experiments/scalability/*.png)
+	$(wildcard experiments/scalability/*.png) \
+	$(wildcard experiments/threads/*.png)
 
 all: thesis.pdf
 
@@ -41,6 +42,7 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex ack.tex \
 		coordination/minimax.tex coordination/queens.tex \
 		coordination/bp.tex coordination/related_work.tex \
 		language.tex logic_foundations.tex threads/summary.tex \
+		threads/key_value.tex \
 		threads/related_work.tex background/parallel_programming.tex \
 		background/declarative.tex background/provability.tex \
 		refs.bib thread.tex conclusions.tex \
@@ -190,15 +192,25 @@ allocator:
 		"Threaded Alloc" "Fact No Refs Alloc"
 
 thread:
+	$(RE) experiments/threads/splash-bp.py \
+		experiments/scalability/runtime.csv \
+		experiments/threads/splash-bp.csv \
+		experiments/threads/graphlab-fifo.csv \
+		experiments/threads/graphlab-multi.csv \
+		experiments/threads/graphlab.csv \
+		experiments/threads/cmp-
 	$(RE) experiments/threads/compare.py \
 		experiments/threads/search.csv \
-		experiments/threads/cmp-
+		experiments/threads/cmp- \
+		Threads
 	$(RE) experiments/threads/compare.py \
 		experiments/threads/powergrid.csv \
-		experiments/threads/cmp-
+		experiments/threads/cmp- \
+		Threads
 	$(RE) experiments/threads/compare.py \
 		experiments/threads/key-value.csv \
-		experiments/threads/cmp-
+		experiments/threads/cmp- \
+		Cached
 	
 clean:
 	rm -f thesis.pdf *.bbl *.blg *.log *.lot \

@@ -82,6 +82,52 @@ RKey > Key
 \label{code:threads:btree_lookup_cache}
 \end{figure}
 
+In order to understand the effectiveness of the new cached version of the
+program, we created synthetic datasets that stress the algorithm using a
+complete binary search tree and an arbitrary number of (repeated) tree
+operations such as replace and lookup. The tree operations apply to a subset of
+the tree and each node is associated with a list of operations that need to be
+performed. We have auxiliar nodes (not connected to the tree) that coordinate
+the tree operations for a given node. An auxiliary node will start the first
+operation by sending it to the tree root node. Once the operation is performed
+on the target node, the auxiliary node will start the next operation in the list
+for that target node. By using auxiliary nodes, we are able to experiment with a
+operations that target the same node and also allow for some parallelism when
+doing tree operations. In our experiments, we generated two trees with the
+following characteristics:
+
+\begin{itemize}
+   \item 19 levels: a tree with 19 levels ($2^{20}-1$ nodes) and two million
+      operations. Each targeted node has, on average, 40 operations.
+
+   \item 21 levels: a tree with 21 levels ($2^{22}-1$ nodes) and five million
+      operations. Each targeted node has, on average, 20 operations.
+\end{itemize}
+
+Note that in both datasets, the operations target 10\% of the tree nodes.
+
+Table~\ref{results:threads:key_value} presents fact statistics for the
+\textbf{Regular} version (without a cache) and the \textbf{Cached} version
+(with a cache). Figure~\ref{fig:threads:results_key_value} presents the run time
+scalability of both versions when using the \textbf{Regular} with 1 thread as
+the baseline. In terms of facts, the \textbf{Cached} version sees an 80\%
+reduction in number of derived facts for 1 thread. When the number of threads
+increases, more facts are being set since there is less opportunity to cache
+tree nodes since there are more threads doing more work at the same time. For
+instance, when using 32 threads, the reduction is only about 30\%.
+
+When comparing these reduction numbers to the reduction in run time, we see the
+same pattern but the reduction is not quite as large. For instance, when using 1
+thread, the \textbf{Cached} version is only able to reduce the run time in about
+50\%, and for 32 threads, only a 12\% reduction is seen. Threads need to index
+and lookup many cache items using the node's key. This process is somewhat
+expensive since threads will lookup keys as each operation travels down the tree
+looking for a node. For instance, if a thread does not have a given node in the
+cache, it may need to perform about $h$ (the height of the tree) lookup into the
+database hash tree before the node arrives at the destination.  However, a given
+tree operation is usually not handled by just one thread as it travels through
+the tree and another thread may have the target node in its cache.
+
 \begin{table}[ht]
    \begin{center}
       \input{experiments/threads/key-value-stats}
