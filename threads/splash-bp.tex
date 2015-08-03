@@ -117,10 +117,88 @@ second-phase(T, [A, B | Next]), running(T, A)
 \end{description}
 
 SBP is also implemented in GraphLab~\cite{GraphLab2010}, a C++ framework for
-writing machine learning algorithms. GraphLab provides the splash scheduler as
-part of its framework. We measured the behavior of LBP and SBP for both LM and
-GraphLab. Fig.~XXX shows that both systems have very similar behavior when using
-a variable number of threads, but for higher number of threads and, in
-particular, for more than 15 threads, LM shows better speedups than GraphLab. In
-terms of running times, LM is, on average, 1.4 times slower than GraphLab,
-although LM program code is more concise.
+writing machine learning algorithms. GraphLab provides different schedulers that
+change how machine learning algorithms are computed and one of the it's the
+\textbf{splash} scheduler, which implements the scheduling described above. For
+comparison purposes with LM, we also experimented with the following GraphLab
+schedulers: \textbf{fifo}, a first-in first-out scheduler; \textbf{multiqueue}, a first-in first-out scheduler that
+also allows for \textit{work stealing} (we used 1 queue per thread) and is more
+efficient and scalable than \textbf{fifo}.
+
+The default LM scheduling policy of LM is somewhat similar to both the
+\textbf{fifo} and \textbf{multiqueue} schedulers, however, since LM also
+implements node stealing by default, the \textbf{multiqueue} scheduler will be
+our main focus. We measured the run time of LBP and SBP for both LM and
+GraphLab. For SBP, we used splash trees of 100 nodes in both systems.
+
+Fig.~\ref{fig:threads:results_splash} compares the performance of the LBP
+program in LM against both the \textbf{fifo} and \textbf{multiqueue} schedulers.
+The results show that GraphLab's \textbf{fifo} scheduler performance
+deteriorates with more 10 threads, while both LM and \textbf{multiqueue} tend to
+scale very well and have a similar behaviour. For 1 thread, LM is about 1.5
+times slower than GraphLab but that ratio increases to about to about 2 once the
+number of threads increases. We think this is because the LBP program is fairly
+sensitive to scheduling policies and the \textbf{multiqueue} scheduler is
+better than LM's default scheduling policy.
+
+\begin{figure}[]
+        \centering
+        \begin{subfigure}[b]{\plotsize\textwidth}
+           \includegraphics[width=\textwidth]{experiments/threads/cmp-fifo-belief-propagation-400.png}
+           \caption{Comparing the scalability of LM and of GraphLab's
+              \textbf{fifo} scheduler}
+           \label{fig:threads:splash_fifo}
+        \end{subfigure}
+        ~
+        \begin{subfigure}[b]{\plotsize\textwidth}
+           \includegraphics[width=\textwidth]{experiments/threads/cmp-multi-belief-propagation-400.png}
+           \caption{Comparing the scalability of LM and of GraphLab's
+              \textbf{multiqueue} scheduler}
+           \label{fig:threads:splash_multi}
+        \end{subfigure} \\
+        \caption{Comparing the scalability of LM against GraphLab's (\textbf{fifo}
+        and \textbf{multiqueue} schedulers.}
+        \label{fig:threads:results_splash}
+\end{figure}
+
+The scalability and run time of the SBP program is compared in
+Fig.~\ref{fig:threads:results_splash_final}. When compared to LM, GraphLab is
+about twice as fast and that advantage is constant across the number of threads
+since both systems have a similar scalability. Finally, in
+Fig.~\ref{fig:threads:results_splash_ratio}(a) and
+Fig.~\ref{fig:threads:results_splash_ratio}(b), we compare the performance of
+LBP program against the performance of SBP by calculating $LBP(t)/SBP(t)$, where
+$LBP(t)$ is the run time of LBP for $t$ threads, while $SBP(t)$ is the run time
+of SBP for $t$ threads. For LM, SBP improves noticeably over LBP but that
+advantage is reduced as the number of threads increases. The same behavior is
+also seen in GraphLab's \textbf{multiqueue} scheduler but since this scheduler
+works so well under a shared memory setting, the advantages of the
+\textbf{splash} scheduler are reduced. LM is able to improve its performance
+with SBP since it is a slower language and reducing the number of facts derived
+provides an improved performance.
+
+\begin{figure}[]
+        \centering
+        \includegraphics[width=\plotsize\textwidth]{experiments/threads/cmp-splash-bp-400.png}
+        \caption{Measuring and comparing the performance of SBP for both LM and
+        GraphLab.}
+        \label{fig:threads:results_splash_final}
+\end{figure}
+
+\begin{figure}[]
+        \centering
+        \begin{subfigure}[b]{\plotsize\textwidth}
+           \includegraphics[width=\textwidth]{experiments/threads/cmp-ratio-fifo-belief-propagation-400.png}
+           \caption{Evaluating the performance of GraphLab's \textbf{splash}
+           scheduler against the \textbf{fifo} scheduler.}
+           \label{fig:threads:splash_ratio_fifo}
+        \end{subfigure} ~
+        \begin{subfigure}[b]{\plotsize\textwidth}
+           \includegraphics[width=\textwidth]{experiments/threads/cmp-ratio-multi-belief-propagation-400.png}
+           \caption{Evaluating the performance of GraphLab's \textbf{splash}
+           scheduler against the \textbf{multiqueue} scheduler.}
+           \label{fig:threads:splash_ratio_multi}
+        \end{subfigure} \\
+        \caption{Comparing the performance improvements of SBP over LBP.}
+        \label{fig:threads:results_splash_ratio}
+\end{figure}
