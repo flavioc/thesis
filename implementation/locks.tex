@@ -4,9 +4,9 @@ are used in order to implement different operations:
 
 \begin{itemize}
 
-   \item \textbf{New Facts}: We use the node's \emph{Main Lock} and then attempt
+   \item \textbf{New Facts}: We use the node's \emph{State Lock} and then attempt
       to lock the \emph{DB Lock}. If the \emph{Db Lock} cannot be used, then the
-      new facts are added to the \emph{Fact Buffer}, otherwise the node database
+      new facts are added to the \emph{Incoming Fact Buffer}, otherwise the node database
       structures are updated with new facts. If the target node is not currently
       in any work queue, we lock the destination work queue and then add the
       node and change the state of the node to \textbf{active}. Finally, if the
@@ -47,7 +47,7 @@ are used in order to implement different operations:
 
    \item \textbf{Node Stealing}: For node stealing, we acquire the lock of the
       target thread's queue and then copy the stolen node pointers to a
-      temporary buffer. For each node, we use the \emph{Main Lock} to update its
+      temporary buffer. For each node, we use the \emph{State Lock} to update its
       \emph{Owner} attribute and then add it to the thread's work queue.
       Figure~\ref{alg:multicore:steal_nodes} presents the pseudo-code for this
       synchronization mechanism. Note that when using $pop\_half(stealing)$, the
@@ -82,7 +82,7 @@ are used in order to implement different operations:
       Fig.~\ref{alg:multicore:process_node} shows this synchronization protocol.
 
    \item \textbf{Node Completion}: Once node computation is completed and all
-      candidate rules have been executed, the \emph{Main Lock} is acquired in
+      candidate rules have been executed, the \emph{State Lock} is acquired in
       order to change the state flag. Note that if newer facts have been derived
       by other nodes, computation is resumed on the current node instead of
       using another node from the \emph{Work Queue}. The final section of

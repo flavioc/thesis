@@ -124,9 +124,9 @@ In order to understand how threads interact between each other, we now review
 the node data structure that was presented in Section~\ref{sec:data_structures}.
 The node lock \emph{DB Lock} protects the data structures of the database,
 including the array, trie, linked list and hash table data structures and the
-\emph{Rule Engine}. The \emph{Main Lock} structure protects everything else,
+\emph{Rule Engine}. The \emph{State Lock} structure protects everything else,
 especially the \emph{State} flag and the temporary set of facts represented by
-the \emph{Fact Buffer}. The \emph{Fact Buffer} is used to hold logical facts
+the \emph{Fact Buffer}. The \emph{Incoming Fact Buffer} is used to hold logical facts
 that can not be added immediatelly to the database data structures. The
 \emph{Owner} field points to the thread responsible for processing the node and
 the \emph{Rule Engine} schedules local computation.
@@ -139,12 +139,12 @@ processed. If that is not the case, then we have to synchronize since multiple
 threads might be updating the same node's data structures. For example, in
 Fig.~\ref{fig:implementation:vm_overview}, when thread 2 derives a fact to node
 \texttt{@1} (owned by thread 1), it first locks node \texttt{@1} using the
-\emph{Main Lock} and then it attempts to lock \emph{DB Lock}, which gives thread
+\emph{State Lock} and then it attempts to lock \emph{DB Lock}, which gives thread
 2 full access to the node. In this case, thread 2 adds the new fact to the
 database (\emph{New fact (1)} in Fig.~\ref{fig:implementation:vm_overview}) and
 to the \emph{Rule Engine}. However, if the \emph{DB Lock} could not be acquired
 because the node \code{@1} is currently being processed, then the new fact is
-added to \emph{Fact Buffer} (\emph{New fact (2)} in
+added to \emph{Incoming Fact Buffer} (\emph{New fact (2)} in
 Fig.~\ref{fig:implementation:vm_overview}). The facts stored in \emph{Fact
 Buffer} will then be processed whenever the corresponding node is processed
 again.
@@ -164,23 +164,23 @@ point, the target thread is ensured to be active and with a new node to process.
 \begin{figure}
 \begin{algorithm}[H]
    \KwData{Node N}
+   $N.state\_lock.lock()$\;
    $N.db\_lock.lock()$\;
-   $N.main\_lock()$\;
-   \tcc{Add facts from the temporary Fact Buffer into the database}
-   $N.DB.merge(N.fact\_buffer)$\;
-   $N.main\_unlock()$\;
+   \tcc{Add facts from the Incoming Fact Buffer into the database}
+   $N.DB.merge(N.incoming\_fact\_buffer)$\;
+   $N.state\_lock.unlock()$\;
 
    $N.rule\_engine.run\_rules()$\;
    $N.db\_lock.unlock()$\;
 
-   $N.main\_lock.lock()$\;
+   $N.state\_lock.lock()$\;
    \If{$N.rule\_engine.has\_candidate\_rules() \; or \;
    N.fact\_buffer.has\_facts()$}{
-      $N.main\_lock.unlock()$\;
+      $N.state\_lock.unlock()$\;
       $goto beginning$\;
    }
    $N.state \longleftarrow inactive$\;
-   $N.main\_lock.unlock()$\;
+   $N.state\_lock.unlock()$\;
 \end{algorithm}
 \caption{Pseudo-code for the \code{process\_node} procedure.}
  \label{alg:multicore:process_node}

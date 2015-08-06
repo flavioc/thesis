@@ -20,7 +20,7 @@ currently being stolen by some thread.
 \begin{figure}[ht]
    \centering
    \includegraphics[width=0.55\textwidth]{figures/local/node_state.pdf}
-   \caption{The node state machine as represented by the state variable.}
+   \caption{The node state machine.}
    \label{fig:local:node_states}
 \end{figure}
 
@@ -29,9 +29,8 @@ following attributes:
 
 \begin{itemize}
    \item \emph{State}: the node state flag.
-   \item \emph{Main Lock}: a lock that protects the node attributes enumerated
-      in this list except for \emph{Linear DB}, \emph{Persistent DB}, and
-      \emph{Rule Engine}.
+   \item \emph{State Lock}: a lock that protects the following node attributes:
+      \emph{State}, \emph{Owner} and \emph{Incoming Fact Buffer}.
    \item \emph{DB Lock}: a lock that protects \emph{Linear DB},
       \emph{Persistent DB} and \emph{Rule Engine}. The lock is held when the node is deriving rules or
       when incoming facts from other nodes need to be added to the database data
@@ -41,10 +40,10 @@ following attributes:
       in Section~\ref{section:local:rule_engine}.
    \item \emph{Owner}: a pointer to the thread responsible for executing this
       node.
-   \item \emph{Fact Buffer}: a data structure that holds incoming facts that
+   \item \emph{Incoming Fact Buffer}: a data structure that holds incoming facts that
       could not be added to the database data structures since the node is
       currently deriving rules.
-   \item \emph{Linear DB}: the database of linear facts as an array of data
+   \item \emph{Linear DB}: the database of linear facts as a set of
       structures for storing linear facts for each linear predicate.
    \item \emph{Persistent DB}: the database of persistent facts.
 \end{itemize}
@@ -68,8 +67,9 @@ in one of the four data structures:
 \begin{itemize}
 
 \item \emph{Trie Data Structures} are used to store persistent facts. Tries are
-   trees where facts are indexed by common prefix arguments. The \code{prev}
-   and \code{next} pointers are used to store all the facts stored in the trie.
+   trees where facts are indexed by common prefix arguments. The \code{prev} and
+   \code{next} pointers are used to navigate through all the facts stored in the
+   trie.
 
 \item \emph{Array Data Structures} are used to store persistent facts that are
    used in the LHS of rules without matching (no join constraints) and exist
@@ -77,7 +77,7 @@ in one of the four data structures:
    \code{prev} and \code{next} pointers because they are already chained by
    being part of a contiguous memory area. The compiler performs static analysis
    of the program's rule in order to choose between trie and array data
-   structures for a particular predicate.
+   structures for a particular persistent predicate.
 
 \item \emph{Doubly Linked List Data Structures} are used to store linear facts.
    We use a double linked list because it is a very efficient way to add and
@@ -100,13 +100,13 @@ in one of the four data structures:
 Figure~\ref{fig:implementation:hash_table} shows an example for a hash table
 data structure for a \code{p(int, int)} predicate with 5 linear facts indexed by
 the second argument. Note that for each bucket, facts are indexed by the second
-argument into a either a list or another hash table.
+argument into either a list or another hash table.
 
 \begin{figure}[ht]
    \centering
    \includegraphics[width=0.6\textwidth]{figures/implementation/hash_table.pdf}
 
-   \caption{Hash tree data structure for a \texttt{p(int, int)} predicate
+   \caption{Hash tree data structure for a \code{p(int, int)} predicate
    containing the following facts: \code{p(0, 20)}, \code{p(1, 20)}, \code{p(1,
    3)}, \code{p(2, 13)}, and \code{p(2, 43)}. Facts are indexed by computing
    $arg_2\mod{}10$ where $arg_2$ is the second argument of the fact.}
@@ -156,11 +156,10 @@ argument to index.
 
 For each arguments, the $Entropy(A, F)$ value is then multiplied by the number
 of times it has been used for lookup. The argument with the best score is
-selected and then a global variable called \texttt{indexing\_epoch} is updated
-to \textbf{completed}. In order to convert the node's linked lists into hash
-tables, each node also has a local variable called \texttt{indexing\_epoch} that
-is compared to the global variable in order to rebuild the database according to
-the new indexing information.
+selected and then a global variable called \code{indexing\_epoch} is updated to
+\textbf{completed}. In order to convert the node's linked lists into hash
+tables, each node checks the global \code{indexing\_epoch} variable and rebuilds
+its database when the variable is set to \textbf{completed}.
 
 The VM also dynamically resizes the hash table if necessary. When the hash table
 becomes too dense, it is doubled in size. When it becomes too sparse, it is

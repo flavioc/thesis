@@ -15,17 +15,22 @@ consider the second rule of the bipartiteness checking program presented in
 Fig.~\ref{language:code:bichecking}:
 
 \begin{Verbatim}[fontsize=\codesize]
-visit(A, P), colored(A, P) -o colored(A, P).
+visit(A, P),
+colored(A, P)
+   -o colored(A, P).
 \end{Verbatim}
 
 The fact constraints include the facts required to trigger the rule, namely
-\code{visit(A, P)} and \code{visited(A, P)}, and the join constraints include
+\code{visit(A, P)} and \code{colored(A, P)}, and the join constraints include
 the implicit constraint that the second argument of \code{visit} must be equal
 to the second argument of \code{colored} because the variable \code{P} is used
 for both arguments. However, rules may also have explicit constraints, such as:
 
 \begin{Verbatim}[fontsize=\codesize]
-visit(A, P1), colored(A, P2), P1 <> P2 -o fail(A).
+visit(A, P1),
+colored(A, P2),
+P1 <> P2
+   -o fail(A).
 \end{Verbatim}
 
 The data structures presented in Section~\ref{sec:data_structures} support
@@ -40,7 +45,9 @@ where $V$ is a concrete value.  To illustrate how rules are compiled, consider
 again the rule:
 
 \begin{Verbatim}[fontsize=\codesize]
-visit(A, P), colored(A, P) -o colored(A, P).
+visit(A, P),
+colored(A, P)
+   -o colored(A, P).
 \end{Verbatim}
 
 The compiler transforms the rule into two nested \emph{while} loops, as follows:
@@ -77,11 +84,11 @@ next:
 The compilation algorithm iterates through the atomic propositions in rule's LHS
 and creates nested loops to try all the possible combinations of facts.  For
 this rule, all the pairs of facts \code{colored} and \code{visit} must be
-matched until the implicit constraint is true. First, the \code{colored} linked
+matched until the implicit constraint is true. First, the \code{visit} linked
 list is iterated over by first retrieving the head fact and then using the
 \code{next} pointer of each fact. Inside this outer loop, a nested \code{while}
-loop is created for predicate \code{visit}. This inner loop includes a check for
-the constraint.
+loop is created for predicate \code{colored}. This inner loop includes a check
+for the constraint.
 
 If the constraint expression is true then the rule matches and a new
 \code{colored} fact is derived and two used linear facts are consumed by erasing
@@ -94,25 +101,33 @@ Furthermore, we must jump to the first linear loop because we cannot use the
 next fact from the deepest loop since we may have constraints between the first
 linear loop and the deepest loop that were validated using deleted facts.
 
-If the implicit constraint had failed, another \code{visit} fact would have been
-used by assigning \code{visit} to \code{visit.next()}.  Likewise, if the initial
-\code{colored} fact fails for all \code{visit} facts, then the next
-\code{colored} fact in the list is tried by following the \code{next} pointer.
+If the implicit constraint had failed, another \code{colored} fact would have been
+used by assigning \code{colored} to \code{colored.next()}.  Likewise, if the initial
+\code{visit} fact fails for all \code{colored} facts, then the next
+\code{visit} fact in the list is tried by following the \code{next} pointer.
 
 In order to understand how rule priorities affect compilation, consider a
 slightly different bipartiteness checking program where the second and third
 rules are swapped:
 
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\[\]]
-visit(A, P), uncolored(A)
+visit(A, P),
+uncolored(A)
    -o {B | !edge(A, B) -o visit(B, next(P))},
       colored(A, P).
 
-visit(A, P1), colored(A, P2), P1 <> P2 -o fail(A).*label[line:implementation:higher]
+visit(A, P1),
+colored(A, P2),
+P1 <> P2
+   -o fail(A).*label[line:implementation:higher]
 
-*textbf[visit(A, P), colored(A, P) -o colored(A, P).]
+*textbf[visit(A, P),]
+*textbf[colored(A, P)]
+   *textbf[-o colored(A, P).]
 
-visit(A, P), fail(A) -o fail(A).
+visit(A, P),
+fail(A)
+   -o fail(A).
 \end{Verbatim}
 
 The procedure for the rule being compiled cannot be the same since the derived
@@ -305,7 +320,9 @@ consumed linear facts. However, this is not enough in order to enforce
 linearity of facts. Consider the following inference rule:
 
 \begin{Verbatim}[fontsize=\codesize]
-add(A, N1), add(A, N2) -o add(A, N1 + N2).
+add(A, N1),
+add(A, N2)
+   -o add(A, N1 + N2).
 \end{Verbatim}
 
 Using the standard compilation algorithm, two nested loops are created, one for
@@ -369,7 +386,8 @@ Consider the comprehension used in the first rule of the bipartiteness checking
 program in Fig.~\ref{language:code:bichecking}:
 
 \begin{Verbatim}[fontsize=\codesize]
-visit(A, P), uncolored(A)
+visit(A, P),
+uncolored(A)
    -o {B | !edge(A, B) -o visit(B, next(P))},
       colored(A, P).
 \end{Verbatim}
@@ -435,7 +453,8 @@ into the fact buffer that are then added back into the database. As an example,
 consider the following rule:
 
 \begin{Verbatim}[fontsize=\codesize]
-update(A), !edge(A, B)
+update(A),
+!edge(A, B)
    -o {P | points(A, B, P) -o update(B)},
       points(A, B, 1).
 \end{Verbatim}
@@ -457,7 +476,8 @@ following rule that computes a PageRank value by aggregating all neighbors
 PageRank values:
 
 \begin{Verbatim}[fontsize=\codesize]
-update(A), pagerank(A, OldRank)
+update(A),
+pagerank(A, OldRank)
       -o [sum => V; B | neighbor-pagerank(A, B, V) -o neighbor-pagerank(A, B, V)
             -> pagerank(A, damping/P + (1.0 - damping) * V)].
 \end{Verbatim}

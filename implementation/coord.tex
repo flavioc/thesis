@@ -89,7 +89,7 @@ the state machine.
 \subsection{Communication And Locks}
 
 When a thread $T_1$ performs coordination operations to a node owned by a thread
-$T_2$, it needs to synchronize with $T_2$ and for that the \emph{Main Lock} in
+$T_2$, it needs to synchronize with $T_2$ and for that the \emph{State Lock} in
 the target node needs to be acquired. Optionally, we may need to also lock the
 queues of the thread $T_2$ if the priority is being updated or the queues of
 thread $T_1$, if the node is moving to thread $T_1$. Note that both the standard

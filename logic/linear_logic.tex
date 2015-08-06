@@ -86,11 +86,13 @@ The connections between LM and the sequent calculus fragment presented in the
 Table~\ref{table:linear}. In the table, we show how each connective is
 translated to LM's abstract syntax and then to LM programs. In order to
 understand how LM rules are related to the sequent calculus, consider the first
-rule of the graph visit program shown in Fig~\ref{visit:ast}:
+rule of the graph visit program shown in Fig~\ref{code:language:visit}:
 
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\[\]]
-visit(A), unvisited(A) -o
-   visited(A), {B | !edge(A, B) -o visit(B)}.
+visit(A),
+unvisited(A)
+   -o visited(A),
+      {B | !edge(A, B) -o visit(B)}.
 \end{Verbatim}
 
 This rule is translated to a sequent calculus proposition, as follows:
