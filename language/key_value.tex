@@ -55,29 +55,29 @@ only manipulate facts from the same node.
 
 The initial facts of the program are presented in
 Fig.~\ref{code:language:btree_replace_initial} and describe the initial binary
-tree configuration, including keys and values, and the \code{replace(@0, 6,
-"x")} fact instantiated at the root node \code{@0} that manifests the intent to
+tree configuration, including keys and values, and the \code{replace(@1, 6,
+"x")} fact instantiated at the root node \code{@1} that manifests the intent to
 change the value of key 6 to "x".
 
 \begin{figure}[ht]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\{\}]
-!left(@0, @1).
-!right(@0, @2).
-!left(@1, @3).
-!right(@1, @4). 
-!left(@2, @5).
-!right(@2, @6).
+!left(@1, @2).
+!right(@1, @3).
+!left(@2, @4).
+!right(@2, @5). 
+!left(@3, @6).
+!right(@3, @7).
 
-value(@0, 3, "a").
-value(@1, 1, "b").
-value(@2, 5, "c").
-value(@3, 0, "d").
-value(@4, 2, "e").
-value(@5, 4, "f").
-value(@6, 6, "g").
+value(@1, 3, "a").
+value(@2, 1, "b").
+value(@3, 5, "c").
+value(@4, 0, "d").
+value(@5, 2, "e").
+value(@6, 4, "f").
+value(@7, 6, "g").
 
 // Update key 6 to value "x".
-replace(@0, 6, "x").
+replace(@1, 6, "x").
 \end{Verbatim}
 \caption{Initial facts for replacing a key's value in a BST dictionary.}
 \label{code:language:btree_replace_initial}
@@ -89,7 +89,7 @@ fact. In Fig.~\ref{fig:language:btree_trace}~(a), we present the database filled
 program's initial facts. Next, we follow the right branch using rule 3 since $6
 > 3$ (Fig.~\ref{fig:language:btree_trace}~(b)).  We use the same rule again in
 Fig.~\ref{fig:language:btree_trace}~(c) where we finally reach the key 6. Here, we apply
-rule 1 and \code{value(@6, 6, "g")} is updated to \code{value(@6, 6, "x")}.
+rule 1 and \code{value(@7, 6, "g")} is updated to \code{value(@7, 6, "x")}.
 
 \begin{figure}[h]
         \centering
@@ -102,19 +102,19 @@ rule 1 and \code{value(@6, 6, "g")} is updated to \code{value(@6, 6, "x")}.
         \begin{subfigure}[b]{0.5\textwidth}
                 \includegraphics[width=\textwidth]{figures/btree/btree_trace2}
 
-                \caption{After applying rule 3 at node \code{@0}.}
+                \caption{After applying rule 3 at node \code{@1}.}
 
                 \label{fig:language:btree_trace2}
         \end{subfigure}\\
         \begin{subfigure}[b]{0.5\textwidth}
                 \includegraphics[width=\textwidth]{figures/btree/btree_trace3}
-                \caption{After applying rule 3 at node \code{@2}.}
+                \caption{After applying rule 3 at node \code{@3}.}
                 \label{fig:language:btree_trace3}
         \end{subfigure}%
         ~
         \begin{subfigure}[b]{0.5\textwidth}
                   \includegraphics[width=\textwidth]{figures/btree/btree_trace4}
-                  \caption{After applying rule 1 at node \code{@6}.}
+                  \caption{After applying rule 1 at node \code{@7}.}
                   \label{fig:language:btree_trace4}
           \end{subfigure}
         \caption{An execution trace for the binary tree dictionary
