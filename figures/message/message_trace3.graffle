@@ -7,7 +7,7 @@
 	<key>ApplicationVersion</key>
 	<array>
 		<string>com.omnigroup.OmniGraffle6</string>
-		<string>161.5.0.232794</string>
+		<string>161.8.0.237618</string>
 	</array>
 	<key>AutoAdjust</key>
 	<true/>
@@ -298,7 +298,7 @@
 			<integer>10</integer>
 			<key>Points</key>
 			<array>
-				<string>{243.49996194190319, 196.27049038936644}</string>
+				<string>{244.7399564380103, 196.27049038936644}</string>
 				<string>{188.73246168310104, 196.27049038936644}</string>
 			</array>
 			<key>Style</key>
@@ -349,8 +349,8 @@
 			<integer>9</integer>
 			<key>Points</key>
 			<array>
-				<string>{318.60191715187511, 93.851677913121634}</string>
-				<string>{320.10592630346099, 155.11693512771726}</string>
+				<string>{318.89548655198126, 93.848401230071545}</string>
+				<string>{320.84783617682803, 155.12145220188319}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -391,8 +391,8 @@
 			<integer>8</integer>
 			<key>Points</key>
 			<array>
-				<string>{158.60129364383008, 87.038114617424739}</string>
-				<string>{273.23400525498386, 164.08707409629412}</string>
+				<string>{158.78344572950417, 86.98322175568201}</string>
+				<string>{274.24995400757092, 164.18132608801719}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -503,7 +503,7 @@
 		</dict>
 		<dict>
 			<key>Bounds</key>
-			<string>{{245, 156.61327999999997}, {152.232421875, 79.314453}}</string>
+			<string>{{246.2399944961071, 156.61327999999997}, {152.232421875, 79.314453}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FontInfo</key>
@@ -542,12 +542,12 @@
 			<key>Text</key>
 			<dict>
 				<key>Text</key>
-				<string>{\rtf1\ansi\ansicpg1252\cocoartf1347\cocoasubrtf570
+				<string>{\rtf1\ansi\ansicpg1252\cocoartf1348\cocoasubrtf170
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;}
 {\colortbl;\red255\green255\blue255;\red128\green0\blue128;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
-\f0\fs30 \cf0 edge(@4)\
+\f0\fs30 \cf0 !edge(@4)\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
 
 \b \cf2 processed(1)}</string>
@@ -676,7 +676,7 @@ processed(1)}</string>
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2015-06-04 18:46:22 +0000</string>
+	<string>2015-08-05 20:52:09 +0000</string>
 	<key>Modifier</key>
 	<string>Flávio Cruz</string>
 	<key>NotesVisible</key>

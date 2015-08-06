@@ -32,11 +32,11 @@ Our second example, shown in Fig.~\ref{code:language:btree_replace}, implements
 the key update operation for a binary search tree~(BST) represented as a
 key/value dictionary. Each LM node represents a binary tree node. We first
 declare all the predicates in
-lines~\ref{line:language:dict_header1}-\ref{line:language:dict_header2}.  Linear
-predicate \code{value} stores the key/value pair of a node. The linear predicate
-\code{replace} represents an update operation where the key in the second
-argument is to be updated to the value in the third argument. Predicates
-\code{left} and \code{right} represent the child nodes of each BST node.
+lines~\ref{line:language:dict_header1}-\ref{line:language:dict_header2}.
+Predicates \code{left} and \code{right} represent the child nodes of each BST
+node.  Linear predicate \code{value} stores the key/value pair of a node, while
+the linear predicate \code{replace} represents an update operation where the key
+in the second argument is to be updated to the value in the third argument.
 
 The algorithm uses three rules for the three possible cases of updating a key's
 value. The first rule
@@ -56,7 +56,7 @@ only manipulate facts from the same node.
 The initial facts of the program are presented in
 Fig.~\ref{code:language:btree_replace_initial} and describe the initial binary
 tree configuration, including keys and values, and the \code{replace(@0, 6,
-"x")} fact instantiated at the root node \code{@3} that manifests the intent to
+"x")} fact instantiated at the root node \code{@0} that manifests the intent to
 change the value of key 6 to "x".
 
 \begin{figure}[ht]
@@ -102,23 +102,19 @@ rule 1 and \code{value(@6, 6, "g")} is updated to \code{value(@6, 6, "x")}.
         \begin{subfigure}[b]{0.5\textwidth}
                 \includegraphics[width=\textwidth]{figures/btree/btree_trace2}
 
-                \caption{After applying rule 3 at node \code{@0}. The
-                \code{replace} fact is \emph{sent} to (or derived at) node
-                \code{@2}.}
+                \caption{After applying rule 3 at node \code{@0}.}
 
                 \label{fig:language:btree_trace2}
         \end{subfigure}\\
         \begin{subfigure}[b]{0.5\textwidth}
                 \includegraphics[width=\textwidth]{figures/btree/btree_trace3}
-                \caption{After applying rule 3 at node \code{@2}. Replace fact
-                   reaches node \code{@6}.}
+                \caption{After applying rule 3 at node \code{@2}.}
                 \label{fig:language:btree_trace3}
         \end{subfigure}%
         ~
         \begin{subfigure}[b]{0.5\textwidth}
                   \includegraphics[width=\textwidth]{figures/btree/btree_trace4}
-                  \caption{After applying rule 1 at node \code{@6}. Value of key
-                  6 has changed to "x".}
+                  \caption{After applying rule 1 at node \code{@6}.}
                   \label{fig:language:btree_trace4}
           \end{subfigure}
         \caption{An execution trace for the binary tree dictionary
@@ -126,8 +122,8 @@ rule 1 and \code{value(@6, 6, "g")} is updated to \code{value(@6, 6, "x")}.
            address of the node was placed beside it.}\label{fig:language:btree_trace}
 \end{figure}
 
-Like the key/value example shown in the previous section, the amount of
-concurrency present in this example, depends on the number of \code{replace}
+Like the message routing example shown in the previous section, the amount of
+concurrency present in this example depends on the number of \code{replace}
 facts. If there are many \code{replace} operations to perform on different parts
 of the BST, then there is more concurrency. On the other hand, if only a few BST
 nodes are being updated, then concurrency is reduced. Interestingly enough, this

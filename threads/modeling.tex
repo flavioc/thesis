@@ -116,7 +116,7 @@ default-priority(A, DefPrio), available-work(A, T)
       default-priority(A, DefPrio),
       available-work(A, false), idle(T).\label#line:threads:model_drop_node2&
 
-[max => Prio | \hfill// Select next node to be processed.\label#line:threads:model_next_node1&
+[desc => Prio | \hfill// Select next node to be processed.\label#line:threads:model_next_node1&
    idle(T), owner(A, T),
    priority(A, Prio), available-work(A, true)]
    -o active(T), owner(A, T),

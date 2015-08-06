@@ -1,41 +1,40 @@
 \begin{abstract}
 
-Parallel programs are known to be difficult to write and reason about. Programs
-written in low level parallel constructs commonly available in imperative
-programming languages tend to be problematic to understand and debug.
-Declarative programming is a step in the right direction because it moves the
+Parallel programming is known to be difficult to apply, exploit and reason about.
+Programs written using low level parallel constructs, commonly available in
+imperative programming languages, tend to be problematic to understand and debug.
+Declarative programming is a step towards the right direction because it moves the
 details of parallelization from the programmer to the runtime system.  However,
-these paradigms tend to remove most scheduling decisions from the programmer
+this paradigm tends to remove most scheduling decisions from the programmer
 resulting in few opportunities for optimization.
 
-We propose a declarative logic programming language called Linear Meld~(LM) that
-is suited to run graph-based programs in parallel.  The foundation of our
-language is linear logic, a powerful logical system where logical facts can be
-asserted and removed. Linear logic gives the language a structured way to manage
-state while remaining fully declarative. We envision the program as a
-communicating graph data structure where each thread computes a different subset
-of the graph. Logical rules are constrained to facts in the local node so that
-computation happens locally.
+In this thesis, we propose a new declarative logic programming language, called
+Linear Meld~(LM), that is suited to run graph-based programs in parallel.  The
+foundation of our language is linear logic, a powerful logical system where
+logical facts can be asserted and removed. Linear logic gives the language a
+structured way to manage state while remaining fully declarative. An LM program
+can be seen as a communicating graph where each computational thread evaluates a
+different subset of the graph. Logical rules are constrained to facts in the
+local node so that computation happens only locally.
 
-Although Linear Meld is declarative, it also minimizes the problem of programmer
-control by introducing coordination. Coordination facts in
-LM exist in two main forms: as scheduling facts, which change how nodes are
-scheduled in the graph and (2) as partitioning facts, which change how nodes are
-partitioned among threads. The use of coordination facts allow the programmer to
-control scheduling and partitioning of data, reducing the run time and memory
-usage of programs.
+Although Linear Meld is declarative, it also allows some programmer control by
+introducing coordination facts. Coordination in LM exists in two main forms: as
+scheduling facts, which change how nodes are scheduled in the graph and as
+partitioning facts, which change how nodes are partitioned among threads. The
+use of coordination facts allow the programmer to control scheduling and
+partitioning of data, reducing the run time and memory usage of programs.
 
 LM allows further programmer control with the introduction of thread facts.
-Thread facts allow the programmer to reason about the underlying parallel
-architecture by reasoning about the state of the execution threads.  The use of
-both coordination and thread facts allow the programmer to move from implicit
-parallelism to explicit parallelism, allowing her to write complex coordinated
-programs that run faster than data-driven LM programs.
+Thread facts allow the programmer to reason about the state of the execution
+threads.  The use of both coordination and thread facts allow the programmer to
+combine the inherent implicit parallelism with some form of explicit
+parallelism, allowing her to write complex coordinated programs that run faster
+than data-driven LM programs.
 
-We have written graph algorithms, search algorithms and machine learning
-algorithms and have seen good results on multicores, although our runtime system
-can be easily extended to other distributed architectures. We have also written
-several informal proofs of program correctness to show that LM programs are
-easily proven correct.
+We have written several graph algorithms, search algorithms and machine learning
+algorithms in LM. For some programs, we have written informal proofs of
+correctness to show that programs are easily proven correct. We have also
+engineered a compiler and runtime system that is able to run LM programs on
+multicore architectures with decent performance and good scalability.
 
 \end{abstract}

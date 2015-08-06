@@ -6,12 +6,16 @@ type linear visit(node).
 type linear unvisited(node).
 type linear visited(node).
 
-visit(A), unvisited(A) -o*label[line:language:visit_first1]*hfill // Rule 1: visit node
-   visited(A), {B | !edge(A, B) -o visit(B)}.*label[line:language:visit_first2]*label[line:language:visit_comprehension]
+visit(A), *label[line:language:visit_first1]*hfill // Rule 1: visit node
+unvisited(A) -o
+   visited(A),
+   {B | !edge(A, B) -o visit(B)}.*label[line:language:visit_first2]*label[line:language:visit_comprehension]
 
-visit(A), visited(A) -o visited(A).*label[line:language:visit_second]*hfill // Rule 2: node already visited
+visit(A),*label[line:language:visit_second1]*hfill // Rule 2: node already visited
+visited(A)
+   -o visited(A).*label[line:language:visit_second2]
 \end{Verbatim}
-   \caption{LM code for the graph visit program.}
+  \caption{LM code for the graph visit program.}
   \label{code:language:visit}
 \end{figure}
 
@@ -20,13 +24,14 @@ complete LM program that, for a given graph of nodes, performs a visit to all
 nodes reachable from node \code{@1}. The first rule of the program
 (lines~\ref{line:language:visit_first1}-\ref{line:language:visit_first2}) visits
 node \code{A} for the first time: fact \code{visited(A)} is derived and a
-\emph{comprehension} construct is derived in order to go through all the edge
-facts and then derive \code{visit(B)} at each neighbor node \code{B}. The second
-rule of the program (line~\ref{line:language:visit_second}) is derived when the
-node is already visited more than once: we keep the \code{visited} fact and
-delete \code{visit}. The initial facts shown in
-Fig.~\ref{code:language:visit_initial} force node \code{@1} to start with the
-\code{visit(@1)} fact in order to start the program.
+\emph{comprehension} construct is used to go through all the edge facts and then
+derive \code{visit(B)} at each neighbor node \code{B}. The second rule of the
+program
+(lines~\ref{line:language:visit_second1}-\ref{line:language:visit_second2})
+applies when the node is already visited more than once: we keep the
+\code{visited} fact and delete \code{visit}. The initial facts shown in
+Fig.~\ref{code:language:visit_initial} use the \code{visit(@1)} fact to start
+the program.
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\[\]]
@@ -53,13 +58,13 @@ visit(@1).
 Fig.~\ref{fig:exec_trace} shows a possible execution trace for the visit
 program. After applying the first rule at node \code{@1} we get the database in
 Fig~\ref{fig:exec_trace}~(b).  Note that node \code{@1} is now visited and nodes
-\code{@2} and \code{@4} now have the fact \code{visit}. At this point we could
+\code{@2} and \code{@4} now have a \code{visit} fact. At this point, we could
 either apply rule 1 at node \code{@2} or at node \code{@4}.  For this specific
 trace, we apply the rule at node \code{@2}, resulting in
-Fig.~\ref{fig:exec_trace}~(c). Node \code{@4} now has 2 \code{visit} facts, thus
-we can apply rule 1 followed by rule 2, therefore consuming both \code{visit}
-facts and deriving \code{visited}. In addition, we can also apply rule 1 at node
-\code{@3} to reach the state of Fig.~\ref{fig:exec_trace}~(d).
+Fig.~\ref{fig:exec_trace}~(c). Node \code{@4} now has two \code{visit} facts,
+thus we can apply rule 1 followed by rule 2, therefore consuming both
+\code{visit} facts and deriving \code{visited}. In addition, we can also apply
+rule 1 at node \code{@3} to reach the state of Fig.~\ref{fig:exec_trace}~(d).
 
 \begin{figure}[h]
         \centering
@@ -101,7 +106,7 @@ several nodes to derive rules concurrently. At some point, the amount of
 concurrency is reduced because more and more nodes have been visited. The level
 of concurrency also depends on the structure of the graph. In the worst case, if
 the graph is a chain of nodes then the program becomes effectively sequential.
-In the best case, if the graph densily connected (each node connects to most
+In the best case, if the graph is densily connected (each node connects to most
 nodes in the graph), then it is possible to run the program on most nodes at the
 same time.
 

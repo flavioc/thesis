@@ -32,7 +32,7 @@ Section~\ref{section:language:selector}.
   \selector{S}{y}{LHS}{RHS}$ \\
   LHS Expression & $LHS$ & $::=$ & $L \; \sop \; P \; \sop \; C \; \sop \; LHS,
   LHS \; \sop \; \exists_{x}. LHS \; \sop \; \one$\\
-  Selector Operation & $S$ & $::=$ & $\mathtt{min} \; \sop \; \mathtt{max} \; \sop \; \mathtt{random}$\\
+  Selector Operation & $S$ & $::=$ & $\mathtt{asc} \; \sop \; \mathtt{desc} \; \sop \; \mathtt{random}$\\
   RHS Expression & $RHS$ & $::=$ & $L \; \sop \; P \; \sop \; C \; \sop \; RHS, RHS \; \sop
   \; EE \; \sop \; CE \; \sop \; AE \; \sop \; \one$\\
   
@@ -64,8 +64,8 @@ Section~\ref{section:language:selector}.
 
 The $LHS$ of a rule may contain linear ($L$) and persistent ($P$) \emph{atomic
 propositions} and constraints ($C$). Atomic propositions are template facts that
-instantiate variables (from facts in the database) in
-line~\ref{line:language:visit_second} in Fig.~\ref{code:language:visit}.
+instantiate variables from facts in the database (example in
+line~\ref{line:language:visit_second1} of Fig.~\ref{code:language:visit}).
 Variables can be used again in the LHS for matching and also in the RHS when
 instantiating facts.  Constraints $C$ are boolean expressions that must be true
 in order for the rule to be derived. Each constraint starts with a boolean
@@ -76,26 +76,29 @@ The $RHS$ of a rule contains linear ($L$) and persistent ($P$) atomic
 propositions which are uninstantiated facts. The RHS can also have \emph{exists
 expressions} ($EE$), \emph{comprehensions} ($CE$) and \emph{aggregates} ($AE$).
 All those expressions may use all the variables instantiated in the rule's LHS
-and are explained in detail next in Section~\ref{section:language:expressions}.
+and are explained in more detail in Section~\ref{section:language:expressions}.
 To introduce variables in the scope of the RHS, it is possible to use the
 $\exists_x. LHS$ production, which can be used for sub-computations for
 instantiating the atomic propositions of the RHS. This production is heavily
 used by the compiler to move variables defined in the rule's LHS to the RHS
 which are only used in the RHS, however it is still possible for the programmer
 to define RHS's variables explicitly using an equality constraint of the form $x
-= e$.
+= e$ (represented by $C$ in the syntax).
 
-\subsubsection{Graph visit using the abstract syntax}\label{visit:ast}
-
-Consider the two rules in the graph visit program shown in
+Consider again the two rules in the graph visit program shown in
 Fig.~\ref{code:language:visit}:
 
 \nopagebreak
 
 \begin{Verbatim}[fontsize=\codesize]
-visit(A), unvisited(A) -o visited(A), {B | !edge(A, B) -o visit(B)}.
+visit(A),
+unvisited(A)
+   -o visited(A),
+      {B | !edge(A, B) -o visit(B)}.
 
-visit(A), visited(A) -o visited(A).
+visit(A),
+visited(A)
+   -o visited(A).
 \end{Verbatim}
 
 To translate the rules to the abstract syntax, we have to de-sugar the code and
@@ -132,25 +135,23 @@ When a rule's LHS is instantiated using facts from the database, facts are
 picked non-deterministically. While our system uses an implementation dependent
 order for efficiency reasons, sometimes it is important to sort facts by one of
 the arguments. The abstract syntax for this construct is
-$\selector{S}{y}{LHS}{RHS}$, where $S$ is the selection operation and $y$ is the
-variable in $LHS$ that represents the value to be selected according to $S$. An
+$\selector{S}{y}{LHS}{RHS}$, where $S$ is the selector operation and $y$ is the
+variable in $LHS$ that represents the value to be sorted according to $S$. An
 example using concrete syntax is as follows:
 
 \begin{Verbatim}[fontsize=\codesize]
-[min => W | !edge(A, B), weight(A, B, W)] -o picked(A, B, W).
+[asc => W | !edge(A, B, W), select(A)] -o best-neighbor(A, B, W).
 \end{Verbatim}
 
-In this case, we order the \code{weight} facts by \code{W} in ascending order
-and then try to match them. Other operations available are \code{max} and
+In this case, we sort the \code{edge} facts by \code{W} in ascending order
+and then try to match them. Other operations available are \code{desc} and
 \code{random} (to force no pre-defined order at the implementation level).
 
-\subsection{RHS Expressions}\label{section:language:expressions}
-
-\subsubsection{Exists Expression}
+\subsection{Exists Expressions}\label{section:language:expressions}
 
 Exists constructs ($EE$) are based on the linear logic construct of the same
-name and are used to create fresh node addresses. We can use the new address to
-instantiate new facts for the new node. As an example, consider extending the
+name and are used to create fresh node addresses. We can use the new node address to
+instantiate new facts. As an example, consider extending the
 key/value dictionary example described in Fig.~\ref{code:language:btree_replace}
 with an insertion operation:
 
@@ -162,12 +163,12 @@ IKey < Key
       exists B. (value(B, IKey, IValue), !left(A, B)).
 \end{Verbatim}
 
-The exists construct creates a new node \code{B} containing the linear fact
+The \code{exists} construct creates a new node \code{B} containing the linear fact
 \code{value(B, IKey, IValue)} (the newly inserted key/value pair) and the
 persistent fact \code{!left(A, B)} that connects \code{A} to \code{B} is also
 added to node \code{A}.
 
-\subsubsection{Comprehensions}
+\subsection{Comprehensions}
 
 Sometimes, when consuming a linear fact, we might want to generate several new
 facts depending on the contents of the database. To solve this particular need,
@@ -182,14 +183,17 @@ example of a comprehension in the graph visit program (Fig.~\ref{code:language:v
 line~\ref{line:language:visit_comprehension}):
 
 \begin{Verbatim}[fontsize=\codesize,commandchars=\*\#\&]
-visit(A), unvisited(A) -o visited(A), *textbf#{B | !edge(A, B) -o visit(B)}&.
+visit(A),
+unvisited(A)
+   -o visited(A),
+      *textbf#{B | !edge(A, B) -o visit(B)}&.
 \end{Verbatim}
 
 In this example, the comprehension matches \code{!edge(A, B)} using all the
 combinations available in the database for node \code{B} and for each
 combination it derives \code{visit(B)}.
 
-\subsubsection{Aggregates}
+\subsection{Aggregates}
 
 Another useful feature is the ability to reduce several facts
 into a single fact. LM features aggregates ($AE$), a special kind of sub-rule
@@ -203,7 +207,7 @@ combination, we aggregate the values represented by $y$ into a new $y$ variable
 that is used to derive $SRHS_2$.
 
 To better understand aggregates, let's consider the following rule from the
-PageRank program presented in Section~\ref{section:language:pagerank}:
+PageRank program to be presented in Section~\ref{section:language:pagerank}:
 
 \begin{Verbatim}[fontsize=\codesize]
 update(A),
@@ -224,11 +228,11 @@ into a list).
 
 \section{Operational Semantics}
 
-As said before, the first argument of every predicate must be typed as a
+As said before, the first argument of every predicate must be typed as
 \emph{node} and all rules must only use facts belonging to the same node. These
-two restrictions, allows LM to be concurrent since computation can be performed
-using the facts belonging to the same node without requiring communication
-between multiple nodes.
+two restrictions, allows computation to be performed using only the facts
+belonging to the same node without requiring communication between multiple
+nodes.
 
 The execution is performed at the node level and happens non-deterministically
 (i.e., any node can be picked to run). This means that the programmer cannot

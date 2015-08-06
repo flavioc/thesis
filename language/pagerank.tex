@@ -42,7 +42,7 @@ x_{i}(t + 1) = G_{i} x(t)\label{eq:language:pagerank}
 \end{align}
 
 Where $G_{i}$ is the row of the $G$ matrix that corresponds to the inbound links
-of page $i$. Note that we also do not need to have the complete $x(t)$ vector
+of page $i$. Note that we also do not need to have the complete $x(t)$ vector as
 most elements of $G_{i}$ are $0$.
 
 The LM code for this iterative computation is shown in
@@ -86,7 +86,7 @@ is derived and a PageRank value is generated for iteration \code{Iter}.
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\[\]]
 type outbound(node, node, float).\hfill// Predicate declaration
 type numInbound(node, int).
-type linear pagerank(node, float, int).
+type linear pagerank(node, float Rank, int Iteration).
 type linear accumulator(node, float Acc, int Left, int Iteration).
 type linear neighbor-pagerank(node, node Neighbor, float Rank, int Iteration).
 type linear start(node).
@@ -98,7 +98,7 @@ const pages = @world.\hfill// number of pages in the graph.\label[line:language:
 start(A), !numInbound(A, T)\label[line:language:spagerank_first1]\hfill// Rule 1: initialize pagerank and accumulator
    -o accumulator(A, 0.0, T, 1), pagerank(A, 1.0 / float(pages), 0).\label[line:language:spagerank_first2]
 
-pagerank(A, V, Iter), // propagate new pagerank value\label[line:language:spagerank_second1]\hfill// Rule 2: propagate pagerank
+pagerank(A, V, Iter), \label[line:language:spagerank_second1]\hfill// Rule 2: propagate pagerank
 Iter < iterations
    -o {B, W | !outbound(A, B, W) -o neighbor-pagerank(B, A, V * W, Iter + 1)}.\label[line:language:spagerank_second2]
 
@@ -121,10 +121,9 @@ start(A).\hfill// Initial facts
 The synchronous version of the PageRank algorithm has a fairly high level of
 concurrency. First, the program starts on all nodes of the graph, which makes
 the program trivial to parallelize. However, because this is a synchronous
-algorithm, there is a need to synchronize because there is a data dependency
-between PageRank iterations. Furthermore, nodes can only compute their next
-iteration after they receive all the neighbor's PageRank values from the
-previous iteration.
+algorithm, there is a data dependency between PageRank iterations, i.e., nodes
+can only compute their next iteration after they receive all the neighbor's
+PageRank values from the previous iteration.
 
 Appendix~\ref{section:appendix:pagerank} further expands this section with the
 asynchronous version of PageRank and also includes a proof of correctness.

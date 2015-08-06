@@ -32,7 +32,7 @@ message(A, Content, []),*label{line:language:message_second1}*hfill// Rule 2
 processed(A, N)
    -o processed(A, N + 1).*label{line:language:message_second2}
 \end{Verbatim}
-\caption{Code for routing messages in a graph.}
+\caption{LM code for routing messages in a graph.}
 \label{code:language:message}
 \end{figure}
 
@@ -43,9 +43,10 @@ and $R_1, \cdots, R_m$ is \emph{right-hand side}~(RHS) of the rule. The meaning
 of a rule is then as follows: if facts $L_1, \cdots, L_n$ are present in the
 database then consume all the facts $L_i$ that are linear facts and derive the
 facts $R_1, \cdots, R_m$ from the RHS. Note that in the rules, the LHS of each
-rule uses only facts from the same node (represented by \code{A} in both rules),
-but the rule's RHS may derive facts that belong to other nodes (case of \code{B}
-in the first rule) if a node variable is instantiated in the LHS.
+rule uses only facts from the same node (represented by \code{A} in both rules
+of Fig.~\ref{code:language:message}), but the rule's RHS may derive facts that
+belong to other nodes (case of \code{B} in the first rule) if a node variable is
+instantiated in the LHS.
 
 The first rule
 (lines~\ref{line:language:message_first1}-\ref{line:language:message_first2})
@@ -83,13 +84,13 @@ In Fig.~\ref{fig:message_trace} we present an execution trace of the message
 routing program. The database is represented as a graph structure where the
 edges represent the \code{edge} initial facts. To simplify the figure, we
 dropped the first argument of each fact since the first argument corresponds to
-the node where the fact is placed. In Fig.~\ref{fig:message_trace}~(a) the
+the node where the fact is placed. In Fig.~\ref{fig:message_trace}(a) the
 database is initialized with the program's initial facts. Note that the initial
 \code{message} fact is instantiated at node \code{@1}. After applying rule 1, we
-get the database represented in Fig.~\ref{fig:message_trace}~(b), where the
+get the database represented in Fig.~\ref{fig:message_trace}(b), where the
 message has been derived at node \code{@3}. After applying rule 1 again, the
-message is then routed to node \code{@4} (Fig.~\ref{fig:message_trace}~(c))
-where it will be consumed (Fig.~\ref{fig:message_trace}~(d)).
+message is then routed to node \code{@4} (Fig.~\ref{fig:message_trace}(c))
+where it will be consumed (Fig.~\ref{fig:message_trace}(d)).
 
 \newcommand{\visitsize}{0.38}
 
@@ -114,10 +115,10 @@ where it will be consumed (Fig.~\ref{fig:message_trace}~(d)).
         ~
         \begin{subfigure}[b]{\visitsize\textwidth}
                   \includegraphics[width=\textwidth]{figures/message/message_trace4}
-                  \caption{After applying rule 2 (nodes \code{@4}).}
+                  \caption{After applying rule 2 at node \code{@4}.}
                   \label{fig:message_trace4}
           \end{subfigure}
-        \caption{An execution trace for the message program. The message "hello
+        \caption{An execution trace for the message routing program. The message "hello
         world" travels from node \code{@1} to node \code{@4}.}\label{fig:message_trace}
 \end{figure}
 

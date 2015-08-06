@@ -1,6 +1,6 @@
 Logic and functional programming languages are a major class of languages called
 declarative programming languages. Logic programming languages are usually based
-on classical logic (such as the \emph{predicate and propositional calculus}) or
+on classical logics, such as the \emph{predicate and propositional calculus}, or
 in non-classical logics such as \emph{constructive} or \emph{intuitionistic}
 logic, where the goal is to construct different models of logical truth.
 Functional programming languages are usually based on the \emph{lambda
@@ -13,28 +13,29 @@ problem. In turn, formal reasoning is performed at a higher level and does not
 have to deal with low level parallel programming constructs such as locks or
 message passing.
 
-\paragraph{Functional Programming and Parallel Programming}
+\paragraph{Parallel Functional Programming}
 
-In pure functional programming languages, the \emph{side-effect free} nature of
+In pure functional programming languages, the side-effect free nature of
 computation allows multiple expressions to evaluate safely in
 parallel~\cite{Loidl:2003}. This so called \emph{implicit parallelism} has been
 implemented in languages such as Id~\cite{Nikhil93anoverview} and
 SISAL~\cite{gaudiot2001sisal} with relative success. However, this kind of
 parallelism still remains elusive in the functional programming community since
-practical functional programs have a higher level of granularity, which makes it
-harder for a compiler to schedule computations
+practical functional programs have, in general, a high number of fine-grained
+parallel tasks, which makes it harder for a compiler to schedule computations
 efficiently~\cite{haskell_tutorial}.  Alternative approaches such as
 \emph{semi-explicit parallelism}~\cite{Marlow:2010}, \emph{data
-parallelism}~\cite{Blelloch:1996:PPA:227234.227246}, and \emph{explicit
-parallelism}~\cite{harris2005composable} have shown to be more effective in
-practice.
+parallelism}~\cite{Blelloch:1996:PPA:227234.227246}, and \emph{software
+transactional memory}~\cite{harris2005composable} have shown to be more
+effective in practice.
 
 In semi-explicit parallelism, the programmer uses an API to tell the runtime
-system which computations should be carried out in parallel, reducing the
-granularity problem found in implicit parallelism. These parallel computations
-are called \emph{sparked computations} and express the possibility of performing
-speculative computations which are going to be needed in the future. In a sense,
-sparked computations can be seen as \emph{lazy futures}~\cite{Baker:1977}.
+system which computations should be carried out in parallel, thus avoiding the
+fine-grain granularity problem. Usually, these coarse-grained parallel
+computations are called \emph{sparked computations} and express the possibility
+of performing speculative computations which are going to be needed in the
+future. In a sense, sparked computations can be seen as \emph{lazy
+futures}~\cite{Baker:1977}.
 
 Data parallelism attempts to partition data among a set of processing units and
 then apply the same operation on the data. The simplest form of data parallelism
@@ -44,14 +45,14 @@ data manipulation operations, which is not a good fit for flat data parallelism.
 However, in the NESL language~\cite{Blelloch:1996:PPA:227234.227246}, a new compiler
 transformation was proposed that could take a program using \emph{nested data
 parallelism} and turn it into a program using flat data parallelism, which is
-much easier to parallelize. This approach has been later implemented in more
+easier to parallelize. This approach has been later implemented in more
 modern languages such as Haskell~\cite{Chakravarty07dataparallel}. The main
 advantage of this approach is that it remains true to the original goal of
 implicit parallelism.
 
 Finally, functional programs also allow the explicit creation of threads and
-communication using mechanisms such as \emph{software transactional
-memory}~\cite{harris2005composable}, which allows the programmer to share
+communication using mechanisms such as software transactional
+memory~\cite{harris2005composable}, which allows the programmer to share
 variables and state between threads. This approach has some similarities to
 parallel imperative programming since it requires careful control from the
 programmer.
@@ -60,17 +61,17 @@ programmer.
 \paragraph{Logic Programming}
 
 Logical systems define their own meaning of truth and a set of consistent rules
-to manipulate truth. Proofs about statements in the logical system are then
+to manipulate truth. Proofs about statements in a logical system are then
 constructed by using the rules appropriately. For instance, the system of
 \emph{propositional logic} contains the \emph{modus ponens} rule, where truth is
 manipulated as follows: if $P$ implies $Q$ and $P$ is known to be true,
-therefore $Q$ must also be true. If we know that ``it is raining'' and that ``if
+therefore $Q$ must also be true. For example, if we know that ``it is raining'' and that ``if
 it is raining then the grass is wet'', we can prove that ``the grass is wet'' by
 using the \emph{modus ponens} rule.
 
 Logic programming arises when the proof search strategy in a logical system is
-fixed. In the case of propositional logic, we can devise the following
-programming model:
+fixed. In the case of propositional logic, the following programming model can
+be devised:
 
 \begin{itemize}
    \item A set $R$ of implications of the form ``$P$ implies $Q$'' represents the
@@ -85,23 +86,23 @@ programming model:
 
 This particular proof search mechanism is called \emph{forward-chaining} (or
 \emph{bottom-up}) \emph{logic programming}, since it starts from the initial
-facts and then uses inference rules (\emph{modus ponens}) to accumulate more
-truth. The proof search may then stop if the search has found a particular
-proposition to be true or if it is not possible to derive any more truths, which
-we call \emph{quiescence}.
+facts and then uses inference rules (\emph{modus ponens}) to derive new truth.
+The proof search may then stop if the search has found a particular proposition
+to be true or a state of \emph{quiescence} is reached (it is not possible to
+derive any more truths).
 
 An alternative proof search strategy is \emph{backward-chaining} (or
 \emph{top-down}) \emph{logic programming}. In this style of programming, we want
 to know if a particular proposition is true and then work backwards using the
-inference rules. For instance, consider the implications: (1) ``if it is raining
-then the grass is wet'' and (2) ``if the weather forecast for today is rain then
-it is raining'' and the proposition (3) ``the weather forecast for today is
-rain''. If we want to know if (4) ``the grass is wet'', we select the
-implication (1) and attempt to prove ``it is raining'' since it is required by
-(1) to prove (4). Next, the goal proposition becomes ``it
-is raining'' and the conclusion of implication (2) matches and thus we have to
+inference rules. For instance, consider the implications: (i) ``if it is raining
+then the grass is wet'' and (ii) ``if the weather forecast for today is rain then
+it is raining'' and the proposition (iii) ``the weather forecast for today is
+rain''. If we want to know if (iv) ``the grass is wet'', we select the
+implication (i) and attempt to prove ``it is raining'' since it is required by
+(i) to prove (iv). Next, the goal proposition becomes ``it
+is raining'' and the conclusion of implication (ii) matches and thus we have to
 prove ``the weather forecast for today is rain'', which can be proved
-immediately using proposition (3).
+immediately using proposition (iii).
 
 \paragraph{Logic Programming Languages}
 
@@ -121,34 +122,34 @@ Datalog~\cite{Ramakrishnan93asurvey,Ullman:1990:PDK:533142} is a
 forward-chaining logic programming language originally designed for deductive
 databases. Datalog has been traditionally used in deductive databases, but is
 now being increasingly used in other fields such as sensor
-nets~\cite{Chu:2007:DID:1322263.1322281}, cloud computing~\cite{alvaro:boom},
-and social networks~\cite{Seo:2013:DSD:2556549.2556572}.  In Datalog, the
-program is composed of a database of facts and a set of rules.  Datalog programs
-first populate the database with the starting facts and then saturate the database using
-rule inference. In Datalog, logical facts are persistent and once a fact is
-derived, it cannot be deleted. However, there has been a growing interest in
+nets~\cite{Chu:2007:DID:1322263.1322281}, cloud computing~\cite{alvaro:boom}, or
+social networks~\cite{Seo:2013:DSD:2556549.2556572}.  In Datalog, the program is
+composed of a database of facts and a set of rules.  Datalog programs first
+populate the database with the starting facts and then saturate the database
+using rule inference. In Datalog, logical facts are persistent and once a fact
+is derived, it cannot be deleted. However, there has been a growing interest in
 integrating linear logic~\cite{girard-87} into bottom-up logic programming,
 allowing for both fact assertion and
 retraction~\cite{Chang03ajudgmental,Lopez:2005:MCL:1069774.1069778,simmons-lla,cruz-iclp14},
 which is one of the topics of this thesis.
 
-\paragraph{Logic Programming and Parallel Programming}
+\paragraph{Parallel Logic Programming}
 
 In logic programming languages such as Prolog, researchers took advantage of the
 non-determinism of proof-search to evaluate subgoals in parallel. The most
 famous models are \emph{OR-parallelism} and
 \emph{AND-parallelism}~\cite{Gupta:2001:PEP:504083.504085}. When performing
 proof search with two implications of the form ``$P$ implies $Q$'' and ``$R$
-implies $Q$'' then we have OR-parallelism because the proof search can select ``$P$
-implies $Q$'' and try to prove $P$ but also select ``$R$ implies $Q$'' and try
-to prove $R$. In AND-parallelism, there is an implication of the form ``$P$ and
-$R$ implies $Q$'' and, to prove $Q$, it is possible to prove $P$ and $Q$ at the
-same time. AND-parallelism becomes more complicated when $P$ and $Q$ actually
-depend on each other, for example, if $P = \mathtt{prop}_1(X)$ and $R =
-\mathtt{prop}_2(X, Y)$ then the variable $X$ must be the same in the two
-propositions. This issue does not arise in OR-parallelism, however AND-parallelism
-may be better when the program is more deterministic (i.e., it contains less
-alternative implications).
+implies $Q$'' then we have OR-parallelism because the proof search can select
+``$P$ implies $Q$'' and try to prove $P$ but also select ``$R$ implies $Q$'' and
+try to prove $R$. In AND-parallelism, there is an implication of the form ``$P$
+and $R$ implies $Q$'' and, to prove $Q$, it is possible to prove $P$ and $Q$ at
+the same time. AND-parallelism becomes more complicated when $P$ and $Q$
+actually depend on each other, for example, if $P = \mathtt{prop}_1(\hat{x})$
+and $R = \mathtt{prop}_2(\hat{x}, \hat{y})$ then the set variables $\hat{x}$ must be
+the same in the two propositions. This issue does not arise in OR-parallelism,
+however AND-parallelism may be better when the program is more deterministic
+(i.e., it contains less alternative implications).
 
 In Datalog programs, parallelism arises naturally because new logical facts may
 activate multiple inference rules and thus generate more
@@ -163,21 +164,20 @@ presented in this thesis follows this latter approach.
 
 \paragraph{Origins of LM}
 
-LM is a direct descendant of Meld, a logic programming language developed by
-Ashley-Rollman et
-al.~\cite{ashley-rollman-iclp09,ashley-rollman-derosa-iros07wksp} in the context
-of the Claytronics project~\cite{goldstein-computer05}. Meld is a language
-suited for programming massively dynamic distributed systems made of modular
-robots. While mutable state is not supported by Meld, Meld performs \emph{state
-management} on the persistent facts by keeping a consistent database of facts
-whenever there is a change in the starting facts. If an axiom is no longer true,
-everything derived from that axiom is retracted. Likewise, when a fact becomes
-true, the database is immediately updated to take the new logical fact into
-account. To take advantage of these state management facilities, Meld supports
-\emph{sensing} and \emph{action} facts. Sensing facts are facts derived from the
-state of the world (e.g., temperature, new neighbor node) and action facts are
-facts that have an effect on the world (e.g., move), changing the underlying
-sensing facts.
+LM is a direct descendant of Meld by Ashley-Rollman et
+al.~\cite{ashley-rollman-iclp09,ashley-rollman-derosa-iros07wksp}, a logic
+programming language developed in the context of the Claytronics
+project~\cite{goldstein-computer05}. Meld is a language suited for programming
+massively dynamic distributed systems made of modular robots. While mutable
+state is not supported by Meld, Meld performs \emph{state management} on the
+persistent facts by keeping a consistent database of facts whenever there is a
+change in the starting facts. If an axiom is no longer true, everything derived
+from that axiom is retracted. Likewise, when a fact becomes true, the database
+is immediately updated to take the new logical fact into account. To take
+advantage of these state management facilities, Meld supports \emph{sensing} and
+\emph{action} facts. Sensing facts are facts derived from the state of the world
+(e.g., temperature, new neighbor node) and action facts are facts that have an
+effect on the world (e.g., move), changing the underlying sensing facts.
 
 Meld was inspired in the P2 system~\cite{Loo-condie-garofalakis-p2}, which
 includes a logic programming language called NDlog~\cite{Loo:EECS-2006-177} for
@@ -188,7 +188,8 @@ few extensions for declarative networking.
 \paragraph{Data-Centric Languages}
 
 Recently, there has been an increasing interest in declarative data-centric
-languages. MapReduce~\cite{Dean:2008:MSD:1327452.1327492}, for instance, is a
+languages.
+MapReduce~\cite{Dean:2008:MSD:1327452.1327492}, for instance, is a
 popular data-centric programming model that is optimized for large clusters. The
 scheduling and data sharing model is very simple: in the \emph{map phase}, data
 is transformed at each node and the result reduced to a final result in the
@@ -201,6 +202,10 @@ programs. An alternative to PigLatin/MapReduce is
 Dryad~\cite{Isard:2007:DDD:1272996.1273005} that allows programmers to design
 arbitrary computation patterns using DAG abstractions. It combines computational
 vertices with communication channels (edges) that are automatically scheduled to
-run on multiple computers/cores. In Section~\ref{section:language:related}, we
-discuss data-centric languages in more detail and present some other programming
-systems for data-centric parallel computation.
+run on multiple computers/cores.
+
+LM, the language presented in this thesis, also follows the data-centric
+approach since it is designed for writing programs over graph data structures.
+In Section~\ref{section:language:related}, we discuss data-centric languages in
+more detail and present some other programming systems for data-centric parallel
+computation and how they compare to LM.

@@ -1,6 +1,6 @@
 The Quick-Sort algorithm is a divide and conquer sorting algorithm that works by
 splitting a list of items into two sublists and then recursively sorting the two
-sublists. To split the list, it picks a pivot element and puts the items that are
+sublists. To split a list, it picks a pivot element and puts the items that are
 smaller than the pivot into the first sublist and the items greater than the pivot
 into the second list.
 
@@ -74,7 +74,7 @@ split(A, Pivot, [X | Xs], Smaller, Greater), X > Pivot*hfill// Rule 8: split cas
 waitpivot(A, Pivot, NodeSmaller, NodeGreater),*label{line:language:qs_sorted1}*hfill// Rule 9: merge sublists
 sorted(A, NodeSmaller, Smaller),
 sorted(A, NodeGreater, Greater)
-   -o up(A, Smaller ++ [Pivot | Greater]).*label{line:language:qs_sorted2}*label{line:language:qs_up} // Append the lists.
+   -o up(A, Smaller ++ [Pivot | Greater]).*label{line:language:qs_sorted2}*label{line:language:qs_up}
 
 up(A, L), back(A, B) -o sorted(B, A, L).*label{line:language:qs_back}*hfill// Rule 10: send list to parent
 
@@ -96,7 +96,7 @@ there is more concurrency because it is now possible to work on the two halfs of
 the list concurrently and those halfs have the same size. If a bad pivot is
 selected, then we may end up in situations where the pivot is the smallest (or
 largest) element of the list, splitting the list into an empty list and a list
-with $n-2$ elements. It is clear that the amount work required the sort the
+with $n-1$ elements. It is clear that the amount work required to sort the
 empty list is much smaller than the work required to sort the larger list.
 Repeatly choosing a bad pivot will effectly turn Quick-Sort into a sequential
 algorithm. This is not suprising since it is directly related to the
@@ -165,7 +165,7 @@ Greater')$. In the continuation, we can use only the rule that accepts
 waitpivot(A, Pivot, NodeSmaller, NodeGreater),
 sorted(A, NodeSmaller, Smaller),
 sorted(A, NodeGreater, Greater)
-   -o up(A, Smaller ++ [Pivot | Greater]). // Append the lists.
+   -o up(A, Smaller ++ [Pivot | Greater]).
 \end{Verbatim}
 
 returning $\mathtt{up}(A, Smaller' ++ [Pivot | Greater'])$.  We know that
