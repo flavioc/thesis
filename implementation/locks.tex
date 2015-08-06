@@ -17,18 +17,20 @@ are used in order to implement different operations:
 \begin{figure}
 \begin{algorithm}[H]
    \KwData{Target Node N, Fact F}
-   $N.main\_lock.lock()$\;
-   $TTH \longleftarrow N.Owner$\;
    \eIf{$N.db\_lock.try\_lock()$}{
       \tcc{New Fact (1)}
       $N.DB.add\_fact(F)$\;
       $N.rule\_engine.new\_fact(F)$\;
       $N.db\_lock.unlock()$\;
+      \tcc{Still need to check if node is active}
+      $N.state\_lock.lock()$\;
    }{
       \tcc{New Fact (2)}
+      $N.state\_lock.lock()$\;
       $N.FactBuffer.add\_fact(F)$\;
    }
    \tcc{Activate node}
+   $TTH \longleftarrow N.Owner$\;
    \If{$N.state == inactive$}{
       $TTH.work\_queue.lock()$\;
       $TTH.work\_queue.push(N)$\;
@@ -38,7 +40,7 @@ are used in order to implement different operations:
          $TTH.become\_active()$\;
       }
    }
-   $N.main\_lock.unlock()$\;
+   $N.state\_lock.unlock()$\;
 \end{algorithm}
 \caption{Synchronization code for sending a fact to another node.}
  \label{alg:multicore:new_fact}
@@ -64,10 +66,15 @@ are used in order to implement different operations:
    $nodes \longleftarrow TTH.work\_queue.pop\_half(stealing)$\;
    $TTH.work\_queue.unlock()$\;
    \For{$node \; in \; nodes$}{
-      $node.main\_lock.lock()$\;
+      $node.state\_lock.lock()$\;
+      \If{$node.state != stealing$}{
+         \tcc{Node was put back into the queue, therefore we give up}
+         $node.state\_lock.unlock()$\;
+         continue \\
+      }
       $node.owner \longleftarrow TH$\;
       $node.state \longleftarrow active$\;
-      $node.main\_lock.unlock()$\;
+      $node.state\_lock.unlock()$\;
    }
    $TH.work\_queue.push(nodes)$\;
 \end{algorithm}
