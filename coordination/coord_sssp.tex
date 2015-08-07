@@ -35,9 +35,9 @@ Figure~\ref{fig:coordination:new_sssp} presents the 4 steps of computation for
 the new SSSP program when executed with 1 thread. In every step, a new shortest
 path is computed at a different node, starting from the shorter paths up to the
 longer paths. This is exactly the same behaviour as the Dijkstra's
-algorithm~\cite{Dijkstra}.  However, for multiple threads, the scheduling is not
+algorithm~\cite{Dijkstra}.  For multiple threads, the scheduling is not
 optimal since threads pick the node with the shortest distance from their subset
-of nodes. However, we we have increased parallelism (no global synchronization)
+of nodes. However, we have increased parallelism (no global synchronization)
 and threads are still able to locally avoid unnecessary work.
 
 \begin{figure}
@@ -59,7 +59,8 @@ and threads are still able to locally avoid unnecessary work.
       \caption{}
    \end{subfigure}
 \end{center}
-\caption{Graphical representation of the new SSSP program. (a) represents the
+\caption{Graphical representation of the new SSSP program in
+   Fig.~\ref{code:shortest_path_program_coord}. (a) represents the
    program after propagating initial distance at node \code{@1}, followed by
    (b) where the first rule is applied in node \code{@3}. (c)
    represents the result after retracting all the \code{relax} facts at node
@@ -72,22 +73,47 @@ In order to experiment with the coordinated SSSP program, we extend it to
 support the computation of shortest distances from multiple sources. This
 modified version, named MSSD was already used in
 Section~\ref{section:implementation:performance} for measuring the performance
-of LM's virtual machine. MSSD is not only more interesting than SSSP but also allows us to do
-a compare the performance advantages of using coordination.
+of LM's virtual machine. MSSD is not only more interesting than SSSP but also
+allows us to better understand the advantages of using coordination.
+
+Table~\ref{table:coordination:sssp_stats} presents fact statistics of the
+regular and coordinated versions of MSSD when executed using 1 thread. We
+gathered the number of facts derived, number of facts deleted, number of facts
+sent (to other nodes) and the final number of facts. Note that the number of
+facts sent is a subset of the number of facts derived, while the final number of
+facts is the number of facts derived minus the number of facts deleted plus the
+number of initial facts. As expected, there is a reduction in the number of
+facts derived in all datasets. There is also a clear correlation between the
+reduction in facts processed and the run time reduction achieved using
+coordination.
+
+\begin{table}[ht]
+   \begin{center}
+      \input{experiments/coordination/sssp-stats}
+   \end{center}
+
+   \caption{Fact statistics for the MSSD program when using 1 thread. For each
+      dataset, we gathered the number of facts derived, number of facts deleted,
+      number of facts sent to other nodes and total number of facts in the
+      database when the program terminates.}
+
+   \label{table:coordination:sssp_stats}
+\end{table}
 
 Figure~\ref{fig:coordination:results_sssp} shows the comparison between the
-regular version (without coordination) and the coordinated version. We use the
-datasets already described in Section~\ref{section:implementation:performance}.
-In each plot we present the following lines: \textbf{Regular}, which represents
-the run time of the regular version; \textbf{Coordinated}, which represents the
-run time of the coordinated version; \textbf{Regular(1)/Coordinated(t)}, which
-represents the speedup of the coordinated version using the run time of the
-regular version using 1 thread as the baseline; and \textbf{C++}, which
-represents the run time of the MSSD C++ program.
+regular version (without coordination) and the coordinated version of the MSSD
+program. We use the datasets already described in
+Section~\ref{section:implementation:performance}.  In each plot we present the
+following lines: \textbf{Regular}, which represents the run time of the regular
+version; \textbf{Coordinated}, which represents the run time of the coordinated
+version; \textbf{Regular(1)/Coordinated(t)}, which represents the speedup of the
+coordinated version against the run time of the regular version using 1 thread
+as the baseline; and \textbf{C++}, which represents the run time of the MSSD C++
+program.
 
 Overall, there is a clear improvement in almost every dataset used. The datasets
 that see the best run time reductions are Twitter, Orkut and LiveJournal, which
-are the datasets where the distance is calculated form only a few nodes. When
+are the datasets where the distance is calculated for less nodes. When
 calculating the distance from multiple sources, the \code{set-priority} fact is
 less effective because, although it selects the node with the shortest distance
 to some source node, other distance computations (from other source nodes) are
@@ -149,61 +175,36 @@ threads used. Even if the number of threads goes up, the coordinated version is
 still able to keep about the same run time reduction ratio over the regular
 version. This means that even if higher priority nodes are picked from the each
 thread's subgraph, the coordinated version is still able to reduce run time. In
-other others, optimal (global) node scheduling is not required to see good
+other words, optimal (global) node scheduling is not required to see good
 results.
-
-Table~\ref{table:coordination:sssp_stats} presents fact statistics of the
-regular and coordinated versions of MSSD when executed using 1 thread. We
-gathered the number of facts derived, number of facts deleted, number of facts
-sent (to other nodes) and the final number of facts. Note that the number of
-facts sent is a subset of the number of facts derived, while the final number of
-facts is the number of facts derived minus the number of facts deleted plus the
-number of initial facts. As expected, there is a reduction in the number of
-facts derived in all datasets. There is also a clear correlation between the
-reduction in facts processed and the run time reduction achieved using
-coordination, with datasets such as EU Email with little gains with coordination
-due to a small reduction in the number of facts.
-
-\begin{table}[ht]
-   \begin{center}
-      \input{experiments/coordination/sssp-stats}
-   \end{center}
-
-   \caption{Fact statistics for the MSSD program when using 1 thread. For each
-      dataset, we gathered the number of facts derived, number of facts deleted,
-      number of facts sent to other nodes and total number of facts in the
-      database when the program terminates.}
-
-   \label{table:coordination:sssp_stats}
-\end{table}
 
 In Section~\ref{section:coordination:coord_instrs}, we described the coalescing
 optimization where priority action facts are coalesced into single operations.
 The MSSD program computes shortest distances to multiple nodes and thus it can
 take advantage of this optimization. Consider a MSSD program that is computing
 the shortest distances from node \code{@1} and \code{@2}. If a node \code{@3}
-needs to propagate the shortest distance $d_1$ to another node \code{@4} (distance
-from \code{@1}) and a distance $b$ to node \code{@4} (distance from \code{@2}),
-then it would need to change the priority twice, first to $d_1$, and then to $b$.
-With the coalescing optimization, it only changes the priority to best of both.
-It is then advantageous to only apply a single coordination operation
-in order to reduce queue operations and overall locking.
+needs to propagate the shortest distance $d_1$ to another node \code{@4}
+(distance from \code{@1}) and a distance $d_2$ to node \code{@4} (distance from
+\code{@2}), then it would need to change the priority twice, first to $d_1$, and
+then to $d_2$.  With the coalescing optimization, it only changes the priority
+to the best of both.  It is then advantageous to only apply a single
+coordination operation in order to reduce queue operations and overall locking.
 
 In order to observe the effects of the coalescing optimization, we disabled its
 support from the VM and then we ran the same experiments where priority updates
 are done immediatelly. The results are presented in
-Fig.~\ref{fig:coordination:results_sssp_unbuffered}. From the results, we see
-that some datasets, such as EU Email and US Power Grid, maintain their overall
-scalability, especially the value for \textbf{Regular(1)/Coordinated(t)} when
-\textbf{t = 32}. For the OCLinks and Twitter datasets, there is some
-performance degradation since their overall scalability drops without the
+Fig.~\ref{fig:coordination:results_sssp_unbuffered}. From the results, we can
+see that some datasets, such as EU Email and US Power Grid, maintain their
+overall scalability, especially the speedup (\textbf{Regular(1)/Coordinated(t)})
+for 32 threads (\textbf{t = 32}). For the OCLinks and Twitter datasets, there is
+some performance degradation since their overall scalability drops without the
 optimization. However, the Live Journal dataset improves its performance and
 scalability when the optimization is disabled, since we only compute the
 shortest distance for 2 nodes, therefore the opportunities for optimization are
-fewer and supporting it ends up slowing the program. Interestingly, the
-same does not happen for the Orkut dataset because the number of edges is much
-higher and disabling the optimization makes the program perform slightly worse.
-For all the other datasets, we compute the shortest distance from an appreciable
+fewer and supporting it ends up slowing the program. Interestingly, the same
+does not happen for the Orkut dataset because the number of edges is much higher
+and disabling the optimization makes the program perform slightly worse.  For
+all the other datasets, we compute the shortest distance from an appreciable
 number of nodes and the coalescing optimization is worth its cost.
 
 \input{coordination/sssp_unbuffered}

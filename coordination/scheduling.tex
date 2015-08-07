@@ -2,28 +2,37 @@
 In order to allow different scheduling strategies, we introduce the concept of
 \emph{node priority} by assigning a priority value to every node in the program
 and by introducing coordination facts that manipulate such priority values.  By
-default, nodes have no priority and can be picked in any order. In our
+definition, nodes have no priority and can be picked in any order. In our
 implementation, we use a FIFO approach because older nodes tend to have a higher
-number of unexamined facts, from which to derive subsequent new facts.
+number of unexamined facts, from which they can derive subsequent new facts.
 
 We have two kinds of priorities: a \emph{temporary priority} and a \emph{default
-   priority}. A temporary priority momentarily changes the default priority $D$
-of a node, so that once the node is done, the priority will default back to $D$.
-Initially, all nodes have a default priority of $-\infty$.
+priority}. When a temporary priority exists, it superseeds the default priority.
+Once a node is processed and becomes \textbf{inactive}, the temporary priority
+is removed and the default priority is used. In a nutshell, the \emph{priority}
+of a node is equal to the temporary priority if there is one or it is the
+default priority otherwise.  Initially, all nodes have a default priority of
+$-\infty$.
 
 The following list presents the action facts available to manipulate the
 scheduling decisions of the system:
 
 \begin{itemize}
 
-   \item \code{set-priority(node A, float F)}: Sets the temporary priority of
-      node \code{A} to \code{F}.  The programmer can decide if priorities
-      are to be ordered in ascending or descending order, thus if node \code{A}
-      has priority \code{G}, we only change it to \code{F} is \code{F > G}
-      (ascending order) or \code{F < G} (descending order).
+   \item \code{update-priority(node A, float F)}: Changes the temporary priority
+      of node \code{A} to \code{F}.
 
-   \item \code{add-priority(node A, float F)}: Increases the temporary priority
-      of node \code{A} by \code{F}.
+   \item \code{set-priority(node A, float F)}: Sets the temporary priority of
+      node \code{A} to \code{F} if \code{F} is \emph{better} than the current
+      priority (either default or temporary). The programmer can decide if
+      priorities are to be ordered in ascending or descending order, thus if
+      node \code{A} has priority \code{G}, we only change the temporary priority
+      to \code{F} if \code{F > G} (ascending order) or \code{F < G} (descending
+      order).
+
+   \item \code{add-priority(node A, float F)}: Changes the temporary priority
+      of node \code{A} to \code{F + G}, where \code{G} is the priority of the
+      node. A negative priority is also allowed.
 
    \item \code{remove-priority(node A)}: Removes the temporary priority from node
    \code{A}.
@@ -41,19 +50,19 @@ scheduling decisions of the system:
 LM also provides two sensing facts \code{priority(node A, float P)} and
 \code{default-priority(node A, float P)}, which consult, respectively, the
 temporary priority or default priority \code{P} of node \code{A}.  Sensing facts
-can only be used in the body of rules and are exempt from the constraint that
+can only be used in the LHS of rules and are exempt from the constraint that
 forces every fact used in the body to have the same first argument. Also note
 that when sensing facts are used to prove new facts, they are re-derived
 automatically. All coordination facts are linear and thus consumed when used in
-the body of a rule.  The system creates the necessary code to re-derive them
+the LHS of a rule.  The system creates the necessary code to re-derive them
 without programmer interaction. Likewise, \code{set-priority} and
 \code{set-default-priority} update the value of \code{priority} facts by
 retracting and re-asserting them but this is done implicitely by the runtime
 system.
 
-The priorities assigned to nodes are followed on a per-thread basis, therefore a
-thread will always pick the highest priority node on its sub-graph but not the
-highest priority node of the whole graph.
+The priorities assigned to nodes follow a per-thread ordering, therefore a
+thread will always pick the highest priority node on its sub-graph but not
+necessarily the highest priority node of the whole graph.
 Figure~\ref{fig:coordination:priorities} shows an example of a graph being
 processed by two threads, \code{T0} and \code{T1}. The order for \code{T0} will
 be \code{@0}, \code{@1}, \code{@3}, \code{@2} and for thread \code{T1} it will

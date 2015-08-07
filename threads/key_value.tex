@@ -21,7 +21,7 @@ rules that handle the following cases:
 
 \begin{enumerate}
       \item A key is found and is also in the cache
-         (lines~\ref{line:threads:kv_rule1_start}-\ref{line:threads:kv_rule2_end}
+         (lines~\ref{line:threads:kv_rule1_start}-\ref{line:threads:kv_rule1_end}
          in Fig.~\ref{code:threads:btree_lookup_cache});
 
       \item A key is found but is not in the cache
@@ -91,7 +91,7 @@ performed. We have auxiliar nodes (not connected to the tree) that coordinate
 the tree operations for a given node. An auxiliary node will start the first
 operation by sending it to the tree root node. Once the operation is performed
 on the target node, the auxiliary node will start the next operation in the list
-for that target node. By using auxiliary nodes, we are able to experiment with a
+for that target node. By using auxiliary nodes, we are able to experiment with
 operations that target the same node and also allow for some parallelism when
 doing tree operations. In our experiments, we generated two trees with the
 following characteristics:

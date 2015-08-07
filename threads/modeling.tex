@@ -2,7 +2,7 @@ The introduction of thread-based facts allows for explicit, but declarative,
 parallelism in a language that used mostly implicit parallelism. This
 introduces issues when attempting to prove the correctness of programs because
 the behavior of threads and the scheduling strategy is now also part of the
-program logic.  Some of this behavior is hidden from programs because it is part
+program's logic.  Some of this behavior is hidden from programs because it is part
 of how coordination facts and thread scheduling works on the virtual machine.
 
 Consider the SBP program in Fig.~\ref{code:threads:sbp} where in
@@ -10,7 +10,7 @@ lines~\ref{line:threads:splash_part1}-\ref{line:threads:splash_part2} the graph
 of nodes is partitioned into regions. In order to prove the correct
 partitioning, we need to know how the VM initially randomly assigns nodes to
 threads and also how coordination facts \code{set-thread} and \code{just-moved}
-are used by the VM.  Fortunately, since linear logic is the foundation of LM, it
+are used by the VM. Fortunately, since linear logic is the foundation of LM, it
 is possible to model the semantics of LM by using LM rules. In
 Chapter~\ref{chapter:implementation}, we have seen that threads and nodes
 transition between different states during execution and thus we are going to
@@ -22,7 +22,7 @@ model that. We first define the following node facts:
       running on a thread. Facts \code{running(T, A)} and \code{inactive(A)} are
       mutually exclusive.
 
-   \item \code{owner(node A, thread T)}: Fact that indicates the current thread
+   \item \code{owner(node A, thread T)}: Fact that indicates the thread
       \code{T} that currently owns node \code{A}.
 
    \item \code{available-work(node A, bool F)}: Fact that indicates if node
@@ -83,7 +83,7 @@ Finally, the rule in
 lines~\ref{line:threads:model_steal1}-\ref{line:threads:model_steal2} allows for
 threads to steal nodes owned by other threads. If a node is not currently being
 executed (\code{inactive(A)}), can be moved (\code{is-moving(A)}), and is owned by
-another thread \code{Other} (\code{owner(A, Other)}), then the thread owner is
+another thread (\code{owner(A, Other)}), then the thread owner is
 updated, potentially allowing the previous rule to execute.
 
 \begin{figure}[h!]
@@ -98,9 +98,9 @@ type linear idle(thread).
 type linear owner(node, thread).
 type linear is-moving(node).
 
-owner(A, T). \hfill// Initially node assignment.\label#line:threads:model_owner&
+owner(A, T). \hfill// Initial node assignment.\label#line:threads:model_owner&
 available-work(A, F). \hfill// Some nodes have available work.\label#line:threads:model_available&
-moving(A). \hfill// All nodes can be stolen.\label#line:threads:model_moving&
+is-moving(A). \hfill// All nodes can be stolen.\label#line:threads:model_moving&
 active(T). \hfill// All threads are active.\label#line:threads:model_active&
 
 \underline#node-fact(A, Y)&,\label#line:threads:model_rule1&\hfill // Program rules go here.
@@ -126,8 +126,8 @@ default-priority(A, DefPrio), available-work(A, T)
 idle(T), !other-thread(T, Other) \hfill// Attempt to steal a node.\label#line:threads:model_steal1&
 owner(A, Other), inactive(A),
 available-work(A, true),
-moving(A)
-   -o idle(T), owner(A, T), moving(A),
+is-moving(A)
+   -o idle(T), owner(A, T), is-moving(A),
       inactive(A), available-work(A, true).\label#line:threads:model_steal2&
 \end{Verbatim}
 \caption{Modeling the operational semantics as a LM program. The underlined code
@@ -164,8 +164,9 @@ simply updated to the new thread.
 
 Note that the rules for updating the coordination sensing facts do not require
 the \code{running} predicate in the rule's body, therefore it should not matter
-which thread does the update as long as it is done. In the VM, the update is
-always done by thread that derives the coordination fact for efficiency reasons.
+which thread does the update as long as it is done. In the VM, and for
+efficiency reasons, the update is always done by the thread that derives the
+coordination fact.
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\#\&]
@@ -175,8 +176,8 @@ type linear set-priority(node, float).
 type linear just-moved(node).
 type linear move-to-thread(node, thread).
 
-priority(A, initial-priority).\label#line:threads:model_prio&\hfill// Priority facts.
-default-priority(A, initial-priority).\label#line:threads:model_defprio&
+priority(A, initial-priority).\label#line:threads:model_prio&
+default-priority(A, default-priority).\label#line:threads:model_defprio&
 
 schedule-next(A) -o set-priority(A, +00).\label#line:threads:model_snext&
 

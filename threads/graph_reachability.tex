@@ -29,7 +29,7 @@ lookup(A, Id, ToReach, Found), new-lookup(A, Id, Val)*hfill// Rule 2: new reacha
    -o lookup(A, Id, remove(ToReach, Val), [Val | Found]).
 
 do-search(A, Id, Node, ToReach),*label#line:threads:reach_visit1&*hfill// Rule 3: node has already seen this search
-visited(A, Id) // Already visited for this search.
+visited(A, Id)
    -o visited(A, Id). *label#line:threads:reach_visit2&
 
 do-search(A, Id, Node, ToReach),*hfill// Rule 4: node found and propagate search
@@ -50,7 +50,7 @@ do-search(A, Id, Node, ToReach),*hfill// Rule 5: node not found and propagate se
 
 Each distinct reachability search is represented by a number (\code{Id}) and a
 \code{search} axiom. Associated to each search \code{Id} is a list of nodes to
-reach.  The predicate \code{visited} marks nodes that have been already
+reach.  The predicate \code{visited} marks nodes that have already
 participated in search, while predicate \code{do-search} is used to propagate a
 specific search. The first rule
 (lines~\ref{line:threads:reach_lookup1}-\ref{line:threads:reach_lookup2}) starts
@@ -91,7 +91,7 @@ reachability information between nodes. An alternative solution is to store the
 results of the search on the thread performing the search and then coordinate
 the results with other threads since the number of threads is usually smaller
 than the number of nodes. Before showing how the reachability program is solved
-using thread-based facts, we first present the changes required in the language.
+using thread-based facts, we first present the changes to the language.
 
 \begin{figure}[ht]
 \begin{center}
@@ -136,15 +136,14 @@ as: if thread \code{T} has fact \code{a(T)} and \code{b(T)} then derive fact
 \code{c(T)}. The second type is the \emph{mixed rule} and has the form
 \code{a(T), d(N) -o e(N)} and can be read as: if thread \code{T} is executing
 node \code{N} and has the fact \code{a(T)} and node \code{N} has the fact
-\code{d(N)} then derive \code{e(N)} at node \code{N}. Thread rules reason
-solely at the thread level, while the mixed rules allow reasoning about both
-thread and node facts. Logically, the mixed rule uses an extra fact
-\code{running(T, N)}, which indicates that thread \code{T} is currently
-executing node \code{N}. The \code{running} fact is implicitly retracted and
-asserted every time the thread selects a different node for execution. This
-makes our implementation efficient since a thread does not need to look for
-nodes that match mixed rules and it is then the scheduling of the program that
-drives the matching of such rules.
+\code{d(N)} then derive \code{e(N)} at node \code{N}. Thread rules reason solely
+at the thread level, while mixed rules allow reasoning about both thread and
+node facts. Logically, the mixed rule uses an extra fact \code{running(T, N)},
+which indicates that thread \code{T} is currently executing node \code{N}. The
+\code{running} fact is implicitly retracted and asserted every time the thread
+selects a different node for execution. This makes our implementation efficient
+since a thread does not need to look for nodes that match mixed rules and it is
+then the scheduling of the program that drives the matching of such rules.
 
 \subsection{Graph Of Threads}
 
@@ -177,9 +176,10 @@ threads:
       Fig.~\ref{fig:coord:thread_facts}, we use \code{\bang other-thread} fact
       to specify the graph of threads.
 
+
    \item \code{\bang leader-thread(T, TLeader)}: Fact instantiated in all
-      threads where \code{TLeader} refers to a selected thread (usually the
-      first thread in \code{L} of \code{\bang thread-list(T, L)}).
+      threads where \code{TLeader} refers to a selected thread (the first thread
+      in \code{L} of \code{\bang thread-list(T, L)}).
 
    \item \code{running(T, A)}: Used to retrieve the current node \code{A}
       running on thread \code{T}.
@@ -225,7 +225,7 @@ pruning the search space.
 \begin{figure}[h]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\#\&]
 search(A, Id, ToReach),*label#line:threads:reacht_start1&*hfill// Rule 1: initialize search
-*textbf#!thread-list(T, L)&, Owner = nth(L, Id % @threads)*hfill// Allocate search to a thread.
+*textbf#!thread-list(T, L)&, Owner = nth(L, Id % @threads)*hfill// Allocate search to a thread
    -o {T2 | *textbf#!other-thread(T, T2)& -o *textbf#thread-search(T2, Id, ToReach, Owner)&},*label#line:threads:reacht_threads&
       do-search(A, Id).*label#line:threads:reacht_start2&
 
@@ -234,7 +234,7 @@ do-search(A, Id)
    -o *textbf#thread-search(T, Id, [], Owner)&. *label#line:threads:reacht_prune2&
 
 do-search(A, Id),*hfill// Rule 3: node already visited
-visited(A, Id) // Already visited.
+visited(A, Id)
    -o visited(A, Id).
 
 do-search(A, Id),*label#line:threads:reacht_check1&*label#line:bfs_join1&*hfill// Rule 4: node found
@@ -283,17 +283,17 @@ coordinate when pruning can actually happen.
 Figure~\ref{fig:threads:results_search} presents experimental results of the
 graph reachability program using 4 different datasets. Except for Random, all
 the datasets were already used in the MSSD program and were presented before.
-The Random dataset is randomly generated graph with about 50000 nodes and a
+The Random dataset is a randomly generated graph with 50000 nodes and about a
 million edges.  In the plots, we show the run time of the version without thread
 facts (\textbf{Regular}) and the version using thread facts called
 \textbf{Threads}. We also show the speedup of the \textbf{Threads} and
-\textbf{Regular} versions when using the \textbf{Regular} version with 1 thread.
+\textbf{Regular} versions against the \textbf{Regular} version with 1 thread.
 
 Our results indicate that using thread facts produces a significant reduction in
 run time. This is especially true in the case of datasets with large number of
 edges, since less facts are produced and propagated in the graph when the
 threads know that the search has been completed. The results also show that, in
-the case of the Facebook dataset in which the number of queries is the same as
+the case of the Facebook dataset, in which the number of queries is the same as
 the number of nodes, the use of thread facts does not produce great improvements
 due to the costs of managing the reachability results on each thread's database.
 These costs are related to the need to index and lookup \code{thread-search}

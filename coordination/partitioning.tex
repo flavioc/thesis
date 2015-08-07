@@ -4,32 +4,29 @@ facts revolve around thread placement.  In terms of action facts, we have the
 following:
 
 \begin{itemize}
-   \item \code{set-thread(node A, thread T)}: Moves node \texttt{A} to thread
-   \texttt{T}.
+   \item \code{set-thread(node A, thread T)}: Moves node \code{A} to thread
+      \code{T} and forces \code{A} to be in \code{T} indefinitely.
 
-   \item \code{set-affinity(node A, node B)}: Places node \texttt{B} in
-   the thread of node \texttt{A}.
+   \item \code{set-affinity(node A, node B)}: Places node \code{B} in the thread
+      of node \code{A} and forces \code{B} to be in the thread indefinitely.
 
-   \item \code{set-static(node A)}: Forces node \texttt{A} to stay in the
-   same thread indefinitely.
-
-   \item \code{set-moving(node A)}: Allows node \texttt{A} to move freely
+   \item \code{set-moving(node A)}: Allows node \code{A} to move freely
    between threads.
 
 \end{itemize}
 
-As an example of \texttt{set-thread}, consider again the graph in
+As an example of \code{set-thread}, consider again the graph in
 Fig.~\ref{fig:coordination:priorities}. If a coordination fact
-\texttt{set-thread(@2, T1)} is derived, then node \texttt{@2} will become part
-of the sub-graph of thread \texttt{T1}. The result is shown in
+\code{set-thread(@2, T1)} is derived, then node \code{@2} will become part
+of the sub-graph of thread \code{T1}. The result is shown in
 Fig.~\ref{fig:coordination:partitioning}.
 
 \begin{figure}
 \begin{center}
    \includegraphics[width=0.6\textwidth]{figures/coordination/partitioning.pdf}
 \end{center}
-\caption{Moving node \texttt{@2} to thread \texttt{T1} using
-   \texttt{set-thread(@2, T1)}.}
+\caption{Moving node \code{@2} to thread \code{T1} using
+   \code{set-thread(@2, T1)}.}
 \label{fig:coordination:partitioning}
 \end{figure}
 
@@ -42,11 +39,11 @@ follows:
       to thread \code{T} which \code{A} belongs to. Fact \code{set-thread}
       implicitly updates fact \code{thread-id}.
 
-   \item \code{is-static(node A)}: Fact available at node \texttt{A} if
-   \item \code{is-moving(node A)}: Fact available at node \texttt{A} if
-      \texttt{A} is allowed to move between threads.
+   \item \code{is-static(node A)}: Fact available at node \code{A} if
+      \code{A} is not allowed to move between threads.
 
-      \texttt{A} is not allowed to move between threads.
+   \item \code{is-moving(node A)}: Fact available at node \code{A} if
+      \code{A} is allowed to move between threads.
 
    \item \code{just-moved(node A)}: Linear fact derived by the
       \code{set-thread} action if, at that moment, the node \code{A} is running

@@ -1,6 +1,6 @@
 Approximation algorithms can obtain significant benefits from using customized
 scheduling policies since they follow important statistical properties and thus
-can trade correctness for faster convergence.  An examples of such programs is
+can trade correctness for faster convergence. An example of such algorithm is
 the Loopy Belief Propagation (LBP)~\cite{Murphy99loopybelief}. LBP is an
 approximate inference algorithm used in graphical models with cycles which
 employs a sum-product message passing algorithm where nodes exchange messages
@@ -28,9 +28,9 @@ synchronization step, if we take advantage of the fact that LBP will converge
 even when using an asynchronous approach. So, instead of computing the belief
 iteratively, we keep track of all messages sent/received (and overwrite them
 when we receive a new one) and recompute the belief asynchronously.
-Figure~\ref{code:coordination:bp} presents the LM code for the asynchronous
-version of LBP and Fig.~\ref{fig:coordination:bp} presents the communication
-patterns of the program.
+Figure~\ref{fig:coordination:bp} presents the communication patterns of the
+program, while Fig.~\ref{code:coordination:bp} presents the LM code for the
+asynchronous version of LBP.
 
 \begin{figure}[ht]
 \begin{Verbatim}[numbers=left, fontsize=\codesize, commandchars=\*\#\&]
@@ -70,8 +70,8 @@ update-messages(A, NewBelief),*hfill// Rule 4: compute belief to be sent to a ne
             neighbor-belief(A, B, OldIn),
             sent-neighbor-belief(A, B, OutMessage)}.*label#line:coord:bp_iterate2&
 
-// If we have two update functions, just run one of them*label#line:coord:bp_last1&
-update(A), update(A) -o update(A).*label#line:coord:bp_update&*hfill// Rule 5: prune update operations
+*label#line:coord:bp_last1&
+update(A), update(A) -o update(A).*label#line:coord:bp_update&*hfill// Rule 5: prune redundant update operations
 
 update(A),*hfill// Rule 6: initiate update operation*label#line:coord:bp_update1&
 !potential(A, Potential),
@@ -82,7 +82,10 @@ belief(A, MyBelief)
          Normalized = normalizestruct(Belief),
          update-messages(A, Normalized), belief(A, Normalized)].*label#line:coord:bp_last2&*label#line:coord:bp_update2&*label#line:coord:bp_agg2&
 \end{Verbatim}
-\caption{LM code for the Loopy Belief Propagation problem.}
+
+\caption{LM code for the asynchronous version of the Loopy Belief Propagation
+problem.}
+
 \label{code:coordination:bp}
 \end{figure}
 
@@ -121,7 +124,7 @@ computation of belief values will then start to converge to their true belief
 values, independently of the node scheduling used.
 
 However, if we prioritize nodes that receive new neighbor belief values with a
-larger \code{Residual} then we will converge faster.
+larger \code{Residual} then we may converge faster.
 Figure~\ref{code:coordination:improved_bp} shows the fourth rule modified with a
 \code{add-priority} fact, which increases the priority of neighbor nodes when
 the source node has large changes in its belief value.

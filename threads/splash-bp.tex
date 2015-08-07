@@ -4,11 +4,11 @@ The proposed asynchronous approach has shown to be an improvement over the
 synchronous version because it leads to faster convergence time. An improved
 evaluation strategy is the Splash Belief
 Propagation~(SBP)~\cite{Gonzalez+al:aistats09paraml}, where belief values are
-computed asynchronously by first building a tree and then updating the beliefs
-of each node twice, first from the leaves to the root and then from the root to
-the leaves These \emph{splash trees} are built by starting at a node whose
-belief changed the most in the last update. The trees must be built iteratively
-until convergence is achieved.
+computed asynchronously by first building a tree and then by updating the
+beliefs of each node twice, first from the leaves to the root and then from the
+root to the leaves. These \emph{splash trees} are built by starting at a node
+whose belief changed the most in the last update. The trees must be built
+iteratively until convergence is achieved.
 
 In an environment with $T$ threads, it is then possible to build $T$ splash
 trees concurrently. First, we partition the nodes into $T$ regions and then
@@ -41,7 +41,7 @@ explained next.
 \begin{Verbatim}[numbers=left,commandchars=*\{\},fontsize=\codesize]
 type list node tree.
 
-type linear partitioning(thread, int). // Number of nodes to receive.
+type linear partitioning(thread, int).*hfill// Number of nodes to receive.
 type linear start-tree(thread).
 type linear new-tree(thread, tree, tree).
 type linear expand-tree(thread, tree).
@@ -50,11 +50,11 @@ type linear second-phase(thread, tree).
 type linear start(node).
 
 start(A).
-partitioning(T, @world / @threads). // Move @world/@threads nodes.
+partitioning(T, @world / @threads).*hfill// Move @world/@threads nodes.
 
-!coord(A, X, Y), start(A) // Moving this node.*label{line:threads:splash_part1}
-   -o set-static(A), set-thread(A, grid(X, Y)).
-just-moved(A), partitioning(T, Left) // Thread received another node.
+!coord(A, X, Y), start(A)*hfill// Moving this node.*label{line:threads:splash_part1}
+   -o set-thread(A, grid(X, Y)).
+just-moved(A), partitioning(T, Left)*hfill// Thread received another node.
    -o partitioning(T, Left - 1).
 partitioning(T, 0) -o start-tree(T).*label{line:threads:splash_part2}*label{line:threads:splash_first}
 
@@ -118,15 +118,15 @@ second-phase(T, [A, B | Next]), running(T, A)
 
 SBP is also implemented in GraphLab~\cite{GraphLab2010}, a C++ framework for
 writing machine learning algorithms. GraphLab provides different schedulers that
-change how machine learning algorithms are computed and one of the it's the
-\textbf{splash} scheduler, which implements the scheduling described above. For
-comparison purposes with LM, we also experimented with the following GraphLab
-schedulers: \textbf{fifo}, a first-in first-out scheduler; \textbf{multiqueue}, a first-in first-out scheduler that
-also allows for \textit{work stealing} (we used 1 queue per thread) and is more
-efficient and scalable than \textbf{fifo}.
+change how machine learning algorithms are computed and one of the available
+schedulers is the \textbf{splash} scheduler, which implements the scheduling
+described above. For comparison purposes with LM, we also experimented with two
+other GraphLab schedulers: \textbf{fifo}, a first-in first-out scheduler and
+\textbf{multiqueue}, a first-in first-out scheduler that also allows for
+\textit{work stealing} (we used 1 queue per thread).
 
 The default LM scheduling policy of LM is somewhat similar to both the
-\textbf{fifo} and \textbf{multiqueue} schedulers, however, since LM also
+\textbf{fifo} and the \textbf{multiqueue} schedulers, however, since LM also
 implements node stealing by default, the \textbf{multiqueue} scheduler will be
 our main focus. We measured the run time of LBP and SBP for both LM and
 GraphLab. For SBP, we used splash trees of 100 nodes in both systems.
@@ -162,10 +162,9 @@ better than LM's default scheduling policy.
 \end{figure}
 
 The scalability and run time of the SBP program is compared in
-Fig.~\ref{fig:threads:results_splash_final}. When compared to LM, GraphLab is
+Fig.~\ref{fig:threads:results_splash_ratio}(a). When compared to LM, GraphLab is
 about twice as fast and that advantage is constant across the number of threads
 since both systems have a similar scalability. Finally, in
-Fig.~\ref{fig:threads:results_splash_ratio}(a) and
 Fig.~\ref{fig:threads:results_splash_ratio}(b), we compare the performance of
 LBP program against the performance of SBP by calculating $LBP(t)/SBP(t)$, where
 $LBP(t)$ is the run time of LBP for $t$ threads, while $SBP(t)$ is the run time
@@ -179,26 +178,23 @@ provides an improved performance.
 
 \begin{figure}[]
         \centering
-        \includegraphics[width=\plotsize\textwidth]{experiments/threads/cmp-splash-bp-400.png}
-        \caption{Measuring and comparing the performance of SBP for both LM and
-        GraphLab.}
-        \label{fig:threads:results_splash_final}
 \end{figure}
 
 \begin{figure}[]
         \centering
         \begin{subfigure}[b]{\plotsize\textwidth}
-           \includegraphics[width=\textwidth]{experiments/threads/cmp-ratio-fifo-belief-propagation-400.png}
-           \caption{Evaluating the performance of GraphLab's \textbf{splash}
-           scheduler against the \textbf{fifo} scheduler.}
-           \label{fig:threads:splash_ratio_fifo}
-        \end{subfigure} ~
+        \includegraphics[width=\textwidth]{experiments/threads/cmp-splash-bp-400.png}
+        \caption{Measuring and comparing the performance of SBP in LM and
+           the same program using GraphLab's \textbf{splash} scheduler.}
+           \label{fig:threads:results_splash_final}
+        \end{subfigure}~ ~
         \begin{subfigure}[b]{\plotsize\textwidth}
-           \includegraphics[width=\textwidth]{experiments/threads/cmp-ratio-multi-belief-propagation-400.png}
-           \caption{Evaluating the performance of GraphLab's \textbf{splash}
-           scheduler against the \textbf{multiqueue} scheduler.}
-           \label{fig:threads:splash_ratio_multi}
-        \end{subfigure} \\
-        \caption{Comparing the performance improvements of SBP over LBP.}
+           \includegraphics[width=\textwidth]{experiments/threads/cmp-ratio-belief-propagation-400.png}
+           \caption{Comparing the GraphLab's \textbf{splash}
+           scheduler against the \textbf{fifo} and the \textbf{multiqueue}
+        schedulers.}
+           \label{fig:threads:splash_ratio_fifo}
+        \end{subfigure}\\
+        \caption{Evaluating the performance of SBP over LBP in LM and GraphLab.}
         \label{fig:threads:results_splash_ratio}
 \end{figure}

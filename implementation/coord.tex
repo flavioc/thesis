@@ -41,17 +41,17 @@ expensive.
 \end{figure*}
 
 The \texttt{next} and \texttt{prev} pointers of the standard queue are part of
-the node structure in order to save space. These pointers are also used as in
-the priority queue but for storing the current priority and the index in the
-binary heap array. Both the standard and priority queue are implemented as a
-pair of queues. This first queue of each pair is a \emph{static queue} which
-contains nodes that cannot be stolen and the second queue is the \emph{dynamic
-queue} which contains nodes which can be stolen by other threads.
+the node structure in order to save space. These pointers are also used in the
+priority queue but for storing the current priority and the index in the binary
+heap array. Both the standard and priority queue are implemented as a pair of
+queues. This first queue of each pair is a \emph{static queue} which contains
+nodes that cannot be stolen and the second queue is the \emph{dynamic queue}
+which contains nodes which can be stolen by other threads.
 Figure~\ref{fig:implementation:work_queue} presents an overview of the two pairs
 of queues and how the remove half operations are implemented in both queues in
-order to support node stealing.  In the regular queue, the first $n/2$ elements are
-removed from the front of the list and, in the priority queue, the binary heap
-is split vertically for improved distribution of priorities.
+order to support node stealing.  In the regular queue, the first $n/2$ elements
+are removed from the front of the list and, in the priority queue, the binary
+heap is split vertically for improved distribution of priorities.
 
 Remember that to minimize inter-thread communication, node priorities are
 implemented at the thread level, i.e., when a thread picks the highest priority
@@ -86,7 +86,13 @@ the state machine.
    \label{fig:implementation:node_states}
 \end{figure}
 
-\subsection{Communication And Locks}
+\subsection{Coordination Instructions}\label{section:coordination:coord_instrs}
+
+Coordination facts are implemented as API calls to the virtual machine which
+implement the appropriate operations. Sensing facts read information about the
+state of the virtual machine while action facts lock and update the appropriate
+underlying data structures such as the node data structure or the thread's
+queues.
 
 When a thread $T_1$ performs coordination operations to a node owned by a thread
 $T_2$, it needs to synchronize with $T_2$ and for that the \emph{State Lock} in
@@ -95,14 +101,6 @@ queues of the thread $T_2$ if the priority is being updated or the queues of
 thread $T_1$, if the node is moving to thread $T_1$. Note that both the standard
 queue and priority queue have separate locks in order to allow concurrent
 manipulation of the two data structures.
-
-\subsection{Coordination Instructions}\label{section:coordination:coord_instrs}
-
-Coordination facts are implemented as API calls to the virtual machine which
-implement the appropriate operations. Sensing facts read information about the
-state of the virtual machine while action facts lock and update the appropriate
-underlying data structures such as the node data structure or the thread's
-queues.
 
 For the coordination facts \code{set-priority} and \code{add-priority}, when
 multiple operations are directed to the same node during a single node

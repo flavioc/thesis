@@ -7,7 +7,7 @@
 	<key>ApplicationVersion</key>
 	<array>
 		<string>com.omnigroup.OmniGraffle6</string>
-		<string>161.5.0.232794</string>
+		<string>161.8.0.237618</string>
 	</array>
 	<key>AutoAdjust</key>
 	<true/>
@@ -98,7 +98,7 @@
 			<integer>188</integer>
 			<key>Points</key>
 			<array>
-				<string>{493.00000924999625, 200.49998757944431}</string>
+				<string>{495.00000924999625, 200.49998757944431}</string>
 				<string>{508.99998148314921, 200.49998757944431}</string>
 			</array>
 			<key>Style</key>
@@ -1480,7 +1480,7 @@
 			<integer>131</integer>
 			<key>Points</key>
 			<array>
-				<string>{473.99998582774015, 218.50000874999373}</string>
+				<string>{473.99998582774015, 220.50000874999373}</string>
 				<string>{473.99998582774015, 229.499991250004}</string>
 			</array>
 			<key>Style</key>
@@ -1987,7 +1987,7 @@
 			<key>Points</key>
 			<array>
 				<string>{438.9964016016246, 201.14821478515495}</string>
-				<string>{455.0035983983754, 200.85178521484474}</string>
+				<string>{453.00394124572517, 200.88881590285678}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -2029,7 +2029,7 @@
 			<key>Points</key>
 			<array>
 				<string>{474.00001413325811, 171.50000874999569}</string>
-				<string>{474.00001413325811, 182.49999125000591}</string>
+				<string>{474.00001413325811, 180.49999125000591}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -2640,7 +2640,7 @@
 			<integer>76</integer>
 			<key>Points</key>
 			<array>
-				<string>{169.0000092499946, 154.5000121669118}</string>
+				<string>{171.0000092499946, 154.5000121669118}</string>
 				<string>{184.99999075000358, 154.5000121669118}</string>
 			</array>
 			<key>Style</key>
@@ -2683,7 +2683,7 @@
 			<key>Points</key>
 			<array>
 				<string>{115.00000924998855, 154.50001827179267}</string>
-				<string>{130.99999075000869, 154.50001827179267}</string>
+				<string>{128.99999075000869, 154.50001827179267}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -2767,7 +2767,7 @@
 			<key>Points</key>
 			<array>
 				<string>{150, 125.50000874999978}</string>
-				<string>{150, 136.49999124999988}</string>
+				<string>{150, 134.49999124999988}</string>
 			</array>
 			<key>Style</key>
 			<dict>
@@ -3334,7 +3334,7 @@
 			<integer>59</integer>
 			<key>Points</key>
 			<array>
-				<string>{150.00001870251361, 172.50000874999216}</string>
+				<string>{150.00001870251361, 174.50000874999216}</string>
 				<string>{150.00001870251361, 183.49999125001003}</string>
 			</array>
 			<key>Style</key>
@@ -3994,6 +3994,11 @@
 					<key>Draws</key>
 					<string>NO</string>
 				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Width</key>
+					<real>5</real>
+				</dict>
 			</dict>
 		</dict>
 		<dict>
@@ -4353,6 +4358,11 @@
 				<dict>
 					<key>Draws</key>
 					<string>NO</string>
+				</dict>
+				<key>stroke</key>
+				<dict>
+					<key>Width</key>
+					<real>5</real>
 				</dict>
 			</dict>
 		</dict>
@@ -4802,7 +4812,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2015-05-12 17:01:35 +0000</string>
+	<string>2015-08-07 04:52:07 +0000</string>
 	<key>Modifier</key>
 	<string>Flávio Cruz</string>
 	<key>NotesVisible</key>

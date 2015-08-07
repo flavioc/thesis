@@ -19,6 +19,72 @@ counters that either maximize or minimize the scores coming from the children
 nodes; \code{expand} expands and creates children in the current node; and
 \code{play} kickstarts the MiniMax expansion and computation at the current node.
 
+\begin{figure}[ht]
+\begin{Verbatim}[numbers=left,commandchars=\\\{\},fontsize=\scriptsize]
+type list int game.\hfill// Type declaration
+type linear parent(node, node).\hfill// Predicate declaration
+type linear score(node, int, int).
+type linear new-score(node, int, int).
+type linear minimize(node, int, int, int).
+type linear maximize(node, int, int, int).
+type linear expand(node, game FirstPart, game SecondPart, int Descendants, int Player, int Play, int Depth).
+type linear play(node, game Game, int Player, int Play, int Depth).
+
+const root-player = 1. const initial-game = [...].\hfill// Constant declaration: player and initial game state
+fun next(P : int) : int = if P = 1 then 2 else 1 end.\hfill// Function declaration: select next player
+
+play(A, Game, NextPlayer, LastPlay, Depth),\label{line:coord:minimax_play1}\label{line:coord:minimax_play11}\hfill// Rule 1: ending game state
+Score = minimax_score(Game, NextPlayer, root-player), Score > 0
+   -o score(A, Score, LastPlay).\label{line:coord:minimax_play12}
+
+play(A, Game, NextPlayer, LastPlay, Depth),\label{line:coord:minimax_play21}\hfill// Rule 2: expand state
+0 = minimax_score(Game, NextPlayer, root-player)
+   -o expand(A, [], Game, 0, NextPlayer, LastPlay, Depth).\label{line:coord:minimax_play2}\label{line:coord:minimax_play22}
+
+expand(A, Game, [], N, Player, Play, \underline{Depth}), Player = root-player\label{line:coord:minimax_expand1}\label{line:coord:minimax_rule11}\hfill// Rule 3: maximize node
+   -o maximize(A, N, -00, 0).\label{line:coord:minimax_rule12}
+
+expand(A, Game, [], N, Player, Play, \underline{Depth}), Player <> root-player\label{line:coord:minimax_rule21}\hfill// Rule 4: minimize node
+   -o minimize(A, N, +00, 0).\label{line:coord:minimax_rule22}
+
+expand(A, First, [0 | Xs], N, Player, Play, \underline{Depth}), Depth >= 5\label{line:coord:minimax_rule31}\hfill// Rule 5: create static child node
+   -o exists B. (\underline{set-affinity(A, B)},\label{line:coord:minimax_coord1}
+       \underline{set-default-priority(B, float(Depth + 1))},\label{line:coord:minimax_coord2}
+       play(B, Game ++ [P | Xs], next(P), length(First), \underline{Depth + 1}), parent(B, A).
+       expand(A, First ++ [0], Xs, N + 1, Player, Play, \underline{Depth})).\label{line:coord:minimax_rule32}
+
+expand(A, First, [0 | Xs], N, Player, Play, \underline{Depth}), Depth < 5\label{line:coord:minimax_rule41}\hfill// Rule 6: create child node
+  -o exists B. (\underline{set-default-priority(B, float(Depth + 1))},\label{line:coord:minimax_coord3}
+       play(B, Game ++ [P | Xs], next(P), length(First), \underline{Depth + 1}), parent(B, A),
+       expand(A, First ++ [0], Xs, N + 1, Player, Play, \underline{Depth})).\label{line:coord:minimax_rule42}
+
+expand(A, First, [C | Xs], N, Player, Play, \underline{Depth}) C <> 0\label{line:coord:minimax_expand11}\label{line:coord:minimax_rule51}\hfill// Rule 7: next game play
+  -o expand(A, First ++ [C], Xs, N, Player, Play, \underline{Depth}).\label{line:coord:minimax_expand2}\label{line:coord:minimax_rule52}
+
+score(A, Score, BestPlay), parent(A, B) -o new-score(B, Score, BestPlay).\label{line:coord:minimax_new}\hfill// Rule 8: sending score to parent node
+
+new-score(A, Score, Play), minimize(A, N, Current, BestPlay), Current > Score\label{line:coord:minimax_minimize1}\hfill// Rule 9: keep current score
+   -o minimize(A, N - 1, Score, Play).
+
+new-score(A, Score, Play), minimize(A, N, Current, BestPlay), Current <= Score\hfill// Rule 10: select new best
+   -o minimize(A, N - 1, Current, BestPlay).
+
+minimize(A, 0, Score, BestPlay) -o score(A, Score, BestPlay).\label{line:coord:minimax_minimize2}// Rule 11: score minimized
+
+new-score(A, Score, Play), maximize(A, N, Current, BestPlay), Current < Score\label{line:coord:minimax_maximize1}\label{line:coord:minimax_maximize_rule11}\hfill// Rule 12: keep current score
+   -o maximize(A, N - 1, Score, Play).\label{line:coord:minimax_maximize_rule12}
+
+new-score(A, Score, Play), minimize(A, N, Current, BestPlay), Current >= Score\label{line:coord:minimax_maximize_rule21}\hfill// Rule 13: select new best
+   -o maximize(A, N - 1, Current, BestPlay).\label{line:coord:minimax_maximize_rule22}
+
+maximize(A, 0, Score, BestPlay) -o score(A, Score, BestPlay).\label{line:coord:minimax_maximize2}\hfill// Rule 14: score maximized
+
+play(@0, initial-game, root-player, 0, 1).\label{line:coord:minimax_axiom}\hfill// Initial fact
+\end{Verbatim}
+\caption{LM code for the MiniMax program.}
+\label{code:coord:minimax}
+\end{figure}
+
 The LM program starts with a root node (with the initial game state) that is
 expanded with the available moves at each level. The graph of the program is
 dynamic since nodes are created and then deleted once they are no longer needed.
@@ -76,76 +142,10 @@ nodes, the scores of the first leaves are immediately computed and then sent to
 the parent node. At this point, the leaves are deleted and reused for other
 nodes in the tree, resulting in minimal memory usage.  As an example, consider a
 system with 2 threads, $T_1$ and $T_2$, where $T_1$ first expands the root node
-and then the first child. Since $T_2$ is idle, it steals half of the root's
+and then expands the first child. Since $T_2$ is idle, it steals half of the root's
 children nodes and starts expanding one of the nodes in a depth-first fashion.
 
-\begin{figure}[ht]
-\begin{Verbatim}[numbers=left,commandchars=\\\{\},fontsize=\scriptsize]
-type list int game.\hfill// Type declaration
-type linear parent(node, node).\hfill// Predicate declaration
-type linear score(node, int, int).
-type linear new-score(node, int, int).
-type linear minimize(node, int, int, int).
-type linear maximize(node, int, int, int).
-type linear expand(node, game FirstPart, game SecondPart, int Descendants, int Player, int Play, int Depth).
-type linear play(node, game Game, int Player, int Play, int Depth).
-
-const root-player = 1. const initial-game = [...].\hfill// Constant declaration: player and initial game state
-fun next(P : int) : int = if P = 1 then 2 else 1 end.\hfill// Function declaration: select next player
-
-play(A, Game, NextPlayer, LastPlay, Depth),\label{line:coord:minimax_play1}\label{line:coord:minimax_play11}\hfill// Rule 1: ending game state
-Score = minimax_score(Game, NextPlayer, root-player), Score > 0
-   -o score(A, Score, LastPlay).\label{line:coord:minimax_play12}
-
-play(A, Game, NextPlayer, LastPlay, Depth),\label{line:coord:minimax_play21}\hfill// Rule 2: expand state
-0 = minimax_score(Game, NextPlayer, root-player)
-   -o expand(A, [], Game, 0, NextPlayer, LastPlay, Depth).\label{line:coord:minimax_play2}\label{line:coord:minimax_play22}
-
-expand(A, Game, [], N, Player, Play, \underline{Depth}), Player = root-player\label{line:coord:minimax_expand1}\label{line:coord:minimax_rule11}\hfill// Rule 3: maximize node
-   -o maximize(A, N, -00, 0).\label{line:coord:minimax_rule12}
-
-expand(A, Game, [], N, Player, Play, \underline{Depth}), Player <> root-player\label{line:coord:minimax_rule21}\hfill// Rule 4: minimize node
-   -o minimize(A, N, +00, 0).\label{line:coord:minimax_rule22}
-
-expand(A, First, [0 | Xs], N, Player, Play, \underline{Depth}), Depth >= 5\label{line:coord:minimax_rule31}\hfill// Rule 5: create static child node
-   -o exists B. (\underline{set-static(B)},\label{line:coord:minimax_coord1}
-       \underline{set-default-priority(B, float(Depth + 1))},\label{line:coord:minimax_coord2}
-       play(B, Game ++ [P | Xs], next(P), length(First), \underline{Depth + 1}), parent(B, A).
-       expand(A, First ++ [0], Xs, N + 1, Player, Play, \underline{Depth})).\label{line:coord:minimax_rule32}
-
-expand(A, First, [0 | Xs], N, Player, Play, \underline{Depth}), Depth < 5\label{line:coord:minimax_rule41}\hfill// Rule 6: create child node
-  -o exists B. (\underline{set-default-priority(B, float(Depth + 1))},\label{line:coord:minimax_coord3}
-       play(B, Game ++ [P | Xs], next(P), length(First), \underline{Depth + 1}), parent(B, A),
-       expand(A, First ++ [0], Xs, N + 1, Player, Play, \underline{Depth})).\label{line:coord:minimax_rule42}
-
-expand(A, First, [C | Xs], N, Player, Play, \underline{Depth}) C <> 0\label{line:coord:minimax_expand11}\label{line:coord:minimax_rule51}\hfill// Rule 7: next game play
-  -o expand(A, First ++ [C], Xs, N, Player, Play, \underline{Depth}).\label{line:coord:minimax_expand2}\label{line:coord:minimax_rule52}
-
-score(A, Score, BestPlay), parent(A, B) -o new-score(B, Score, BestPlay).\label{line:coord:minimax_new}\hfill// Rule 8: sending score to parent node
-
-new-score(A, Score, Play), minimize(A, N, Current, BestPlay), Current > Score\label{line:coord:minimax_minimize1}\hfill// Rule 9: keep current score
-   -o minimize(A, N - 1, Score, Play).
-
-new-score(A, Score, Play), minimize(A, N, Current, BestPlay), Current <= Score\hfill// Rule 10: select new best
-   -o minimize(A, N - 1, Current, BestPlay).
-
-minimize(A, 0, Score, BestPlay) -o score(A, Score, BestPlay).\label{line:coord:minimax_minimize2}// Rule 11: score minimized
-
-new-score(A, Score, Play), maximize(A, N, Current, BestPlay), Current < Score\label{line:coord:minimax_maximize1}\label{line:coord:minimax_maximize_rule11}\hfill// Rule 12: keep current score
-   -o maximize(A, N - 1, Score, Play).\label{line:coord:minimax_maximize_rule12}
-
-new-score(A, Score, Play), minimize(A, N, Current, BestPlay), Current >= Score\label{line:coord:minimax_maximize_rule21}\hfill// Rule 13: select new best
-   -o maximize(A, N - 1, Current, BestPlay).\label{line:coord:minimax_maximize_rule22}
-
-maximize(A, 0, Score, BestPlay) -o score(A, Score, BestPlay).\label{line:coord:minimax_maximize2}\hfill// Rule 14: score maximized
-
-play(@0, initial-game, root-player, 0, 1).\label{line:coord:minimax_axiom}\hfill// Initial fact
-\end{Verbatim}
-\caption{LM code for the MiniMax program.}
-\label{code:coord:minimax}
-\end{figure}
-
-We also take advantage of memory locality by using \code{set-static}
+We also take advantage of memory locality by using \code{set-affinity}
 (line~\ref{line:coord:minimax_coord2}), so that nodes after a certain level are
    not stolen by other threads. While this is not critical for performance in
    shared memory systems where node stealing is fairly efficient, we expect that
@@ -168,19 +168,19 @@ through the retraction of \code{new-score} incoming facts.
 In Table~\ref{results:memory_minmax} we compare the memory usage of the
 coordinated MiniMax program against the regular MiniMax program. The
 \textbf{Average} column presents the average memory usage during the lifetime of
-the program, the \textbf{Final} indicates the amount of memory used at the end
-of the program, while the \textbf{\# Malloc} column represents the number of
-calls made to the \code{malloc} function by the threaded allocator. The
-coordinated version uses significantly less memory than the regular version.
+the program, the \textbf{Final} column indicates the amount of memory used at
+the end of the program, while the \textbf{\# Malloc} column represents the
+number of calls made to the \code{malloc} function by the threaded allocator.
+The coordinated version uses significantly less memory than the regular version.
 Both the Big and the Small dataset use about the same memory when using
 coordination, which is an excellent result since the Big dataset is ten times
 larger than the Small dataset.  As the number of the threads increases, the
 average memory usage of the regular version decreases because there are more
 threads that are able to complete different parts of the tree at the same time.
-The same thing happens for the coordinated version, but at a much smaller scale
-since threads are exploring the tree in a depth-first fashion. Finally, as
-expected, there is also a large reduction in the number of \code{malloc}'s
-called by the threaded allocator in the coordinated version.
+The same happens for the coordinated version, but at a much smaller scale since
+threads are exploring the tree in a depth-first fashion. Finally, as expected,
+there is also a large reduction in the number of \code{malloc}'s called by the
+threaded allocator in the coordinated version.
 
 The run time and scalability results are presented in
 Fig.~\ref{fig:coordination:results_minmax}. There is a clear performance
@@ -208,4 +208,4 @@ significantly faster than it would be otherwise.
         \label{fig:coordination:results_minmax}
 \end{figure}
 
-\clearpage
+%\clearpage

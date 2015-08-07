@@ -33,7 +33,7 @@ fabs(New - Old) <= epsilon
 
 Fig.~\ref{fig:coordination:results_ht} presents the scalability results for the
 regular and coordinated version. The dataset used in the experiments was already
-used in Section~\ref{section:implementation:performance}, which is is a square
+used in Section~\ref{section:implementation:performance}, which is a square
 grid with an inner square with high heat nodes. Comparing the coordinated
 version with the regular version, with 1 thread there is a 50\% reduction in run
 time, while for 32 threads there is, on average, a 15\% reduction. The
@@ -61,7 +61,7 @@ its own (ever decreasing) subgraph.
 \end{figure}
 
 
-To further improve locality, we modify the second rule to avoid sending small
+To further improve locality, we modified the second rule to avoid sending small
 $\delta$ values if the target node is in another thread
 (Fig.~\ref{code:coord:ht_better}). We use \code{thread-id} to retrieve the
 thread \code{T} of the node \code{A} and match the \code{thread-id} of each
@@ -70,12 +70,12 @@ lines~\ref{line:coord:ht_better_comp1}-\ref{line:coord:ht_better_comp2} only
 generates \code{new-neighbor-heat} facts if \code{B} is in the same thread.
 
 The results for the improved version are presented in
-Fig.~\ref{fig:coordination:results_ht_new}. There is clear improvement when
+Fig.~\ref{fig:coordination:results_ht_new}. There is a clear improvement when
 compared to the previous version, since when using 32 threads, there is a 25\%
 run time reduction for the coordinated version. For the same number of threads,
-the line \textbf{Regular(1)/Coordinated(t)} reaches a 20-fold speedup, while the
-old version reaches a 16-fold speedup. However, this comes at the price of
-increased errors in the computed heat values.
+the line \textbf{Regular(1)/Coordinated(t)} reaches only a 20-fold speedup,
+while the old version reaches a 16-fold speedup. However, this comes at the
+price of reduced accuracy in the computed heat values.
 
 \begin{figure}[h!]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\[\]]

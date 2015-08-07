@@ -737,7 +737,7 @@ class experiment(object):
       name = prefix + self.create_filename()
       plt.savefig(name)
 
-   def compare_splashbp(self, sbp, glbp, glsbp, prefix):
+   def compare_splashbp(self, sbp, glsbp, glfifo, glmulti, prefix):
       fig = plt.figure()
       ax = fig.add_subplot(111)
 
@@ -752,14 +752,15 @@ class experiment(object):
       ax.set_ylabel('Ratio', fontsize=ylabelfontsize)
       ax.set_xlabel('Threads', fontsize=ylabelfontsize)
       ax.set_xlim([1, self.max_threads()])
-      ax.set_ylim([0, max(max(sbp.get_improvement(self)), max(glsbp.get_improvement(glbp)))])
+      ax.set_ylim([0, max(max(sbp.get_improvement(self)), max(max(glsbp.get_improvement(glfifo)), max(glsbp.get_improvement(glmulti))))])
       cmap = plt.get_cmap('gray')
 
       lmratio, = ax.plot(self.x_axis(), sbp.get_improvement(self), label='LM', linestyle='-', marker='+', color='r')
-      glratio, = ax.plot(self.x_axis(), glsbp.get_improvement(glbp), label='GraphLab', linestyle='--', marker='o', color='g')
+      glfiforatio, = ax.plot(self.x_axis(), glsbp.get_improvement(glfifo), label='GraphLab fifo', linestyle='--', marker='o', color='g')
+      glmultiratio, = ax.plot(self.x_axis(), glsbp.get_improvement(glmulti), label='GraphLab multiqueue', linestyle='--', marker='x', color='g')
 
-      lines = [lmratio, glratio]
-      labels = ["LM", "GraphLab"]
+      lines = [lmratio, glfiforatio, glmultiratio]
+      labels = ["LM", "GraphLab fifo", "Graphlab multiqueue"]
 
       ax.legend(lines, labels, loc=2, fontsize=18, markerscale=2)
 

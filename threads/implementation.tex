@@ -1,5 +1,5 @@
-To support thread-based facts, the compilation and runtime system described in
-Chapter~\ref{chapter:implementation} requires some changes.
+To support thread-based facts, both the compilation and runtime system described in
+Chapter~\ref{chapter:implementation} require some changes.
 
 \subsection{Compiler}
 
@@ -12,24 +12,23 @@ the programmer was to retrieve either the thread or the node for the current
 computation, she may use \code{running(T, A)}.
 
 Once rules are type checked, the iteration code for thread-based facts needs to
-adapter. When a rule requires facts from the thread, it must use the data
+be adapted. When a rule requires facts from the thread, it must use the data
 structures from the thread. The runtime API used for inserting thread facts is
 also different since they have to be added to the thread's database.
 
 \subsection{Runtime}
 
 In the runtime system, thread-based facts are implemented just like regular
-facts. Each thread has its own database of facts that is identical to a regular
-node and uses exactly the same data structures for facts already presented
-before. The major difference between a regular node and a thread node is that a
-thread node is never put into the work queue of its thread. As shown in the
-updated work loop presented in Fig.~\ref{alg:threads:work_loop}, the thread node
-executes alongside the regular node when $TH.process\_node$ is called. It is
-also important to note that, before a thread becomes idle, it may have potential
+facts. Each thread has its own database of facts and uses exactly the same data
+structures for facts, as presented before for regular nodes.  The major
+difference between a regular node and a thread node is that a thread node is
+never put into the work queue of its thread. As shown in the updated work loop
+presented in Fig.~\ref{alg:threads:work_loop}, the thread node executes
+alongside the regular node when $TH.process\_node$ is called. It is also
+important to note that, before a thread becomes idle, it may have potential
 candidate thread rules that are now derivable because another thread has derived
-thread facts in the current thread. Note that it is entirely possible to have
-programs that only deal with thread facts. These kinds of programs use only
-explicit parallelism.
+thread facts in the current thread. In particular, it is entirely possible to have
+programs that only deal with thread facts.
 
 \begin{figure}
 \begin{algorithm}[H]
@@ -64,16 +63,16 @@ explicit parallelism.
  }
 \end{algorithm}
 \caption{Thread work loop updated to take into account thread-based facts.
-New and modified code is underlined.}
+New or modified code is underlined.}
 \label{alg:threads:work_loop}
 \end{figure}
 
 Thread-based facts also introduce new synchronization logic in the runtime
 system. For instance, when a rule derives a new thread fact on another thread,
-it needs to synchronize with that thread (using the appropriate node locks) to
-add the facts to the thread's database. When a thread is executing its own node
-or a regular node, it also must lock the thread node's \emph{DB Lock} in order
-to protect its data structures from being manipulated by other threads
+it needs to synchronize with that thread (using the appropriate thread node
+locks) to add the facts to the thread's database. When a thread is executing its
+own node or a regular node, it also must lock the thread node's \emph{DB Lock}
+in order to protect its data structures from being manipulated by other threads
 concurrently.
 
 Matching rules using thread facts requires special care since they may require
@@ -87,4 +86,4 @@ implicit \code{running(T, N)} fact, the fact that a different node is being
 executed, is enough to fire mixed rules. Without using an implicit
 \code{running} fact, the system would need to lookup for a regular node that
 would successfully activate a given mixed rule. This would be prohibitly
-expensive since some programs have millions of regular nodes.
+expensive since some programs might have millions of regular nodes.

@@ -38,8 +38,17 @@ as sensing or action facts but are still important:
       or the greatest value, respectively.
 
    \item \texttt{priority @initial P}: Informs the runtime system that all nodes
-      must start with priority $P$.  Alternatively, the programmer can define an
-      \texttt{set-priority(A, P)} axiom.
+   must start with temporary priority \code{P}. Alternatively, the programmer can define an
+      \texttt{set-priority(A, P)} fact.
+
+   \item \texttt{priority @default P}: Informs the runtime system that all nodes
+      must start with default priority \code{P}. Alternatively, the programmer can define an
+      \texttt{set-default-priority(A, P)} fact.
+
+   \item \texttt{priority @base P}: Informs the runtime system that the
+      \emph{base priority} should be \code{P}. The base priority is, by default,
+      0 when the priority ordering is \code{asc} and $-\infty$ when the ordering
+      is \code{desc}.
 
 \end{itemize}
 
@@ -57,7 +66,7 @@ as sensing or action facts but are still important:
 \input{coordination/related_work}
 \section{Chapter Summary}
 
-In this chapter we presented the current set of coordination directives,
+In this chapter, we presented the current set of coordination directives,
 implemented as sensing and action facts. The use of such facilities allows the
 programmer to write derivation rules that change how the runtime system
 schedules computation thus improving the executing time and possibly the final

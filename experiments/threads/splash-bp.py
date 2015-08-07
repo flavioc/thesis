@@ -51,5 +51,4 @@ prefix = sys.argv[6]
 bp.compare_graphlab(glfifobp, prefix + "fifo-")
 bp.compare_graphlab(glmultibp, prefix + "multi-")
 sbp.compare_graphlab(glsbp, prefix)
-bp.compare_splashbp(sbp, glfifobp, glsbp, prefix + "ratio-fifo-")
-bp.compare_splashbp(sbp, glmultibp, glsbp, prefix + "ratio-multi-")
+bp.compare_splashbp(sbp, glsbp, glfifobp, glmultibp, prefix + "ratio-")

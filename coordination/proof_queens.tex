@@ -9,11 +9,13 @@ scenarios:
 
 \begin{itemize}
    \item The \code{test-y} fact and everything derived from it is retracted and
-      there is a coordinate $(X', Y) \in State$.
+      there is a $Y \in State$.
+
    \item The \code{test-y} fact is retracted and is used to derive a
       \code{test-diag-left}$(A, X_0 - 1, Y_0 - 1,
       OrigState, OrigState)$ fact since 
-      there is no such coordinate $(X', Y) \in State$.
+      there is no such $Y \in State$.
+
 \end{itemize}
 
 \end{lemma}
@@ -33,11 +35,11 @@ Third rule: by induction.
    
   \begin{itemize}
      \item The \code{test-diag-left} fact and everything derived from it is
-        retracted and there is a coordinate $(x', y') \in State$, where $x' = X
-        - a$ and $y' = Y - a$, where $a$ is non-negative.
+        retracted and there is a $y' \in State$, where $y' = Y - a$ and $a$ is
+        non-negative number representing the index of $y'$ in $State$.
      \item The \code{test-diag-left} is retracted and is used to derive a
         \code{test-diag-right}$(A, X_0 - 1, Y_0 + 1, OrigState, OrigState)$
-        fact since there is no $(x', y')$ coordinate as specified above.
+        fact since there is no $y' \in State$ as specified above.
   \end{itemize}
 \end{lemma}
 \begin{proof}
@@ -55,11 +57,14 @@ From a fact \code{test-diag-right}$(A, X, Y, State, OrigState)$, there are
 two possible scenarios:
 
 \begin{itemize}
+
    \item The \code{test-diag-right} fact and everything derived from it is
-      retracted and there is a coordinate $(x', y') \in State$, where $x' = X -
-      a$ and $y' = Y + a$, where $a$ is non-negative.
+      retracted and there is a $y' \in State$, where $y' = Y + a$ and $a$ is a
+      non-negative number representing the index of $y'$ in $State$.
+
    \item The \code{test-diag-right} fact is retracted and the fact
-      \code{send-down}$(A, [(X_0, Y_0) | OrigState])$ is derived.
+      \code{send-down}$(A, [Y_0 | OrigState])$ is derived.
+
 \end{itemize}
 \end{lemma}
 
@@ -74,13 +79,14 @@ Third rule: by induction.
 \end{proof}
 
 \begin{theorem}[State validation]
-From a fact \code{test-y}$(A, Y_0, State, State)$, there are two possible
+From a fact \code{test-y}$(A, Y_0, State, State)$, where $(X_0, Y_0)$ is the coordinate
+of $A$ and the length of $State$ is $X_0$, there are two possible
 scenarios:
    
    \begin{itemize}
       \item The \code{test-y} fact and anything derived from it is retracted.
       \item The \code{test-y} fact is retracted and a \code{send-down}$(A,
-         [(X_0, Y_0) | State])$ fact is derived, where $[(X_0, Y_0) | State]$ is
+         [Y_0 | State])$ fact is derived, where $[Y_0 | State]$ is
          a valid board state.
    \end{itemize}
 \end{theorem}
@@ -122,7 +128,7 @@ By induction on the number of rows.
 For row 0, we use the initial fact \code{propagate-right}$(\mathtt{@0}, [])$,
 that will be propagated to all nodes in row 0 (propagate right lemma). By using
 the state validation theorem, we know that every node will derive
-\code{send-down(A, [(X, Y)])}, which are all the valid states.
+\code{send-down(A, [Y])}, which are all the valid states.
 
 By induction, we know that row $X'$ has derived every \code{send-down} fact
 possible. Such facts will be sent downwards to row $X = X' + 1$ using the last
