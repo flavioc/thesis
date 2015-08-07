@@ -1,4 +1,4 @@
-While our standard thread allocator performs and scales well, we also explored
+While our default threaded allocator performs and scales well, we also explored
 some alternative designs. In this section, we explore a design where we move the
 allocation decisions from the thread to the node itself, in order to store the
 facts of the same node close together and thus increase locality. However, this
@@ -17,13 +17,15 @@ list of memory pages and each page contains facts of different sizes
    \begin{center}
       \includegraphics[width=0.7\linewidth]{figures/implementation/fact_allocator.pdf}
    \end{center}
+
    \caption{Fact allocator: each node has a pool of memory pages for allocating
-      logical facts. Each page contains: (1) several linked lists of free facts
-      of the same size (\code{free\_list}); (2) a reference count of used facts
-      (\code{refcount}); (3) a \code{ptr} pointer that points to unallocated
-      space in the page. In this figure, predicates \code{f} and \code{g} have
-   several deallocated facts that are ready to be used when a new fact needs to
-be acquired.}
+      logical facts. Each page contains: (i) several linked lists of free facts
+      of the same size (\code{free\_array}); (ii) a reference count of used
+      facts (\code{refcount}); (iii) a \code{ptr} pointer that points to
+      unallocated space in the page. In this figure, predicates \code{f} and
+      \code{g} have several deallocated facts that are ready to be used when a
+   new fact needs to be acquired.}
+
    \label{fig:implementation:fact_allocator}
 \end{figure}
 
@@ -38,10 +40,8 @@ because it is more difficult to share objects between nodes and maintaining a
 reference count helps reduce memory usage.
 
 Figure~\ref{fig:implementation:node_results} presents the comparison between the
-threaded and fact allocator. The threaded allocator (in red) uses lines with
-plus markers, while the fact allocator (in green) uses lines with circular
-markers. In used the most relevant datasets since the performance was very
-similar for the other datasets.
+threaded and fact allocator for the most relevant datasets (the performance
+was very similar for the other datasets).
 
 \begin{figure}[h]
         \begin{subfigure}[b]{\smallplotsize\textwidth}
@@ -93,30 +93,32 @@ similar for the other datasets.
 \end{figure}
 
 The first major observation from the comparison is that the threaded allocator
-is able to have better sequential performance than the fact allocator for most
-programs. This is probably the result of better locality for the threaded
-allocator because the threaded allocator does not need to create pages for each
-node and instead uses the thread pages to main all facts, reducing cache line
-misses. Having better performance makes the threaded allocator have slightly
-less scalability, but its performance still better or similar when using lots of
-threads (see GGC for an example).
+has better sequential performance than the fact allocator for most programs.
+This is probably the result of better locality for the threaded allocator
+because it does not need to create pages for each node and instead uses the
+thread pages to maintain all facts, reducing cache line misses.  Having better
+running time makes the threaded allocator have slightly less scalability, but
+its run time is still better or similar when using lots of threads (see GGC for
+an example).
 
 The second observation is in the N-Queens program, where the threaded allocator
 beats the fact allocator by a long margin in terms of scalability and
 performance. Note that the N-Queens program allocates plenty of lists and those
 lists are not allocated on a per node basis but on a thread basis, therefore the
-extra work required to maintain each fact allocator is not offset by increased
-locality because the threads need to traverse lists to find valid board states.
+extra work required to maintain each fact allocator is not offset by the
+increased locality because the threads need to traverse lists to find valid
+board states.
 
 To make our comparison more interesting, we also deactivated the reference
 counting mechanisms of the fact allocator and compared it against the threaded
-allocator. The complete comparison are shown in
+allocator. The goal is to understand how reference counting affects the
+performance of the alternative allocator. The complete comparison are shown in
 Fig.~\ref{fig:implementation:no_refs_results}. In a nutshell, it performs almost
 the same as the full featured fact allocator, except for programs which require
 more memory such as MiniMax and Heat Transfer. In the case of MiniMax, we were
 unable to completely execute the Big dataset since the VM required more memory
-than the available RAM, resulting in long execution times. This is the result of
-not collecting unused memory pages, which results in high memory usage.
+than the available memory, resulting in long execution times. This is the result
+of not collecting unused memory pages, which results in high memory usage.
 
 \input{implementation/no-refs}
 

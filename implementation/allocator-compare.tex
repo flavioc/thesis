@@ -1,18 +1,17 @@
-In order to understand the role which the thread allocator plays in the
-performance of programs, we evaluate and compare the performance of the LM
-system by using the \code{malloc} function provided by the operating system.
+In order to understand the role which our threaded allocator plays in the
+performance of programs, we evaluate and compare it against the performance of
+the LM system by using the \code{malloc} function provided by the operating
+system.
 
 Figure~\ref{fig:implementation:malloc_results} presents several programs
-comparing \code{malloc} with the threaded allocator. The \code{malloc} allocator
-is represented by the lines using the circular marker, while the threaded
-allocator uses lines with a plus marker. The programs Belief Propagation,
-MiniMax, and N-Queens have very poor scalability when using the \code{malloc}
-operator due to high thread contention when calling \code{malloc} since
-those programs need to allocate many small objects. The PageRank programs shows
-good scalability with \code{malloc} but it is only because the configuration
-with 1 thread runs very slowly when compared to the other configurations. For all
-the remaining programs, there is less overall performance and scalability when
-compared to the threaded allocator.
+comparing \code{malloc} with the threaded allocator. The programs Belief
+Propagation, MiniMax, and N-Queens have very poor scalability when using the
+\code{malloc} operator due to high thread contention when calling \code{malloc}
+since those programs need to allocate many small objects. The PageRank programs
+shows good scalability with \code{malloc} but it is only because the
+configuration with 1 thread runs very slowly when compared to the other
+configurations. For all the remaining programs, there is less overall
+performance and scalability when compared to the threaded allocator.
 
 As these results show, the performance of the memory allocator is crucial for
 good performance and scalability. Linear logic programs spend a significant

@@ -169,14 +169,16 @@ is not much smaller than LM's.
    \begin{center}
       \input{experiments/mem/mem}
    \end{center}
+
    \caption{Memory statistics for LM programs. The meaning of each column is as
       follows: column \textbf{Average} represents the average memory use of the
       program; \textbf{Final} represents the memory usage after the program
       completes; \textbf{Malloc} represents the number of \code{malloc}
-   operations requested to the operating system by the VM's memory allocator;
-   \textbf{\# Facts} represents the number of facts in the database after the
-   program completes; \textbf{Each} is the result of dividing \textbf{Final} by
-   \textbf{\# Facts} and represents the average memory required per fact.}
+      operations requested to the operating system by the VM's memory allocator;
+      \textbf{\# Facts} represents the number of facts in the database after the
+      program completes; \textbf{Each} is the result of dividing \textbf{Final}
+      by \textbf{\#~Facts} and represents the average memory required per fact.}
+
    \label{table:implementation:mem}
 \end{table}
 
@@ -216,33 +218,35 @@ On the positive side, the average memory usage per fact remains the same for all
 data sets. In respect to the C++ program, it is expected that it should consume
 almost no memory because it uses the stack to compute the solutions.
 
-\subsection{Indexing and data structures}
+\subsection{Dynamic Indexing}
 
 We now evaluate the impact of our dynamic indexing algorithm and related data
 structures. For this, we have rerun the previous experiments without indexing
-and compared the results against the optimized version.
+and compared the results against the version with indexing enabled.
 Table~\ref{table:implementation:compare_absolute} shows the comparison between
-the optimized version of the VM and the version of the VM with indexing
-disabled. Column \textbf{Run Time} shows that the MSSD program benefits from
-indexing because the unoptimized version is around 2 to 100 times slower than
+the versions with and without indexing.
+Column \textbf{Run Time} shows that the MSSD program benefits from
+indexing because the version without indexing is around 2 to 100 times slower than
 the version with indexing enabled. Since MSSD computes the shortest distance to
 multiple nodes, its rules require searching for the shortest distance facts of
 arbitrary nodes. All the other programs do not require significant indexing but
 also do not display any significant slowdown from using dynamic indexing. In
 terms of memory usage, the version with indexing uses slightly more memory,
-especially for MSSD program, which requires, on average, 50\% more memory due to
+especially for the MSSD program, requiring, on average, 50\% more memory due to
 the existence of hash tables used for supporting indexing.
 
 \begin{table}[ht]
    \begin{center}
       \input{experiments/absolute/compare-no-indexing}
    \end{center}
-   \caption{Measuring the impact of dynamic indexing and related database data
+
+   \caption{Measuring the impact of dynamic indexing and related data
       structures. Column \textbf{Run Time} shows the slow down ratio of the
       unoptimized version (numbers greater than 1 show indexing improvements).
       Column \textbf{Average Memory} is the result of dividing the average
-      memory of the optimized version by the unoptimized version (large numbers
-      indicate that more memory is needed when using indexing mechanisms).}
+   memory of the optimized version by the unoptimized version (large numbers
+indicate that more memory is needed when using indexing mechanisms).}
+
    \label{table:implementation:compare_absolute}
 \end{table}
 

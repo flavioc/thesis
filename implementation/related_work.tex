@@ -1,9 +1,9 @@
 \paragraph{Virtual Machines}
 
 Virtual machines are a popular technique for implementing interpreters for high
-level programming languages. Due to increased availability of parallel machines
+level programming languages. Due to the increased availability of parallel
 and distributed architectures, several machines have been developed with
-parallelism in mind~\cite{Kara:1997:AMM:265274}. One example of such machine is
+parallelism in mind~\cite{Kara:1997:AMM:265274}. One good example is
 the Parallel Virtual Machine~(PVM)~\cite{Sunderam90pvm:a}, which servers as an
 abstraction to program heterogeneous computers as a single machine. Another
 important machine is the Threaded Abstract
@@ -12,14 +12,10 @@ machine language of parallel threads where a program is represented using
 conventional control flow.
 
 Prolog, the most prominent logic programming language, has a rich history of
-virtual machine research centered around the Warren Abstract
-Machine~(WAM)~\cite{AICPub641:1983}. The WAM offers special purpose
-instructions, including unification instructions for different kinds of data and
-control flow instructions to implement backtracking. The WAM is fully sequential
-and uses four memory areas for building and matching terms: heap, stack, trail
-and the push down list. Because Prolog programs tend to be naturally parallel,
-much research has been done to either parallelize the WAM or create new parallel
-machines. Two types of parallelism are possible in Prolog:
+virtual machine research centered extending/adapting the Warren Abstract
+Machine~(WAM)~\cite{AICPub641:1983}.  Because Prolog programs tend to be
+naturally parallel, much research has been done to either parallelize the WAM or
+create new parallel machines. Two types of parallelism are possible in Prolog:
 \emph{OR-parallelism}, where several clauses for the same goal can be executed,
 and \emph{AND-parallelism}, where goals in the same clause are tried in
 parallel. For OR-parallelism, we have several models such as: the SRI
@@ -45,25 +41,25 @@ facts derived by the previous iteration.
    
 In the context of the P2 system~\cite{Loo-condie-garofalakis-p2}, which was
 created for developing declarative networking programs, the previous strategy is
-not suitable since it is centralized, therefore a new strategy called
-\emph{Pipelined Semi-Na\"{\i}ve}~(PSN) evaluation was developed for distributed
+not suitable since it is centralized, therefore a new strategy, called
+\emph{Pipelined Semi-Na\"{\i}ve}~(PSN) evaluation, was developed for distributed
 computation. PSN evaluation evaluates one fact at the time by firing any rule
 that is derivable using the new fact and older facts. If the new fact is already
 in the database, then the fact is not used for derivation since it would derive
 redudant facts.
 
- LM's evaluation strategy is similar to PSN, however, it considers the whole
- database of facts when firing rules due to the existence of rule priorities.
- For instance, when a node fires a rule, new facts added for the local node are
- considered as a whole in order to select the next inference rule. In the case
- of PSN, each new fact would be considered separately. Still, PSN and the LM
- strategy are both asynchronous strategies which take advantage of the nature of
- distributed and parallel architectures, respectively. Finally, an important
- distinction that should be made between PSN and LM is that PSN is for logic
- programs with only persistent facts, which results in deterministic results,
- however because LM uses linear facts, it follows a \emph{don't care} or
- \emph{committed choice} non-determinism, which may result in different results
- depending on the order of computations.
+LM's evaluation strategy is similar to PSN, however, it considers the whole
+database of facts when firing rules due to the existence of rule priorities.
+For instance, when a node fires a rule, new facts added for the local node are
+considered as a whole in order to select the next inference rule. In the case of
+PSN, each new fact would be considered separately. Still, PSN and LM are both
+asynchronous strategies which take advantage of the nature of distributed and
+parallel architectures, respectively. Finally, an important distinction that
+should be made between PSN and LM is that PSN is for logic programs with only
+persistent facts, which results in deterministic results, however because LM
+uses linear facts, it follows a \emph{don't care} or \emph{committed choice}
+non-determinism, which may result in different results depending on the order of
+computations.
 
 \paragraph{CHR implementations} Many basic optimizations used in the LM compiler
 such as join optimizations and the use of different data structures for indexing

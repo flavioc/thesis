@@ -533,25 +533,33 @@ class experiment(object):
       ax.set_xlabel('Threads', fontsize=ylabelfontsize)
       ax2.set_ylabel('Speedup', fontsize=ylabelfontsize)
       ax.set_xlim([1, self.max_threads()])
-      ax.set_ylim([0, max(self.max_time(), other_exp.max_time())])
+      ax.set_ylim([0, max(self.max_time(), other_exp.max_time()) * 1.25])
+      ax2.set_ylim([0, max(self.max_speedup(), other_exp.max_speedup()) * 1.25])
       cmap = plt.get_cmap('gray')
 
       stdtime, = ax.plot(self.x_axis(), self.time_data(),
          label='Standard Allocator Run Time', linestyle='-', marker='+', color='r')
       othertime, = ax.plot(self.x_axis(), other_exp.time_data(),
-         label='Other Allocator Run Time', linestyle='--', marker='o', color='g')
+         label='Other Allocator Run Time', linestyle='-', marker='o', color='g')
       stdspeedup, = ax2.plot(self.x_axis(), self.base_speedup_data(),
             label='Standard Allocator Speedup', linestyle='--', marker='+', color='r')
       otherspeedup, = ax2.plot(self.x_axis(), other_exp.base_speedup_data(),
-            label='Other Allocator Speedup', linestyle='-', marker='o', color='g')
-      ax.legend([(stdtime, stdspeedup), (othertime, otherspeedup)], [stdname, othername],
+            label='Other Allocator Speedup', linestyle='--', marker='o', color='g')
+      ax.legend([stdtime, stdspeedup, othertime, otherspeedup],
+            [stdname + ' Run Time', stdname + ' Speedup', othername + ' Run Time', othername + ' Speedup'],
             loc=2, fontsize=18, markerscale=2)
 
+      self.set_ticks()
       setup_lines(ax, cmap)
       setup_lines(ax2, cmap)
 
       name = prefix + self.create_filename()
       plt.savefig(name)
+
+   def set_ticks(self):
+      x = np.arange(0, 33, 4.0)
+      x[0] = 1
+      plt.xticks(x)
 
    def create_scale(self, cexp, prefix):
       fig = plt.figure()
@@ -581,13 +589,21 @@ class experiment(object):
       [t.set_color('red') for t in ax.yaxis.get_ticklabels()]
       [t.set_color('green') for t in ax2.yaxis.get_ticklabels()]
 
-      ax.plot(self.x_axis(), self.time_data(),
+      self.set_ticks()
+
+      ptime, = ax.plot(self.x_axis(), self.time_data(),
          label='Execution Time', linestyle='--', marker='+', color='r')
-      ax2.plot(self.x_axis(), self.base_speedup_data(),
+      pspeedup, = ax2.plot(self.x_axis(), self.base_speedup_data(),
          label='Speedup', linestyle='--', marker='o', color='g')
+      plots = [ptime, pspeedup]
+      names = ["Execution Time", "Speedup"]
       if cexp:
-         ax.plot(self.x_axis(), [cexp.get_time(1)] * len(self.x_axis()),
+         cpp, = ax.plot(self.x_axis(), [cexp.get_time(1)] * len(self.x_axis()),
            label='Linear', linestyle='-', color=cmap(0.2))
+         plots.append(cpp)
+         names.append("C++")
+
+      ax.legend(plots, names, loc=2, fontsize=18, markerscale=2)
 
       setup_lines(ax, cmap)
       setup_lines(ax2, cmap)
@@ -630,6 +646,7 @@ class experiment(object):
          label=system_name + ' Improvement', linestyle='--', marker='+', color=cmap(0.6))
       ax.legend([lm, other], ["CLM", system_name], loc=2, fontsize=20, markerscale=2)
 
+      self.set_ticks()
       setup_lines(ax, cmap)
 
       name = prefix + "improve_" + self.name + ".png"
@@ -655,6 +672,7 @@ class experiment(object):
       ax.set_xlim([0, max_value_threads])
       ax.set_ylim([0, max(self.max_speedup(), system.max_speedup())])
 
+      self.set_ticks()
       cmap = plt.get_cmap('gray')
 
       lm, = ax.plot(self.x_axis(), self.speedup_data(),
@@ -711,6 +729,7 @@ class experiment(object):
         labels.append("C++")
 
       ax.legend(lines, labels, loc=2, fontsize=18, markerscale=2)
+      self.set_ticks()
 
       setup_lines(ax, cmap)
       setup_lines(ax2, cmap)
@@ -744,6 +763,7 @@ class experiment(object):
 
       ax.legend(lines, labels, loc=2, fontsize=18, markerscale=2)
 
+      self.set_ticks()
       setup_lines(ax, cmap)
 
       name = prefix + self.create_filename()
@@ -783,6 +803,7 @@ class experiment(object):
 
       ax.legend(lines, labels, loc=2, fontsize=18, markerscale=2)
 
+      self.set_ticks()
       setup_lines(ax, cmap)
       setup_lines(ax2, cmap)
 
@@ -830,10 +851,11 @@ class experiment(object):
       labels = ["Regular", name_coord, "Regular(1)/" + name_coord + "(t)"]
       if cexp:
         lines.append(ctime)
-        labels.append("C++")
+        labels.append("C++ time")
 
       ax.legend(lines, labels, loc=2, fontsize=18, markerscale=2)
 
+      self.set_ticks()
       setup_lines(ax, cmap)
       setup_lines(ax2, cmap)
 

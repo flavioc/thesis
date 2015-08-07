@@ -1,22 +1,18 @@
-Logic, as \emph{classically} understood, treats true propositions as
-\emph{persistent truth}. When a persistent proposition is needed to prove other
-propositions, it can be reused as many times as we wish because it is true
-indefinitely. This is also true in the \emph{constructive} or
-\emph{intuitionistic} school of logic.  Linear logic is a \emph{substructural
-logic} (lacks weakening and contraction) developed by
-Girard~\cite{Girard95logic:its} extends \emph{persistent logic} with linear
+Logic, as classically understood, treats true propositions as \emph{persistent
+truth}. When a persistent proposition is needed to prove other propositions, it
+can be reused as many times as we wish because it is true indefinitely. This is
+also true in the constructive or intuitionistic school of logic.  Linear logic
+is a \emph{substructural logic} (lacks weakening and contraction) developed by
+Girard~\cite{Girard95logic:its} that extends persistent logic with linear
 propositions which can be understood as ephemeral resources that can be used
-only once to prove other propositions.
-
-Linear logic is well suited for modeling computing systems that deal with state,
-of which LM is one of them.  Due to the resource interpretation of the logic,
-linear logic presents a good basis for programming languages with a structured
-way to manage state~\cite{Miller85anoverview}. Beyond programming languages,
-linear logic has also been used in game
+only once to prove other propositions.  Due to the resource interpretation of
+the logic, linear logic presents a good basis for programming languages with a
+structured way to manage state~\cite{Miller85anoverview}. Beyond programming
+languages, linear logic has also been used for game
 semantics~\cite{lafont1991games,blass1992game}, concurrent
 programming~\cite{lopez2005monadic,mazurak2010lolliproc,perez-2012}, knowledge
-representation~\cite{bos2011survey}, narrative
-generation~\cite{chris-int7,martens2013linear}, etc.
+representation~\cite{bos2011survey}, or narrative
+generation~\cite{chris-int7,martens2013linear}.
 
 In the context of the Curry-Howard correspondence~\cite{howard:tfatnoc}, linear
 logic has been applied in programming languages as a mechanism to implement
@@ -47,9 +43,9 @@ state updates are natural to the language.
 In linear logic, truth is treated as a resource that is consumed once used. For
 instance, in the graph visit program in Fig.~\ref{code:language:visit}, the
 \texttt{unvisited(A)} and \texttt{visit(A)} linear facts are consumed in order
-to prove \texttt{visit(A)} and the comprehension. If those facts were
-persistent, then the rule would make no sense, because the node would be
-\texttt{visited} and \texttt{unvisited} at the same time!
+to prove \texttt{visit(A)}. If those facts were persistent, then the rule would
+make no sense, because the node would be \texttt{visited} and \texttt{unvisited}
+at the same time!
 
 \subsection{Sequent Calculus}
 

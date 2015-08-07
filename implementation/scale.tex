@@ -17,27 +17,29 @@ programs of the previous section with a few additions:
 
 \end{itemize}
 
-We executed all the programs using 17 configurations: the first uses 1 thread
-and the other 16 use even numbers of threads for a maximum of 32 threads. In the
-plots presented next, the bottom axis represents the number of threads used when
-executing the program, the left axis represents the run time (in milliseconds)
-for that particular configuration and the right axis represents the speedup
-computed using $T_1/T_i$, where $i$ represents the number of threads and
-$T_x$ the run time of the program using $x$ threads.  In some plots, there is
-also an horizontal black line that represents the run time of the C++ program
-and is used to understand how many threads are needed in order for an LM program
-to run faster than the C++ program. Note that all the run times are the average
-of three runs.
+These two programs were not used in the previous section because we did not
+implement the corresponding C++ program.
+
+We executed all the programs using 17 configurations. The base configuration
+uses 1 thread and the other 16 configurations use an even numbers of threads for
+a maximum of 32 threads. In the plots presented next, the $x$ axis represents
+the number of threads used, the left $y$ axis represents the run time (in
+milliseconds) for that particular configuration and the right axis $y$
+represents the speedup computed as $T_1/T_i$, where $T_i$ represents the run
+time of the program using $i$ threads.  In some plots, there is also an
+horizontal black line that represents the run time of the C++ program and is
+used to understand how many threads are needed in order for an LM program to run
+faster than the C++ program. Note that all run times are the average of three
+runs.
 
 The scalability results for the Belief Propagation program are presented in
 Fig.~\ref{fig:implementation:scale_bp}. This program has the best scalability
 with a 60-fold speedup for 32 threads. This is because the default ordering used
-for 1 thread leads to a slow convergence rate, resulting in super-linear
-speedups. When using multiple threads, the graph will converge faster, because
-belief updates have more up-to-date information from neighbor nodes due to the
-existence of multiple threads.  Note that we also used the same computation
-ordering in the C++ program, which is also the one used in the GraphLab
-framework.
+for 1 thread is not optimal, while the same ordering works better for multiple
+threads. Additionally, the existence of multiple threads increase the amount of
+up-to-date information from neighbor nodes, resulting in super-linear speedups.
+Note that we also used the same computation ordering in the C++ program, which
+is also the one used in the GraphLab framework.
 
 \begin{figure}[]
         \centering
@@ -50,9 +52,7 @@ framework.
                 \includegraphics[width=\textwidth]{experiments/scalability/scale-belief-propagation-400.png}
                 \label{fig:implementation:scale_bp400}
         \end{subfigure}\\
-        \caption{Scalability results of the Belief Propagation program. The
-        super-linear speedup is a consequence of the existence of multiple
-        threads, which allows the program to converge faster.}
+        \caption{Scalability results of the Belief Propagation program.}
         \label{fig:implementation:scale_bp}
 \end{figure}
 
@@ -80,7 +80,7 @@ makes the LM version run almost twice as fast as the C++ version.
         \caption{Scalability results for the Heat Transfer program. Because the
            Heat Transfer program performs poorly when compared to the C++ program,
            the LM version needs at least 15 threads to reach the run time of the C++
-           program.}
+           program (for the 120x120 dataset).}
         \label{fig:implementation:scale_ht}
 \end{figure}
 
@@ -89,7 +89,9 @@ Graph Coloring~(GGC) program. In GGC, we use two datasets: Google
 Plus~\cite{snapnets}, a graph representing social circles in Google Plus with
 107614 nodes and 13673453 edges, and Twitter, a graph representing Twitter
 networks with 81306 nodes and 1768149 edges (note that Twitter was also used
-before in the MSSD program).  Since Twitter is a much smaller dataset, its
+before in the MSSD program). The Twitter and Google Plus datasets have almost
+the same number of nodes but Google Plus has ten times more edges, which makes
+coloring more time consuming. Since Twitter is a much smaller dataset, its
 speedup is much smaller than Google Plus, as expected. However, while the
 speedup of Twitter starts to drop after 16 threads, the LM system is still able
 to make it faster by adding more threads. For Google Plus, a 20-fold speedup is
@@ -106,17 +108,16 @@ is not a program where work is equally distributed.
                 \includegraphics[width=\textwidth]{experiments/scalability/scale-greedy-graph-coloring-gplus.png}
                 \label{fig:implementation:scale_ggc_gplus}
         \end{subfigure}\\
-        \caption{Scalability of the Greedy Graph Coloring program. The Twitter
-           and Google Plus datasets have almost the same number of nodes but
-           Google Plus has ten times more edges, which makes coloring more time
-           consuming.}
+
+        \caption{Scalability of the Greedy Graph Coloring program.}
+
         \label{fig:implementation:scale_ggc}
 \end{figure}
 
 The results for the N-Queens program are shown in
 Fig.~\ref{fig:implementation:scale_queens}. We decided to just use the 13 and 14
 configurations since those take longer to run. The 13-Queens configuration has
-169 nodes while the 14-Queens configuration has 196 nodes. The LM program
+169 (13x13) nodes while the 14-Queens configuration has 196 (14x14) nodes. The LM program
 considers the chess board as a graph and the bottom rows have more work to
 perform since the valid queens placements are built from the top to the bottom
 row. For a more in-depth explanation of the N-Queens program please see
@@ -190,7 +191,7 @@ Fig.~\ref{fig:implementation:scale_sssp}. The amount of work required to compute
 the results of each dataset depends on the size of the graph and the number of
 nodes from which the distance must be computed. The first conclusion is that
 more work implies more scalability, and the US Power Grid dataset has a 20-fold
-speedup for 32 threads, the best from the 4 datasets used. The second conclusion
+speedup for 32 threads, the best from the 6 datasets used. The second conclusion
 is that all datasets are able to, at least, reach the execution speed of the
 corresponding C++ program. However, some datasets such as EU Email or Orkut, are
 notoriously faster than C++ when using more than 5 threads, which is a fairly
@@ -243,8 +244,8 @@ which we want to calculate the distance from.
         \end{subfigure}\\
 
         \caption{Scalability for the MSSD program. The LM system scales better
-        when there is more work to do per node, with the US Power Grid dataset being the
-        most scalability.}
+        when there is more work to do per node, with the US Power Grid dataset
+        showing the most scalability.}
 
         \label{fig:implementation:scale_sssp}
 \end{figure}

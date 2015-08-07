@@ -1,14 +1,14 @@
 This chapter provides an overview of the proof theoretic basis behind LM and the
 dynamic semantics of the language. First, we will present the subset of linear
-logic on which LM is built. Second, we present the high level dynamic semantics
-- how rules are evaluated and node communication - followed by the low level
-dynamics, a close representation of how the virtual machine runs. We prove that
-the low level dynamic semantics are sound in relation to the high level dynamic
-semantics. However, the low level dynamic semantics are not complete due to the
-presence of rule priorities, comprehensions and aggregates, which are features
-that are not represented directly by the underlying linear logic system.  This
-approach has been used in Prolog, which includes useful features such as the
-\emph{cut operator} and a depth-first search strategy that make the language
+logic on which LM is built. Second, we present the high level dynamic semantics,
+i.e., how rules are evaluated and how node communication is done, followed by
+the low level dynamics, a close representation of how the virtual machine runs
+and we prove that the low level dynamic semantics are sound in relation to the
+high level dynamic semantics. The presence of rule priorities, comprehensions
+and aggregates makes the low level dynamic semantics not complete, since these
+are features are not represented directly by the underlying linear logic system.
+This is the same approach used in Prolog, which includes useful features such as
+the \emph{cut operator} and a depth-first search strategy that make the language
 sound but not complete.
 
 \section{Linear Logic}
