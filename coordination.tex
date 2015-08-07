@@ -1,6 +1,6 @@
-As already explained in Chapter~\ref{chapter:implementation}, the set of nodes
-of an LM program is seen as a graph data structure $G = (V, E)$ with nodes $V$
-and edges $E$ where threads $T$ perform work. Our implementation also allows
+In Chapter~\ref{chapter:implementation}, we saw that the set of nodes
+of an LM program is represented as a graph data structure $G = (V, E)$ with nodes $V$
+and edges $E$ where $T$ threads perform work. Our implementation also allows
 threads to steal nodes from other threads in order to improve load balancing.
 However, there are many scheduling details that are left undefined. How should a
 thread schedule the computation of its sub-graph? Is node stealing beneficial to

@@ -9,12 +9,12 @@ MSSD program which is essentially the SSSP program modified to compute multiple
 shortest distances.
 
 The SSSP program starts with the declaration of the predicates~
-(lines~\ref{line:coord:sssp_pred1}-\ref{line:coord:sssp_pred2}). The first
-predicate, \code{edge}, is a persistent predicate that describes the edges of
-graph and the third argument is the weight of each edge. Predicate
+(lines~\ref{line:coord:sssp_pred1}-\ref{line:coord:sssp_pred2}). As usual, the
+\code{edge} predicate is a persistent predicate that describes the edges of the
+graph, where the third argument is the weight of each edge. Predicate
 \code{shortest} represents a valid distance and path from node \code{@1} to the
-node in the first argument. Predicate \code{relax} also represents a valid path,
-but, is instead used to improve the distance in \code{shortest}.  The program
+node in the first argument.  Predicate \code{relax} also represents a valid
+path, and, is used to improve the distance in \code{shortest}.  The program
 computes the shortest distance from node \code{@1} by improving the distance in
 the \code{shortest} facts, until the shortest distance is reached in all nodes.
 In Fig.~\ref{code:coord:sssp_init}, we declare an example set of initial facts
@@ -84,9 +84,9 @@ shortest(@4, 3, [@1, @3, @2, @4]).
 \end{center}
 
 \caption{Graphical representation of the SSSP program: (a) represents the
-   program after propagating initial distance at node \code{@1}, followed by (b)
+   program's state after propagating the initial distance at node \code{@1}, followed by (b)
    where the first rule is applied in node \code{@2}, and (c) represents the
-   state of the final program, where all the shortest paths have been computed.}
+   final state of the program, where all the shortest paths have been computed.}
 
 \label{fig:shortest_path_program}
 \end{figure}
@@ -96,14 +96,14 @@ The first rule of the program
 following: if the current \code{shortest} path \code{P1} with distance \code{D1}
 is larger than a new path \code{relax} with distance \code{D2}, then replace the
 current shortest path with \code{D2}, delete the new \code{relax} path and
-propagate new paths to the neighbors
-(line~\ref{line:coord:sssp_first2}). The comprehension iterates
-over the edges of node \code{A} and derives a new \code{relax} fact for each
-node \code{B} with the distance \code{D2 + W}, where \code{W} is the weight of
-the edge. For example, in Fig.~\ref{fig:shortest_path_program}~(a) we apply rule
-1 in node \code{@1} where two new \code{relax} facts are derived at node
-\code{@2} and \code{@3}. Fig.~\ref{fig:shortest_path_program}~(b) is the result
-after applying the same rule but at node \code{2}.
+propagate new paths to the neighbors (comprehension at
+line~\ref{line:coord:sssp_first2}). The comprehension iterates over the edges of
+node \code{A} and derives a new \code{relax} fact for each node \code{B} with
+the distance \code{D2 + W}, where \code{W} is the weight of the edge. For
+example, in Fig.~\ref{fig:shortest_path_program}~(a) we apply rule 1 in node
+\code{@1} and two new \code{relax} facts are derived at node \code{@2} and
+\code{@3}.  Fig.~\ref{fig:shortest_path_program}~(b) is the result after
+applying the same rule but at node \code{@2}.
 
 The second rule of the program
 (lines~\ref{line:coord:sssp_second1}-\ref{line:coord:sssp_second2}) retracts a
@@ -128,5 +128,5 @@ the following: \code{@1}, \code{@3}, \code{@2} and then \code{@4}, where only 4
 to schedule the node with the shortest distance, which is essentially the
 Dijkstra shortest path algorithm~\cite{Dijkstra}. Note how it is possible to
 change the nature of the algorithm by simply changing the order of node
-computation, but still retain the declarative nature of the program.
+computation, but still retain the same declarative nature of the program.
 
