@@ -24,13 +24,13 @@ We executed all the programs using 17 configurations. The base configuration
 uses 1 thread and the other 16 configurations use an even numbers of threads for
 a maximum of 32 threads. In the plots presented next, the $x$ axis represents
 the number of threads used, the left $y$ axis represents the run time (in
-milliseconds) for that particular configuration and the right axis $y$
-represents the speedup computed as $T_1/T_i$, where $T_i$ represents the run
-time of the program using $i$ threads.  In some plots, there is also an
-horizontal black line that represents the run time of the C++ program and is
-used to understand how many threads are needed in order for an LM program to run
-faster than the C++ program. Note that all run times are the average of three
-runs.
+milliseconds) for that particular configuration and uses a logarithmic scale and
+the right axis $y$ represents the speedup computed as $T_1/T_i$, where $T_i$
+represents the run time of the program using $i$ threads.  In some plots, there
+is also an horizontal black line that represents the run time of the C++ program
+and is used to understand how many threads are needed in order for an LM program
+to run faster than the C++ program. Note that all run times are the average of
+three runs.
 
 The scalability results for the Belief Propagation program are presented in
 Fig.~\ref{fig:implementation:scale_bp}. This program has the best scalability

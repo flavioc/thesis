@@ -106,10 +106,12 @@ program. We use the datasets already described in
 Section~\ref{section:implementation:performance}.  In each plot we present the
 following lines: \textbf{Regular}, which represents the run time of the regular
 version; \textbf{Coordinated}, which represents the run time of the coordinated
-version; \textbf{Regular(1)/Coordinated(t)}, which represents the speedup of the
+version; \textbf{Regular(1)/Regular(t)}, which represents the speedup of the
+regular version using the single threaded regular version as the baseline;
+\textbf{Regular(1)/Coordinated(t)}, which represents the speedup of the
 coordinated version against the run time of the regular version using 1 thread
 as the baseline; and \textbf{C++}, which represents the run time of the MSSD C++
-program.
+program. Note that the run time (vertical axis) axis uses a logarithmic scale.
 
 Overall, there is a clear improvement in almost every dataset used. The datasets
 that see the best run time reductions are Twitter, Orkut and LiveJournal, which

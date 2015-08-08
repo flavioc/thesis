@@ -19,6 +19,7 @@ seq_sets = read_experiment_set(sys.argv[3])
 try: cexp_set = seq_sets["c"]
 except: sys.exit(1)
 
+
 for name in regular_threaded.experiment_names():
    datasets = regular_threaded.experiment_datasets_for(name)
 
@@ -28,9 +29,9 @@ for name in regular_threaded.experiment_names():
       c_exp = cexp_set.get_experiment(name, dataset)
       if regular_exp and coord_exp:
          if len(sys.argv) == 6:
-            name = sys.argv[5]
+            name_used = sys.argv[5]
          else:
-            name = None
-         regular_exp.coordination_compare(coord_exp, c_exp, sys.argv[4], name)
+            name_used = None
+         regular_exp.coordination_compare(coord_exp, c_exp, sys.argv[4], name_used)
 
 sys.exit(0)

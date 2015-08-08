@@ -133,6 +133,8 @@ experiments/threads/key-value-stats.tex: experiments/lib.py experiments/threads/
 		experiments/threads/key-value-stats.csv Cached > \
 		experiments/threads/key-value-stats.tex
 
+plots: scale allocator coord thread
+
 scale:
 	$(RE) experiments/scalability/plot.py \
 		experiments/scalability/runtime.csv \

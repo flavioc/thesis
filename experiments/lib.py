@@ -10,6 +10,9 @@ from numpy import nanmax
 
 max_threads = 32
 
+FRAME_ALPHA = 0.75
+LEGEND_SIZE = 16
+
 def dataset2title(dataset, name):
    if not dataset:
       return '-'
@@ -145,6 +148,8 @@ def parse_name(name):
 def parse_dataset(name):
    if name == 'min-max-tictactoe':
       return 'small'
+   if name == 'min-max-tictactoe-big':
+      return 'big'
    vec = name.split('-')
    if name.startswith('8queens'):
       return vec[1]
@@ -229,6 +234,10 @@ class experiment_set(object):
          return self.experiments[(name, dataset)]
       except KeyError:
          return None
+
+   def print_experiments(self):
+      for key, exp in self.experiments.iteritems():
+         print key, exp
 
    def create_histogram_compare(self, prefix, other, threads):
       n = len(self.experiments)
@@ -347,6 +356,9 @@ class experiment(object):
    def max_time(self):
       m = max(x for th, x in self.times.iteritems() if th <= max_threads)
       return float(m) * 1.1
+   def min_time(self):
+      m = min(x for th, x in self.times.iteritems() if th <= max_threads)
+      return float(m)/5
 
    def get_improvement(self, reg):
       return [float(reg.get_time(th))/float(self.times[th]) for th in sorted(self.times) if th <= max_threads]
@@ -531,11 +543,12 @@ class experiment(object):
       ax.set_title(self.title, fontsize=titlefontsize)
       ax.yaxis.tick_left()
       ax.yaxis.set_label_position("left")
-      ax.set_ylabel('Execution Time', fontsize=ylabelfontsize)
+      ax.set_ylabel('Execution Time (ms)', fontsize=ylabelfontsize)
       ax.set_xlabel('Threads', fontsize=ylabelfontsize)
       ax2.set_ylabel('Speedup', fontsize=ylabelfontsize)
+      self.set_log_scale(ax)
       ax.set_xlim([1, self.max_threads()])
-      ax.set_ylim([0, max(self.max_time(), other_exp.max_time()) * 1.25])
+      ax.set_ylim([min(self.min_time(), other_exp.min_time())*5, max(self.max_time(), other_exp.max_time()) * 1.25])
       ax2.set_ylim([0, max(self.max_speedup(), other_exp.max_speedup()) * 1.25])
       cmap = plt.get_cmap('gray')
 
@@ -549,7 +562,7 @@ class experiment(object):
             label='Other Allocator Speedup', linestyle='--', marker='o', color='g')
       ax.legend([stdtime, stdspeedup, othertime, otherspeedup],
             [stdname + ' Run Time', stdname + ' Speedup', othername + ' Run Time', othername + ' Speedup'],
-            loc=2, fontsize=18, markerscale=2)
+            loc=2, fontsize=LEGEND_SIZE, fancybox=True, framealpha=FRAME_ALPHA, markerscale=2)
 
       self.set_ticks()
       setup_lines(ax, cmap)
@@ -575,13 +588,14 @@ class experiment(object):
       ax.set_title(self.title, fontsize=titlefontsize)
       ax.yaxis.tick_left()
       ax.yaxis.set_label_position("left")
+      self.set_log_scale(ax)
       ax2.yaxis.tick_right()
       ax2.set_ylabel('Speedup', fontsize=ylabelfontsize, color='g')
       ax2.set_ylim([0, self.max_speedup()])
-      ax.set_ylabel('Execution Time', fontsize=ylabelfontsize, color='r')
+      ax.set_ylabel('Execution Time (ms)', fontsize=ylabelfontsize, color='r')
       ax.set_xlabel('Threads', fontsize=ylabelfontsize)
       ax.set_xlim([1, self.max_threads()])
-      ax.set_ylim([0, self.max_time()])
+      ax.set_ylim([self.min_time(), self.max_time()])
       cmap = plt.get_cmap('gray')
 
       ax.spines['left'].set_color('red')
@@ -594,7 +608,7 @@ class experiment(object):
       self.set_ticks()
 
       ptime, = ax.plot(self.x_axis(), self.time_data(),
-         label='Execution Time', linestyle='--', marker='+', color='r')
+         label='Execution Time (ms)', linestyle='--', marker='+', color='r')
       pspeedup, = ax2.plot(self.x_axis(), self.base_speedup_data(),
          label='Speedup', linestyle='--', marker='o', color='g')
       plots = [ptime, pspeedup]
@@ -605,7 +619,7 @@ class experiment(object):
          plots.append(cpp)
          names.append("C++")
 
-      ax.legend(plots, names, loc=2, fontsize=18, markerscale=2)
+      ax.legend(plots, names, loc=2, fontsize=LEGEND_SIZE, fancybox=True, framealpha=FRAME_ALPHA, markerscale=2)
 
       setup_lines(ax, cmap)
       setup_lines(ax2, cmap)
@@ -704,12 +718,13 @@ class experiment(object):
          name_coord = 'Threads'
 
       ax.yaxis.tick_left()
+      self.set_log_scale(ax)
       ax.yaxis.set_label_position("left")
-      ax.set_ylabel('Execution Time', fontsize=ylabelfontsize)
+      ax.set_ylabel('Execution Time (ms)', fontsize=ylabelfontsize)
       ax.set_xlabel('Threads', fontsize=ylabelfontsize)
       ax2.set_ylabel('Speedup', fontsize=ylabelfontsize)
       ax.set_xlim([1, self.max_threads()])
-      ax.set_ylim([0, max(self.max_time(), coord_exp.max_time())])
+      ax.set_ylim([min(self.min_time(), coord_exp.min_time()), max(self.max_time(), coord_exp.max_time())])
       cmap = plt.get_cmap('gray')
 
       regtime, = ax.plot(self.x_axis(), self.time_data(),
@@ -730,7 +745,7 @@ class experiment(object):
         lines.append(ctime)
         labels.append("C++")
 
-      ax.legend(lines, labels, loc=2, fontsize=18, markerscale=2)
+      ax.legend(lines, labels, loc=2, fontsize=LEGEND_SIZE, fancybox=True, framealpha=FRAME_ALPHA, markerscale=2)
       self.set_ticks()
 
       setup_lines(ax, cmap)
@@ -754,7 +769,8 @@ class experiment(object):
       ax.set_ylabel('Ratio', fontsize=ylabelfontsize)
       ax.set_xlabel('Threads', fontsize=ylabelfontsize)
       ax.set_xlim([1, self.max_threads()])
-      ax.set_ylim([0, max(max(sbp.get_improvement(self)), max(max(glsbp.get_improvement(glfifo)), max(glsbp.get_improvement(glmulti))))])
+      max_y = max(max(sbp.get_improvement(self)), max(max(glsbp.get_improvement(glfifo)), max(glsbp.get_improvement(glmulti))))
+      ax.set_ylim([0, max_y])
       cmap = plt.get_cmap('gray')
 
       lmratio, = ax.plot(self.x_axis(), sbp.get_improvement(self), label='LM', linestyle='-', marker='+', color='r')
@@ -764,7 +780,7 @@ class experiment(object):
       lines = [lmratio, glfiforatio, glmultiratio]
       labels = ["LM", "GraphLab fifo", "Graphlab multiqueue"]
 
-      ax.legend(lines, labels, loc=2, fontsize=18, markerscale=2)
+      ax.legend(lines, labels, loc=2, fontsize=LEGEND_SIZE, fancybox=True, framealpha=FRAME_ALPHA, markerscale=2)
 
       self.set_ticks()
       setup_lines(ax, cmap)
@@ -784,12 +800,13 @@ class experiment(object):
       ax.set_title(self.title, fontsize=titlefontsize)
 
       ax.yaxis.tick_left()
+      self.set_log_scale(ax)
       ax.yaxis.set_label_position("left")
-      ax.set_ylabel('Execution Time', fontsize=ylabelfontsize)
+      ax.set_ylabel('Execution Time (ms)', fontsize=ylabelfontsize)
       ax.set_xlabel('Threads', fontsize=ylabelfontsize)
       ax2.set_ylabel('Speedup', fontsize=ylabelfontsize)
       ax.set_xlim([1, self.max_threads()])
-      ax.set_ylim([0, max(self.max_time(), glexp.max_time())])
+      ax.set_ylim([min(self.min_time(), glexp.min_time())*2, max(self.max_time(), glexp.max_time())])
       cmap = plt.get_cmap('gray')
 
       regtime, = ax.plot(self.x_axis(), self.time_data(),
@@ -804,7 +821,7 @@ class experiment(object):
       lines = [(regtime), gltime, regspeedup, glspeedup]
       labels = ["LM", "GraphLab", "LM(1)/LM(t)", "GraphLab(1)/GraphLab(t)"]
 
-      ax.legend(lines, labels, loc=2, fontsize=18, markerscale=2)
+      ax.legend(lines, labels, loc=2, fontsize=LEGEND_SIZE, fancybox=True, framealpha=FRAME_ALPHA, markerscale=2)
 
       self.set_ticks()
       setup_lines(ax, cmap)
@@ -812,6 +829,10 @@ class experiment(object):
 
       name = prefix + self.create_filename()
       plt.savefig(name)
+
+   def set_log_scale(self, ax):
+      ax.set_yscale('log', basey=10)
+      ax.yaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%d'))
 
    def coordination_compare(self, coord_exp, cexp, prefix, name_coord = None, max_speedup = None):
       fig = plt.figure()
@@ -831,11 +852,12 @@ class experiment(object):
 
       ax.yaxis.tick_left()
       ax.yaxis.set_label_position("left")
-      ax.set_ylabel('Execution Time', fontsize=ylabelfontsize)
+      ax.set_ylabel('Execution Time (ms)', fontsize=ylabelfontsize)
       ax.set_xlabel('Threads', fontsize=ylabelfontsize)
       ax2.set_ylabel('Speedup', fontsize=ylabelfontsize)
+      self.set_log_scale(ax)
       ax.set_xlim([1, self.max_threads()])
-      ax.set_ylim([0, max(self.max_time(), coord_exp.max_time())])
+      ax.set_ylim([min(self.min_time(), coord_exp.min_time()), max(self.max_time(), coord_exp.max_time())])
       if max_speedup:
          ax2.set_ylim([0, max_speedup])
       cmap = plt.get_cmap('gray')
@@ -843,20 +865,21 @@ class experiment(object):
       regtime, = ax.plot(self.x_axis(), self.time_data(),
          label='Regular Run Time', linestyle='-', marker='+', color='r')
       coordtime, = ax.plot(coord_exp.x_axis(), coord_exp.time_data(),
-         label=name_coord + ' Run Time', linestyle='--', marker='o', color='g')
+         label=name_coord + ' Run Time', linestyle='-', marker='o', color='g')
+      regspeedup, = ax2.plot(self.x_axis(), self.base_speedup_data(), label="Regular Speedup", linestyle='--', color='r', marker='+')
       coordspeedup, = ax2.plot(coord_exp.x_axis(), coord_exp.base_speedup_data(self.get_time(1)),
-            label=name_coord + ' Speedup', linestyle='--', marker='+', color='g')
+            label=name_coord + ' Speedup', linestyle='--', marker='o', color='g')
       if cexp:
          ctime, = ax.plot(self.x_axis(), [cexp.get_time(1)] * len(self.x_axis()),
            label='Linear', linestyle='-', color=cmap(0.2))
 
-      lines = [(regtime), coordtime, coordspeedup]
-      labels = ["Regular", name_coord, "Regular(1)/" + name_coord + "(t)"]
+      lines = [(regtime), coordtime, regspeedup, coordspeedup]
+      labels = ["Regular", name_coord, "Regular(1)/Regular(t)", "Regular(1)/" + name_coord + "(t)"]
       if cexp:
         lines.append(ctime)
         labels.append("C++ time")
 
-      ax.legend(lines, labels, loc=2, fontsize=18, markerscale=2)
+      ax.legend(lines, labels, loc=2, fontsize=LEGEND_SIZE, fancybox=True, framealpha=FRAME_ALPHA, markerscale=2)
 
       self.set_ticks()
       setup_lines(ax, cmap)
@@ -885,7 +908,7 @@ class experiment(object):
 
 def setup_lines(ax, cmap):
    lines = ax.lines
-   markersize = 20
+   markersize = 16
    markerspace = 1
    c = cmap(0.5)
 
