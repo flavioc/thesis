@@ -197,14 +197,16 @@ class experiment_set(object):
          self.experiments[(name, dataset)] = exp
          exp.add_fact_stats(threads, facts_derived, facts_deleted, facts_sent, facts_end)
 
-   def add_c_mem_experiment(self, name, dataset, threads, avg):
+   def add_c_mem_experiment(self, name, dataset, threads, avg, final):
       try:
          exp = self.experiments[(name, dataset)]
          exp.add_total_memory_average(threads, avg)
+         exp.add_total_memory(threads, final)
       except KeyError:
          exp = experiment(name, dataset)
          self.experiments[(name, dataset)] = exp
          exp.add_total_memory_average(threads, avg)
+         exp.add_total_memory(threads, final)
 
    def experiment_names(self):
       s = {name:True for (name, dataset) in self.experiments.keys()}
@@ -959,7 +961,7 @@ def read_mem_experiment_set(filename):
             exp = experiment_set()
             expsets[sched] = exp
          if sched == 'c':
-            exp.add_c_mem_experiment(name, dataset, 1, int(rest[0]))
+            exp.add_c_mem_experiment(name, dataset, 1, int(rest[0]), int(rest[1]))
          else:
             exp.add_mem_experiment(name, dataset, threads, rest)
    return expsets

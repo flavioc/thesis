@@ -14,8 +14,8 @@ except:
    print "Failed to load th experiment set"
    sys.exit(1)
 
-print "\\begin{tabular}{c | c | c } \\hline"
-print "\t\\textbf{Program} & \\textbf{Size} & \\textbf{Average} \\\\ \\hline \\hline"
+print "\\begin{tabular}{c | c | c | c} \\hline"
+print "\t\\textbf{Program} & \\textbf{Size} & \\textbf{Average} & \\textbf{Final} \\\\ \\hline \\hline"
 
 for name in c.experiment_names():
    datasets = c.experiment_datasets_for(name)
@@ -32,7 +32,7 @@ for name in c.experiment_names():
       if first: first = False
       else: print "\t\t",
 
-      print " & " + dataset2title(dataset, name) + " & " + readable_mem(exp.get_total_memory_average(1)) + "\\\\"
+      print " & " + dataset2title(dataset, name) + " & " + readable_mem(exp.get_total_memory_average(1)) + " & " + readable_mem(exp.get_total_memory(1)) + "\\\\"
    print "\t\\hline"
 
 print "\\end{tabular}"

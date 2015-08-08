@@ -1,19 +1,15 @@
-belief-propagation-50 c 2808
-belief-propagation-200 c 46218
-belief-propagation-300 c 102149
-belief-propagation-400 c 185689
-new-heat-transfer-80 c 2376
-new-heat-transfer-120 c 5544
-min-max-tictactoe c 1
-min-max-tictactoe-big c 1
-8queens-11 c 1
-8queens-12 c 1
-8queens-13 c 1
-8queens-14 c 1
-shortest-usairports500 c 8045
-shortest-oclinks c 78457
-shortest-uspowergrid c 762409
-shortest-email c 273714
-shortest-twitter c 251226
-shortest-orkut c 7852152
-shortest-livejournal c 5293322
+min-max-tictactoe c 1 0
+min-max-tictactoe-big c 1 0
+shortest-livejournal c 5293322 5704888
+shortest-orkut c 7852152 8003300
+shortest-usairports500 c 8045 16068
+shortest-oclinks c 78457 155600
+shortest-uspowergrid c 762409 1527520
+shortest-email c 273714 305436
+shortest-twitter c 251226 341092
+belief-propagation-50 c 2808 2820
+belief-propagation-200 c 46218 46256
+belief-propagation-300 c 102149 102208
+belief-propagation-400 c 185689 185768
+new-heat-transfer-80 c 2376 2376
+new-heat-transfer-120 c 5544 5544
