@@ -32,13 +32,14 @@ type linear play(node, game Game, int Player, int Play, int Depth).
 
 const root-player = 1. const initial-game = [...].\hfill// Constant declaration: player and initial game state
 fun next(P : int) : int = if P = 1 then 2 else 1 end.\hfill// Function declaration: select next player
+external fun minimax_score(game, int, int).\hfill// Returns the score of a board
 
 play(A, Game, NextPlayer, LastPlay, Depth),\label{line:coord:minimax_play1}\label{line:coord:minimax_play11}\hfill// Rule 1: ending game state
 Score = minimax_score(Game, NextPlayer, root-player), Score > 0
    -o score(A, Score, LastPlay).\label{line:coord:minimax_play12}
 
 play(A, Game, NextPlayer, LastPlay, Depth),\label{line:coord:minimax_play21}\hfill// Rule 2: expand state
-0 = minimax_score(Game, NextPlayer, root-player)
+0 = minimax_score(Game, NextPlayer, root-player)\hfill// minimax_score is an external function
    -o expand(A, [], Game, 0, NextPlayer, LastPlay, Depth).\label{line:coord:minimax_play2}\label{line:coord:minimax_play22}
 
 expand(A, Game, [], N, Player, Play, \underline{Depth}), Player = root-player\label{line:coord:minimax_expand1}\label{line:coord:minimax_rule11}\hfill// Rule 3: maximize node
@@ -58,7 +59,7 @@ expand(A, First, [0 | Xs], N, Player, Play, \underline{Depth}), Depth < 5\label{
        play(B, Game ++ [P | Xs], next(P), length(First), \underline{Depth + 1}), parent(B, A),
        expand(A, First ++ [0], Xs, N + 1, Player, Play, \underline{Depth})).\label{line:coord:minimax_rule42}
 
-expand(A, First, [C | Xs], N, Player, Play, \underline{Depth}) C <> 0\label{line:coord:minimax_expand11}\label{line:coord:minimax_rule51}\hfill// Rule 7: next game play
+expand(A, First, [C | Xs], N, Player, Play, \underline{Depth}), C <> 0\label{line:coord:minimax_expand11}\label{line:coord:minimax_rule51}\hfill// Rule 7: next game play
   -o expand(A, First ++ [C], Xs, N, Player, Play, \underline{Depth}).\label{line:coord:minimax_expand2}\label{line:coord:minimax_rule52}
 
 score(A, Score, BestPlay), parent(A, B) -o new-score(B, Score, BestPlay).\label{line:coord:minimax_new}\hfill// Rule 8: sending score to parent node

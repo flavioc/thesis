@@ -81,9 +81,10 @@ executed, the rule engine (Section~\ref{sec:implementation:rule_engine}) of the
 regular node is updated to take into account the facts of the thread's node so
 that mixed rules (rules that use both thread and regular facts) execute. In this
 scheme, mixed rules may be unsuccessfully fired repeatedly until a node which
-has matching facts gets to execute.  Since the LHS of mixed rules have an
-implicit \code{running(T, N)} fact, the fact that a different node is being
-executed, is enough to fire mixed rules. Without using an implicit
-\code{running} fact, the system would need to lookup for a regular node that
-would successfully activate a given mixed rule. This would be prohibitly
-expensive since some programs might have millions of regular nodes.
+has matching facts gets to execute. Since the LHS of mixed rules use an implicit
+\code{running(T, N)} fact, it is enough that a different node is running
+to fire mixed rules as long as the running node has the required facts.
+Without using an implicit \code{running} fact, the system would need to lookup
+for a regular node that would successfully activate a given mixed rule. This
+would be prohibitly expensive since some programs might have millions of regular
+nodes.

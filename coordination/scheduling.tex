@@ -22,13 +22,14 @@ scheduling decisions of the system:
    \item \code{update-priority(node A, float F)}: Changes the temporary priority
       of node \code{A} to \code{F}.
 
+
    \item \code{set-priority(node A, float F)}: Sets the temporary priority of
       node \code{A} to \code{F} if \code{F} is \emph{better} than the current
-      priority (either default or temporary). The programmer can decide if
-      priorities are to be ordered in ascending or descending order, thus if
-      node \code{A} has priority \code{G}, we only change the temporary priority
-      to \code{F} if \code{F > G} (ascending order) or \code{F < G} (descending
-      order).
+      priority (either default or temporary). The programmer can decide
+      (see~\ref{sec:coordination:global}) if priorities are to be ordered in
+      ascending or descending order, thus if node \code{A} has priority
+      \code{G}, we only change the temporary priority to \code{F} if \code{F >
+      G} (ascending order) or \code{F < G} (descending order).
 
    \item \code{add-priority(node A, float F)}: Changes the temporary priority
       of node \code{A} to \code{F + G}, where \code{G} is the priority of the
@@ -38,7 +39,8 @@ scheduling decisions of the system:
    \code{A}.
 
    \item \code{schedule-next(node A)}: Changes the temporary priority of node
-   \code{A} to be $+\infty$.
+   \code{A} to be $+\infty$ if priorities are descending, or $-\infty$ if
+   priorities are ascending.
 
    \item \code{set-default-priority(node A, float F)}: Sets the default
       priority of node \code{A} to \code{F}.

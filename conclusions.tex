@@ -9,9 +9,11 @@ linear logic programming language to exploit parallelism in a declarative,
 efficient and scalable way. For this, we designed and implemented LM, a
 programming language suitable for writing concurrent algorithms over graph
 data-structures. LM programs are composed of a set of inference rules that apply
-over a database of logical facts. Since LM is based on linear logic, facts used
-in rules may be retracted, making it possible for the programmer to
-declaratively manage structured state.
+over a database of logical facts. Concurrency is achieved by partitioning the
+database across a graph data structures and forcing rule derivation to happen at
+the node level. Since LM is based on linear logic, facts used in rules may be
+retracted, making it possible for the programmer to declaratively manage
+structured state.
 
 We introduced coordination facts in LM to show that it is possible for the
 programmer to change how programs are scheduled in order to improve program run
@@ -33,16 +35,16 @@ We now enumerate in more detail the main contributions of this thesis:
 \begin{description}
    \item[Structured State]
 
-Since LM is based on linear logic, LM enables programs to manage
-state in a structured manner. Due to the restriction over the inference rules,
-rules are derived independently on different nodes of the graph, which makes it
-possible to run LM programs in parallel.
+Since LM is based on linear logic, LM enables programs to manage state in a
+structured manner. Due to the restriction over the inference rules, rules are
+derived independently on different nodes of the graph data structure, which
+makes it possible to run LM programs in parallel.
 
    \item[Implementation]
 
 Writing efficient implementations of declarative languages is challenging,
 especially when adding support for parallel execution. In this thesis, we have
-showed a compilation strategy and memory layout organization for LM programs,
+shown a compilation strategy and memory layout organization for LM programs,
 which allows programs to run less than one order of magnitude slower than
 hand-written C++ programs. We also described how the LM runtime supports
 multicore execution by partitioning the graph among threads. To the best of our
@@ -118,7 +120,7 @@ competitive with sequential programs written in languages such as C++.
 \section{Future Work}
 
 While much progress has been achieved with this thesis, many new research
-visions have been opened with this work. We now enumerate further research goals
+avenues have been opened with this work. We now enumerate further research goals
 that should be interesting to pursue.
 
 \begin{description}
@@ -155,10 +157,12 @@ the restrictions on LM rules and allow for more programmer freedom.  LM
 currently only allows rules where the LHS refers to the same node, however, it
 should be possible to allow rules that use facts from different nodes. The use
 of linear logic facts makes this hard because we need to ensure that a linear
-fact is used up only once, therefore the compiler should generate code to
-enforce this, probably through the use of transactions. It will also be
-interesting to measure how such mechanisms might reduce the overall performance
-of programs.
+fact is used only once, therefore the compiler should generate code to enforce
+this, probably through the use of transactions. In the CHR community, Lam et
+al.~\cite{Lam:2013:DEC:2505879.2505892} have developed an encoding for
+distributed rules using at most one immediate neighbor into rules that run
+locally. It should be relatively straightforward to provide a similar encoding
+for LM and then assess how performance is affected by such encoding.
 
 \item[Implicit and Explicit Parallelism] We need more applications that take
    advantage of the mixed parallelism that is available with thread facts. We

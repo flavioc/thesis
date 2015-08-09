@@ -109,8 +109,8 @@ example, if a node derives two \code{set-priority} facts that change the
 priority of node \code{@1} to \code{1} and \code{2}, the virtual machine
 coalesces the two instructions into a single \code{set-priority} that is applied
 with value \code{2} (the higher priority) after all the candidate rules of the
-node are executed. The reason for this optimization is that nodes may be
-executed several times and in short bursts during the lifetime of the program,
-therefore immediately applying each and every coordination instruction is not
-cost effective. We aim to reduce the amount of locking and movement of nodes
-inside the queues due to priority updates.
+node are executed. The reason for this optimization is that nodes may run for
+some number of steps during the lifetime of the program, therefore immediately
+applying each and every coordination instruction is not cost effective. We aim
+to reduce the amount of locking and movement of nodes inside the queues due to
+priority updates.
