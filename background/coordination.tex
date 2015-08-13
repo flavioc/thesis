@@ -1,8 +1,8 @@
 Although declarative languages give limited opportunities to coordinate
-programs, there are other programming languages that supported different kinds
-of coordination~\cite{Papadopoulos98coordinationmodels}. Most of the following
-languages cannot be easily classified into either imperative or declarative
-languages, but tend to be a mix of both.
+programs, there are other programming languages that directly support different
+kinds of coordination~\cite{Papadopoulos98coordinationmodels}. Most of the
+following languages cannot be easily classified into either imperative or
+declarative languages, but tend to be a mix of both.
 
 Coordination programming languages tend to divide execution in two parts:
 \emph{computation}, where the actual computation is performed, and
@@ -54,15 +54,6 @@ which is embedded into another language, Delirium actually embeds operators
 written in other languages inside the Delirium language. The advantages of
 Delirium are improved abstraction and easier debugging because sequential
 operators are isolated from the coordination language.
-
-Linda and Delirium are limited in the sense that the programmer can only
-coordinate the scheduling of processing units, while placement of data is left
-to the implementation. LM differs from those languages because coordination acts
-on data instead of processing units. The abstraction is then raised by
-considering data and algorithmic aspects of the program instead of focusing on
-how processing units are used. Furthermore, LM is both a coordination language
-and a computation language and there is no distinction between the two
-components.
 
 The original Meld~\cite{ashley-rollman-iclp09} can also be seen as a kind of
 data-driven coordination language. The important distinction is that in Meld

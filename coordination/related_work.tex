@@ -1,7 +1,18 @@
 
-In this section, we explore other programming models which also support some
-kind of coordination primitives that allow explicit scheduling and load
-balancing of work between available processing units.
+As mentioned in Section~\ref{sec:background:coordination}, Linda~\cite{linda}
+and Delirium~\cite{Delirium} are two programming languages that support
+coordination. When compared to LM, Linda and Delirium are limited in the sense
+that the programmer can only coordinate the scheduling of processing units,
+while placement of data is left to the implementation. LM differs from those
+languages because coordination acts on data instead of processing units.
+Coordination facts as used in this chapter raise the abstraction by considering
+data and algorithmic aspects of the program instead of focusing on how
+processing units are used. Furthermore, LM is both a coordination language and a
+computation language and there is no distinction between the two components.
+
+There are also several programming models also support some kind of coordination
+primitives that allow explicit scheduling and load balancing of work between
+available processing units but are not considered proper programming languages.
 
 The Galois~\cite{Pingali:2011:TPA:1993316.1993501} programming model implements
 autonomous scheduling by default, where activities may be rolled back in case of

@@ -1,50 +1,3 @@
-Most software applications are developed using a \emph{sequential imperative
-model} where there is a sequence of steps that the processor must do and a
-\emph{memory area} where the processor stores and retrieves data during the
-course of execution. Different programming models have been suggested to solve
-the limitations of the sequential imperative model and allow programmers to
-exploit parallelism. We classify these models into two main classes:
-\emph{imperative parallel programming} and \emph{declarative parallel
-programming}.
-
-In \emph{imperative parallel programming}, imperative applications are modified
-using new concurrency or communication constructs that allow the programmer to
-explicitly exploit parallelism. It requires the programmer to write code to
-efficiently split computation among processing units and allow sharing of data
-between processing units. In contrast to declarative parallel programming,
-imperative parallel programming is more low-level because the programmer has
-total control over scheduling and partitioning of data. The very nature of
-parallel execution means increased non-determinism during execution which leads
-to execution inter-leavings that the programmer needs to be aware of.
-Furthermore, many well-known imperative algorithms are not easily parallelizable
-and require complete new approaches to run in a scalable fashion. Moreover,
-non-determinism makes it hard to prove properties of the program because the
-simpler assumptions of the imperative model no longer hold under the new
-programming model.
-
-In terms of communication and synchronization between the available processing
-units, there are two main parallel programming models available for writing
-parallel programs: shared memory~\cite{Mellor-Crummey:1991} and message passing.
-
-As we mentioned before, the imperative model uses a memory area to store and
-retrieve data. The \emph{shared memory model} extends this area to allow
-communication between \emph{workers}, processes or threads, which are processing
-units that have their own execution flow but share the same memory area. The
-existence of a shared memory area makes it easier to share data between workers,
-however, access to data multiple workers needs to be protected, otherwise it
-might become inconsistent. Many constructs are available to ensure \emph{mutual
-exclusion} such as \emph{locks}~\cite{Silberschatz:2008},
-\emph{semaphores}~\cite{Dijkstra:2002}, \emph{mutexes}~\cite{Silberschatz:2008},
-and \emph{condition variables}~\cite{Hoare:1974}.
-
-In the \emph{message passing} model, processing units do not share the same
-memory area. Instead, processing units send messages to each other to coordinate
-parallel execution. Message passing is well suited for programming clusters of
-computers, where it is not possible to have a shared memory area, however
-message processing is more costly than shared memory area due to the extra work
-required to send and serialize messages.  The most well known framework for
-message passing is the Message Passing Interface~(MPI~)~\cite{Forum:1994}.
-
 Parallelism has been traditionally classified into two classes: \emph{data
 parallelism} and \emph{task parallelism}. In data parallelism, the data is
 partitioned among the processing units and each unit performs the same
@@ -63,3 +16,45 @@ processing unit that makes work distribution decisions or the scheduler uses a
 \emph{distributed strategy} where each processing unit is able to perform
 \emph{work stealing} or \emph{work sharing}~\cite{Blumofe:1999} on other units
 to improve load balance.
+
+A popular technique for implementing parallelism is by using \emph{imperative
+parallel programming}. In imperative programming, there is a
+sequence of steps that the processor must do and a \emph{memory area} where the
+processor stores and retrieves data during the course of execution. To implement
+parallelism, imperative applications are modified using new concurrency or
+communication constructs that allow the programmer to explicitly exploit
+parallelism. It requires the programmer to write code to efficiently split
+computation among processing units and allow sharing of data between processing
+units. Imperative parallel
+programming is a low-level form of parallel programming because the programmer has total control over
+scheduling and partitioning of data. The very nature of parallel execution means
+increased non-determinism during execution which leads to execution
+inter-leavings that the programmer needs to be aware of.  Furthermore, many
+well-known imperative algorithms are not easily parallelizable and require
+complete new approaches to run in a scalable fashion. Finally, non-determinism
+makes it hard to prove properties of the program because the simpler assumptions
+of the imperative model no longer hold under the new programming model.
+
+In terms of communication and synchronization between the available processing
+units, there are two main imperative parallel programming models available for
+writing parallel programs: shared memory~\cite{Mellor-Crummey:1991} and message
+passing.
+
+As we mentioned before, the imperative model uses a memory area to store and
+retrieve data. The \emph{shared memory model} extends this area to allow
+communication between \emph{workers}, processes or threads, which are processing
+units that have their own execution flow but share the same memory area. The
+existence of a shared memory area makes it easier to share data between workers,
+however, access to data from multiple workers needs to be protected, otherwise it
+might become inconsistent. Many constructs are available to ensure \emph{mutual
+exclusion} such as \emph{locks}~\cite{Silberschatz:2008},
+\emph{semaphores}~\cite{Dijkstra:2002}, \emph{mutexes}~\cite{Silberschatz:2008},
+and \emph{condition variables}~\cite{Hoare:1974}.
+
+In the \emph{message passing} model, processing units do not share the same
+memory area. Instead, processing units send messages to each other to coordinate
+parallel execution. Message passing is well suited for programming clusters of
+computers, where it is not possible to have a shared memory area, however
+message processing is more costly than shared memory area due to the extra work
+required to send and serialize messages.  The most well known framework for
+message passing is the Message Passing Interface~(MPI~)~\cite{Forum:1994}.

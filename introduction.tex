@@ -46,13 +46,13 @@ the program as a graph of node data structures, where each node performs
 computation independently and is able to communicate with other nodes.
 
 LM introduces a new mechanism, called coordination, that is semantically
-equivalent to regular computation and allows the programmer to reason about the
-underlying parallel architecture. Coordination introduces the concept of
-\emph{coordination facts}, which are logical facts used for scheduling and data
-partitioning purposes, and \emph{thread facts}, which allow the programmer to
-reason about the state of the underlying parallel architecture. The use of these
-new facilities moves the LM language from the paradigm of implicit parallelism
-to some form of declarative explicit parallelism, but without the pitfalls of
+equivalent to regular computation and allows the programmer to reason about
+parallel execution. Coordination introduces the concept of \emph{coordination
+facts}, which are logical facts used for scheduling and data partitioning
+purposes, and \emph{thread facts}, which allow the programmer to reason about
+the state of the underlying parallel architecture. The use of these new
+facilities moves the LM language from the paradigm of implicit parallelism to
+some form of declarative explicit parallelism, but without the pitfalls of
 imperative parallel programming. In turn, this makes LM a novel declarative
 language that allows the programmer to optionally control how execution and data
 is managed by the execution system.
