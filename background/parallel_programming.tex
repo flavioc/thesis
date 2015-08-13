@@ -1,82 +1,39 @@
 Most software applications are developed using a \emph{sequential imperative
 model} where there is a sequence of steps that the processor must do and a
 \emph{memory area} where the processor stores and retrieves data during the
-course of execution.  The increase of clock frequency on single-core processors
-during the last decades has allowed applications using the sequential imperative model to
-run faster without any changes in the source code. Today, due to the stalling of
-clock frequencies, processor manufacturers are focusing on increasing the number
-of cores per processor, but this is useless to the imperative model since it
-does not take advantage of multiple processing cores. This model is also
-unsuitable for distributed applications that need to be run in a cluster of
-computers because the processors in the cluster do not share the same memory
-area and require communication to coordinate computation.
-
-Different programming models have been suggested to solve the limitations of the
-sequential imperative model and allow programmers to exploit parallelism. We
-classify these models into three main classes: \emph{automatic parallelism},
-\emph{imperative parallel programming} and
-\emph{declarative parallel programming}.
-
-In automatic parallelism, we have a compiler that transforms programs into
-parallel code. A clear example of automatic parallelism is \emph{instruction
-level parallelism}, which is available on computer architectures to allow
-processors to execute multiple instructions at the same time. On the software
-side, the compiler may re-order instructions to allow the hardware to take
-advantage of parallelism. Unfortunately, such approach has limited applicability
-because important parallelization opportunities are available at a different,
-higher, levels of abstraction. These high level approaches are discussed in
-Section~\ref{section:background:declarative}.
+course of execution. Different programming models have been suggested to solve
+the limitations of the sequential imperative model and allow programmers to
+exploit parallelism. We classify these models into two main classes:
+\emph{imperative parallel programming} and \emph{declarative parallel
+programming}.
 
 In \emph{imperative parallel programming}, imperative applications are modified
 using new concurrency or communication constructs that allow the programmer to
-explicitly exploit parallelism. It is required that the programmer writes code
-to efficiently split computation among processing units and allow sharing of
-data between processing units. In contrast to declarative parallel programming,
-imperative parallel programming is more low-level because the programmer needs
-to deal with the finer details of parallelism.
-
-\section{Imperative Parallel Programming Models}
-
-Exploiting parallelism using imperative programming is known to be hard since it
-is difficult to coordinate processing units effectively and without bugs. The
-very nature of parallel execution means increased non-determinism during
-execution which leads to execution interweavings that the programmer needs to be
-aware of. Furthermore, many well-known imperative algorithms are not trivially
-parallelizable and require complete new approaches to run in a scalable fashion.
-Moreover, non-determinism makes it hard to prove properties of the program
-because the simpler assumptions of the imperative model no longer hold under the
-new programming model.
-
-Parallelism has been traditionally classified into two classes: \emph{data
-parallelism} and \emph{task parallelism}. In data parallelism, the data is
-partitioned among the processing units and each unit performs the same
-computation on their piece of data. In task parallelism, the program is split
-into different tasks that are then assigned to processing units. If the data or
-tasks are well-defined, relatively independent and regular (i.e., they take the
-same time to be completed) then parallelization is trivial. However, issues
-arise when it is hard to partition the tasks or the tasks that need to be
-completed are not static but are dynamically generated during execution. To
-complicate matters even further, some tasks may depend on other tasks being
-completed in order to be started. In such situations, the programmer is required
-to implement a \emph{scheduler} that efficiently assigns tasks to processing
-units and is able to \emph{balance} the load among those units. A scheduler may
-use a \emph{centralized strategy} where there is a \emph{master} processing unit
-that makes work distribution decisions or the scheduler uses a \emph{distributed
-strategy} where each processing unit is able to perform \emph{work stealing} or
-\emph{work sharing}~\cite{Blumofe:1999} on other units to improve load balance.
+explicitly exploit parallelism. It requires the programmer to write code to
+efficiently split computation among processing units and allow sharing of data
+between processing units. In contrast to declarative parallel programming,
+imperative parallel programming is more low-level because the programmer has
+total control over scheduling and partitioning of data. The very nature of
+parallel execution means increased non-determinism during execution which leads
+to execution inter-leavings that the programmer needs to be aware of.
+Furthermore, many well-known imperative algorithms are not easily parallelizable
+and require complete new approaches to run in a scalable fashion. Moreover,
+non-determinism makes it hard to prove properties of the program because the
+simpler assumptions of the imperative model no longer hold under the new
+programming model.
 
 In terms of communication and synchronization between the available processing
 units, there are two main parallel programming models available for writing
-parallel programss: shared memory~\cite{Mellor-Crummey:1991} and message passing.
+parallel programs: shared memory~\cite{Mellor-Crummey:1991} and message passing.
 
 As we mentioned before, the imperative model uses a memory area to store and
 retrieve data. The \emph{shared memory model} extends this area to allow
 communication between \emph{workers}, processes or threads, which are processing
 units that have their own execution flow but share the same memory area. The
 existence of a shared memory area makes it easier to share data between workers,
-however, the access to data shared by multiple workers needs to be protected,
-otherwise the data may become inconsistent. Many constructs are available to
-ensure \emph{mutual exclusion} such as \emph{locks}~\cite{Silberschatz:2008},
+however, access to data multiple workers needs to be protected, otherwise it
+might become inconsistent. Many constructs are available to ensure \emph{mutual
+exclusion} such as \emph{locks}~\cite{Silberschatz:2008},
 \emph{semaphores}~\cite{Dijkstra:2002}, \emph{mutexes}~\cite{Silberschatz:2008},
 and \emph{condition variables}~\cite{Hoare:1974}.
 
@@ -88,9 +45,21 @@ message processing is more costly than shared memory area due to the extra work
 required to send and serialize messages.  The most well known framework for
 message passing is the Message Passing Interface~(MPI~)~\cite{Forum:1994}.
 
-Message passing is also used as a foundation to implement higher level parallel
-programming models such as \emph{Remote Procedure
-Call}~(RPC)~\cite{Birrell:1984}, which makes it possible to seamlessly call a
-procedure which is executed remotely, removing the need for explicit message
-passing.
-
+Parallelism has been traditionally classified into two classes: \emph{data
+parallelism} and \emph{task parallelism}. In data parallelism, the data is
+partitioned among the processing units and each unit performs the same
+computation on their piece of data. In task parallelism, the program is split
+into different tasks that are then assigned to processing units. If the data or
+tasks are well-defined, relatively independent and regular (i.e., they take the
+same amount of time to be completed) then parallelization can be trivial.
+However, issues arise when it is hard to partition the tasks or the tasks that
+need to be completed are not static but are dynamically generated during
+execution. To complicate matters even further, some tasks may depend on other
+tasks being completed in order to be started. In such situations, the programmer
+is required to implement a \emph{scheduler} that efficiently assigns tasks to
+processing units and is able to \emph{balance} the load among those units. A
+scheduler may use a \emph{centralized strategy} where there is a \emph{master}
+processing unit that makes work distribution decisions or the scheduler uses a
+\emph{distributed strategy} where each processing unit is able to perform
+\emph{work stealing} or \emph{work sharing}~\cite{Blumofe:1999} on other units
+to improve load balance.

@@ -22,7 +22,7 @@ which may have one of the following values:
       Queue}).
 
    \item \textbf{stealing}: The thread has no active nodes in the \emph{Work
-      Queue} and is attemping to steal nodes from other
+      Queue} and is attempting to steal nodes from other
       threads.
 
    \item \textbf{idle}: The thread is trying to synchronize with other threads
@@ -122,7 +122,7 @@ including the array, trie, linked list and hash table data structures and the
 \emph{Rule Engine}. The \emph{State Lock} structure protects everything else,
 especially the \emph{State} flag and the temporary set of facts represented by
 the \emph{Fact Buffer}. The \emph{Incoming Fact Buffer} is used to hold logical facts
-that can not be added immediatelly to the database data structures. The
+that can not be added immediately to the database data structures. The
 \emph{Owner} field points to the thread responsible for processing the node and
 the \emph{Rule Engine} schedules local computation.
 

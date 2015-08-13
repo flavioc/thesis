@@ -9,10 +9,10 @@ indicates where the fact lives in the graph. Predicate \code{edge} is a
 \emph{linear predicates}. Persistent predicates model facts that are never
 retracted from the database, while linear predicates model linear facts which
 are retracted when used in rules. To improve readability of LM rules, persistent
-predicates may be preceded with a \code{!} symbol. Predicate \code{edge}
-represents the connections between nodes, predicate \code{message} contains the
-message content and the route list, and predicate \code{processed} keeps count
-of the number of messages routed at each node. Along with the type, a predicate
+predicates are preceded with a \code{!} symbol. Predicate \code{edge} represents
+the connections between nodes, predicate \code{message} contains the message
+content and the route list, and predicate \code{processed} keeps count of the
+number of messages routed at each node. Along with the type, a predicate
 argument can also be named (e.g., see \code{Neighbor} and \code{Content}) for
 documentation purposes.
 
@@ -45,7 +45,7 @@ database then consume all the facts $L_i$ that are linear facts and derive the
 facts $R_1, \cdots, R_m$ from the RHS. Note that in the rules, the LHS of each
 rule uses only facts from the same node (represented by \code{A} in both rules
 of Fig.~\ref{code:language:message}), but the rule's RHS may derive facts that
-belong to other nodes (case of \code{B} in the first rule) if a node variable is
+belong to other nodes (case of \code{B} in the first rule) if the variable is
 instantiated in the LHS.
 
 The first rule
@@ -123,10 +123,9 @@ where it will be consumed (Fig.~\ref{fig:message_trace}(d)).
 \end{figure}
 
 The attentive reader will wonder how much concurrency is available in this
-particular routing implementation. For a single message, there is not much
-concurrency because the message follows a pre-determined path and it travels
-from node to node. However, concurrency arises when the program needs to route
-multiple messages. The amount of concurrency is then dependent on the messages
-routing lists being non-overlapping. If messages travel in different paths, then
-there is more concurrency because more nodes are routing messages at the same
-time.
+particular routing implementation. For a single message, there is no concurrency
+because the message follows a pre-determined path and it travels from node to
+node. However, concurrency arises when the program needs to route multiple
+messages. The amount of concurrency is then dependent on the messages routing
+lists being non-overlapping. If messages travel in different paths, then there
+is more concurrency because more nodes are routing messages at the same time.

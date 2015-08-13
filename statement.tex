@@ -1,12 +1,13 @@
 
-We propose Linear Meld (LM), a new linear logic programming language, designed
-to write parallel graph based programs on multicore architectures. We argue that
-LM is a superior declarative programming model because it not only automatically
-parallelizes programs but, offers to the programmer the possibility to control parallel
-scheduling and placement of data to further improve the program run time and
-scalability.  Since LM is based on solid logical foundations, we argue that we
-can also prove interesting properties of programs, including correctness and
-termination. We will support our thesis through seven major contributions:
+We propose a new linear logic programming language, called Linear Meld~(LM),
+designed to write declarative parallel graph based programs for multicore
+architectures.  LM is a novel programming language that makes coordination a
+first-class programming construct and semantically equivalent to computation.
+Coordination allows the programmer to write declarative code that reasons about
+the underlying parallel architecture in order to improve the run time and
+scalability of programs. Since LM is based on logical foundations, programs are
+amenable to proofs of correctness, even in the presence of coordination. We will
+support our thesis through seven major contributions:
 
 \begin{description}
    
@@ -45,10 +46,10 @@ termination. We will support our thesis through seven major contributions:
    
    \item[Provability]
    
-   Since LM is a logic programming language, we leveraged the logical
-   foundations of the language to show how to prove correctness and termination
-   of programs. We also show that coordination facts do not change those
-   correctness proofs but only improve run time, scalability or memory usage.
+   We leveraged the logical foundations of LM to show how to prove correctness
+   and termination of programs. We also show that coordination facts do not
+   change those correctness proofs but only improve run time, scalability or
+   memory usage.
 
 \item[Efficient Runtime and Compilation]
 
@@ -62,10 +63,10 @@ termination. We will support our thesis through seven major contributions:
 
 \item[Multicore Parallelism]
    
-   We divide the logical facts across all the nodes of the graph. Since the
-   logical rules only make use of facts from a node, computation can be
-   performed locally, without reference from other nodes of the graph.
-   We envision applications as a communicating graph data structure where
+   The logical facts of the program are partitioned across the graph of the
+   program. Since the logical rules only make use of facts from a single node,
+   computation can be performed locally, without reference to other nodes of the
+   graph. We envision applications as a communicating graph data structure where
    each processing unit performs work on a different subset of the graph, thus
    enabling concurrency. This is an advantage of LM since we can run programs on
    many different types of distributed systems as long as the underlying runtime
@@ -73,12 +74,12 @@ termination. We will support our thesis through seven major contributions:
 
 \item[Experimental Results]
 
-   We have implemented a compiler and a virtual machine prototype from
-   scratch that executes on multicore machines.  We have implemented programs
-   such as belief propagation, belief propagation with residual splash,
-   PageRank, graph coloring, N queens, shortest path, diameter estimation,
-   MapReduce, game of life, quick-sort, neural network training, among others.
-   Our experimental results show that our particular implementation provides
-   good scalability up to 32 cores.
+   We have implemented a compiler and a virtual machine prototype from scratch
+   that executes on multicore machines.  We have implemented programs such as
+   belief propagation, belief propagation with residual splash, PageRank, graph
+   coloring, N queens, shortest path, diameter estimation, MapReduce, game of
+   life, quick-sort, neural network training, among others. Our experiments
+   performed on a machine with 32 cores shows that our implementation provides
+   good scalability with up to 32 threads of execution.
    
 \end{description}

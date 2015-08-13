@@ -7,7 +7,7 @@ implementation, we use a FIFO approach because older nodes tend to have a higher
 number of unexamined facts, from which they can derive subsequent new facts.
 
 We have two kinds of priorities: a \emph{temporary priority} and a \emph{default
-priority}. When a temporary priority exists, it superseeds the default priority.
+priority}. When a temporary priority exists, it supersedes the default priority.
 Once a node is processed and becomes \textbf{inactive}, the temporary priority
 is removed and the default priority is used. In a nutshell, the \emph{priority}
 of a node is equal to the temporary priority if there is one or it is the
@@ -59,7 +59,7 @@ automatically. All coordination facts are linear and thus consumed when used in
 the LHS of a rule.  The system creates the necessary code to re-derive them
 without programmer interaction. Likewise, \code{set-priority} and
 \code{set-default-priority} update the value of \code{priority} facts by
-retracting and re-asserting them but this is done implicitely by the runtime
+retracting and re-asserting them but this is done implicitly by the runtime
 system.
 
 The priorities assigned to nodes follow a per-thread ordering, therefore a

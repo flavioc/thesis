@@ -86,7 +86,7 @@ The attentive reader will notice that node \code{@1} already knows that all the
 nodes have been reached and that nodes \code{@7} and \code{@4} will, needlessly,
 continue to check if \code{[2,3]} are reachable. This is an issue that arises
 because the programmer has valued concurrency by increasing redundancy and
-reducing communication between nodes. It would be prohibitly expensive to share
+reducing communication between nodes. It would be expensive to share
 reachability information between nodes. An alternative solution is to store the
 results of the search on the thread performing the search and then coordinate
 the results with other threads since the number of threads is usually smaller
@@ -124,7 +124,7 @@ operating on the data graph.
 
 The introduction of thread facts increases the expressiveness of the system in
 the sense that it is now possible to write inference rules that reason about the
-state of the threads. This creates optimization opportunies since we can now
+state of the threads. This creates optimization opportunities since we can now
 write algorithms with global information stored in the thread, while keeping the
 LM language fully declarative. Moreover, threads are now allowed to explicitly
 communicate with each other, and in conjunction with coordination predicates,

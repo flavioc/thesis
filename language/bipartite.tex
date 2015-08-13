@@ -40,6 +40,7 @@ visit(A, P1), colored(A, P2), P1 <> P2 -o fail(A).*label[line:language:bc_third]
 visit(A, P), fail(A) -o fail(A).*label[line:language:bc_fourth]*hfill// Rule 4: graph is still not bipartite
 
 visit(@1, 1).*label[line:language:bc_axiom]*hfill// Initial facts
+unvisited(A).*label[line:language:bc_unvisited]
 \end{Verbatim}
   \caption{Bipartiteness Checking program.}
   \label{language:code:bichecking}
@@ -61,7 +62,8 @@ possible states that a node can be in, namely:
 \end{itemize}
 \end{invariant}
 \begin{proof}
-Initially, all nodes start in set $U$. All the 4 rules of the programs either
+Initially, all nodes start in set $U$ (line~\ref{line:language:bc_unvisited}
+of Fig.~\ref{language:code:bichecking}. All the 4 rules of the programs either
 keep the node in the same set or exchange the node with another set.
 \end{proof}
 
@@ -110,7 +112,7 @@ $C_{1}$ and $C_{2}$, while sets $F$ and $U$ will be empty.
 \end{theorem}
 \begin{proof}
    By induction, we prove that uncolored nodes become part of either $C_{1}$
-   and $C_{2}$ and, if there is an edge between nodes in the two sets then
+   or $C_{2}$ and, if there is an edge between nodes in the two sets then
    they have different colors.
 
    In the base case, we start with empty sets but node \code{@1} is made
@@ -129,15 +131,16 @@ $C_{1}$ and $C_{2}$, while sets $F$ and $U$ will be empty.
 \end{proof}
 
 \begin{theorem}[Bipartiteness Failure]
-If the graph is connected but not bipartite then some nodes will be partitioned
-into sets $C_{1}$, $C_{2}$, $F$, and possibly $U$.
+If the graph is connected but not bipartite then some nodes will be part of set
+$F$.
 \end{theorem}
 \begin{proof}
 
-Assume that the algorithm completely partitions the nodes into sets $C_{1}$
-and $C_{2}$. Since the graph is connected, we know that the algorithm tries
-to build a valid partitioning represented by $C_{1}$ and $C_{2}$. This is
-a contradiction because the graph is not bipartite.
+Assume that the algorithm completely partitions the nodes into sets $C_{1}$ and
+$C_{2}$ and thus $F$ is empty. Since the graph is connected, we know that the
+algorithm tries to build a valid partitioning represented by $C_{1}$ and
+$C_{2}$.  This is a contradiction because the graph is not bipartite (by
+definition) and thus at least one node will be part of set $F$ with rule 3.
 
 \end{proof}
 

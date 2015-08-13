@@ -99,8 +99,8 @@ are used in order to implement different operations:
 \end{itemize}
 
 All the locks in the VM are implemented using Mellor-Crummey and Scott~(MCS)
-spinlocks~\cite{Mellor-Crummey:1991}, which is a fair and contention-free
-spinlock implementation that uses a FIFO queue to implement spinlock operations.
+spin-locks~\cite{Mellor-Crummey:1991}, which is a fair and contention-free
+spin-lock implementation that uses a FIFO queue to implement spin-lock operations.
 
 In order to manipulate the \emph{State} flag of each thread (see
 Section~\ref{sec:implementation:parallelism}) we do not use locks but instead

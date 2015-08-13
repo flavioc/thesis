@@ -65,15 +65,15 @@ nodes of the graph where computation needs to be performed, the
 \emph{neighborhood} containing the nodes of the graph required to perform an
 operator, and \emph{ordering} which dictates the order in which operators are
 applied. From the point of view of the programmer, the active elements are
-represented in a worklist, while operators can be implemented on top of
-iterators of the worklist. Galois supports speculative execution by allowing
+represented in a work-list, while operators can be implemented on top of
+iterators of the work-list. Galois supports speculative execution by allowing
 operator rollback when an operator requires the use of a node that is held by
 another operator.
 
 Ligra, Grace and Galois are not programming language but frameworks built on top
 of other programming languages such as C and Java. Naturally, programs written
 in these frameworks need to take into account about several implementation
-details such as CAS instructions, worklists, and scheduling order. LM programs
+details such as CAS instructions, work-lists, and scheduling order. LM programs
 are slightly more abstract since reasoning is performed around logical rules and
 logical facts which are much closer to the problem domain of graph-based
 programs.

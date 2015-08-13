@@ -1,99 +1,69 @@
-
-In the last decade, we have seen a priority shift from processor manufactures.
-If clock frequency was once the main metric for performance, today computing
-power is mainly measured in number of cores in a single chip.  For software developers
-and computer scientists, once focused on developing sequential programs, newer
-hardware usually meant faster programs without any change to the source code.
-Today, the free lunch is over. Multicore processors are now forcing the
-development of new software methodologies that take advantage of increasing
-processing power through parallelism.  However, parallel programming is
-difficult, usually because programs are written in imperative and stateful
-programming languages that make use of low level synchronization primitives such
-as locks, mutexes and barriers. This tends to make the task of managing
-multithreaded execution quite intricate and error-prone, resulting in race
-hazards and deadlocks.  In the future, \emph{many-core} processors will make
-this task look even more daunting.
-
-Advances in network speed and bandwidth are also making distributed computing
-more appealing. For instance, \emph{cloud computing} is a recent paradigm that
-wants to make every computer connected to the Internet as part of a pool of
-computing power, where data can be retrieved and computation performed. From the
-perspective of high performance computing, the \emph{computer cluster} is a well
-established paradigm that uses fast local area networks to improve performance
-and solve problems that would take a long time with a single computer.
+Multicore architectures have become more widespread recently and are forcing the
+development of new software methodologies that enable developers to take
+advantage of increasing processing power through parallelism. However, parallel
+programming is difficult, usually because programs are written in imperative and
+stateful programming languages that make use of low level synchronization
+primitives such as locks, mutexes and barriers. This tends to make the task of
+managing multithreaded execution complicated and error-prone, resulting in race
+hazards and deadlocks. In the future, \emph{many-core} processors will make this
+task even more daunting.
 
 Past developments in parallel and distributed programming have given birth to
-several programming models.  At one end of the spectrum are the lower-level
+several programming models. At one end of the spectrum are the lower-level
 programming abstractions such as \emph{message passing} (e.g.,
 MPI~\cite{gabriel04-open-mpi}) and \emph{shared memory} (e.g.,
 Pthreads~\cite{Butenhof:1997:PPT:263953} or
-OpenMP~\cite{Chapman-2007-UOP-1370966}).  While such abstractions are very
-expressive and enable the programmer to write high performant code, program APIs
-are very hard to use and debug, which makes it difficult to prove that a program
-is correct, for instance. On the opposite end, we have many declarative
-programming models that can exploit some form of implicit
-parallelism~\cite{Blelloch:1996:PPA:227234.227246}.  While those declarative
-paradigms tend to make programs easier to reason about, they offer little or no
-control to the programmer for managing parallel execution which may result in
-suboptimal performance.
+OpenMP~\cite{Chapman-2007-UOP-1370966}). While such abstractions give a lot of
+control to the programmer and provide excellent performance, program APIs are
+very hard to use and debug, which makes it difficult to prove that a program is
+correct, for instance. On the opposite end, we have many declarative programming
+models~\cite{Blelloch:1996:PPA:227234.227246} that can exploit some form of
+implicit parallelism.  While those declarative paradigms tend to make programs
+easier to reason about, they offer little or no control to the programmer over
+how parallel execution is scheduled or how data is laid out, making it hard to
+improve efficiency. This introduces performance issues because even if the
+runtime system is able to reasonably parallelize the program using a general
+algorithm, there is a lack of specific information about the program that a
+compiler cannot easily deduce. Such information could make execution better in
+terms of run time, memory usage, or scalability.
 
 In the context of the Claytronics project~\cite{goldstein-computer05},
 Ashley-Rollman et al.~\cite{ashley-rollman-iclp09,
-ashley-rollman-derosa-iros07wksp} has created Meld, a logic programming
-language suited to program massively distributed systems made of modular
-robots with a dynamic topology.  Meld programs can derive actions that are
-used to make the robots act on the outside world. The distribution of
-computation is done by first partitioning the program state across the
-robots and then by making the computation local to the node. Because Meld
-programs are sets of logical clauses, they are more amenable to proofs.
-
-However, Meld and other declarative programming models give very little control
-to the programmer since they are stateless languages.  This is a clear
-disadvantage against lower-level abstractions, since it is difficult to change
-how programs are scheduled by the runtime system and how the system manages
-parallelism.
+ashley-rollman-derosa-iros07wksp} created Meld, a logic programming language
+suited to program massively distributed systems made of modular robots with a
+dynamic topology. Meld programs can derive actions that are used to make the
+robots act on the outside world. The distribution of computation is done by
+first partitioning the program state across the robots and then by making the
+computation local to the robot. Because Meld programs are sets of logical
+clauses, they are more amenable to proofs.
 
 In this thesis, we present Linear Meld (LM), a new language for parallel
 programming over graph data structures that extends the original Meld with
-linear logic, coordination and explicit parallelism. Linear logic gives the
-language a structured way to manage state, allowing the programmer to assert and
-retract logical facts. In turn, this gives the programmer more expressiveness
-since linear facts can be used optionally to model program state. Some problems
-found in the original Meld, like the proliferation of persistent facts, can be
-circumvented with the judicious use of linear facts.
+linear logic and coordination. Linear logic gives the language a structured way
+to manage state, allowing the programmer to assert and retract logical facts.
+While the original Meld sees a running program as an ensemble of robots, LM sees
+the program as a graph of node data structures, where each node performs
+computation independently and is able to communicate with other nodes.
 
-While the new language retains the declarative aspects of Meld, it adds also
-explicit programmer control and opportunities for optimization that arise with
-stateful programs. We introduce the concept of \emph{coordination facts}, which
-are logical facts used for scheduling and data partitioning purposes.
-Coordination facts can be split into \emph{action facts} and \emph{sensing
-facts}, a concept already present in the original Meld. Coordination facts allow
-the programmer to declaratively reason about the state of the computation and
-the state of the runtime system in order to perform scheduling and data
-partitioning decisions. In turn, this offers the possibility to improve
-partitioning and scalability in a declarative fashion, increase data locality,
-and reduce the program's run time.
+LM introduces a new mechanism, called coordination, that is semantically
+equivalent to regular computation and allows the programmer to reason about the
+underlying parallel architecture. Coordination introduces the concept of
+\emph{coordination facts}, which are logical facts used for scheduling and data
+partitioning purposes, and \emph{thread facts}, which allow the programmer to
+reason about the state of the underlying parallel architecture. The use of these
+new facilities moves the LM language from the paradigm of implicit parallelism
+to some form of declarative explicit parallelism, but without the pitfalls of
+imperative parallel programming. In turn, this makes LM a novel declarative
+language that allows the programmer to optionally control how execution and data
+is managed by the execution system.
 
-LM further introduces \emph{thread facts}, which allow the programmer to reason
-about the state of the underlying parallel architecture and which can be used in
-addition to coordination facts to create custom scheduling policies. The use of
-thread facts moves the LM language from the paradigm of implicit parallelism to
-some form of explicit parallelism, but without some of the pitfalls of
-imperative parallel programming.
-
-\iffalse
-Since coordination facts are semantically equivalent to
-computation and a first class entity of LM, it is still possible to reason about
-programs even in the presence of coordination.
-\fi
-
-Our goal with LM is to efficiently execute provably correct logical graph-based
-programs on multicore machines. To show this, we wrote many graph-based
-algorithms, proved important properties like termination and correctness and
-developed a compiler and runtime system where we have seen good experimental
-results when executing these programs. Finally, we have also coordinated some of
-the programs using both coordination and thread facts and we were able to see
-interesting improvements in terms of run time, memory usage and scalability.
+Our goal with LM is to efficiently execute provably correct declarative
+graph-based programs on multicore machines. To show this, we wrote many
+graph-based algorithms, proved program correctness and developed a compiler and
+runtime system where we have seen good experimental results when executing these
+programs. Finally, we have also used coordination in some of these programs and
+we were able to see interesting improvements in terms of run time, memory usage
+and scalability.
 
 \section{Thesis Statement}
 

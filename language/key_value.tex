@@ -1,8 +1,8 @@
 
 \begin{figure}[ht]
 \begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\{\}]
-type left(node, node).*label{line:language:dict_header1}*hfill // Predicate declaration
-type right(node, node).
+type left(node, node Child).*label{line:language:dict_header1}*hfill // Predicate declaration
+type right(node, node Child).
 type linear value(node, int Key, string Value).
 type linear replace(node, int Key, string Value).*label{line:language:dict_header2}
 
@@ -34,7 +34,7 @@ key/value dictionary. Each LM node represents a binary tree node. We first
 declare all the predicates in
 lines~\ref{line:language:dict_header1}-\ref{line:language:dict_header2}.
 Predicates \code{left} and \code{right} represent the child nodes of each BST
-node.  Linear predicate \code{value} stores the key/value pair of a node, while
+node. Linear predicate \code{value} stores the key/value pair of a node, while
 the linear predicate \code{replace} represents an update operation where the key
 in the second argument is to be updated to the value in the third argument.
 
@@ -45,13 +45,13 @@ the update by removing \code{replace(A, K, New)} and \code{value(A, K, Old)} and
 deriving \code{value(A, K, New)}. The second rule
 (lines~\ref{line:language:dict_second1}-\ref{line:language:dict_second2})
 recursively picks the left branch for the update operation by deleting
-\code{replace(A, RKey, RValue)} and re-deriving it at node \code{B}. And the
+\code{replace(A, RKey, RValue)} and re-deriving it at node \code{B}. Similarly,
 third rule
-(lines~\ref{line:language:dict_third1}-\ref{line:language:dict_third2}) picks
-the right branch. The derivation of \code{replace} facts on node \code{B} can
-also be seen as a implicit \emph{message passing} from \code{A} to \code{B},
-since \code{B} is a different node than \code{A} and the LHS of each rule can
-only manipulate facts from the same node.
+(lines~\ref{line:language:dict_third1}-\ref{line:language:dict_third2})
+recursively descends the right branch. The derivation of \code{replace} facts on
+node \code{B} can also be seen as a implicit \emph{message passing} from
+\code{A} to \code{B}, since \code{B} is a different node than \code{A} and the
+LHS of each rule can only manipulate facts from the same node.
 
 The initial facts of the program are presented in
 Fig.~\ref{code:language:btree_replace_initial} and describe the initial binary
@@ -126,6 +126,6 @@ Like the message routing example shown in the previous section, the amount of
 concurrency present in this example depends on the number of \code{replace}
 facts. If there are many \code{replace} operations to perform on different parts
 of the BST, then there is more concurrency. On the other hand, if only a few BST
-nodes are being updated, then concurrency is reduced. Interestingly enough, this
-is the same behavior that one would expect from an parallel implementation of
-the BST data structure in an imperative language.
+nodes are being updated, then concurrency is reduced. This is the same behavior
+that one would expect from an parallel implementation of the BST data structure
+in an imperative language.

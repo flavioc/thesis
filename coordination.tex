@@ -1,15 +1,15 @@
-In Chapter~\ref{chapter:implementation}, we saw that the set of nodes
-of an LM program is represented as a graph data structure $G = (V, E)$ with nodes $V$
-and edges $E$ where $T$ threads perform work. Our implementation also allows
-threads to steal nodes from other threads in order to improve load balancing.
-However, there are many scheduling details that are left undefined. How should a
-thread schedule the computation of its sub-graph? Is node stealing beneficial to
-all programs? What is the best sub-graph partitioning for a given LM program?
-The answer to all these questions is \emph{coordination}, a mechanism that we
-introduce to allow the programmer to specify custom scheduling and node
-partitioning policies. This is an important functionality because LM uses linear
-logic and thus the order in which nodes are scheduled can impact the performance
-and even the results of the program.
+In Chapter~\ref{chapter:implementation}, we saw that the set of nodes of an LM
+program is represented as a graph data structure $G = (V, E)$ with nodes $V$ and
+edges $E$ where $T$ threads perform work. Our implementation also allows threads
+to steal nodes from other threads in order to improve load balancing.  However,
+there are many scheduling details that are left undefined. How should a thread
+schedule the computation of its sub-graph? Is node stealing beneficial to all
+programs? What is the best sub-graph partitioning for a given LM program?  To
+answer these questions, we introduce \emph{coordination facts}, a coordination
+mechanism that is indistinguishable from regular computation and that allows the
+programmer to specify custom scheduling and node partitioning policies. This is
+an important first step in allowing the programmer to coordinate and improve
+declarative programs.
 
 \section{Motivation}\label{section:coord:rationale}
 
@@ -63,7 +63,7 @@ as sensing or action facts but are still important:
 
 \input{coordination/programs}
 
-\section{Related Work}
+\section{Related Work}\label{sec:coordination:related}
 \input{coordination/related_work}
 \section{Chapter Summary}
 

@@ -1,0 +1,94 @@
+Although declarative languages give limited opportunities to coordinate
+programs, there are other programming languages that supported different kinds
+of coordination~\cite{Papadopoulos98coordinationmodels}. Most of the following
+languages cannot be easily classified into either imperative or declarative
+languages, but tend to be a mix of both.
+
+Coordination programming languages tend to divide execution in two parts:
+\emph{computation}, where the actual computation is performed, and
+\emph{coordination}, which deals with communication and cooperation between
+processing units. This paradigm attempts to clearly distinguish between these
+two parts by providing abstractions for coordination as a way to provide
+architecture and system-independent forms of communication.
+
+We can identify two main types of coordination models:
+
+\begin{description}
+   \item[Data-Driven:]
+   
+   In a data-driven model, the state of the computation depends on both the data
+   being received or transmitted by the available processes and the current configuration
+   of the coordinated processes. The coordinated process is not only responsible
+   for reading and manipulating the data but is also responsible for
+   coordinating itself and/or other processes. Each process must intermix the
+   coordination directives provided by the coordination model with the
+   computation code. While these directives have a very clear interface, it is
+   the programmer's responsibility to use them correctly.
+
+   \item[Task-Driven:]
+   
+   In this model, the coordination code is more cleanly separated from the
+   computation code. While in data-driven models, the content of the data
+   exchanged by the processes will affect how the processes coordinate with each
+   other, in a task-driven model, the process behavior depends only on the
+   coordination patterns that are setup before hand. This means that the
+   computation component is defined as a black box and there are clearly defined
+   interfaces for input/output. These interfaces are usually defined as a
+   full-fledged coordination language and not as simple directives present in
+   the data-driven models.  \end{description}
+
+Linda~\cite{linda} is probably the most well-known coordination model. Linda
+implements a data-driven coordination model and features a \emph{tuple space}
+that can be manipulated using the following coordination directives:
+\texttt{out(t)} writes a tuple \texttt{t} into the tuple space; \texttt{in(t)}
+reads a tuple using the template \texttt{t}; \texttt{rd(t)} retrieves a copy of
+the tuple \texttt{t} from the tuple space; and \texttt{eval(p)} puts a process
+\texttt{p} in the tuple space and executes it in parallel.  Linda processes do
+not need to know the identity of other processes because processes only
+communicate through the tuple space.  Linda can be implemented on top of many
+popular languages by simply creating a communication and storage mechanism for
+the tuple space and then adding the directives as a language library.
+
+Another early coordination language is Delirium~\cite{Delirium}. Unlike Linda,
+which is embedded into another language, Delirium actually embeds operators
+written in other languages inside the Delirium language. The advantages of
+Delirium are improved abstraction and easier debugging because sequential
+operators are isolated from the coordination language.
+
+Linda and Delirium are limited in the sense that the programmer can only
+coordinate the scheduling of processing units, while placement of data is left
+to the implementation. LM differs from those languages because coordination acts
+on data instead of processing units. The abstraction is then raised by
+considering data and algorithmic aspects of the program instead of focusing on
+how processing units are used. Furthermore, LM is both a coordination language
+and a computation language and there is no distinction between the two
+components.
+
+The original Meld~\cite{ashley-rollman-iclp09} can also be seen as a kind of
+data-driven coordination language. The important distinction is that in Meld
+there is no explicit coordination directives. When Meld rules are activated they
+may derive facts that need to be sent to a neighboring robot. In turn, this will
+activate computation on the neighbor. Robot communication is implemented by
+\emph{localizing} the program rules and then by creating \emph{communication
+rules}. The LM language also implements communication rules, however it goes
+further because some facts, e.g., coordination facts, can change how the
+processing units schedule computation, which may in turn change the program's
+final results or execution time. This results in a more complete inter-play
+between coordination code and data.
+
+There are also several important programming models, which are not programming
+languages on their own right, but provide ways for a programmer to specify how
+computation should be coordinated. On example is the
+Galois~\cite{Pingali:2011:TPA:1993316.1993501} system, which is a graph-based
+programming model that applies operators over the nodes of a graph. Operator
+activities may be scheduled through \emph{runtime coordination}, where
+activities are ordered in a specific fashion. In the context of Galois, Nguyen
+et al.~\cite{nguyen11} expanded the concept of runtime coordination with the
+introduction of an approach to specify scheduling algorithms. The scheduling
+language specifies three base schedulers that can be composed and synthesized
+without requiring users to write complex concurrent code.  Another language that
+builds on top of Galois is Elixir~\cite{Prountzos:2012:ESS:2384616.2384644},
+which allows the user to specify how operator application should be scheduled
+from a high level specification, that is then compiled into low level code. In
+Section~\ref{sec:coordination:related}, we delve deeply into these and other
+systems systems.

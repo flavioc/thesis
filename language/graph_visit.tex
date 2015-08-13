@@ -19,9 +19,9 @@ visited(A)
   \label{code:language:visit}
 \end{figure}
 
-Our third example, shown in Fig.~\ref{code:language:visit}, presents another
-complete LM program that, for a given graph of nodes, performs a visit to all
-nodes reachable from node \code{@1}. The first rule of the program
+Our third example, shown in Fig.~\ref{code:language:visit}, presents another LM
+program that, for a given graph of nodes, performs a visit to all nodes
+reachable from node \code{@1}. The first rule of the program
 (lines~\ref{line:language:visit_first1}-\ref{line:language:visit_first2}) visits
 node \code{A} for the first time: fact \code{visited(A)} is derived and a
 \emph{comprehension} construct is used to go through all the edge facts and then
@@ -101,20 +101,19 @@ rule 1 at node \code{@3} to reach the state of Fig.~\ref{fig:exec_trace}~(d).
 \end{figure}
 
 The graph visit has the potential to have plenty of concurrency. Once the visit
-starts from the initial node, it rapidly expands to other nodes, allowing
-several nodes to derive rules concurrently. At some point, the amount of
-concurrency is reduced because more and more nodes have been visited. The level
-of concurrency also depends on the structure of the graph. In the worst case, if
-the graph is a chain of nodes then the program becomes effectively sequential.
-In the best case, if the graph is densily connected (each node connects to most
-nodes in the graph), then it is possible to run the program on most nodes at the
-same time.
+starts from the initial node, it expands to other nodes, allowing several nodes
+to derive rules concurrently. At some point, the amount of concurrency is
+reduced because more and more nodes have been visited. The level of concurrency
+depends on the structure of the graph. In the worst case, if the graph is a
+chain of nodes then the program becomes effectively sequential.  In the best
+case, if the graph is densily connected (each node connects to most nodes in the
+graph), then it is possible to run the program on most nodes at the same time.
 
 The goal of introducing higher-level declarative languages is to facilitate
 reasoning about the properties of a program. In the case of the visit program,
 the most important goal is to prove that, if the graph is connected, then all
 the nodes will become \code{visited}, regardless of the order in which we apply
-the rules. First, we define what is a visit graph:
+the rules. First, we define a visit graph:
 
 \begin{definition}[Visit graph]
 A visit graph is an ordered pair $G = (N, E)$ comprising a set $N$ of nodes together
@@ -198,13 +197,15 @@ Proof by induction.
       By Lemma~\ref{lemma:language:edge_visits}, a \code{visit} fact is generate
       for all edges of \code{@1}.
 
-   \item Inductive case: assume a set $V'$ and a set $U'$ that contains the
-   \code{visited} and \code{unvisited} nodes, respectively. Since the graph
+   \item Inductive case: assume visited set $V'$ and unvisited set $U'$.
+  Since the graph
    is connected, there must be a node $a \in V'$ that is connected to a node $b
    \in U'$. Using the Edge visits lemma, a $\mathtt{visit}(b)$ fact is generated,
    swapping $b$ from $U'$ to $V'$.
 \end{itemize}
 
-Eventually, set $V$ will include all nodes in $N$.
+Eventually, set $V$ will include all nodes in $N$. Otherwise, there would be
+unreachable nodes in the graph and that would be a contradiction since the graph
+is connected.
 \end{proof}
 

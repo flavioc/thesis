@@ -135,7 +135,7 @@ Fig.~\ref{fig:threads:results_splash} compares the performance of the LBP
 program in LM against both the \textbf{fifo} and \textbf{multiqueue} schedulers.
 The results show that GraphLab's \textbf{fifo} scheduler performance
 deteriorates with more 10 threads, while both LM and \textbf{multiqueue} tend to
-scale very well and have a similar behaviour. For 1 thread, LM is about 1.5
+scale very well and have a similar behavior. For 1 thread, LM is about 1.5
 times slower than GraphLab but that ratio increases to about to about 2 once the
 number of threads increases. We think this is because the LBP program is fairly
 sensitive to scheduling policies and the \textbf{multiqueue} scheduler is
@@ -175,10 +175,6 @@ works so well under a shared memory setting, the advantages of the
 \textbf{splash} scheduler are reduced. LM is able to improve its performance
 with SBP since it is a slower language and reducing the number of facts derived
 provides an improved performance.
-
-\begin{figure}[]
-        \centering
-\end{figure}
 
 \begin{figure}[]
         \centering

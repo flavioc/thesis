@@ -1,40 +1,29 @@
-\begin{abstract}
+Parallel programming is known to be difficult to apply, exploit and reason
+about. Programs written using low level parallel constructs tend to be
+problematic to understand and debug. Declarative programming is a step towards
+the right direction because it moves the details of parallelization from the
+programmer to the runtime system. However, this paradigm leaves the programmer
+with little opportunities to coordinate the execution of the program, resulting
+in suboptimal declarative programs.  We propose a new declarative programming
+language, called Linear Meld~(LM), that provides a solution to this problem by
+supporting data-driven dynamic coordination mechanisms that are semantically
+equivalent to regular computation.
 
-Parallel programming is known to be difficult to apply, exploit and reason about.
-Programs written using low level parallel constructs, commonly available in
-imperative programming languages, tend to be problematic to understand and debug.
-Declarative programming is a step towards the right direction because it moves the
-details of parallelization from the programmer to the runtime system.  However,
-this paradigm tends to remove most scheduling decisions from the programmer
-resulting in few opportunities for optimization.
-
-In this thesis, we propose a new declarative logic programming language, called
-Linear Meld~(LM), that is suited to run graph-based programs in parallel.  The
-foundation of our language is linear logic, a powerful logical system where
-logical facts can be asserted and removed. Linear logic gives the language a
-structured way to manage state while remaining fully declarative. An LM program
-can be seen as a communicating graph where each computational thread evaluates a
-different subset of the graph. Logical rules are constrained to facts in the
-local node so that computation happens only locally.
-
-Although Linear Meld is declarative, it also allows some programmer control by
-introducing coordination facts. Coordination in LM exists in two main forms: as
-scheduling facts, which change how nodes are scheduled in the graph and as
-partitioning facts, which change how nodes are partitioned among threads. The
-use of coordination facts allow the programmer to control scheduling and
-partitioning of data, reducing the run time and memory usage of programs.
-
-LM allows further programmer control with the introduction of thread facts.
-Thread facts allow the programmer to reason about the state of the execution
-threads.  The use of both coordination and thread facts allow the programmer to
-combine the inherent implicit parallelism with some form of explicit
-parallelism, allowing her to write complex coordinated programs that run faster
-than data-driven LM programs.
+LM is logic programming language designed for programs that operate on graphs
+and with support for coordination and structured manipulation of mutable state.
+Coordination is achieved through two mechanisms: (i) coordination facts, which
+allow the programmer to control how computation is scheduled and how data is
+laid out, and (ii) thread facts, which allow the programmer to reason about the
+state of the underlying parallel architecture.  The use of coordination allows the
+programmer to combine the inherent implicit parallelism of LM with a form of
+declarative explicit parallelism provided by coordination, allowing the
+development of complex coordinated programs that run faster than regular
+programs. Furthermore, since coordination is indistinguishable from regular
+computation, it allows the programmer to reason both about the problem at hand
+and also about parallel execution.
 
 We have written several graph algorithms, search algorithms and machine learning
 algorithms in LM. For some programs, we have written informal proofs of
 correctness to show that programs are easily proven correct. We have also
 engineered a compiler and runtime system that is able to run LM programs on
-multicore architectures with decent performance and good scalability.
-
-\end{abstract}
+multicore architectures with decent performance and scalability.

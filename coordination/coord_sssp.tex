@@ -34,7 +34,7 @@ relax(@1, 0, [@1]).
 Figure~\ref{fig:coordination:new_sssp} presents the 4 steps of computation for
 the new SSSP program when executed with 1 thread. In every step, a new shortest
 path is computed at a different node, starting from the shorter paths up to the
-longer paths. This is exactly the same behaviour as the Dijkstra's
+longer paths. This is exactly the same behavior as the Dijkstra's
 algorithm~\cite{Dijkstra}.  For multiple threads, the scheduling is not
 optimal since threads pick the node with the shortest distance from their subset
 of nodes. However, we have increased parallelism (no global synchronization)
@@ -195,7 +195,7 @@ coordination operation in order to reduce queue operations and overall locking.
 
 In order to observe the effects of the coalescing optimization, we disabled its
 support from the VM and then we ran the same experiments where priority updates
-are done immediatelly. The results are presented in
+are done immediately. The results are presented in
 Fig.~\ref{fig:coordination:results_sssp_unbuffered}. From the results, we can
 see that some datasets, such as EU Email and US Power Grid, maintain their
 overall scalability, especially the speedup (\textbf{Regular(1)/Coordinated(t)})

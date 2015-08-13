@@ -10,7 +10,7 @@ described in Section~\ref{section:language:message}. Rules without an LHS are
 called \emph{initial facts}. All the variables in the rule's scope must be
 introduced explicitly in the abstract syntax using the $\forall_x. R$
 production. However, when the programmer writes LM programs, those variables are
-introduced implicitly. A rule can also use a \emph{selector} in the form
+introduced implicitly. A rule can also use a \emph{selector} of the form
 $\selector{S}{y}{LHS}{RHS}$ which allows the programmer to force a specific
 ordering during rule derivation. Selectors are described in more detail in
 Section~\ref{section:language:selector}.
@@ -76,7 +76,7 @@ The $RHS$ of a rule contains linear ($L$) and persistent ($P$) atomic
 propositions which are uninstantiated facts. The RHS can also have \emph{exists
 expressions} ($EE$), \emph{comprehensions} ($CE$) and \emph{aggregates} ($AE$).
 All those expressions may use all the variables instantiated in the rule's LHS
-and are explained in more detail in Section~\ref{section:language:expressions}.
+and are explained in Section~\ref{section:language:expressions}.
 To introduce variables in the scope of the RHS, it is possible to use the
 $\exists_x. LHS$ production, which can be used for sub-computations for
 instantiating the atomic propositions of the RHS. This production is heavily
@@ -139,8 +139,8 @@ $\selector{S}{y}{LHS}{RHS}$, where $S$ is the selector operation and $y$ is the
 variable in $LHS$ that represents the value to be sorted according to $S$. An
 example using concrete syntax is as follows:
 
-\begin{Verbatim}[fontsize=\codesize]
-[asc => W | !edge(A, B, W), select(A)] -o best-neighbor(A, B, W).
+\begin{Verbatim}[fontsize=\codesize,commandchars=\*\#\&]
+*textbf#[asc => W | !edge(A, B, W), select(A)]& -o best-neighbor(A, B, W).
 \end{Verbatim}
 
 In this case, we sort the \code{edge} facts by \code{W} in ascending order
@@ -153,14 +153,15 @@ Exists constructs ($EE$) are based on the linear logic construct of the same
 name and are used to create fresh node addresses. We can use the new node address to
 instantiate new facts. As an example, consider extending the
 key/value dictionary example described in Fig.~\ref{code:language:btree_replace}
-with an insertion operation:
+with an insertion operation for a node that has no left branch:
 
-\begin{Verbatim}[fontsize=\codesize]
+\begin{Verbatim}[fontsize=\codesize,commandchars=\*\#\&]
 insert(A, IKey, IValue),
 value(A, Key, Value),
+no-left-branch(A),
 IKey < Key
    -o value(A, Key, Value),
-      exists B. (value(B, IKey, IValue), !left(A, B)).
+      *textbf#exists B. (value(B, IKey, IValue), !left(A, B))&.
 \end{Verbatim}
 
 The \code{exists} construct creates a new node \code{B} containing the linear fact
@@ -172,14 +173,14 @@ added to node \code{A}.
 
 Sometimes, when consuming a linear fact, we might want to generate several new
 facts depending on the contents of the database. To solve this particular need,
-we have created the concept of comprehensions, which are sub-rules that are
-applied with all possible combinations of facts from the database. In a
-comprehension $\comprehension{\widehat{x}}{SLHS}{SRHS}$, $\widehat{x}$ is a list
-of variables in the scope of $SLHS$ and $SRHS$ being $SLHS$ the comprehension's
-left-hand side and $SRHS$ the comprehension's right-hand side. $SLHS$ is used to
-generate all possible combinations for $SRHS$, according to the list of
-variables $\hat{x}$ and to the facts in the database. We have already seen an
-example of a comprehension in the graph visit program (Fig.~\ref{code:language:visit}
+we use comprehensions, which are sub-rules that are applied with all possible
+combinations of facts from the database. In a comprehension
+$\comprehension{\widehat{x}}{SLHS}{SRHS}$, $\widehat{x}$ is a list of variables
+in the scope of $SLHS$ and $SRHS$ being $SLHS$ the comprehension's left-hand
+side and $SRHS$ the comprehension's right-hand side. $SLHS$ is used to generate
+all possible combinations for $SRHS$, according to the list of variables
+$\hat{x}$ and to the facts in the database. We have already seen an example of a
+comprehension in the graph visit program (Fig.~\ref{code:language:visit}
 line~\ref{line:language:visit_comprehension}):
 
 \begin{Verbatim}[fontsize=\codesize,commandchars=\*\#\&]
@@ -206,14 +207,27 @@ combinations of $SLHS$, but, in addition to deriving $SRHS_1$ for each
 combination, we aggregate the values represented by $y$ into a new $y$ variable
 that is used to derive $SRHS_2$.
 
-To better understand aggregates, let's consider the following rule from the
-PageRank program to be presented in Section~\ref{section:language:pagerank}:
+To understand how aggregates work, let's consider the following rule:
 
-\begin{Verbatim}[fontsize=\codesize]
+\begin{Verbatim}[fontsize=\codesize,commandchars=\*\#\&]
+count-neighbors(A) -o *textbf#[count => T; B | !edge(A, B) -o 1 -> num-neighbors(A, T)]&.
+\end{Verbatim}
+
+The rule uses a \code{count-neighbors} proposition to iterate over all
+\code{!edge} facts (the $SLHS$) of node \code{A}. Since the $SRHS_1$ of the
+aggregate is \code{1}, nothing is derived for each \code{!edge}. Since we use a
+\code{count} aggregate, for each \code{!edge} fact, the variable \code{T} is
+incremented by one and the total result is used to derive a single
+\code{num-neighbors(A, T)} fact (the $SRHS_2$).
+
+To further understand aggregates, let's consider a rule from the PageRank
+program to be presented in Section~\ref{section:language:pagerank}:
+
+\begin{Verbatim}[fontsize=\codesize,commandchars=\*\#\&]
 update(A),
 !numInbound(A, T)
-   -o [sum => V; B, Val, Iter | neighbor-pagerank(A, B, Val, Iter), V =
-         Val/float(T) -o neighbor-pagerank(A, B, Val, Iter) -> sum-ranks(A, V)].
+   -o *textbf#[sum => V; B, Val, Iter | neighbor-pagerank(A, B, Val, Iter), V =&
+         *textbf#Val/float(T) -o neighbor-pagerank(A, B, Val, Iter) -> sum-ranks(A, V)]&.
 \end{Verbatim}
 
 The rule aggregates the values \code{V} by iterating over
@@ -229,25 +243,24 @@ into a list).
 \section{Operational Semantics}
 
 As said before, the first argument of every predicate must be typed as
-\emph{node} and all rules must only use facts belonging to the same node. These
-two restrictions, allows computation to be performed using only the facts
-belonging to the same node without requiring communication between multiple
-nodes.
+\emph{node} and the LHS of each rule must use only facts belonging to the same
+node. These two restrictions, allows computation to be performed using only the
+facts belonging to the same node without requiring communication between
+multiple nodes.
 
-The execution is performed at the node level and happens non-deterministically
-(i.e., any node can be picked to run). This means that the programmer cannot
-expect that facts coming from different nodes will be considered as a whole or
-partially since the process is non-deterministic. The operational semantics
-promises that rule derivations are performed atomically, therefore if a rule
-sends many facts to a node then the target node will receive them all at once.
-Under these restrictions, computation can then be parallelized by processing
-nodes concurrently.
+Nodes are selected to computation non-deterministically (i.e., any node can be
+picked to run). This means that the programmer cannot expect that facts coming
+from different nodes will be considered as a whole since the process is
+non-deterministic. The operational semantics promises that rule derivations are
+performed atomically, therefore if a rule derives many facts belonging to a node
+then that node will receive them all at once. Under these restrictions,
+computation can then be parallelized by processing nodes concurrently.
 
 Each rule in LM has a defined priority that is inferred from its position in the
-source file.  Rules at the beginning of the file have higher priority. At the
-node level, we consider all the new facts that have not been considered before
-to create a priority queue of \emph{candidate rules}. The queue of candidate
-rules is then applied (by priority) and updated as new facts are derived or
+source file. Rules at the beginning of the file have higher priority. At the
+node level, we consider all the new facts that have not been considered yet to
+create a queue of \emph{candidate rules}. The queue of candidate rules
+is then applied (in priority order) and updated as new facts are derived or
 consumed. As an example, consider the following three rules:
 
 \begin{Verbatim}[fontsize=\codesize]

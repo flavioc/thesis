@@ -1,7 +1,7 @@
 Consider a power grid with $C$ consumers and $G$ generators. We are interested
 in connecting each consumer to a single generator, but each generator has a
 limited capacity and the consumer draws a certain amount of power from the
-generator. A valid powergrid is built in such a way that all consumers are
+generator. A valid power grid is built in such a way that all consumers are
 serviced by a generator and that no generator is being overdrawn by too many
 consumers. Although consumers and generators may be connected through a complex
 network, we analyze the simple case where any consumer is able to attach to any
@@ -104,7 +104,7 @@ lines~\ref{line:threads:pg_gen1}-\ref{line:threads:pg_gen2} when the generator
 has enough power for the new consumer. When there is not enough power
 (\code{Used + Power > Total}), the generator disconnects the consumer in
 lines~\ref{line:threads:pg_fail1}-\ref{line:threads:pg_fail2}. Note that each
-generator mantains a \code{fail} fact that counts the number of times the
+generator maintains a \code{fail} fact that counts the number of times the
 consumers have failed to connected. If there is too many failures, then the
 generator decides to disconnect one consumer already connected in
 lines~\ref{line:threads:pg_recon1}-\ref{line:threads:pg_recon2}, allowing for

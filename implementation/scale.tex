@@ -252,8 +252,9 @@ which we want to calculate the distance from.
 
 The final scalability results are shown for PageRank in
 Fig.~\ref{fig:implementation:scale_pagerank}. We used two datasets, Google Plus
-and Pokec. Google Plus has 107614 nodes and 13673453 edges, while Pokec has
-1632803 nodes and 30622564 edges. Even though Pokec is the larger graph, Google
+and Pokec. Google Plus~\cite{snapnets} has 107614 nodes and 13673453 edges and is based on a Google Plus social network, while Pokec~\cite{snapnets} has
+1632803 nodes and 30622564 edges and represents data from a popular social network website in Slovakia.
+Even though Pokec is the larger graph, Google
 Plus has a denser graph, where the average number of edges per node is 127
 compared to the average of 18 for Pokec. This may explain why Google Plus is
 more scalable with a 14-fold speedup for 32 threads.

@@ -1,19 +1,22 @@
-Logic and functional programming languages are a major class of languages called
-declarative programming languages. Logic programming languages are usually based
-on classical logics, such as the \emph{predicate and propositional calculus}, or
-in non-classical logics such as \emph{constructive} or \emph{intuitionistic}
-logic, where the goal is to construct different models of logical truth.
-Functional programming languages are usually based on the \emph{lambda
-calculus}, a model for function application and abstraction. As declarative
-models, logic and functional programming languages are considered to be
-high-level languages when compared to languages based on the imperative model
-because, generally, they allow the programmer to concentrate more on what the
+Declarative programming languages are considered to be high-level programming
+languages, because they allow the programmer to concentrate more on what the
 problem is, rather than telling the computer the steps it needs to solve the
 problem. In turn, formal reasoning is performed at a higher level and does not
 have to deal with low level parallel programming constructs such as locks or
-message passing.
+message passing. Declarative programming has been hailed as a solution to the
+problem of parallel programming, since the problem of implementing the details
+of parallelism is moved from the programmer to the compiler and runtime
+environment. The programmer writes code without having to deal with parallel
+programming constructs and the compiler automatically parallelizes the program
+in order to take advantage of multiple threads of execution. However, this
+comes at a cost of low programmer control over how computation is performed,
+which may not be optimal under every circumstance.
 
-\paragraph{Parallel Functional Programming}
+\subsection{Functional Programming}
+
+Functional programming languages are widely considered declarative programming
+languages and are based on the \emph{lambda calculus}, a model for function
+application and abstraction.
 
 In pure functional programming languages, the side-effect free nature of
 computation allows multiple expressions to evaluate safely in
@@ -25,22 +28,23 @@ practical functional programs have, in general, a high number of fine-grained
 parallel tasks, which makes it harder for a compiler to schedule computations
 efficiently~\cite{haskell_tutorial}.  Alternative approaches such as
 \emph{semi-explicit parallelism}~\cite{Marlow:2010}, \emph{data
-parallelism}~\cite{Blelloch:1996:PPA:227234.227246}, and \emph{software
-transactional memory}~\cite{harris2005composable} have shown to be more
-effective in practice.
+parallelism}~\cite{Blelloch:1996:PPA:227234.227246,Chakravarty07dataparallel,peytonjones:2008},
+and \emph{explicit parallelism}~\cite{harris2005composable} have shown to be
+more effective in practice.
 
 In semi-explicit parallelism, the programmer uses an API to tell the runtime
 system which computations should be carried out in parallel, thus avoiding the
-fine-grain granularity problem. Usually, these coarse-grained parallel
-computations are called \emph{sparked computations} and express the possibility
-of performing speculative computations which are going to be needed in the
-future. In a sense, sparked computations can be seen as \emph{lazy
+fine-grain granularity problem. These kinds of annotations for coarse-grained
+parallel computations, called \emph{sparked computations}~\cite{Marlow:2010},
+have been made available in the Haskell programming language and express the
+possibility of performing speculative computations which are going to be needed
+in the future. In a sense, sparked computations can be seen as \emph{lazy
 futures}~\cite{Baker:1977}.
 
 Data parallelism attempts to partition data among a set of processing units and
 then apply the same operation on the data. The simplest form of data parallelism
 is \emph{flat data parallelism}, where the data is flat (list or array) and is
-easily partitioned. However, functional code tends to be composed of many recursive
+easily partitioned. However, functional applications are composed of many recursive
 data manipulation operations, which is not a good fit for flat data parallelism.
 However, in the NESL language~\cite{Blelloch:1996:PPA:227234.227246}, a new compiler
 transformation was proposed that could take a program using \emph{nested data
@@ -50,22 +54,44 @@ modern languages such as Haskell~\cite{Chakravarty07dataparallel}. The main
 advantage of this approach is that it remains true to the original goal of
 implicit parallelism.
 
-Finally, functional programs also allow the explicit creation of threads and
-communication using mechanisms such as software transactional
-memory~\cite{harris2005composable}, which allows the programmer to share
-variables and state between threads. This approach has some similarities to
-parallel imperative programming since it requires careful control from the
-programmer.
+\subsection{Data-Centric Languages}
 
+Recently, there has been increasing interest in declarative data-centric
+languages. MapReduce~\cite{Dean:2008:MSD:1327452.1327492}, for instance, is a
+popular data-centric programming model that is optimized for large clusters. The
+scheduling and data sharing model is very simple: in the \emph{map phase}, data
+is transformed at each node and the result reduced to a final result in the
+\emph{reduce phase}. In order to facilitate the writing of programs over large
+datasets, SQL-like languages such as
+PigLatin~\cite{Olston:2008:PLN:1376616.1376726} have been developed. PigLatin
+builds on top of MapReduce and allows the programmer to write complex data-flow
+graphs, raising the abstraction and ease of programmability of MapReduce
+programs. An alternative to PigLatin/MapReduce is
+Dryad~\cite{Isard:2007:DDD:1272996.1273005} that allows programmers to design
+arbitrary computation patterns using DAG abstractions. It combines computational
+vertices with communication channels (edges) that are automatically scheduled to
+run on multiple computers/cores.
 
-\paragraph{Logic Programming}
+LM, the language presented in this thesis, also follows the data-centric
+approach since it is designed for writing programs over graph data structures.
+In Section~\ref{section:language:related}, we discuss data-centric languages in
+more detail and present some other programming systems for data-centric parallel
+computation and how they compare to LM.
+
+\subsection{Logic Programming}
+
+Another example of declarative programming is logic programming.
+Logic programming is usually based on classical logics, such as the
+\emph{predicate and propositional calculus}, or in non-classical logics such as
+\emph{constructive} or \emph{intuitionistic} logic, where the goal is to
+construct different models of logical truth.
 
 Logical systems define their own meaning of truth and a set of consistent rules
 to manipulate truth. Proofs about statements in a logical system are then
 constructed by using the rules appropriately. For instance, the system of
 \emph{propositional logic} contains the \emph{modus ponens} rule, where truth is
 manipulated as follows: if $P$ implies $Q$ and $P$ is known to be true,
-therefore $Q$ must also be true. For example, if we know that ``it is raining'' and that ``if
+then $Q$ must also be true. For example, if we know that ``it is raining'' and that ``if
 it is raining then the grass is wet'', we can prove that ``the grass is wet'' by
 using the \emph{modus ponens} rule.
 
@@ -104,19 +130,18 @@ is raining'' and the conclusion of implication (ii) matches and thus we have to
 prove ``the weather forecast for today is rain'', which can be proved
 immediately using proposition (iii).
 
-\paragraph{Logic Programming Languages}
-
-Prolog~\cite{Colmerauer:1993:BP:154766.155362} is one of the first logic
+Prolog~\cite{Colmerauer:1993:BP:154766.155362} was one of the first logic
 programming languages to become available, yet it still one of the most popular
 logic programming languages in use today. Prolog is based on \emph{First Order
 Logic}, a logical system that extends propositional logic with predicates and
 variables. Prolog is a backward-chaining logic programming language where a
-program is composed of a set of rules that can be activated by inputing a query.
-Given a query $q(\hat{x})$, a Prolog interpreter will work backwards by matching
-$q(\hat{x})$ against the head of a rule. If found, the interpreter will then try
-to match the body of the rule, recursively, until it finds the program base
-facts. If the search procedure succeeds, the interpreter finds a valid
-substitution for the $\hat{x}$ variables in the given query.
+program is composed of a set of rules of the form ``$P$ implies $Q$'' that can be
+activated by inputing a query.  Given a query $q(\hat{x})$, a Prolog interpreter
+will work backwards by matching $q(\hat{x})$ against the head $Q$ of a rule. If
+found, the interpreter will then try to match the body $P$ of the rule,
+recursively, until it finds the program base facts. If the search procedure
+succeeds, the interpreter finds a valid substitution for the $\hat{x}$ variables
+in the given query.
 
 Datalog~\cite{Ramakrishnan93asurvey,Ullman:1990:PDK:533142} is a
 forward-chaining logic programming language originally designed for deductive
@@ -133,8 +158,6 @@ allowing for both fact assertion and
 retraction~\cite{Chang03ajudgmental,Lopez:2005:MCL:1069774.1069778,simmons-lla,cruz-iclp14},
 which is one of the topics of this thesis.
 
-\paragraph{Parallel Logic Programming}
-
 In logic programming languages such as Prolog, researchers took advantage of the
 non-determinism of proof-search to evaluate subgoals in parallel. The most
 famous models are \emph{OR-parallelism} and
@@ -146,10 +169,11 @@ try to prove $R$. In AND-parallelism, there is an implication of the form ``$P$
 and $R$ implies $Q$'' and, to prove $Q$, it is possible to prove $P$ and $Q$ at
 the same time. AND-parallelism becomes more complicated when $P$ and $Q$
 actually depend on each other, for example, if $P = \mathtt{prop}_1(\hat{x})$
-and $R = \mathtt{prop}_2(\hat{x}, \hat{y})$ then the set variables $\hat{x}$ must be
-the same in the two propositions. This issue does not arise in OR-parallelism,
-however AND-parallelism may be better when the program is more deterministic
-(i.e., it contains less alternative implications).
+and $R = \mathtt{prop}_2(\hat{x}, \hat{y})$ then the set variables $\hat{x}$
+must be the same in the two propositions. This issue does not arise in
+OR-parallelism, however AND-parallelism may be better when the program is more
+deterministic (i.e., it contains less alternative implications) since rule's
+bodies have more subgoals than the heads.
 
 In Datalog programs, parallelism arises naturally because new logical facts may
 activate multiple inference rules and thus generate more
@@ -162,7 +186,7 @@ machines~\cite{183073,Loo-condie-garofalakis-p2}, where rules are restricted in
 order to facilitate fact partitioning and communication. The LM language
 presented in this thesis follows this latter approach.
 
-\paragraph{Origins of LM}
+\subsection{Origins of LM}
 
 LM is a direct descendant of Meld by Ashley-Rollman et
 al.~\cite{ashley-rollman-iclp09,ashley-rollman-derosa-iros07wksp}, a logic
@@ -179,33 +203,8 @@ advantage of these state management facilities, Meld supports \emph{sensing} and
 (e.g., temperature, new neighbor node) and action facts are facts that have an
 effect on the world (e.g., move), changing the underlying sensing facts.
 
-Meld was inspired in the P2 system~\cite{Loo-condie-garofalakis-p2}, which
+Meld was inspired by the P2 system~\cite{Loo-condie-garofalakis-p2}, which
 includes a logic programming language called NDlog~\cite{Loo:EECS-2006-177} for
 writing network algorithms declaratively. Many ideas about state management were
 already present in NDlog.  NDlog is essentially a Datalog based language with a
 few extensions for declarative networking.
-
-\paragraph{Data-Centric Languages}
-
-Recently, there has been an increasing interest in declarative data-centric
-languages.
-MapReduce~\cite{Dean:2008:MSD:1327452.1327492}, for instance, is a
-popular data-centric programming model that is optimized for large clusters. The
-scheduling and data sharing model is very simple: in the \emph{map phase}, data
-is transformed at each node and the result reduced to a final result in the
-\emph{reduce phase}. In order to facilitate the writing of programs over large
-datasets, SQL-like languages such as
-PigLatin~\cite{Olston:2008:PLN:1376616.1376726} have been developed. PigLatin
-builds on top of MapReduce and allows the programmer to write complex data-flow
-graphs, raising the abstraction and ease of programmability of MapReduce
-programs. An alternative to PigLatin/MapReduce is
-Dryad~\cite{Isard:2007:DDD:1272996.1273005} that allows programmers to design
-arbitrary computation patterns using DAG abstractions. It combines computational
-vertices with communication channels (edges) that are automatically scheduled to
-run on multiple computers/cores.
-
-LM, the language presented in this thesis, also follows the data-centric
-approach since it is designed for writing programs over graph data structures.
-In Section~\ref{section:language:related}, we discuss data-centric languages in
-more detail and present some other programming systems for data-centric parallel
-computation and how they compare to LM.

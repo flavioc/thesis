@@ -3,7 +3,7 @@ some alternative designs. In this section, we explore a design where we move the
 allocation decisions from the thread to the node itself, in order to store the
 facts of the same node close together and thus increase locality. However, this
 design requires locking since multiple threads may allocate facts from the same
-node. Our expectaction is that such costs will be offset by the increased
+node. Our expectation is that such costs will be offset by the increased
 locality and reduced cache misses when deriving rules.
 
 The fact allocator allocates pages of memory from the threaded allocator which
