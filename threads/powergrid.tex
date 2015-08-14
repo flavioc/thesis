@@ -11,7 +11,7 @@ generator.
    \begin{center}
       \includegraphics[width=1\linewidth]{figures/threads/powergrid.pdf}
    \end{center}
-   \caption{Configuration of a powergrid with 6 consumers, 4
+   \mycap{Configuration of a powergrid with 6 consumers, 4
       generators and 2 threads, with each thread responsible for 2 generators.}
    \label{fig:threads:powergrid}
 \end{wrapfigure}
@@ -82,7 +82,7 @@ disconnect(C, G), connected(C, G)*hfill// Rule 7: finish disconnection
 connected-to-list(G, []). fails(G, 0).*hfill// Initial facts
 disconnected(C). reconnect(C). !generators(C, all-generators).
 \end{Verbatim}
-\caption{LM code for the regular PowerGrid program.}
+\mycap{LM code for the regular PowerGrid program.}
 \label{code:threads:powergrid}
 \end{figure}
 
@@ -128,7 +128,7 @@ connected-to-list(@8, []).    capacity(@8, 15, 0).   fail(@8, 0).
 connected-to-list(@9, []).    capacity(@9, 10, 0).   fail(@9, 0).
 connected-to-list(@10, []).   capacity(@10, 5, 0).   fail(@10, 0).
 \end{Verbatim}
-\caption{Initial facts for a PowerGrid configuration of 6 consumers and 4 generators.}
+\mycap{Initial facts for a PowerGrid configuration of 6 consumers and 4 generators.}
 \label{code:threads:powergrid_init}
 \end{figure}
 
@@ -150,7 +150,7 @@ capacity(@8, 15, 15).
 capacity(@9, 10, 10).
 capacity(@10, 5, 5).
 \end{Verbatim}
-\caption{Final facts for a PowerGrid configuration of 6 consumers and 4 generators.}
+\mycap{Final facts for a PowerGrid configuration of 6 consumers and 4 generators.}
 \label{code:threads:powergrid_final}
 \end{figure}
 
@@ -243,7 +243,7 @@ disconnect(C, G), connected(C, G)
 thread-total-capacity(T, 0, 0).*hfill// Initial facts
 fails(G, 0).  disconnected(C).  reconnect(C).  !generators(C, all-generators).  start(G).
 \end{Verbatim}
-\caption{LM code for the optimized PowerGrid program.}
+\mycap{LM code for the optimized PowerGrid program.}
 \label{code:threads:powergridt}
 \end{figure}
 
@@ -298,26 +298,26 @@ having many generators in the case of using just 1 thread.
         \centering
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/threads/cmp-powergrid-500000C2000G.png}
-           \caption{}
+           \mycap{}
            \label{fig:threads:powergrid1}
         \end{subfigure}
         ~
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/threads/cmp-powergrid-500000C64G.png}
-           \caption{}
+           \mycap{}
            \label{fig:threads:powergrid2}
         \end{subfigure} \\
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/threads/cmp-powergrid-1M4000C-low.png}
-           \caption{}
+           \mycap{}
            \label{fig:threads:powergrid3}
         \end{subfigure} ~
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/threads/cmp-powergrid-1M4000C-high.png}
-           \caption{}
+           \mycap{}
            \label{fig:threads:powergrid4}
         \end{subfigure} \\
-        \caption{Measuring the performance of the PowerGrid program
+        \mycap{Measuring the performance of the PowerGrid program
         when using thread facts.}
         \label{fig:threads:results_powergrid}
 \end{figure}
@@ -363,7 +363,7 @@ compared to 1 thread.
       \input{experiments/threads/powergrid-stats}
    \end{center}
 
-   \caption{Measuring the reduction in derived facts when using thread-based
+   \mycap{Measuring the reduction in derived facts when using thread-based
    facts.}
    \label{table:threads:powergrid_stats}
 \end{table}

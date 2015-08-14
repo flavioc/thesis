@@ -82,7 +82,7 @@ maximize(A, 0, Score, BestPlay) -o score(A, Score, BestPlay).\label{line:coord:m
 
 play(@0, initial-game, root-player, 0, 1).\label{line:coord:minimax_axiom}\hfill// Initial fact
 \end{Verbatim}
-\caption{LM code for the MiniMax program.}
+\mycap{LM code for the MiniMax program.}
 \label{code:coord:minimax}
 \end{figure}
 
@@ -122,7 +122,7 @@ Appendix~\ref{appendix:proofs:minimax}.
    \begin{center}
       \includegraphics[width=0.9\linewidth]{figures/coordination/minimax_tree}
    \end{center}
-   \caption{Expanding the MiniMax tree using coordination. By prioritizing
+   \mycap{Expanding the MiniMax tree using coordination. By prioritizing
       deeper nodes, threads are forced to expand the tree using a depth-first
       approach, which is superior since there is no need to expand the whole
       tree before computing the node scores.}
@@ -161,7 +161,7 @@ through the retraction of \code{new-score} incoming facts.
       \input{experiments/coordination/minmax-mem}
    \end{center}
 
-   \caption{Comparing the memory usage of the regular and coordinated MiniMax
+   \mycap{Comparing the memory usage of the regular and coordinated MiniMax
    programs.}
    \label{results:memory_minmax}
 \end{table}
@@ -204,7 +204,7 @@ significantly faster than it would be otherwise.
            \label{fig:coordination:coord_minimax_big}
         \end{subfigure} \\
 
-        \caption{Scalability for the MiniMax program when using coordination.}
+        \mycap{Scalability for the MiniMax program when using coordination.}
 
         \label{fig:coordination:results_minmax}
 \end{figure}

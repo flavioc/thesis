@@ -27,7 +27,7 @@ fabs(New - Old) <= epsilon
    -o {B | !edge(A, B) -o
          new-neighbor-heat(B, A, New)}.
 \end{Verbatim}
-  \caption{Coordination code for the Heat Transfer program.}
+  \mycap{Coordination code for the Heat Transfer program.}
   \label{code:coord:ht}
 \end{figure}
 
@@ -46,15 +46,15 @@ its own (ever decreasing) subgraph.
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/coordination/cmp-new-heat-transfer-80.png}
            \label{fig:coordination:coord_ht_80}
-           \caption{80x80 grid dataset.}
+           \mycap{80x80 grid dataset.}
         \end{subfigure}
         ~
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/coordination/cmp-new-heat-transfer-120.png}
            \label{fig:coordination:coord_ht_120}
-           \caption{120x120 grid dataset.}
+           \mycap{120x120 grid dataset.}
         \end{subfigure} \\
-        \caption{Scalability for the Heat Transfer program when using
+        \mycap{Scalability for the Heat Transfer program when using
         coordination. We used the datasets used in
         Section~\ref{section:implementation:performance}}
         \label{fig:coordination:results_ht}
@@ -93,7 +93,7 @@ fabs(New - Old) <= epsilon,
       \underline[thread-id(A, T)].
 \end{Verbatim}
 
-  \caption{To improve locality, we add an extra constraint to the second rule to
+  \mycap{To improve locality, we add an extra constraint to the second rule to
      avoid sending small $\delta$ values if the target node is in another thread.}
   \label{code:coord:ht_better}
 \end{figure}
@@ -103,15 +103,15 @@ fabs(New - Old) <= epsilon,
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/coordination/cmpnew-new-heat-transfer-80.png}
            \label{fig:coordination:coord_ht_80}
-           \caption{80x80 grid dataset.}
+           \mycap{80x80 grid dataset.}
         \end{subfigure}
         ~
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/coordination/cmpnew-new-heat-transfer-120.png}
            \label{fig:coordination:coord_ht_120}
-           \caption{120x120 grid dataset.}
+           \mycap{120x120 grid dataset.}
         \end{subfigure} \\
-        \caption{Scalability for the Heat Transfer program when using
+        \mycap{Scalability for the Heat Transfer program when using
         coordination and avoiding some communication between nodes of different
         threads.}
         \label{fig:coordination:results_ht_new}

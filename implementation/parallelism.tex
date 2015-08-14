@@ -40,7 +40,7 @@ indicates that the transition is made in a non-deterministic fashion.
 \begin{figure}[ht]
    \centering
    \includegraphics[width=0.65\textwidth]{figures/implementation/thread_states.pdf}
-   \caption{The thread state machine as represented by the \emph{State} flag. During
+   \mycap{The thread state machine as represented by the \emph{State} flag. During
       the lifetime of a program, each thread goes through different states as
       specified by the state machine.}
    \label{fig:implementation:thread_states}
@@ -92,7 +92,7 @@ executing, transitioning to the \textbf{terminated} state.
       }
  }
 \end{algorithm}
-\caption{Thread work loop: threads process active nodes from the work queue
+\mycap{Thread work loop: threads process active nodes from the work queue
    until no more active nodes are available. Node stealing using a \emph{steal
       half} strategy is employed when the thread has no more active nodes.}
  \label{alg:thread_work_loop}
@@ -108,7 +108,7 @@ interact with the node data structures.
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/implementation/vm_overview.pdf}
-\caption{Layout of the virtual machine. Each thread has a work queue that
+\mycap{Layout of the virtual machine. Each thread has a work queue that
    contains active nodes (nodes with facts to process) that are processed one
    by one by the thread. Communication between threads happens when nodes
    send facts to nodes located in other threads.}
@@ -179,6 +179,6 @@ point, the target thread is ensured to be active and with a new node to process.
    $N.state \longleftarrow inactive$\;
    $N.state\_lock.unlock()$\;
 \end{algorithm}
-\caption{Pseudo-code for the \code{process\_node} procedure.}
+\mycap{Pseudo-code for the \code{process\_node} procedure.}
  \label{alg:multicore:process_node}
 \end{figure}

@@ -26,7 +26,7 @@ shortest(A, D1, P1), D1 <= D2, relax(A, D2, P2)\hfill// Rule 2: longer path\labe
 shortest(A, +00, []).\hfill// Initial facts
 relax(@1, 0, [@1]).
 \end{Verbatim}
-   \caption{Shortest Path Program taking advantage of the \code{set-priority}
+   \mycap{Shortest Path Program taking advantage of the \code{set-priority}
    coordination fact.}
    \label{code:shortest_path_program_coord}
 \end{figure}
@@ -44,22 +44,22 @@ and threads are still able to locally avoid unnecessary work.
 \begin{center}
    \begin{subfigure}[b]{0.49\textwidth}
       \includegraphics[width=\textwidth]{figures/sssp/coord1}
-      \caption{}
+      \mycap{}
    \end{subfigure}
    \begin{subfigure}[b]{0.49\textwidth}
       \includegraphics[width=\textwidth]{figures/sssp/coord2}
-      \caption{}
+      \mycap{}
    \end{subfigure}
    \begin{subfigure}[b]{0.49\textwidth}
       \includegraphics[width=\textwidth]{figures/sssp/coord3}
-      \caption{}
+      \mycap{}
    \end{subfigure}
    \begin{subfigure}[b]{0.49\textwidth}
       \includegraphics[width=\textwidth]{figures/sssp/coord4}
-      \caption{}
+      \mycap{}
    \end{subfigure}
 \end{center}
-\caption{Graphical representation of the new SSSP program in
+\mycap{Graphical representation of the new SSSP program in
    Fig.~\ref{code:shortest_path_program_coord}. (a) represents the
    program after propagating initial distance at node \code{@1}, followed by
    (b) where the first rule is applied in node \code{@3}. (c)
@@ -92,7 +92,7 @@ coordination.
       \input{experiments/coordination/sssp-stats}
    \end{center}
 
-   \caption{Fact statistics for the MSSD program when using 1 thread. For each
+   \mycap{Fact statistics for the MSSD program when using 1 thread. For each
       dataset, we gathered the number of facts derived, number of facts deleted,
       number of facts sent to other nodes and total number of facts in the
       database when the program terminates.}
@@ -129,44 +129,44 @@ prioritize the computation of the shortest distance to only a single node.
         \begin{subfigure}[b]{\plotsize\textwidth}
                 \includegraphics[width=\textwidth]{experiments/coordination/cmp-shortest-email.png}
                 \label{fig:coordination:coord_sssp_email}
-                \caption{Graph with 265000 nodes and 420000 edges. The shortest
+                \mycap{Graph with 265000 nodes and 420000 edges. The shortest
                 distance is calculated for 100 nodes.}
         \end{subfigure}
         ~
         \begin{subfigure}[b]{\plotsize\textwidth}
                 \includegraphics[width=\textwidth]{experiments/coordination/cmp-shortest-oclinks.png}
                 \label{fig:coordination:coord_sssp_oclinks}
-                \caption{Graph with around 2000 nodes and 20000 edges. The shortest
+                \mycap{Graph with around 2000 nodes and 20000 edges. The shortest
                    distance is calculated for all nodes.}
         \end{subfigure} \\
         \begin{subfigure}[b]{\plotsize\textwidth}
                 \includegraphics[width=\textwidth]{experiments/coordination/cmp-shortest-twitter.png}
                 \label{fig:coordination:coord_sssp_twitter}
-                \caption{Graph with 81306 nodes and 1768149 edges. The shortest
+                \mycap{Graph with 81306 nodes and 1768149 edges. The shortest
                    distance is calculuated for 40 nodes.}
         \end{subfigure}
         ~
         \begin{subfigure}[b]{\plotsize\textwidth}
                 \includegraphics[width=\textwidth]{experiments/coordination/cmp-shortest-uspowergrid.png}
                 \label{fig:coordination:coord_sssp_uspowergrid}
-                \caption{Graph with around 5000 nodes and 13000 edges. The
+                \mycap{Graph with around 5000 nodes and 13000 edges. The
                 shortest distance is calculated for all nodes.}
         \end{subfigure}\\
         \begin{subfigure}[b]{\plotsize\textwidth}
                 \includegraphics[width=\textwidth]{experiments/coordination/cmp-shortest-orkut.png}
                 \label{fig:coordination:coord_sssp_orkut}
-                \caption{Graph with 3072441 nodes and 117185083 edges. The shortest
+                \mycap{Graph with 3072441 nodes and 117185083 edges. The shortest
                    distance is calculated for two nodes.}
         \end{subfigure}
         ~
         \begin{subfigure}[b]{\plotsize\textwidth}
                 \includegraphics[width=\textwidth]{experiments/coordination/cmp-shortest-livejournal.png}
                 \label{fig:coordination:coord_sssp_livejournal}
-                \caption{Graph with around 4847571 nodes and 68993773 edges. The
+                \mycap{Graph with around 4847571 nodes and 68993773 edges. The
                 shortest distance is calculated for two nodes.}
         \end{subfigure}\\
 
-        \caption{Scalability comparison for the MSSD program when enabling
+        \mycap{Scalability comparison for the MSSD program when enabling
         coordination facts.}
 
         \label{fig:coordination:results_sssp}

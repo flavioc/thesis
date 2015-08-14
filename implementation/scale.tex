@@ -52,7 +52,7 @@ is also the one used in the GraphLab framework.
                 \includegraphics[width=\textwidth]{experiments/scalability/scale-belief-propagation-400.png}
                 \label{fig:implementation:scale_bp400}
         \end{subfigure}\\
-        \caption{Scalability results of the Belief Propagation program.}
+        \mycap{Scalability results of the Belief Propagation program.}
         \label{fig:implementation:scale_bp}
 \end{figure}
 
@@ -77,7 +77,7 @@ makes the LM version run almost twice as fast as the C++ version.
                 \includegraphics[width=\textwidth]{experiments/scalability/scale-new-heat-transfer-120.png}
                 \label{fig:implementation:scale_ht120}
         \end{subfigure}\\
-        \caption{Scalability results for the Heat Transfer program. Because the
+        \mycap{Scalability results for the Heat Transfer program. Because the
            Heat Transfer program performs poorly when compared to the C++ program,
            the LM version needs at least 15 threads to reach the run time of the C++
            program (for the 120x120 dataset).}
@@ -109,7 +109,7 @@ is not a program where work is equally distributed.
                 \label{fig:implementation:scale_ggc_gplus}
         \end{subfigure}\\
 
-        \caption{Scalability of the Greedy Graph Coloring program.}
+        \mycap{Scalability of the Greedy Graph Coloring program.}
 
         \label{fig:implementation:scale_ggc}
 \end{figure}
@@ -147,7 +147,7 @@ the board.
                 \label{fig:implementation:scale_queens14}
         \end{subfigure}
 
-        \caption{Scalability results for the N-Queens program. The 13
+        \mycap{Scalability results for the N-Queens program. The 13
         configuration has 73712 solutions, while the 14 configuration has 365596
      solutions. In terms of graph size, the 13 configuration has $13 \times 13$
   nodes while the 14 configuration has $14 \times 14$ nodes.}
@@ -178,7 +178,7 @@ of LM and improving the memory usage of the program.
                 \label{fig:implementation:scale_minmax_big}
         \end{subfigure}\\
 
-        \caption{Scalability for the MiniMax program. Although the Big
+        \mycap{Scalability for the MiniMax program. Although the Big
            configuration has more work available and could in principle scale
            better than Small, the high memory requirements of Big makes it scale
            poorly.}
@@ -206,44 +206,44 @@ which we want to calculate the distance from.
         \begin{subfigure}[b]{\plotsize\textwidth}
                 \includegraphics[width=\textwidth]{experiments/scalability/scale-shortest-email.png}
                 \label{fig:implementation:scale_sssp_email}
-                \caption{Graph with 265000 nodes and 420000 edges. The shortest
+                \mycap{Graph with 265000 nodes and 420000 edges. The shortest
                 distance is calculated for 100 nodes.}
         \end{subfigure}
         ~
         \begin{subfigure}[b]{\plotsize\textwidth}
                 \includegraphics[width=\textwidth]{experiments/scalability/scale-shortest-oclinks.png}
                 \label{fig:implementation:scale_sssp_oclinks}
-                \caption{Graph with around 2000 nodes and 20000 edges. The shortest
+                \mycap{Graph with around 2000 nodes and 20000 edges. The shortest
                    distance is calculated for all nodes.}
         \end{subfigure} \\
         \begin{subfigure}[b]{\plotsize\textwidth}
                 \includegraphics[width=\textwidth]{experiments/scalability/scale-shortest-twitter.png}
                 \label{fig:implementation:scale_sssp_twitter}
-                \caption{Graph with 81306 nodes and 1768149 edges. The shortest
+                \mycap{Graph with 81306 nodes and 1768149 edges. The shortest
                    distance is calculuated for 40 nodes.}
         \end{subfigure}
         ~
         \begin{subfigure}[b]{\plotsize\textwidth}
                 \includegraphics[width=\textwidth]{experiments/scalability/scale-shortest-uspowergrid.png}
                 \label{fig:implementation:scale_sssp_uspowergrid}
-                \caption{Graph with around 5000 nodes and 13000 edges. The
+                \mycap{Graph with around 5000 nodes and 13000 edges. The
                 shortest distance is calculated for all nodes.}
         \end{subfigure}\\
         \begin{subfigure}[b]{\plotsize\textwidth}
                 \includegraphics[width=\textwidth]{experiments/scalability/scale-shortest-orkut.png}
                 \label{fig:implementation:scale_sssp_orkut}
-                \caption{Graph with 3072441 nodes and 117185083 edges. The shortest
+                \mycap{Graph with 3072441 nodes and 117185083 edges. The shortest
                    distance is calculated for two nodes.}
         \end{subfigure}
         ~
         \begin{subfigure}[b]{\plotsize\textwidth}
                 \includegraphics[width=\textwidth]{experiments/scalability/scale-shortest-livejournal.png}
                 \label{fig:implementation:scale_sssp_livejournal}
-                \caption{Graph with around 4847571 nodes and 68993773 edges. The
+                \mycap{Graph with around 4847571 nodes and 68993773 edges. The
                 shortest distance is calculated for two nodes.}
         \end{subfigure}\\
 
-        \caption{Scalability for the MSSD program. The LM system scales better
+        \mycap{Scalability for the MSSD program. The LM system scales better
         when there is more work to do per node, with the US Power Grid dataset
         showing the most scalability.}
 
@@ -263,17 +263,17 @@ more scalable with a 14-fold speedup for 32 threads.
         \begin{subfigure}[b]{\plotsize\textwidth}
                 \includegraphics[width=\textwidth]{experiments/scalability/scale-pagerank-gplus.png}
                 \label{fig:implementation:scale_pagerank_gplus}
-                \caption{The Google Plus graph has a high average of edges per
+                \mycap{The Google Plus graph has a high average of edges per
                 node of 127.}
         \end{subfigure}
         ~
         \begin{subfigure}[b]{\plotsize\textwidth}
                 \includegraphics[width=\textwidth]{experiments/scalability/scale-pagerank-pokec.png}
                 \label{fig:implementation:scale_pagerank_pokec}
-                \caption{The Pokec graph has a lower average of edges per node
+                \mycap{The Pokec graph has a lower average of edges per node
                 of 18.}
         \end{subfigure}\\
-        \caption{Scalability results for the asynchronous PageRank program. The
+        \mycap{Scalability results for the asynchronous PageRank program. The
            superior scalability of the Google Plus dataset may be explained by
         its higher density of edges.}
         \label{fig:implementation:scale_pagerank}

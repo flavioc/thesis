@@ -14,7 +14,7 @@ multithreaded environments.
       \includegraphics[width=0.7\linewidth]{figures/implementation/pool.pdf}
    \end{center}
 
-   \caption{Threaded allocator: each thread has 3 memory pools for objects and
+   \mycap{Threaded allocator: each thread has 3 memory pools for objects and
       each pool contains a set of memory chunks. Each pool also contains an
       ordered array for storing deallocated objects of a particular size. In
       this example, the pool for small objects has an ordered array for sizes 4

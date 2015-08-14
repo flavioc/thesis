@@ -32,7 +32,7 @@ message(A, Content, []),*label{line:language:message_second1}*hfill// Rule 2
 processed(A, N)
    -o processed(A, N + 1).*label{line:language:message_second2}
 \end{Verbatim}
-\caption{LM code for routing messages in a graph.}
+\mycap{LM code for routing messages in a graph.}
 \label{code:language:message}
 \end{figure}
 
@@ -75,7 +75,7 @@ processed(@1, 0). processed(@2, 0).
 processed(@3, 0). processed(@4, 0).
 message(@1, "hello world", [@3, @4]).
 \end{Verbatim}
-\caption{Initial facts for the message routing program. There is only one message ("hello
+\mycap{Initial facts for the message routing program. There is only one message ("hello
 world") to route through nodes \code{@3} and \code{@4}.}
 \label{code:language:message_facts}
 \end{figure}
@@ -98,27 +98,27 @@ where it will be consumed (Fig.~\ref{fig:message_trace}(d)).
         \centering
         \begin{subfigure}[b]{\visitsize\textwidth}
                 \includegraphics[width=\textwidth]{figures/message/message_trace1}
-                \caption{Initial database.}
+                \mycap{Initial database.}
                 \label{fig:message_trace1}
         \end{subfigure}%
         ~
         \begin{subfigure}[b]{\visitsize\textwidth}
                 \includegraphics[width=\textwidth]{figures/message/message_trace2}
-                \caption{After applying rule 1 at node \code{@1}.}
+                \mycap{After applying rule 1 at node \code{@1}.}
                 \label{fig:message_trace2}
         \end{subfigure}\\
         \begin{subfigure}[b]{\visitsize\textwidth}
                 \includegraphics[width=\textwidth]{figures/message/message_trace3}
-                \caption{After applying rule 1 at node \code{@3}.}
+                \mycap{After applying rule 1 at node \code{@3}.}
                 \label{fig:message_trace3}
         \end{subfigure}%
         ~
         \begin{subfigure}[b]{\visitsize\textwidth}
                   \includegraphics[width=\textwidth]{figures/message/message_trace4}
-                  \caption{After applying rule 2 at node \code{@4}.}
+                  \mycap{After applying rule 2 at node \code{@4}.}
                   \label{fig:message_trace4}
           \end{subfigure}
-        \caption{An execution trace for the message routing program. The message "hello
+        \mycap{An execution trace for the message routing program. The message "hello
         world" travels from node \code{@1} to node \code{@4}.}\label{fig:message_trace}
 \end{figure}
 

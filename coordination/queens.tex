@@ -98,7 +98,7 @@ send-down(A, State), !coord(A, CX, _), CX <> size - 1*label#line:coord:queens_do
 
 propagate-right(@0, []).*label#line:coord:queens_axiom&*hfill// Initial fact
 \end{Verbatim}
-  \caption{N-Queens problem solved in LM.}
+  \mycap{N-Queens problem solved in LM.}
   \label{code:coordination:nqueens}
 \end{figure}
 
@@ -130,7 +130,7 @@ final-state(@63, [7, 1, 4, 2, 0, 6, 3, 5])
 final-state(@63, [7, 2, 0, 5, 1, 4, 6, 3])
 final-state(@63, [7, 3, 0, 2, 5, 1, 6, 4])
 \end{Verbatim}
-  \caption{Final database for the 8-Queens program.}
+  \mycap{Final database for the 8-Queens program.}
   \label{code:coordination:8queens}
 \end{figure}
 
@@ -147,7 +147,7 @@ balancing dynamically.
 
 \begin{figure}[ht!]
 \includegraphics[width=0.4\textwidth]{figures/coordination/nqueens.pdf}
-\caption{Propagation of states using the \code{send-down} fact.}
+\mycap{Propagation of states using the \code{send-down} fact.}
 \label{coordination:fig:nqueens}
 \end{figure}
 
@@ -200,26 +200,26 @@ CPU's in the system in order to increase memory locality.
         \centering
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/coordination/cmp-top-8queens-13.png}
-           \caption{}
+           \mycap{}
            \label{fig:coordination:coord_13queenstop}
         \end{subfigure}
         ~
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/coordination/cmp-top-static-8queens-13.png}
-           \caption{}
+           \mycap{}
            \label{fig:coordination:coord_13queenstopstatic}
         \end{subfigure} \\
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/coordination/cmp-bottom-8queens-13.png}
-           \caption{}
+           \mycap{}
            \label{fig:coordination:coord_13queensbottom}
         \end{subfigure} ~
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/coordination/cmp-bottom-static-8queens-13.png}
-           \caption{}
+           \mycap{}
            \label{fig:coordination:coord_13queensbottomstatic}
         \end{subfigure} \\
-        \caption{Scalability for the N-Queens 13 program when using different
+        \mycap{Scalability for the N-Queens 13 program when using different
         scheduling and partitioning policies.}
         \label{fig:coordination:results_queens-13}
 \end{figure}
@@ -228,26 +228,26 @@ CPU's in the system in order to increase memory locality.
         \centering
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/coordination/cmp-top-8queens-14.png}
-           \caption{}
+           \mycap{}
            \label{fig:coordination:coord_14queenstop}
         \end{subfigure}
         ~
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/coordination/cmp-top-static-8queens-14.png}
-           \caption{}
+           \mycap{}
            \label{fig:coordination:coord_14queenstopstatic}
         \end{subfigure} \\
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/coordination/cmp-bottom-8queens-14.png}
-           \caption{}
+           \mycap{}
            \label{fig:coordination:coord_14queensbottom}
         \end{subfigure} ~
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/coordination/cmp-bottom-static-8queens-14.png}
-           \caption{}
+           \mycap{}
            \label{fig:coordination:coord_14queensbottomstatic}
         \end{subfigure} \\
-        \caption{Scalability for the N-Queens 14 program when using different
+        \mycap{Scalability for the N-Queens 14 program when using different
         scheduling and partitioning policies.}
         \label{fig:coordination:results_queens-14}
 \end{figure}

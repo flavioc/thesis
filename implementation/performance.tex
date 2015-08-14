@@ -52,7 +52,7 @@ different dataset sizes for each program.
       \input{experiments/absolute/runtime}
    \end{center}
 
-   \caption{Experimental results comparing different programs against
+   \mycap{Experimental results comparing different programs against
       hand-written versions in C++. For the C++ programs, we show the execution
       time in seconds (\textbf{C++ Time (s)}). For the other approaches, we show
       the overhead ratio compared with the corresponding C++ program. The
@@ -168,7 +168,7 @@ is not much smaller than LM's.
       \input{experiments/mem/mem}
    \end{center}
 
-   \caption{Memory statistics for LM programs. The meaning of each column is as
+   \mycap{Memory statistics for LM programs. The meaning of each column is as
       follows: column \textbf{Average} represents the average memory use of the
       program; \textbf{Final} represents the memory usage after the program
       completes; \textbf{Malloc} represents the number of \code{malloc}
@@ -184,7 +184,7 @@ is not much smaller than LM's.
    \begin{center}
       \input{experiments/mem/c-mem}
    \end{center}
-   \caption{Average and final memory usage of each C++ program.}
+   \mycap{Average and final memory usage of each C++ program.}
    \label{table:implementation:cmem}
 \end{table}
 
@@ -238,7 +238,7 @@ the existence of hash tables used for supporting indexing.
       \input{experiments/absolute/compare-no-indexing}
    \end{center}
 
-   \caption{Measuring the impact of dynamic indexing and related data
+   \mycap{Measuring the impact of dynamic indexing and related data
       structures. Column \textbf{Run Time} shows the slow down ratio of the
       unoptimized version (numbers greater than 1 show indexing improvements).
       Column \textbf{Average Memory} is the result of dividing the average
@@ -262,7 +262,7 @@ contiguous memory area.
       \input{experiments/absolute/compare-no-arrays}
    \end{center}
 
-   \caption{Measuring the impact of using array data structures for persistent
+   \mycap{Measuring the impact of using array data structures for persistent
       facts. Column \textbf{Run Time} shows the speedups obtained by using
       arrays. Column \textbf{Average Memory} is the result of dividing the
       average memory of the programs using arrays by the version without them

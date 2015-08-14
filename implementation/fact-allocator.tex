@@ -18,7 +18,7 @@ list of memory pages and each page contains facts of different sizes
       \includegraphics[width=0.7\linewidth]{figures/implementation/fact_allocator.pdf}
    \end{center}
 
-   \caption{Fact allocator: each node has a pool of memory pages for allocating
+   \mycap{Fact allocator: each node has a pool of memory pages for allocating
       logical facts. Each page contains: (i) several linked lists of free facts
       of the same size (\code{free\_array}); (ii) a reference count of used
       facts (\code{refcount}); (iii) a \code{ptr} pointer that points to
@@ -82,7 +82,7 @@ was very similar for the other datasets).
                 \includegraphics[width=\textwidth]{experiments/scalability/node-allocator-8queens-14.png}
                 \label{fig:implementation:node_queens}
         \end{subfigure} \\
-        \caption{Comparing the threaded allocator described in
+        \mycap{Comparing the threaded allocator described in
         Section~\ref{section:implementation:allocation} against the fact
         allocator. The threaded allocator is represented by plus markers, while
         the fact allocator is represented by circular markers. Note that the two

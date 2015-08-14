@@ -24,7 +24,7 @@ RKey > Key,
    -o value(A, Key, Value),
       replace(B, RKey, RValue). *label{line:language:dict_third2}
 \end{Verbatim}
-\caption{LM program for replacing a key's value in a BST dictionary.}
+\mycap{LM program for replacing a key's value in a BST dictionary.}
 \label{code:language:btree_replace}
 \end{figure}
 
@@ -79,7 +79,7 @@ value(@7, 6, "g").
 // Update key 6 to value "x".
 replace(@1, 6, "x").
 \end{Verbatim}
-\caption{Initial facts for replacing a key's value in a BST dictionary.}
+\mycap{Initial facts for replacing a key's value in a BST dictionary.}
 \label{code:language:btree_replace_initial}
 \end{figure}
 
@@ -95,29 +95,29 @@ rule 1 and \code{value(@7, 6, "g")} is updated to \code{value(@7, 6, "x")}.
         \centering
         \begin{subfigure}[b]{0.5\textwidth}
                 \includegraphics[width=\textwidth]{figures/btree/btree_trace1}
-                \caption{Initial database.}
+                \mycap{Initial database.}
                 \label{fig:language:btree_trace1}
         \end{subfigure}%
         ~
         \begin{subfigure}[b]{0.5\textwidth}
                 \includegraphics[width=\textwidth]{figures/btree/btree_trace2}
 
-                \caption{After applying rule 3 at node \code{@1}.}
+                \mycap{After applying rule 3 at node \code{@1}.}
 
                 \label{fig:language:btree_trace2}
         \end{subfigure}\\
         \begin{subfigure}[b]{0.5\textwidth}
                 \includegraphics[width=\textwidth]{figures/btree/btree_trace3}
-                \caption{After applying rule 3 at node \code{@3}.}
+                \mycap{After applying rule 3 at node \code{@3}.}
                 \label{fig:language:btree_trace3}
         \end{subfigure}%
         ~
         \begin{subfigure}[b]{0.5\textwidth}
                   \includegraphics[width=\textwidth]{figures/btree/btree_trace4}
-                  \caption{After applying rule 1 at node \code{@7}.}
+                  \mycap{After applying rule 1 at node \code{@7}.}
                   \label{fig:language:btree_trace4}
           \end{subfigure}
-        \caption{An execution trace for the binary tree dictionary
+        \mycap{An execution trace for the binary tree dictionary
            algorithm. The first argument of each fact was dropped and the
            address of the node was placed beside it.}\label{fig:language:btree_trace}
 \end{figure}

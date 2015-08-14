@@ -78,7 +78,7 @@ RKey > Key
    -o value(A, Key, Value),
       replace(B, RKey, RValue).
 \end{Verbatim}
-\caption{LM program for performing lookups in a BST extended to use a thread cache.}
+\mycap{LM program for performing lookups in a BST extended to use a thread cache.}
 \label{code:threads:btree_lookup_cache}
 \end{figure}
 
@@ -133,7 +133,7 @@ the tree and another thread may have the target node in its cache.
       \input{experiments/threads/key-value-stats}
    \end{center}
 
-   \caption{Fact statistics for the \textbf{Regular} version and the
+   \mycap{Fact statistics for the \textbf{Regular} version and the
    \textbf{Cached} version.}
    \label{results:threads:key_value}
 \end{table}
@@ -150,7 +150,7 @@ the tree and another thread may have the target node in its cache.
            \label{fig:threads:key_value_21}
         \end{subfigure} \\
 
-        \caption{Scalability for the Binary Search Tree program when using
+        \mycap{Scalability for the Binary Search Tree program when using
         thread based facts.}
 
         \label{fig:threads:results_key_value}

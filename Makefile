@@ -6,7 +6,8 @@ EXPERIMENT_FILES := experiments/absolute/runtime.tex \
 	experiments/coordination/sssp-stats.tex \
 	experiments/coordination/minmax-mem.tex \
 	experiments/threads/powergrid-stats.tex \
-	experiments/threads/key-value-stats.tex
+	experiments/threads/key-value-stats.tex \
+	experiments/coordination/ligra-scale.csv
 
 FIGURES := $(wildcard figures/btree/btree_trace*.pdf) \
 	$(wildcard figures/message/message_trace*.pdf) \
@@ -214,6 +215,11 @@ thread:
 		experiments/threads/key-value.csv \
 		experiments/threads/cmp- \
 		Cached
+
+experiments/coordination/ligra-scale.csv: experiments/coordination/ligra.csv \
+	experiments/coordination/ligra.py
+	python experiments/coordination/ligra.py experiments/coordination/ligra.csv > \
+		experiments/coordination/ligra-scale.csv
 	
 clean:
 	rm -f thesis.pdf *.bbl *.blg *.log *.lot \

@@ -130,7 +130,7 @@ is-moving(A)
    -o idle(T), owner(A, T), is-moving(A),
       inactive(A), available-work(A, true).\label#line:threads:model_steal2&
 \end{Verbatim}
-\caption{Modeling the operational semantics as a LM program. The underlined code
+\mycap{Modeling the operational semantics as a LM program. The underlined code
 represents how an example rule \code{node-fact(A, Y), other-fact(A, B) -o remote-fact(B),
 local-fact(A)} needs to be translated for modeling the semantics.}
 \label{code:threads:modeling}
@@ -199,7 +199,7 @@ available-work(A, _)
    -o is-static(A), owner(A, T), just-moved(A),
       available-work(A, true).\label#line:threads:model_thread2&
 \end{Verbatim}
-\caption{Modeling the operational semantics for coordination facts as a LM
+\mycap{Modeling the operational semantics for coordination facts as a LM
 program.}
 \label{code:threads:modeling_scheduling}
 \end{figure}

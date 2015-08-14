@@ -15,7 +15,7 @@ visit(A),*label[line:language:visit_second1]*hfill // Rule 2: node already visit
 visited(A)
    -o visited(A).*label[line:language:visit_second2]
 \end{Verbatim}
-  \caption{LM code for the graph visit program.}
+  \mycap{LM code for the graph visit program.}
   \label{code:language:visit}
 \end{figure}
 
@@ -51,7 +51,7 @@ unvisited(@4).
 
 visit(@1).
 \end{Verbatim}
-  \caption{Initial facts for the graph visit program. Nodes reachable from node \code{@1} will be marked as \code{visited}.}
+  \mycap{Initial facts for the graph visit program. Nodes reachable from node \code{@1} will be marked as \code{visited}.}
   \label{code:language:visit_initial}
 \end{figure}
 
@@ -70,19 +70,19 @@ rule 1 at node \code{@3} to reach the state of Fig.~\ref{fig:exec_trace}~(d).
         \centering
         \begin{subfigure}[b]{0.45\textwidth}
                 \includegraphics[width=\textwidth]{figures/visit/trace1}
-                \caption{Initial database.}
+                \mycap{Initial database.}
                 \label{fig:exec_trace1}
         \end{subfigure}%
         ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
           %(or a blank line to force the subfigure onto a new line)
         \begin{subfigure}[b]{0.45\textwidth}
                 \includegraphics[width=\textwidth]{figures/visit/trace2}
-                \caption{After applying rule 1 at node \code{@1}.}
+                \mycap{After applying rule 1 at node \code{@1}.}
                 \label{fig:exec_trace2}
         \end{subfigure}\\
         \begin{subfigure}[b]{0.45\textwidth}
                 \includegraphics[width=\textwidth]{figures/visit/trace3}
-                \caption{After applying rule 1 at node \code{@2}.}
+                \mycap{After applying rule 1 at node \code{@2}.}
                 \label{fig:exec_trace3}
         \end{subfigure}%
         ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
@@ -90,12 +90,12 @@ rule 1 at node \code{@3} to reach the state of Fig.~\ref{fig:exec_trace}~(d).
         \begin{subfigure}[b]{0.45\textwidth}
                   \includegraphics[width=\textwidth]{figures/visit/trace4}
 
-                  \caption{After applying rule 1 and 2 at node \code{@4} and
+                  \mycap{After applying rule 1 and 2 at node \code{@4} and
                   rule 1 at node \code{@3}.}
 
                   \label{fig:exec_trace4}
           \end{subfigure}
-        \caption{A possible execution trace for the visit
+        \mycap{A possible execution trace for the visit
            program. Note that the \code{edge} facts were omitted for simplicity.}
         \label{fig:exec_trace}
 \end{figure}

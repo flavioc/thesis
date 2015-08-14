@@ -44,7 +44,7 @@ do-search(A, Id, Node, ToReach),*hfill// Rule 5: node not found and propagate se
       visited(A, Id).*label#line:threads:reach_visit_visited2&
 \end{Verbatim}
 
-\caption{LM code to perform reachability checking on a graph.}
+\mycap{LM code to perform reachability checking on a graph.}
 \label{code:threads:reach_simple}
 \end{figure}
 
@@ -98,7 +98,7 @@ using thread-based facts, we first present the changes to the language.
    \includegraphics[width=0.9\linewidth]{figures/threads/reach.pdf}
 \end{center}
 
-\caption{Performing reachability checks on a graph using nodes \code{@1}
+\mycap{Performing reachability checks on a graph using nodes \code{@1}
 (\code{Id = 0}) and \code{@6} (\code{Id = 1}).  Search with \code{Id = 0} wants
 to reach nodes \code{@1}, \code{@2}, and \code{@3} from node \code{@1}. Since
 \code{@1} is part of the target nodes, the fact \code{do-search} propagated to
@@ -156,7 +156,7 @@ facts.
 \begin{figure}[ht]
    \includegraphics[width=0.6\linewidth]{figures/threads/threads.pdf}
 
-   \caption{An example program being executed with three threads. Note that each
+   \mycap{An example program being executed with three threads. Note that each
       threads has a \code{running} fact that stores the node currently being
    executed.}
 
@@ -269,7 +269,7 @@ do-search(A, Id),*hfill// Rule 5: node not found but propagate search
 *textbf#thread-search(T, Id, ToReach, Owner)&
    *textbf#-o thread-search(T, Id, [], Owner).& *label#line:threads:reacht_knows2&
 \end{Verbatim}
-\caption{Coordinated version of the reachability checking program. Note
+\mycap{Coordinated version of the reachability checking program. Note
 that \code{@threads} represent the number of threads in the system.}
 \label{code:threads:reach_threads}
 \end{figure}
@@ -303,20 +303,20 @@ facts on the \code{Id} argument every time a node is inspected.
         \centering
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/threads/cmp-search-facebook.png}
-           \caption{Facebook has 2000 nodes and 20000 edges. The dataset makes
+           \mycap{Facebook has 2000 nodes and 20000 edges. The dataset makes
            2000 graph queries to 5\% of the graph's nodes.}
            \label{fig:threads:search_facebook}
         \end{subfigure}
         \spacing
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/threads/cmp-search-twitter.png}
-           \caption{Twitter has 81306 nodes and 1768149 edges. The dataset makes
+           \mycap{Twitter has 81306 nodes and 1768149 edges. The dataset makes
            100 graph queries to 1\% of the graph's nodes.}
            \label{fig:threads:search_twitter}
         \end{subfigure} \\
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/threads/cmp-search-random.png}
-           \caption{Random is a graph with 50000 nodes and 1052674
+           \mycap{Random is a graph with 50000 nodes and 1052674
               edges. The dataset makes 20 graph queries
               to 5\% of the graph's nodes.}
            \label{fig:threads:search_random}
@@ -324,11 +324,11 @@ facts on the \code{Id} argument every time a node is inspected.
         \spacing
         \begin{subfigure}[b]{\plotsize\textwidth}
            \includegraphics[width=\textwidth]{experiments/threads/cmp-search-pokec.png}
-           \caption{Pokec has 1632803 nodes and 30622564 edges. The dataset
+           \mycap{Pokec has 1632803 nodes and 30622564 edges. The dataset
            makes 3 graph queries to 1\% of the graph's nodes.}
            \label{fig:threads:search_pokec}
         \end{subfigure} \\
-        \caption{Measuring the performance of the graph reachability program
+        \mycap{Measuring the performance of the graph reachability program
         when using thread facts.}
         \label{fig:threads:results_search}
 \end{figure}

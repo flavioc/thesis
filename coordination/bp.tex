@@ -12,7 +12,7 @@ received.
       \includegraphics[width=0.3\textwidth]{figures/bp/bp.pdf}
    \end{center}
 
-   \caption{LBP communication patterns. \code{new-neighbor-belief} facts are
+   \mycap{LBP communication patterns. \code{new-neighbor-belief} facts are
    sent to the neighborhood when the node's belief value is updated. If the new
    value sent to the neighbor differs significantly from the value sent before
    the current the round, then an \code{update} fact is also sent (to the node
@@ -83,7 +83,7 @@ belief(A, MyBelief)
          update-messages(A, Normalized), belief(A, Normalized)].*label#line:coord:bp_last2&*label#line:coord:bp_update2&*label#line:coord:bp_agg2&
 \end{Verbatim}
 
-\caption{LM code for the asynchronous version of the Loopy Belief Propagation
+\mycap{LM code for the asynchronous version of the Loopy Belief Propagation
 problem.}
 
 \label{code:coordination:bp}
@@ -146,6 +146,6 @@ update-messages(A, NewBelief),*hfill// Rule 4: compute belief to be sent to a ne
             \underline{add-priority(B, Residual)},
             sent-neighbor-belief(A, B, OutMessage)\}.
 \end{Verbatim}
-\caption{Extending the LBP program with priorities.}
+\mycap{Extending the LBP program with priorities.}
 \label{code:coordination:improved_bp}
 \end{figure}

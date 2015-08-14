@@ -36,7 +36,7 @@ shortest(A, D1, P1), D1 > D2, relax(A, D2, P2)*label#line:coord:sssp_first1&*hfi
 shortest(A, D1, P1), D1 <= D2, relax(A, D2, P2)*label#line:coord:sssp_second1&*hfill// Rule 2: longer path
    -o shortest(A, D1, P1).*label#line:coord:sssp_second2&
 \end{Verbatim}
-\caption{Single Source Shortest Path program code.}
+\mycap{Single Source Shortest Path program code.}
 \label{code:shortest_path_program}
 \end{figure}
 
@@ -48,7 +48,7 @@ shortest(A, D1, P1), D1 <= D2, relax(A, D2, P2)*label#line:coord:sssp_second1&*h
 shortest(A, +00, []).
 relax(@1, 0, [@1]).
 \end{Verbatim}
-\caption{Initial facts for the SSSP program.}
+\mycap{Initial facts for the SSSP program.}
 \label{code:coord:sssp_init}
 \end{figure}
 
@@ -63,7 +63,7 @@ shortest(@2, 2, [@1, @3, @2]).
 shortest(@3, 1, [@1, @3]).
 shortest(@4, 3, [@1, @3, @2, @4]).
 \end{Verbatim}
-\caption{Final database of facts for the SSSP program.}
+\mycap{Final database of facts for the SSSP program.}
 \label{code:coord:sssp_end}
 \end{figure}
 \fi
@@ -71,19 +71,19 @@ shortest(@4, 3, [@1, @3, @2, @4]).
 \begin{center}
    \begin{subfigure}[b]{0.49\textwidth}
       \includegraphics[width=\textwidth]{figures/sssp/shortest2}
-      \caption{}
+      \mycap{}
    \end{subfigure}
    \begin{subfigure}[b]{0.49\textwidth}
       \includegraphics[width=\textwidth]{figures/sssp/shortest3}
-      \caption{}
+      \mycap{}
    \end{subfigure}
    \begin{subfigure}[b]{0.49\textwidth}
       \includegraphics[width=\textwidth]{figures/sssp/shortest8}
-      \caption{}
+      \mycap{}
    \end{subfigure}
 \end{center}
 
-\caption{Graphical representation of the SSSP program: (a) represents the
+\mycap{Graphical representation of the SSSP program: (a) represents the
    program's state after propagating the initial distance at node \code{@1}, followed by (b)
    where the first rule is applied in node \code{@2}, and (c) represents the
    final state of the program, where all the shortest paths have been computed.}

@@ -26,7 +26,7 @@ expensive.
       Remove Half & $\mathcal{O}(N)$ & $\mathcal{O}(\log{N})$ \\ \hline
       Priority Update & - & $\mathcal{O}(\log{N})$ \\ \hline
    \end{tabular}
-   \caption{Complexity of queue operations for both the standard
+   \mycap{Complexity of queue operations for both the standard
       queue and the priority queue.}
    \label{fig:implementation:table_queue}
 \end{table}
@@ -34,7 +34,7 @@ expensive.
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.95\textwidth]{figures/implementation/work_queue.pdf}
-\caption{Thread's work queue and its interaction with other threads: the dynamic queue contains nodes that can be
+\mycap{Thread's work queue and its interaction with other threads: the dynamic queue contains nodes that can be
    stolen while the static queue contains nodes that cannot be stolen. Both
    queues are implemented with one standard queue and one priority queue.}
 \label{fig:implementation:work_queue}
@@ -81,7 +81,7 @@ the state machine.
 \begin{figure}[ht]
    \centering
    \includegraphics[width=0.55\textwidth]{figures/implementation/node_states.pdf}
-   \caption{Node state machine extended with the new \textbf{coordinating}
+   \mycap{Node state machine extended with the new \textbf{coordinating}
    state.}
    \label{fig:implementation:node_states}
 \end{figure}
