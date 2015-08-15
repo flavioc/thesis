@@ -899,6 +899,7 @@ class experiment(object):
       setup_lines(ax2, cmap)
 
       name = prefix + self.create_filename()
+      plt.gcf().subplots_adjust(left=0.2)
       plt.savefig(name)
 
    def __init__(self, name, dataset):

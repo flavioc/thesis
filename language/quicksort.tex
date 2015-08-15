@@ -5,16 +5,16 @@ smaller than the pivot into the first sublist and the items greater than the piv
 into the second list.
 
 The Quick-Sort algorithm is interesting because it does not map immediately to
-the graph-based model of LM. Our approach considers that the program starts with
-a single node where the initial list is located. Then the list is split as usual
-and two nodes are created that will recursively sort the sublists.
-Interestingly, this creates a tree that will look similar to a call tree in a
-functional programming language.
+the graph-based model of LM and will demonstrate that LM supports applications
+with dynamic graphs. The LM program starts with a single node where the initial
+unsorted list is located. Then the list is split as usual and two nodes are
+created that will recursively sort the sublists. Interestingly, this looks
+similar to a call tree in a functional programming language.
 
 Figure~\ref{language:code:quicksort} presents the code for the Quick-Sort
-algorithm in LM. The code uses six predicates described as follows: \code{up}
-represents a list that needs to be sorted; \code{down} is the result of sorting
-an \code{up} list; \code{sorted} represents a sorted sublist; \code{back}
+algorithm in LM. The code uses six predicates described as follows: \code{down}
+represents a list that needs to be sorted; \code{up} is the result of sorting
+an \code{down} list; \code{sorted} represents a sorted sublist; \code{back}
 connects a node that is sorting a sublist to its parent node; \code{split} is
 used for splitting a list into two sublists using a pivot element; and
 \code{waitpivot} waits for two sorted sublists.
@@ -84,28 +84,25 @@ down(@0, initial_list).*label{line:language:qs_axiom}*hfill// Initial facts
   \label{language:code:quicksort}
 \end{figure}
 
-The Quick-Sort program shows that it is possible for applications to manipulate
-and change the structure of the graph during run time. This is possible with the
-use of the exists construct, which allows the programmer to create new nodes
+The use of the exists construct allows the programmer to create new nodes
 where facts can be derived. In the case of the Quick-Sort, it allows the program
 to create a tree of nodes where sorting can take place concurrently.
 
 The amount of concurrency available in the Quick-Sort program depends on the
 quality of the selected pivot. If the pivot splits the list in equal parts, then
 there is more concurrency because it is now possible to work on the two halfs of
-the list concurrently and those halfs have the same size. If a bad pivot is
-selected, then we may end up in situations where the pivot is the smallest (or
-largest) element of the list, splitting the list into an empty list and a list
-with $n-1$ elements. It is clear that the amount work required to sort the
-empty list is much smaller than the work required to sort the larger list.
-Repeatedly choosing a bad pivot will effectively turn Quick-Sort into a sequential
-algorithm. This is not surprising since it is directly related to the
-Quick-Sort's average and worst case complexity, $\mathcal{O}(n \log{n})$ and
-$\mathcal{O}(n^2)$, respectively.
+the list concurrently. If a bad pivot is selected, then we may end up in
+situations where the pivot is the smallest (or largest) element of the list,
+splitting the list into an empty list and a list with $n-1$ elements. It is
+clear that the amount of work required to sort the empty list is much smaller than
+the work required to sort the larger list.  Repeatedly choosing a bad pivot will
+effectively turn Quick-Sort into a sequential algorithm. This is not surprising
+since it is directly related to the Quick-Sort's average and worst case
+complexity, $\mathcal{O}(n \log{n})$ and $\mathcal{O}(n^2)$, respectively.
 
-The proof of correctness for Quick-Sort follows in a different style than what
-we have done up to this point. Instead of proving invariants, we prove what
-happens to the database given the presence of some logical facts.
+The proof of correctness for Quick-Sort follows in a different style than the
+proofs done so far. Instead of proving invariants, we prove what happens to the
+database given the presence of some logical facts.
 
 \begin{lemma}[Split lemma]
 
@@ -130,14 +127,14 @@ By induction on the size of $L$.
 
 The base cases are proven trivially (rules 1-4).
 
-In the inductive case we start with rule 5:
+In the inductive case, only rule 5 applies:
 \begin{Verbatim}[fontsize=\codesize]
 down(A, [Pivot | Xs]) -o split(A, Pivot, Xs, [], []).
 \end{Verbatim}
 
-and necessarily derive $\mathtt{split}(A, Pivot, Xs, [], [])$. Using the split
-lemma, then we get a $\mathtt{split}(A, Pivot, [], Smaller, Greater)$ fact,
-which leads us to use rule 6:
+\noindent which necessarily derives a $\mathtt{split}(A, Pivot, Xs, [], [])$
+fact. By applying the split lemma, a $\mathtt{split}(A, Pivot, [], Smaller, Greater)$
+fact is generated, from which only rule 6 can be used:
 
 \begin{Verbatim}[fontsize=\codesize]
 split(A, Pivot, [], Smaller, Greater) -o
@@ -145,20 +142,21 @@ split(A, Pivot, [], Smaller, Greater) -o
                  down(B, Smaller), down(C, Greater), waitpivot(A, Pivot, B, C)).
 \end{Verbatim}
 
-and then derive $\mathtt{back}(B, A)$, $\mathtt{back}(C, A)$, $\mathtt{down}(B,
-Smaller)$, $\mathtt{down}(C, Greater)$ and also a $\mathtt{waitpivot}(A, Pivot, B, C)$ fact. The semantics of LM ensure that $B$ and $C$ are fresh node
-addresses, therefore those new facts will be derived on nodes with no facts. We
-know that $Smaller$ and $Greater$ are both smaller (in size) than $L$, so, if we
-use the induction hypothesis, we get $\mathtt{up}(B, Smaller')$ and
-$\mathtt{up}(C, Greater')$.  These last two facts will be applied using the
-following rule:
+\noindent which necessarily derives $\mathtt{back}(B, A)$, $\mathtt{back}(C,
+A)$, $\mathtt{down}(B, Smaller)$, $\mathtt{down}(C, Greater)$ and also a
+$\mathtt{waitpivot}(A, Pivot, B, C)$ fact. The semantics of LM ensure that $B$
+and $C$ are fresh node addresses, therefore those new facts will be derived on
+nodes with no facts. The lists $Smaller$ and $Greater$ are both smaller (in
+size) than $L$, so, by the the induction hypothesis, an $\mathtt{up}(B,
+Smaller')$ and an $\mathtt{up}(C, Greater')$ facts are derived. These last two
+facts will be used in the following rule:
 
 \begin{Verbatim}[fontsize=\codesize]
 up(A, L), back(A, B) -o sorted(B, A, L).
 \end{Verbatim}
 
-thus generating $\mathtt{sorted}(A, B, Smaller')$ and $\mathtt{sorted}(A, C,
-Greater')$. In the continuation, we can use only the rule that accepts
+\noindent which generates a $\mathtt{sorted}(A, B, Smaller')$ and a $\mathtt{sorted}(A, C,
+Greater')$ facts. In the continuation, there is only one rule that accepts
 \code{sorted} and \code{waitpivot} facts:
 
 \begin{Verbatim}[fontsize=\codesize]
@@ -168,7 +166,7 @@ sorted(A, NodeGreater, Greater)
    -o up(A, Smaller ++ [Pivot | Greater]).
 \end{Verbatim}
 
-returning $\mathtt{up}(A, Smaller' ++ [Pivot | Greater'])$.  We know that
+\noindent returning $\mathtt{up}(A, Smaller' ++ [Pivot | Greater'])$.  We know that
 $Smaller' ++ [Pivot | Greater']$ is sorted since $Small'$ contains the sorted
 list of elements lesser or equal than $Pivot$ and $Greater'$ the elements
 greater than $Pivot$.

@@ -134,8 +134,8 @@ is seen in the Python program. The C++ version uses a backtracking strategy to
 try out all the possibilities and uses a vector to store board states.  Since
 there is only at most $N$ (size of the board) vectors at the same time, it shows
 better behavior than all the other programs. However, we should note that a 3 to
-6-fold slowdown is a fairly good trade-off for a higher-level program that will
-execute faster when using more threads as we are going to observe next.
+6-fold slowdown is a good trade-off for a higher-level program that will execute
+faster when using more threads as we are going to observe next.
 
 From these results, it is possible to conclude that LM's virtual machine offers
 a decent performance when compared to hand-written C++ programs. We think these

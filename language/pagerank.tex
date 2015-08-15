@@ -34,16 +34,16 @@ adds up to 1) and then perform the following computation:
 x(t + 1) = G x(t)
 \end{align}
 
-In order to distribute this calculation, we have the following formula for page
-$i$:
+To compute the PageRank value of a single page, it is possible to use the
+following formula:
 
 \begin{align}
 x_{i}(t + 1) = G_{i} x(t)\label{eq:language:pagerank}
 \end{align}
 
-Where $G_{i}$ is the row of the $G$ matrix that corresponds to the inbound links
-of page $i$. Note that we also do not need to have the complete $x(t)$ vector as
-most elements of $G_{i}$ are $0$.
+\noindent where $G_{i}$ is the row of the $G$ matrix that corresponds to the
+inbound links of page $i$. Note that the full $x(t)$ vector is not required
+since most elements of $G_{i}$ are $0$.
 
 The LM code for this iterative computation is shown in
 Fig.~\ref{language:code:pagerank} and the code starts by declaring six
@@ -118,8 +118,8 @@ start(A).\hfill// Initial facts
 \label{language:code:pagerank}
 \end{figure}
 
-The synchronous version of the PageRank algorithm has a fairly high level of
-concurrency. First, the program starts on all nodes of the graph, which makes
+The synchronous version of the PageRank algorithm has a large amount of
+concurrency.  First, the program starts on all nodes of the graph, which makes
 the program trivial to parallelize. However, because this is a synchronous
 algorithm, there is a data dependency between PageRank iterations, i.e., nodes
 can only compute their next iteration after they receive all the neighbor's

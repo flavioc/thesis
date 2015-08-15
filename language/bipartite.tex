@@ -50,6 +50,7 @@ In order to show that the code in Fig.~\ref{language:code:bichecking} works as
 intended, we first setup some invariants that hold throughout the execution of
 the program. Assume that the set of nodes in the graph is represented as $N$.
 
+\noindent\begin{minipage}{\linewidth}
 \begin{invariant}[Node state]
 The set of nodes $N$ is partitioned into 4 different states that represent the 4
 possible states that a node can be in, namely:
@@ -61,6 +62,7 @@ possible states that a node can be in, namely:
    \item $C_{2}$ ($\mathtt{colored}(A, 2)$ nodes)
 \end{itemize}
 \end{invariant}
+\end{minipage}
 \begin{proof}
 Initially, all nodes start in set $U$ (line~\ref{line:language:bc_unvisited}
 of Fig.~\ref{language:code:bichecking}. All the 4 rules of the programs either

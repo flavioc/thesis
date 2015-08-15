@@ -148,9 +148,9 @@ children nodes and starts expanding one of the nodes in a depth-first fashion.
 
 We also take advantage of memory locality by using \code{set-affinity}
 (line~\ref{line:coord:minimax_coord2}), so that nodes after a certain level are
-   not stolen by other threads. While this is not critical for performance in
-   shared memory systems where node stealing is fairly efficient, we expect that
-   such coordination to be critical in distributed systems.
+not stolen by other threads. While this is not critical for performance in
+shared memory systems where node stealing is efficient, we expect that such
+coordination to be critical in distributed systems.
 
 The rest of the program contains rules for maximizing and minimizing scores
 (lines~\ref{line:coord:minimax_minimize1}-\ref{line:coord:minimax_maximize2}),

@@ -164,11 +164,13 @@ membership remains unchanged.
 In turn, since set membership changes from $U$ to $V$, we now prove the
 following:
 
+\noindent\begin{minipage}{\linewidth}
 \begin{lemma}[Edge visits]\label{lemma:language:edge_visits}
 The program generates at most one \code{visit} per directed edge and for a node
 $a \in N$ that receives a \code{visit} fact, then for all $b \in N$ where $(a,
 b) \in E$, exactly one \code{visit} fact is generated at $b$.
 \end{lemma}
+\end{minipage}
 \begin{proof}
 From the visited set invariant, we know that once nodes become members of set $V$,
 they no longer return to set $U$, therefore rule 1 applies once per

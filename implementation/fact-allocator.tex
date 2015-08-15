@@ -122,7 +122,7 @@ of not collecting unused memory pages, which results in high memory usage.
 
 \input{implementation/no-refs}
 
-Overall, the performance of both allocators is fairly similar, therefore we have
+Overall, the performance of both allocators is similar, therefore we have
 decided to use the threaded allocator by default since it is simpler and offers
 good performance across the board. Furthermore, the threaded allocator requires
 less allocated memory because it enables more sharing between nodes.

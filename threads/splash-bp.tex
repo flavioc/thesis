@@ -137,7 +137,7 @@ The results show that GraphLab's \textbf{fifo} scheduler performance
 deteriorates with more 10 threads, while both LM and \textbf{multiqueue} tend to
 scale well and have a similar behavior. For 1 thread, LM is about 1.5 times
 slower than GraphLab but that ratio increases to about to about 2 once the
-number of threads increases. We think this is because the LBP program is fairly
+number of threads increases. We think this is because the LBP program is
 sensitive to scheduling policies and the \textbf{multiqueue} scheduler is better
 than LM's default scheduling policy.
 
