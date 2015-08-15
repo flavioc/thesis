@@ -24,10 +24,9 @@ empty and there are no references to the node from other logical facts, then the
 node is deleted from the program. We keep around a small number of freed nodes
 that can be reused immediately if another node is created. We avoid garbage
 collection schemes based on tracing since objects are created and discarded in
-very specific points of the virtual machine. A reference counting mechanism is
-thus more appropriate than a parallel tracing garbage collector which would
-entail pausing the execution of the program to garbage collect all the unused
-objects.
+specific points of the virtual machine. A reference counting mechanism is thus
+more appropriate than a parallel tracing garbage collector which would entail
+pausing the execution of the program to garbage collect all the unused objects.
 
 \section{Memory Allocation}\label{section:implementation:allocation}
 \input{implementation/allocation}

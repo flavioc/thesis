@@ -71,7 +71,7 @@ and threads are still able to locally avoid unnecessary work.
 
 In order to experiment with the coordinated SSSP program, we extend it to
 support the computation of shortest distances from multiple sources. This
-modified version, named MSSD was already used in
+modified version, named MSSD, was already used in
 Section~\ref{section:implementation:performance} for measuring the performance
 of LM's virtual machine. MSSD is not only more interesting than SSSP but also
 allows us to better understand the advantages of using coordination.
@@ -110,9 +110,15 @@ version; \textbf{Regular(1)/Regular(t)}, which represents the speedup of the
 regular version using the single threaded regular version as the baseline;
 \textbf{Regular(1)/Coordinated(t)}, which represents the speedup of the
 coordinated version against the run time of the regular version using 1 thread
-as the baseline; and \textbf{C++}, which represents the run time of the MSSD C++
-program already presented in Section~\ref{section:implementation:performance}.
-Note that the run time (vertical axis) axis uses a logarithmic scale.
+as the baseline; \textbf{C++}, which represents the run time of the MSSD C++
+program already presented in Section~\ref{section:implementation:performance};
+\textbf{Ligra}, which represents the run time of the MSSD program written in the
+Ligra framework~\cite{Shun:2013:LLG:2517327.2442530}. Ligra's program computes
+the multiple shortest distance computations using the BellmanFord program
+provided by the source distribution\footnote{Modified version of the program is
+available at \url{http://github.com/flavioc/ligra}}, but modified to compute
+the distance from a single source node separately.  Note that the run time
+(vertical axis) axis uses a logarithmic scale.
 
 Overall, there is a clear improvement in almost every dataset used. The datasets
 that see the best run time reductions are Twitter, Orkut and LiveJournal, which
@@ -180,6 +186,20 @@ version. This means that even if higher priority nodes are picked from the each
 thread's subgraph, the coordinated version is still able to reduce run time. In
 other words, optimal (global) node scheduling is not required to see good
 results.
+
+Ligra's version of the MSSD program performs badly when using multiple source
+nodes (datasets EU Email, OCLinks and US Power Grid). We found Ligra primitives
+(\code{edgeMap} and \code{vertexMap}) unsuitable for simultaneous computation of
+shortest distances. It would have been better to drop Ligra and use a
+task-parallel approach, where tasks, represented as source nodes, are assigned
+to threads and each task would use a sequential shortest distance algorithm. LM
+shines in such cases since it is a declarative language that can be used to
+solve a wider range of problems. Ligra beats LM in the Twitter, Orkut and
+LiveJournal datasets, where Ligra is, on average, 9, 3, and 10 times faster than
+LM, respectively. In terms of scalability, LM has similar scalability in the
+Twitter and Orkut datasets, but worse scalability in the LiveJournal dataset. It
+should be also noted that the datasets EU Email and OCLinks are too small for
+Ligra, therefore it is hard to make a scalability comparison for those datasets.
 
 In Section~\ref{section:coordination:coord_instrs}, we described the coalescing
 optimization where priority action facts are coalesced into single operations.

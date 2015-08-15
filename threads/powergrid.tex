@@ -324,22 +324,22 @@ having many generators in the case of using just 1 thread.
 
 The second important observation relates to the last two datasets where we
 experimented with a variable capacity for the generators. For the Low
-Variability dataset, the consumers have very identical capacities, while in the
-High Variability dataset, generators have a more variable capacity, which should
-make it harder for the algorithm to find a valid generator/consumer assignment.
-Our results show exactly that: the Low Variability shows a very small difference
-between the \textbf{Regular} and \textbf{Threads} version, while in the High
-Variability dataset, the \textbf{Threads} version is much faster than the
-\textbf{Regular} version. However, for the High Variability dataset, we were
-expecting a speedup that was closer to the 0.5 M C / 2000 G dataset, since the
-number of generators is much higher. Furthermore, if we compare the run times of
-the \textbf{Regular} and \textbf{Threads} version when using 1 thread, we notice
-that the \textbf{Threads} version is actually slower. As noted before, this may
-be due to the fact that the LM rule for assigning generators to consumers needs
-to perform a linear scan on the available generators to find a suitable
-generator which then negatively impacts performance. This is a clear drawback of
-the logic programming model that could potentially be solved by maintaining a
-sorted list of \texttt{thread-capacity} facts.
+Variability dataset, the consumers have identical capacities, while in the High
+Variability dataset, generators have a more variable capacity, which should make
+it harder for the algorithm to find a valid generator/consumer assignment.  Our
+results show exactly that: the Low Variability shows a small difference between
+the \textbf{Regular} and \textbf{Threads} version, while in the High Variability
+dataset, the \textbf{Threads} version is much faster than the \textbf{Regular}
+version. However, for the High Variability dataset, we were expecting a speedup
+that was closer to the 0.5 M C / 2000 G dataset, since the number of generators
+is much higher. Furthermore, if we compare the run times of the \textbf{Regular}
+and \textbf{Threads} version when using 1 thread, we notice that the
+\textbf{Threads} version is actually slower. As noted before, this may be due to
+the fact that the LM rule for assigning generators to consumers needs to perform
+a linear scan on the available generators to find a suitable generator which
+then negatively impacts performance. This is a clear drawback of the logic
+programming model that could potentially be solved by maintaining a sorted list
+of \texttt{thread-capacity} facts.
 
 In Table~\ref{table:threads:powergrid_stats}, we present several fact statistics
 that compare the \textbf{Regular} version with the \textbf{Threads} version when

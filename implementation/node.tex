@@ -80,7 +80,7 @@ in one of the four data structures:
    structures for a particular persistent predicate.
 
 \item \emph{Doubly Linked List Data Structures} are used to store linear facts.
-   We use a double linked list because it is a very efficient way to add and
+   We use a double linked list because it is a efficient way to add and
    remove facts. The \code{prev} and \code{next} pointers are used to chain
    the facts of the linked list.
 
@@ -166,7 +166,7 @@ becomes too dense, it is doubled in size. When it becomes too sparse, it is
 reduced in half or simply transformed back into a doubly linked list. This is
 done once in a while, before a node executes.
 
-We have seen very good results with this scheme. The overhead of dynamic
+We have seen good results with this scheme. The overhead of dynamic
 indexing is negligible since programs run almost as fast as if the indices have
 been added from the start. However, the programmer can still index predicates
 statically, if needed, using the directive \code{index pred/arg}, where

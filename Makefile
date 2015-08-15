@@ -142,10 +142,11 @@ scale:
 		experiments/scalability/runtime.csv \
 		experiments/absolute/runtime.csv experiments/scalability/
 coord:
-	$(RE) experiments/coordination/compare.py \
+	$(RE) experiments/coordination/compare-sssp.py \
 		experiments/scalability/runtime.csv \
 		experiments/coordination/sssp-coord.csv \
 		experiments/absolute/runtime.csv \
+		experiments/coordination/ligra-scale.csv \
 		experiments/coordination/cmp-
 	$(RE) experiments/coordination/compare.py \
 		experiments/scalability/runtime.csv \

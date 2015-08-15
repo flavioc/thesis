@@ -834,7 +834,7 @@ class experiment(object):
       ax.set_yscale('log', basey=10)
       ax.yaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%d'))
 
-   def coordination_compare(self, coord_exp, cexp, prefix, name_coord = None, max_speedup = None):
+   def coordination_compare(self, coord_exp, cexp, prefix, name_coord = None, max_speedup = None, other_systems={}):
       fig = plt.figure()
       ax = fig.add_subplot(111)
       ax2 = ax.twinx()
@@ -857,7 +857,12 @@ class experiment(object):
       ax2.set_ylabel('Speedup', fontsize=ylabelfontsize)
       self.set_log_scale(ax)
       ax.set_xlim([1, self.max_threads()])
-      ax.set_ylim([min(self.min_time(), coord_exp.min_time()), max(self.max_time(), coord_exp.max_time())])
+      min_time = min(self.min_time(), coord_exp.min_time())
+      for other_name, other_exp in other_systems.iteritems():
+         min_time = min(min_time, other_exp.min_time())
+      max_time = max(self.max_time(), coord_exp.max_time()) * 100
+
+      ax.set_ylim([min_time, max_time])
       if max_speedup:
          ax2.set_ylim([0, max_speedup])
       cmap = plt.get_cmap('gray')
@@ -872,12 +877,20 @@ class experiment(object):
       if cexp:
          ctime, = ax.plot(self.x_axis(), [cexp.get_time(1)] * len(self.x_axis()),
            label='Linear', linestyle='-', color=cmap(0.2))
+      otherplots = []
+      for other_name, other_exp in other_systems.iteritems():
+         plot, = ax.plot(other_exp.x_axis(), other_exp.time_data(),
+               label = other_name + ' Run Time', linestyle='-', marker='s', color='blue')
+         otherplots.append((other_name, plot))
 
       lines = [(regtime), coordtime, regspeedup, coordspeedup]
       labels = ["Regular", name_coord, "Regular(1)/Regular(t)", "Regular(1)/" + name_coord + "(t)"]
       if cexp:
         lines.append(ctime)
-        labels.append("C++ time")
+        labels.append("C++")
+      for (name, plot) in otherplots:
+         lines.append(plot)
+         labels.append(name)
 
       ax.legend(lines, labels, loc=2, fontsize=LEGEND_SIZE, fancybox=True, framealpha=FRAME_ALPHA, markerscale=2)
 
@@ -917,13 +930,18 @@ def setup_lines(ax, cmap):
      ln.set_markersize(markersize)
      ln.set_markevery(markerspace)
 
-SPECIAL_SYSTEMS = ["c", "python", "graphlab", "ligra"]
+SPECIAL_SYSTEMS = ["c", "python", "graphlab"]
 
 def parse_threads(sched):
+   if sched.startswith('ligra'):
+      if sched == "ligra": return 1
+      return int(sched[5:])
    if sched in SPECIAL_SYSTEMS: return 1
    else: return int(sched[2:])
 
 def parse_sched(sched):
+   if sched.startswith('ligra'):
+      return 'ligra'
    if sched in SPECIAL_SYSTEMS: return sched
    elif sched.startswith('gl'): return 'gl'
    else: return "th"

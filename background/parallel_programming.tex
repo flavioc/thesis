@@ -18,22 +18,22 @@ processing unit that makes work distribution decisions or the scheduler uses a
 to improve load balance.
 
 A popular technique for implementing parallelism is by using \emph{imperative
-parallel programming}. In imperative programming, there is a
-sequence of steps that the processor must do and a \emph{memory area} where the
-processor stores and retrieves data during the course of execution. To implement
-parallelism, imperative applications are modified using new concurrency or
-communication constructs that allow the programmer to explicitly exploit
-parallelism. It requires the programmer to write code to efficiently split
-computation among processing units and allow sharing of data between processing
-units. Imperative parallel
-programming is a low-level form of parallel programming because the programmer has total control over
-scheduling and partitioning of data. The very nature of parallel execution means
-increased non-determinism during execution which leads to execution
-inter-leavings that the programmer needs to be aware of.  Furthermore, many
-well-known imperative algorithms are not easily parallelizable and require
-complete new approaches to run in a scalable fashion. Finally, non-determinism
-makes it hard to prove properties of the program because the simpler assumptions
-of the imperative model no longer hold under the new programming model.
+parallel programming}. In imperative programming, there is a sequence of steps
+that the processor must do and a \emph{memory area} where the processor stores
+and retrieves data during the course of execution. To implement parallelism,
+imperative applications are modified using new concurrency or communication
+constructs that allow the programmer to explicitly exploit parallelism. It
+requires the programmer to write code to efficiently split computation among
+processing units and allow sharing of data between processing units. Imperative
+parallel programming is a low-level form of parallel programming because the
+programmer has total control over scheduling and partitioning of data. The
+nature of parallel execution means increased non-determinism during execution
+which leads to execution inter-leavings that the programmer needs to be aware
+of.  Furthermore, many well-known imperative algorithms are not easily
+parallelizable and require complete new approaches to run in a scalable fashion.
+Finally, non-determinism makes it hard to prove properties of the program
+because the simpler assumptions of the imperative model no longer hold under the
+new programming model.
 
 In terms of communication and synchronization between the available processing
 units, there are two main imperative parallel programming models available for

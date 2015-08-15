@@ -182,18 +182,18 @@ possible board configurations of row $i$. However, when the number of threads
 increases, it results in reduced scalability since there is less work available
 per thread since row $i$ must be processed before row $i+1$.
 
-In the \textbf{Bottom} configuration, there is very little change when compared
-to the uncoordinated version of N-Queens. However, interesting things happen in
-the \textbf{Bottom Static} configuration when the number of rows is equal to the
+In the \textbf{Bottom} configuration, there is little change when compared to
+the uncoordinated version of N-Queens. However, interesting things happen in the
+\textbf{Bottom Static} configuration when the number of rows is equal to the
 number of threads. For an example, observe
 Fig.~\ref{fig:coordination:coord_14queensbottomstatic} where using 14 threads
-takes almost the same run time as the regular version when using 32 threads.
-In this case, each thread is assigned a single column of the chess
-board and is able to process only the states for that particular column. This
-behaviour was investigated in the Valgrind's CacheGrind tool, which showed that
-this particular combination has the smallest number of cache misses. This
-indicates that it is helpful to match the problem to the number of available
-CPU's in the system in order to increase memory locality.
+takes almost the same run time as the regular version when using 32 threads.  In
+this case, each thread is assigned a single column of the chess board and is
+able to process only the states for that particular column. This behaviour was
+investigated in the Valgrind's CacheGrind tool, which showed that this
+particular combination has the smallest number of cache misses. This indicates
+that it is helpful to match the problem to the number of available CPU's in the
+system in order to increase memory locality.
 
 
 \begin{figure}[]
