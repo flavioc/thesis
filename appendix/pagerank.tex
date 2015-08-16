@@ -35,7 +35,7 @@ function \code{fabs} that computes the absolute value of a floating point
 number.
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\#\&]
+\begin{LineCode}[commandchars=\\\#\&]
 type outbound(node, node, float).\hfill// Predicate declaration
 type numInbound(node, int).
 type linear pagerank(node, float, int).
@@ -72,7 +72,7 @@ update(A),\label#line:language:apagerank_new1&\hfill// Rule 5: start update proc
 pagerank(A, 1.0 / float(pages), 0).\hfill// Initial facts
 update(A).
 neighbor-pagerank(A, B, 1.0 / float(pages), 0). // pagerank of B is ...
-\end{Verbatim}
+\end{LineCode}
 \mycap{Asynchronous PageRank program.}
 \label{language:code:async_pagerank}
 \end{figure}

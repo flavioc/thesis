@@ -20,7 +20,7 @@ colored with a different color (line~\ref{line:language:bc_third}) or if it has
 already failed (line~\ref{line:language:bc_fourth}).
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\[\]]
+\begin{LineCode}[commandchars=\*\[\]]
 type edge(node, node).*hfill// Predicate declaration
 type linear uncolored(node).
 type linear colored(node, int).
@@ -41,7 +41,7 @@ visit(A, P), fail(A) -o fail(A).*label[line:language:bc_fourth]*hfill// Rule 4: 
 
 visit(@1, 1).*label[line:language:bc_axiom]*hfill// Initial facts
 unvisited(A).*label[line:language:bc_unvisited]
-\end{Verbatim}
+\end{LineCode}
   \mycap{Bipartiteness Checking program.}
   \label{language:code:bichecking}
 \end{figure}

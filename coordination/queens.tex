@@ -45,7 +45,7 @@ there is no queen on $S$'s right diagonal (rules in
 lines~\ref{line:coord:queens_rdiag1}-\ref{line:coord:queens_rdiag2}).
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\scriptsize,commandchars=\*\#\&]
+\begin{LineCode}[fontsize=\scriptsize,commandchars=\*\#\&]
 type list int state.*hfill// Type declaration
 type left(node, node).  type right(node, node).*hfill// Predicate declaration
 type down-left(node, node).  type down-right(node, node).
@@ -97,7 +97,7 @@ send-down(A, State), !coord(A, CX, _), CX <> size - 1*label#line:coord:queens_do
      {B | !down-left(A, B), B <> A -o propagate-left(B, State)}.*label#line:coord:queens_down2&
 
 propagate-right(@0, []).*label#line:coord:queens_axiom&*hfill// Initial fact
-\end{Verbatim}
+\end{LineCode}
   \mycap{N-Queens problem solved in LM.}
   \label{code:coordination:nqueens}
 \end{figure}
@@ -117,7 +117,7 @@ The full proof of correctness for
 the N-Queens program is presented in Appendix~\ref{appendix:proofs:nqueens}.
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\#\&]
+\begin{LineCode}[commandchars=\*\#\&]
 final-state(@57, [0, 4, 7, 5, 2, 6, 1, 3]).*hfill// States at square (7, 0)
 final-state(@57, [0, 5, 7, 2, 6, 3, 1, 4])
 final-state(@57, [0, 6, 3, 5, 7, 1, 4, 2])
@@ -129,7 +129,7 @@ final-state(@63, [7, 1, 3, 0, 6, 4, 2, 5])*hfill// States at square (7, 7)
 final-state(@63, [7, 1, 4, 2, 0, 6, 3, 5])
 final-state(@63, [7, 2, 0, 5, 1, 4, 6, 3])
 final-state(@63, [7, 3, 0, 2, 5, 1, 6, 4])
-\end{Verbatim}
+\end{LineCode}
   \mycap{Final database for the 8-Queens program.}
   \label{code:coordination:8queens}
 \end{figure}

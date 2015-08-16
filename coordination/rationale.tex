@@ -24,7 +24,7 @@ for the program: \code{edge} facts describe the graph; \code{shortest(A, +00,
 \code{@1} to \code{@1} to be 0.
 
 \begin{figure}[ht]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\#\&]
+\begin{LineCode}[commandchars=\*\#\&]
 type edge(node, node, int).*label#line:coord:sssp_pred1&*hfill// Predicate declaration
 type linear shortest(node, int, list int).
 type linear relax(node, int, list int).*label#line:coord:sssp_pred2&
@@ -35,26 +35,26 @@ shortest(A, D1, P1), D1 > D2, relax(A, D2, P2)*label#line:coord:sssp_first1&*hfi
 
 shortest(A, D1, P1), D1 <= D2, relax(A, D2, P2)*label#line:coord:sssp_second1&*hfill// Rule 2: longer path
    -o shortest(A, D1, P1).*label#line:coord:sssp_second2&
-\end{Verbatim}
+\end{LineCode}
 \mycap{Single Source Shortest Path program code.}
 \label{code:shortest_path_program}
 \end{figure}
 
 \begin{figure}[ht]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\#\&]
+\begin{LineCode}[commandchars=\*\#\&]
 !edge(@1, @2, 3). !edge(@1, @3, 1).
 !edge(@3, @2, 1). !edge(@3, @4, 5).
 !edge(@2, @4, 1).
 shortest(A, +00, []).
 relax(@1, 0, [@1]).
-\end{Verbatim}
+\end{LineCode}
 \mycap{Initial facts for the SSSP program.}
 \label{code:coord:sssp_init}
 \end{figure}
 
 \iffalse
 \begin{figure}[ht]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\#\&]
+\begin{LineCode}[commandchars=\*\#\&]
 !edge(@1, @2, 3). !edge(@1, @3, 1).
 !edge(@3, @2, 1). !edge(@3, @4, 5).
 !edge(@2, @4, 1).
@@ -62,7 +62,7 @@ shortest(@1, 0, []).
 shortest(@2, 2, [@1, @3, @2]).
 shortest(@3, 1, [@1, @3]).
 shortest(@4, 3, [@1, @3, @2, @4]).
-\end{Verbatim}
+\end{LineCode}
 \mycap{Final database of facts for the SSSP program.}
 \label{code:coord:sssp_end}
 \end{figure}

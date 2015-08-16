@@ -33,7 +33,7 @@ program, while Fig.~\ref{code:coordination:bp} presents the LM code for the
 asynchronous version of LBP.
 
 \begin{figure}[ht]
-\begin{Verbatim}[numbers=left, fontsize=\codesize, commandchars=\*\#\&]
+\begin{LineCode}[commandchars=\*\#\&]
 type list float belief.*hfill// Type declaration.
 
 type potential(node, belief).*hfill// Predicate declaration
@@ -81,7 +81,7 @@ belief(A, MyBelief)
          neighbor-belief(A, B, Belief) ->
          Normalized = normalizestruct(Belief),
          update-messages(A, Normalized), belief(A, Normalized)].*label#line:coord:bp_last2&*label#line:coord:bp_update2&*label#line:coord:bp_agg2&
-\end{Verbatim}
+\end{LineCode}
 
 \mycap{LM code for the asynchronous version of the Loopy Belief Propagation
 problem.}
@@ -130,7 +130,7 @@ Figure~\ref{code:coordination:improved_bp} shows the fourth rule modified with a
 the source node has large changes in its belief value.
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,commandchars=\\\{\},fontsize=\codesize]
+\begin{LineCode}[commandchars=\\\{\}]
 update-messages(A, NewBelief),*hfill// Rule 4: compute belief to be sent to a neighbor node
    -o \{B, OldIn, OldOut, Cavity, Convolved, OutMessage, Residual |
          !edge(A, B),
@@ -145,7 +145,7 @@ update-messages(A, NewBelief),*hfill// Rule 4: compute belief to be sent to a ne
             neighbor-belief(A, B, OldIn),
             \underline{add-priority(B, Residual)},
             sent-neighbor-belief(A, B, OutMessage)\}.
-\end{Verbatim}
+\end{LineCode}
 \mycap{Extending the LBP program with priorities.}
 \label{code:coordination:improved_bp}
 \end{figure}

@@ -84,12 +84,12 @@ translated to LM's abstract syntax and then to LM programs. In order to
 understand how LM rules are related to the sequent calculus, consider the first
 rule of the graph visit program shown in Fig~\ref{code:language:visit}:
 
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\[\]]
+\begin{LineCode}[commandchars=\*\[\]]
 visit(A),
 unvisited(A)
    -o visited(A),
       {B | !edge(A, B) -o visit(B)}.
-\end{Verbatim}
+\end{LineCode}
 
 This rule is translated to a sequent calculus proposition, as follows:
 
@@ -118,12 +118,12 @@ implication of the comprehension to be derived as many times as needed.
 However, the argument list can also be used to implement aggregates.  Recall the
 PageRank aggregate example shown before:
 
-\begin{Verbatim}[fontsize=\codesize]
+\begin{Code}
   update(A),
   !numInbound(A, T)
      -o [sum => V; B, Val, Iter | neighbor-pagerank(A, B, Val, Iter), V =
            Val/float(T) -o neighbor-pagerank(A, B, Val, Iter) -> sum-ranks(A, V)].
-\end{Verbatim}
+\end{Code}
 
 This rule is translated into a linear logic proposition as shown next:
 

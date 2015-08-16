@@ -1,4 +1,6 @@
-Table~\ref{tbl:language:ast} shows the abstract syntax for rules in LM.  A LM
+Previously, we presented the LM syntax and usage through the presentation of
+three program examples. We now delve more deeply into LM by presenting the
+underlying abstract syntax of the language in Table~\ref{tbl:language:ast}. A LM
 program $Prog$ consists of a list of derivation rules $\Sigma$ and a database
 $D$. A database fact $l(\hat{t})$ is an association between a predicate $l$ and
 a list of literals $\hat{t}$. Literals $t$ can be either a number
@@ -90,7 +92,7 @@ Fig.~\ref{code:language:visit}:
 
 \nopagebreak
 
-\begin{Verbatim}[fontsize=\codesize]
+\begin{Code}
 visit(A),
 unvisited(A)
    -o visited(A),
@@ -99,7 +101,7 @@ unvisited(A)
 visit(A),
 visited(A)
    -o visited(A).
-\end{Verbatim}
+\end{Code}
 
 To translate the rules to the abstract syntax, we have to de-sugar the code and
 introduce the variable \code{A}, that is not explicitly quantified, as follows:
@@ -139,9 +141,9 @@ $\selector{S}{y}{LHS}{RHS}$, where $S$ is the selector operation and $y$ is the
 variable in $LHS$ that represents the value to be sorted according to $S$. An
 example using concrete syntax is as follows:
 
-\begin{Verbatim}[fontsize=\codesize,commandchars=\*\#\&]
+\begin{Code}[commandchars=\*\#\&]
 *textbf#[asc => W | !edge(A, B, W), select(A)]& -o best-neighbor(A, B, W).
-\end{Verbatim}
+\end{Code}
 
 In this case, we sort the \code{edge} facts by \code{W} in ascending order
 and then try to match them. Other operations available are \code{desc} and
@@ -155,14 +157,14 @@ instantiate new facts. As an example, consider extending the
 key/value dictionary example described in Fig.~\ref{code:language:btree_replace}
 with an insertion operation for a node that has no left branch:
 
-\begin{Verbatim}[fontsize=\codesize,commandchars=\*\#\&]
+\begin{Code}[commandchars=\*\#\&]
 insert(A, IKey, IValue),
 value(A, Key, Value),
 no-left-branch(A),
 IKey < Key
    -o value(A, Key, Value),
       *textbf#exists B. (value(B, IKey, IValue), !left(A, B))&.
-\end{Verbatim}
+\end{Code}
 
 The \code{exists} construct creates a new node \code{B} containing the linear fact
 \code{value(B, IKey, IValue)} (the newly inserted key/value pair) and the
@@ -183,12 +185,12 @@ $\hat{x}$ and to the facts in the database. We have already seen an example of a
 comprehension in the graph visit program (Fig.~\ref{code:language:visit}
 line~\ref{line:language:visit_comprehension}):
 
-\begin{Verbatim}[fontsize=\codesize,commandchars=\*\#\&]
+\begin{Code}[commandchars=\*\#\&]
 visit(A),
 unvisited(A)
    -o visited(A),
       *textbf#{B | !edge(A, B) -o visit(B)}&.
-\end{Verbatim}
+\end{Code}
 
 In this example, the comprehension matches \code{!edge(A, B)} using all the
 combinations available in the database for node \code{B} and for each
@@ -209,9 +211,9 @@ that is used to derive $SRHS_2$.
 
 To understand how aggregates work, let's consider the following rule:
 
-\begin{Verbatim}[fontsize=\codesize,commandchars=\*\#\&]
+\begin{Code}[commandchars=\*\#\&]
 count-neighbors(A) -o *textbf#[count => T; B | !edge(A, B) -o 1 -> num-neighbors(A, T)]&.
-\end{Verbatim}
+\end{Code}
 
 The rule uses a \code{count-neighbors} proposition to iterate over all
 \code{!edge} facts (the $SLHS$) of node \code{A}. Since the $SRHS_1$ of the
@@ -223,12 +225,12 @@ incremented by one and the total result is used to derive a single
 To further understand aggregates, let's consider a rule from the PageRank
 program to be presented in Section~\ref{section:language:pagerank}:
 
-\begin{Verbatim}[fontsize=\codesize,commandchars=\*\#\&]
+\begin{Code}[commandchars=\*\#\&]
 update(A),
 !numInbound(A, T)
    -o *textbf#[sum => V; B, Val, Iter | neighbor-pagerank(A, B, Val, Iter), V =&
          *textbf#Val/float(T) -o neighbor-pagerank(A, B, Val, Iter) -> sum-ranks(A, V)]&.
-\end{Verbatim}
+\end{Code}
 
 The rule aggregates the values \code{V} by iterating over
 \code{neighbor-pagerank(A, B, Val, Iter)} (the $SLHS$) and by re-deriving the
@@ -239,43 +241,4 @@ neighbor values \code{Val/float(T)}. LM provides several aggregate operations, i
 \code{min} (minimum value), \code{max} (maximum value), \code{sum} (add all
 numbers), \code{count} (count combinations) and \code{collect} (collect items
 into a list).
-
-\section{Operational Semantics}
-
-As said before, the first argument of every predicate must be typed as
-\emph{node} and the LHS of each rule must use only facts belonging to the same
-node. These two restrictions, allows computation to be performed using only the
-facts belonging to the same node without requiring communication between
-multiple nodes.
-
-Nodes are selected to computation non-deterministically (i.e., any node can be
-picked to run). This means that the programmer cannot expect that facts coming
-from different nodes will be considered as a whole since the process is
-non-deterministic. The operational semantics promises that rule derivations are
-performed atomically, therefore if a rule derives many facts belonging to a node
-then that node will receive them all at once. Under these restrictions,
-computation can then be parallelized by processing nodes concurrently.
-
-Each rule in LM has a defined priority that is inferred from its position in the
-source file. Rules at the beginning of the file have higher priority. At the
-node level, we consider all the new facts that have not been considered yet to
-create a queue of \emph{candidate rules}. The queue of candidate rules
-is then applied (in priority order) and updated as new facts are derived or
-consumed. As an example, consider the following three rules:
-
-\begin{Verbatim}[fontsize=\codesize]
-f(A), g(A) -o f(A).
-
-h(A) -o g(A).
-
-g(A) -o 1.
-\end{Verbatim}
-
-If the database contains the facts \code{h(@1)} and \code{f(@1)}, then the
-second rule is applied, retracting \code{h(@1)} and deriving \code{g(@1)}. Next,
-the first and third rules are candidate rules, but since the first rule has
-higher priority, it is applied first, resulting in a database with a single fact
-\code{f(@1)}, where no rule can be applied. Later, in
-Section~\ref{sec:implementation:rule_engine}, we give more details about how our
-implementation manages the set of candidate rules.
 

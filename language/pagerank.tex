@@ -83,7 +83,7 @@ When all inbound neighbor PageRank values are accumulated, the third rule
 is derived and a PageRank value is generated for iteration \code{Iter}.
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\[\]]
+\begin{LineCode}[commandchars=\\\[\]]
 type outbound(node, node, float).\hfill// Predicate declaration
 type numInbound(node, int).
 type linear pagerank(node, float Rank, int Iteration).
@@ -113,7 +113,7 @@ Iter <= iterations
    -o pagerank(A, V, Iter), accumulator(A, 0.0, T, Iter + 1).\label[line:language:spagerank_third2]
 	
 start(A).\hfill// Initial facts
-\end{Verbatim}
+\end{LineCode}
 \mycap{Synchronous PageRank program.}
 \label{language:code:pagerank}
 \end{figure}

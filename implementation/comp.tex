@@ -14,11 +14,11 @@ represented by variable constraints and/or boolean expressions. For instance,
 consider the second rule of the bipartiteness checking program presented in
 Fig.~\ref{language:code:bichecking}:
 
-\begin{Verbatim}[fontsize=\codesize]
+\begin{Code}
 visit(A, P),
 colored(A, P)
    -o colored(A, P).
-\end{Verbatim}
+\end{Code}
 
 The fact constraints include the facts required to trigger the rule, namely
 \code{visit(A, P)} and \code{colored(A, P)}, and the join constraints include
@@ -26,12 +26,12 @@ the implicit constraint that the second argument of \code{visit} must be equal
 to the second argument of \code{colored} because the variable \code{P} is used
 for both arguments. However, rules may also have explicit constraints, such as:
 
-\begin{Verbatim}[fontsize=\codesize]
+\begin{Code}
 visit(A, P1),
 colored(A, P2),
 P1 <> P2
    -o fail(A).
-\end{Verbatim}
+\end{Code}
 
 The data structures presented in Section~\ref{sec:data_structures} support
 iteration over facts and for linear facts, they also support deletion. Iteration
@@ -44,15 +44,15 @@ matching specification includes argument assignments, such as, argument $i = V$,
 where $V$ is a concrete value.  To illustrate how rules are compiled, consider
 again the rule:
 
-\begin{Verbatim}[fontsize=\codesize]
+\begin{Code}
 visit(A, P),
 colored(A, P)
    -o colored(A, P).
-\end{Verbatim}
+\end{Code}
 
 The compiler transforms the rule into two nested \emph{while} loops, as follows:
 
-\begin{Verbatim}[numbers=left,fontsize=\codesize]
+\begin{LineCode}
 colored_list <- linked_list("colored")
 visit_list <- linked_list("visit")
 visit <- visit_list.head()
@@ -79,7 +79,7 @@ while(visit is valid)
 next:
    continue
 }
-\end{Verbatim}
+\end{LineCode}
 
 The compilation algorithm iterates through the atomic propositions in rule's LHS
 and creates nested loops to try all the possible combinations of facts.  For
@@ -110,7 +110,7 @@ In order to understand how rule priorities affect compilation, consider a
 slightly different bipartiteness checking program where the second and third
 rules are swapped:
 
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\[\]]
+\begin{LineCode}[commandchars=\*\[\]]
 visit(A, P),
 uncolored(A)
    -o {B | !edge(A, B) -o visit(B, next(P))},
@@ -128,7 +128,7 @@ P1 <> P2
 visit(A, P),
 fail(A)
    -o fail(A).
-\end{Verbatim}
+\end{LineCode}
 
 The procedure for the rule being compiled cannot be the same since the derived
 \code{colored} fact is used in the LHS of a higher priority rule, namely, the
@@ -136,7 +136,7 @@ rule in line~\ref{line:implementation:higher}. Once the \code{colored} fact is
 derived, the procedure must return to schedule the higher priority rule, as
 follows:
 
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\$\#\&]
+\begin{LineCode}[commandchars=\$\#\&]
 colored_list <- linked_list("colored")
 visit_list <- linked_list("visit")
 colored <- colored_list.head()
@@ -161,7 +161,7 @@ while(colored is valid)
    }
    colored <- colored.next()
 }
-\end{Verbatim}
+\end{LineCode}
 
 This enforces the priority semantics of the language. When a rule derives facts
 that were used as input to a higher priority rule, the initial rule is only
@@ -235,7 +235,7 @@ above, the fact \code{colored(A, P)} is re-derived in the rule's RHS.  Our
 compiler is able to turn linear loops into persistent loops for linear facts
 that are consumed and then asserted. The rule is then compiled as follows:
 
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\$\#\&]
+\begin{LineCode}[commandchars=\$\#\&]
 colored_list <- linked_list("colored")
 visit_list <- linked_list("visit")
 colored <- colored_list.head()
@@ -255,7 +255,7 @@ $textbf#next:&
    }
    colored <- colored.next()
 }
-\end{Verbatim}
+\end{LineCode}
 
 In this new version of the code, only the \code{visit} facts are deleted, while
 the \code{colored} facts remain untouched. In the bipartiteness checking
@@ -272,16 +272,16 @@ different arguments. The compiler recognizes those cases and, instead of
 consuming the fact from its linked list or hash table, it updates the fact
 in-place. As an example, consider the following rule:
 
-\begin{Verbatim}[fontsize=\codesize]
+\begin{Code}
 new-neighbor-pagerank(A, B, New),
 neighbor-pagerank(A, B, Old)
    -o neighbor-pagerank(A, B, New).
-\end{Verbatim}
+\end{Code}
 
 Assuming that \code{neighbor-pagerank} is stored in a hash table and indexed by
 the second argument, the code for the rule above is as follows:
 
-\begin{Verbatim}[numbers=left,fontsize=\codesize]
+\begin{LineCode}
 new_neighbor_pagerank_list <- linked_list("new-neighbor-pagerank")
 neighbor_pagerank_table <- hash_table("neighbor-pagerank")
 new_neighbor_pagerank <- new_neighbor_pagerank.head()
@@ -306,7 +306,7 @@ while(new_neighbor_pagerank is valid)
 next:
    continue
 }
-\end{Verbatim}
+\end{LineCode}
 
 Note that \code{neighbor-pagerank} fact is updated using \code{set\_float}. The
 rule also does not return since it is the highest priority rule. If there was a
@@ -319,11 +319,11 @@ We have already introduced the \code{goto} statement as a way to avoid reusing
 consumed linear facts. However, this is not enough in order to enforce
 linearity of facts. Consider the following inference rule:
 
-\begin{Verbatim}[fontsize=\codesize]
+\begin{Code}
 add(A, N1),
 add(A, N2)
    -o add(A, N1 + N2).
-\end{Verbatim}
+\end{Code}
 
 Using the standard compilation algorithm, two nested loops are created, one for
 each \code{add} fact. However, notice that there is an implicit constraint when
@@ -333,7 +333,7 @@ would be used to prove two linear facts. This is easily solved by adding a
 constraint in the inner loop by checking if the second fact is the same as the
 first one.
 
-\begin{Verbatim}[numbers=left,fontsize=\codesize]
+\begin{LineCode}
 add_list <- linked_list("add")
 add1 <- add_list.head()
 while(add1 is valid)
@@ -353,7 +353,7 @@ while(add1 is valid)
 next:
    continue
 }
-\end{Verbatim}
+\end{LineCode}
 
 Figure~\ref{fig:local:update_add} presents the steps for executing this rule
 when the database contains three facts. The fact variables never point to the
@@ -385,12 +385,12 @@ same fact.
 Consider the comprehension used in the first rule of the bipartiteness checking
 program in Fig.~\ref{language:code:bichecking}:
 
-\begin{Verbatim}[fontsize=\codesize]
+\begin{Code}
 visit(A, P),
 uncolored(A)
    -o {B | !edge(A, B) -o visit(B, next(P))},
       colored(A, P).
-\end{Verbatim}
+\end{Code}
 
 The attentive reader will remember that comprehensions are sub-rules, therefore
 they should be compiled like normal rules. Comprehensions must also derive all
@@ -400,7 +400,7 @@ example rule does not need to return since it has the highest priority and the
 \code{visit} facts derived in the comprehension are contained in other nodes.
 The code for the rule is shown below:
 
-\begin{Verbatim}[numbers=left,fontsize=\codesize]
+\begin{LineCode}
 colored_list <- linked_list("colored")
 visit_list <- linked_list("visit")
 uncolored_list <- linked_list("uncolored")
@@ -432,7 +432,7 @@ while(visit is valid)
 next:
    continue
 }
-\end{Verbatim}
+\end{LineCode}
 
 Special care must be taken when the comprehension's sub-rule uses the same
 predicates that are derived by the main rule. Rule inference must be atomic in
@@ -452,12 +452,12 @@ optimizations for the conflicting predicates and derives the corresponding facts
 into the fact buffer that are then added back into the database. As an example,
 consider the following rule:
 
-\begin{Verbatim}[fontsize=\codesize]
+\begin{Code}
 update(A),
 !edge(A, B)
    -o {P | points(A, B, P) -o update(B)},
       points(A, B, 1).
-\end{Verbatim}
+\end{Code}
 
 We have $n = 1$ comprehensions, where $CLHS_0 = $ \code{points(A, B, P)},
 $CRHS_0 =$ \code{update(B)}, and $RHSP = $ \code{points(A, B, 1)}. There is a
@@ -475,18 +475,18 @@ inferred, a final RHS term is derived with the accumulated value. Consider the
 following rule that computes a PageRank value by aggregating all neighbors
 PageRank values:
 
-\begin{Verbatim}[fontsize=\codesize]
+\begin{Code}
 update(A),
 pagerank(A, OldRank)
       -o [sum => V; B | neighbor-pagerank(A, B, V) -o neighbor-pagerank(A, B, V)
             -> pagerank(A, damping/P + (1.0 - damping) * V)].
-\end{Verbatim}
+\end{Code}
 
 The variable \code{V} is initialized to \code{0.0} and sums all the PageRank
 values of the neighbors as seen in the code below. The aggregate value is then
 used to update the second argument of the initial \code{pagerank} fact.
 
-\begin{Verbatim}[numbers=left,fontsize=\codesize]
+\begin{LineCode}
 pagerank_list <- linked_list("pagerank")
 update_list <- linked_list("update")
 neighbor_pagerank_list <- linked_list("neighbor_pagerank_list")
@@ -512,5 +512,5 @@ while(pagerank is valid)
 next:
    continue
 }
-\end{Verbatim}
+\end{LineCode}
 

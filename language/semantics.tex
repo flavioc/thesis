@@ -1,0 +1,32 @@
+
+Nodes are selected to computation non-deterministically (i.e., any node can be
+picked to run). This means that the programmer cannot expect that facts coming
+from different nodes will be considered as a whole since the process is
+non-deterministic. The operational semantics promises that rule derivations are
+performed atomically, therefore if a rule derives many facts belonging to a node
+then that node will receive them all at once. Under these restrictions,
+computation can then be parallelized by processing nodes concurrently.
+
+Each rule in LM has a defined priority that is inferred from its position in the
+source file. Rules at the beginning of the file have higher priority. At the
+node level, we consider all the new facts that have not been considered yet to
+create a queue of \emph{candidate rules}. The queue of candidate rules
+is then applied (in priority order) and updated as new facts are derived or
+consumed. As an example, consider the following three rules:
+
+\begin{Code}
+f(A), g(A) -o f(A).
+
+h(A) -o g(A).
+
+g(A) -o 1.
+\end{Code}
+
+If the database contains the facts \code{h(@1)} and \code{f(@1)}, then the
+second rule is applied, retracting \code{h(@1)} and deriving \code{g(@1)}. Next,
+the first and third rules are candidate rules, but since the first rule has
+higher priority, it is applied first, resulting in a database with a single fact
+\code{f(@1)}, where no rule can be applied. Later, in
+Section~\ref{sec:implementation:rule_engine}, we give more details about how our
+implementation manages the set of candidate rules.
+

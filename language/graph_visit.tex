@@ -1,6 +1,6 @@
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\[\]]
+\begin{LineCode}[commandchars=\*\[\]]
 type edge(node, node).*hfill// Predicate declaration
 type linear visit(node).
 type linear unvisited(node).
@@ -14,7 +14,7 @@ unvisited(A) -o
 visit(A),*label[line:language:visit_second1]*hfill // Rule 2: node already visited
 visited(A)
    -o visited(A).*label[line:language:visit_second2]
-\end{Verbatim}
+\end{LineCode}
   \mycap{LM code for the graph visit program.}
   \label{code:language:visit}
 \end{figure}
@@ -34,7 +34,7 @@ Fig.~\ref{code:language:visit_initial} use the \code{visit(@1)} fact to start
 the program.
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\[\]]
+\begin{LineCode}[commandchars=\*\[\]]
 !edge(@1, @2).
 !edge(@1, @4).
 !edge(@2, @3).
@@ -50,7 +50,7 @@ unvisited(@3).
 unvisited(@4).
 
 visit(@1).
-\end{Verbatim}
+\end{LineCode}
   \mycap{Initial facts for the graph visit program. Nodes reachable from node \code{@1} will be marked as \code{visited}.}
   \label{code:language:visit_initial}
 \end{figure}

@@ -87,7 +87,7 @@ another thread (\code{owner(A, Other)}), then the thread owner is
 updated, potentially allowing the previous rule to execute.
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\#\&]
+\begin{LineCode}[commandchars=\\\#\&]
 type linear running(thread, node).
 type linear inactive(node).
 type linear priority(node, float).
@@ -129,7 +129,7 @@ available-work(A, true),
 is-moving(A)
    -o idle(T), owner(A, T), is-moving(A),
       inactive(A), available-work(A, true).\label#line:threads:model_steal2&
-\end{Verbatim}
+\end{LineCode}
 \mycap{Modeling the operational semantics as a LM program. The underlined code
 represents how an example rule \code{node-fact(A, Y), other-fact(A, B) -o remote-fact(B),
 local-fact(A)} needs to be translated for modeling the semantics.}
@@ -169,7 +169,7 @@ efficiency reasons, the update is always done by the thread that derives the
 coordination fact.
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\#\&]
+\begin{LineCode}[commandchars=\\\#\&]
 type linear is-static(node).
 type linear is-moving(node).
 type linear set-priority(node, float).
@@ -198,7 +198,7 @@ owner(A, TOld), is-moving(A),
 available-work(A, _)
    -o is-static(A), owner(A, T), just-moved(A),
       available-work(A, true).\label#line:threads:model_thread2&
-\end{Verbatim}
+\end{LineCode}
 \mycap{Modeling the operational semantics for coordination facts as a LM
 program.}
 \label{code:threads:modeling_scheduling}

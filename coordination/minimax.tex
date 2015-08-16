@@ -20,7 +20,7 @@ nodes; \code{expand} expands and creates children in the current node; and
 \code{play} kickstarts the MiniMax expansion and computation at the current node.
 
 \begin{figure}[ht]
-\begin{Verbatim}[numbers=left,commandchars=\\\{\},fontsize=\scriptsize]
+\begin{LineCode}[commandchars=\\\{\},fontsize=\scriptsize]
 type list int game.\hfill// Type declaration
 type linear parent(node, node).\hfill// Predicate declaration
 type linear score(node, int, int).
@@ -81,7 +81,7 @@ new-score(A, Score, Play), minimize(A, N, Current, BestPlay), Current >= Score\l
 maximize(A, 0, Score, BestPlay) -o score(A, Score, BestPlay).\label{line:coord:minimax_maximize2}\hfill// Rule 14: score maximized
 
 play(@0, initial-game, root-player, 0, 1).\label{line:coord:minimax_axiom}\hfill// Initial fact
-\end{Verbatim}
+\end{LineCode}
 \mycap{LM code for the MiniMax program.}
 \label{code:coord:minimax}
 \end{figure}

@@ -32,7 +32,7 @@ subtypes allow us to declare initial facts that only apply to either the
 \code{consumer} or \code{generator} subtype.
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\#\&]
+\begin{LineCode}[commandchars=*\#\&]
 node generator.*label#line:threads:pg_decl1&*hfill// Type declaration
 node consumer.*label#line:threads:pg_decl2&
 type linear capacity(generator, int Total, int Used).*hfill// Predicate declaration
@@ -81,7 +81,7 @@ disconnect(C, G), connected(C, G)*hfill// Rule 7: finish disconnection
 
 connected-to-list(G, []). fails(G, 0).*hfill// Initial facts
 disconnected(C). reconnect(C). !generators(C, all-generators).
-\end{Verbatim}
+\end{LineCode}
 \mycap{LM code for the regular PowerGrid program.}
 \label{code:threads:powergrid}
 \end{figure}
@@ -113,7 +113,7 @@ present the final database of the example PowerGrid configuration, which shows
 that all consumers have been able to find a suitable generator.
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\#\&]
+\begin{LineCode}[commandchars=*\#\&]
 const generators = [@7, @8, @9, @10].
 
 reconnect(@1).   !generators(@1, generators).   !power(@1, 5).
@@ -127,13 +127,13 @@ connected-to-list(@7, []).    capacity(@7, 15, 0).   fail(@7, 0).
 connected-to-list(@8, []).    capacity(@8, 15, 0).   fail(@8, 0).
 connected-to-list(@9, []).    capacity(@9, 10, 0).   fail(@9, 0).
 connected-to-list(@10, []).   capacity(@10, 5, 0).   fail(@10, 0).
-\end{Verbatim}
+\end{LineCode}
 \mycap{Initial facts for a PowerGrid configuration of 6 consumers and 4 generators.}
 \label{code:threads:powergrid_init}
 \end{figure}
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\#\&]
+\begin{LineCode}[commandchars=*\#\&]
 connected(@1, @7).    !power(@1, 5).
 connected(@2, @7).    !power(@2, 10).
 connected(@3, @8).    !power(@3, 5).
@@ -149,7 +149,7 @@ capacity(@7, 15, 15).
 capacity(@8, 15, 15).
 capacity(@9, 10, 10).
 capacity(@10, 5, 5).
-\end{Verbatim}
+\end{LineCode}
 \mycap{Final facts for a PowerGrid configuration of 6 consumers and 4 generators.}
 \label{code:threads:powergrid_final}
 \end{figure}
@@ -189,7 +189,7 @@ lines~\ref{line:threads:pgt_gen1}-\ref{line:threads:pgt_gen2} and the thread
 state is updated accordingly.
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\scriptsize,commandchars=*\#\&]
+\begin{LineCode}[fontsize=\scriptsize,commandchars=*\#\&]
 type linear thread-connected-to(thread, generator, consumer, int).*hfill// Predicate declaration
 type linear thread-connected-to-list(thread, generator, list consumer).
 type linear thread-capacity(thread, generator, int, int).
@@ -242,7 +242,7 @@ disconnect(C, G), connected(C, G)
 
 thread-total-capacity(T, 0, 0).*hfill// Initial facts
 fails(G, 0).  disconnected(C).  reconnect(C).  !generators(C, all-generators).  start(G).
-\end{Verbatim}
+\end{LineCode}
 \mycap{LM code for the optimized PowerGrid program.}
 \label{code:threads:powergridt}
 \end{figure}

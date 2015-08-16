@@ -1,0 +1,11 @@
+
+In this section, we list all the extra-logical directives available in LM
+programs.
+
+\input{coordination/global}
+\begin{itemize}
+   \item \code{index pred/arg}: Informs the compiler that predicate \code{pred}
+      should be indexed by the argument \code{arg} (number). The runtime system
+      will use hash tree data structures for facts of this predicate indexed by
+      the requested argument.
+\end{itemize}

@@ -50,9 +50,9 @@ structured types are also supported: \emph{list} $X$, for lists of type $X$;
 \emph{struct} $X_1, \ldots, X_n$, for composite values made of $n$ elements; and
 \emph{array} $X$, for arrays of type $X$.
 
-LM allows the definition of new type names from simpler types using the declaration
-\code{type simple-type new-type} in the header of the program. The type
-\code{new-type} can then be used as any other type. Note that LM uses
+LM allows the definition of new type names from simpler types using the
+declaration \code{type simple-type new-type} in the header of the program. The
+type \code{new-type} can then be used as any other type. Note that LM uses
 \emph{structural equivalence} to check if two types are the same, therefore
 \code{simple-type} and \code{new-type} are type equivalent.
 
@@ -77,7 +77,10 @@ the rule's RHS, other home variables are allowed, as long as they have been
 defined in the LHS. For comprehensions and aggregates, the LHS must use the
 same home argument as the rule's LHS.
 
-\section{LM Syntax}
+\section{Operational Semantics}
+\input{language/semantics}
+
+\section{LM Abstract Syntax}
 \input{language/syntax}
 \section{Applications}
 \input{language/applications}

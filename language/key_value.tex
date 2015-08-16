@@ -1,6 +1,6 @@
 
 \begin{figure}[ht]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\{\}]
+\begin{LineCode}[commandchars=\*\{\}]
 type left(node, node Child).*label{line:language:dict_header1}*hfill // Predicate declaration
 type right(node, node Child).
 type linear value(node, int Key, string Value).
@@ -23,7 +23,7 @@ RKey > Key,
 !right(A, B)
    -o value(A, Key, Value),
       replace(B, RKey, RValue). *label{line:language:dict_third2}
-\end{Verbatim}
+\end{LineCode}
 \mycap{LM program for replacing a key's value in a BST dictionary.}
 \label{code:language:btree_replace}
 \end{figure}
@@ -60,7 +60,7 @@ tree configuration, including keys and values, and the \code{replace(@1, 6,
 change the value of key 6 to "x".
 
 \begin{figure}[ht]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\{\}]
+\begin{LineCode}[commandchars=\*\{\}]
 !left(@1, @2).
 !right(@1, @3).
 !left(@2, @4).
@@ -78,7 +78,7 @@ value(@7, 6, "g").
 
 // Update key 6 to value "x".
 replace(@1, 6, "x").
-\end{Verbatim}
+\end{LineCode}
 \mycap{Initial facts for replacing a key's value in a BST dictionary.}
 \label{code:language:btree_replace_initial}
 \end{figure}

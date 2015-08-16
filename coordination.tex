@@ -31,28 +31,7 @@ declarative programs.
 We also provide a few global coordination statements that cannot be specified
 as sensing or action facts but are still important:
 
-\begin{itemize}
-
-   \item \texttt{priority @order ORDER} (\texttt{ORDER} can be either \code{asc}
-      or \code{desc}): Defines if priorities are to be selected by the smallest
-      or the greatest value, respectively.
-
-   \item \texttt{priority @default P}: Informs the runtime system that all nodes
-      must start with default priority \code{P}. Alternatively, the programmer can define a
-      \texttt{set-default-priority(A, P)} fact.
-
-   \item \texttt{priority @base P}: Informs the runtime system that the
-      \emph{base priority} should be \code{P}. The base priority is, by default,
-      0 when the priority ordering is \code{desc} and $+\infty$ when the ordering
-      is \code{asc} and represents the smallest priority value possible.
-
-   \item \texttt{priority @initial P}: Informs the runtime system that all nodes
-   must start with temporary priority \code{P}. Alternatively, the programmer can define an
-      \texttt{set-priority(A, P)} fact. The default is value is the one defined
-      as the \emph{base priority}.
-
-\end{itemize}
-
+\input{coordination/global}
 \section{Implementation}
 \input{implementation/coord}
 

@@ -9,7 +9,7 @@ and aggregate the results in the node where the search started.  The code for
 this later solution is shown in Fig.~\ref{code:threads:reach_simple}.
 
 \begin{figure}[h]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\#\&]
+\begin{LineCode}[commandchars=*\#\&]
 type int id.*hfill// Type declaration
 type list int reach-list.
 
@@ -42,7 +42,7 @@ do-search(A, Id, Node, ToReach),*hfill// Rule 5: node not found and propagate se
 !value(A, Val), ~ Val in ToReach*hfill// Not the node we are looking for.
    -o {B | !edge(A, B) -o do-search(B, ID, Node, ToReach)},*label#line:threads:reach_propagate2&
       visited(A, Id).*label#line:threads:reach_visit_visited2&
-\end{Verbatim}
+\end{LineCode}
 
 \mycap{LM code to perform reachability checking on a graph.}
 \label{code:threads:reach_simple}
@@ -223,7 +223,7 @@ every thread knows that all nodes were reached, they will consume
 pruning the search space.
 
 \begin{figure}[h]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\#\&]
+\begin{LineCode}[commandchars=*\#\&]
 search(A, Id, ToReach),*label#line:threads:reacht_start1&*hfill// Rule 1: initialize search
 *textbf#!thread-list(T, L)&, Owner = nth(L, Id % @threads)*hfill// Allocate search to a thread
    -o {T2 | *textbf#!other-thread(T, T2)& -o *textbf#thread-search(T2, Id, ToReach, Owner)&},*label#line:threads:reacht_threads&
@@ -268,7 +268,7 @@ do-search(A, Id),*hfill// Rule 5: node not found but propagate search
 *textbf#signal-thread(T, Id),&*hfill// Rule 9: thread knows search is done*label#line:threads:reacht_knows1&
 *textbf#thread-search(T, Id, ToReach, Owner)&
    *textbf#-o thread-search(T, Id, [], Owner).& *label#line:threads:reacht_knows2&
-\end{Verbatim}
+\end{LineCode}
 \mycap{Coordinated version of the reachability checking program. Note
 that \code{@threads} represent the number of threads in the system.}
 \label{code:threads:reach_threads}

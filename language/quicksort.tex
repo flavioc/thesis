@@ -42,7 +42,7 @@ sublists are appended and send \code{up} to the parent node via the derivation
 of an \code{up} fact (line~\ref{line:language:qs_up}).
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\*\{\}]
+\begin{LineCode}[commandchars=\*\{\}]
 type linear down(node, list int).*hfill// Predicate declaration
 type linear up(node, list int).
 type linear sorted(node, node, list int).
@@ -79,7 +79,7 @@ sorted(A, NodeGreater, Greater)
 up(A, L), back(A, B) -o sorted(B, A, L).*label{line:language:qs_back}*hfill// Rule 10: send list to parent
 
 down(@0, initial_list).*label{line:language:qs_axiom}*hfill// Initial facts
-\end{Verbatim}
+\end{LineCode}
   \mycap{Quick-Sort program written in LM.}
   \label{language:code:quicksort}
 \end{figure}
@@ -128,19 +128,19 @@ By induction on the size of $L$.
 The base cases are proven trivially (rules 1-4).
 
 In the inductive case, only rule 5 applies:
-\begin{Verbatim}[fontsize=\codesize]
+\begin{Code}
 down(A, [Pivot | Xs]) -o split(A, Pivot, Xs, [], []).
-\end{Verbatim}
+\end{Code}
 
 \noindent which necessarily derives a $\mathtt{split}(A, Pivot, Xs, [], [])$
 fact. By applying the split lemma, a $\mathtt{split}(A, Pivot, [], Smaller, Greater)$
 fact is generated, from which only rule 6 can be used:
 
-\begin{Verbatim}[fontsize=\codesize]
+\begin{Code}
 split(A, Pivot, [], Smaller, Greater) -o
    exists B, C. (back(B, A), back(C, A),
                  down(B, Smaller), down(C, Greater), waitpivot(A, Pivot, B, C)).
-\end{Verbatim}
+\end{Code}
 
 \noindent which necessarily derives $\mathtt{back}(B, A)$, $\mathtt{back}(C,
 A)$, $\mathtt{down}(B, Smaller)$, $\mathtt{down}(C, Greater)$ and also a
@@ -151,20 +151,20 @@ size) than $L$, so, by the the induction hypothesis, an $\mathtt{up}(B,
 Smaller')$ and an $\mathtt{up}(C, Greater')$ facts are derived. These last two
 facts will be used in the following rule:
 
-\begin{Verbatim}[fontsize=\codesize]
+\begin{Code}
 up(A, L), back(A, B) -o sorted(B, A, L).
-\end{Verbatim}
+\end{Code}
 
 \noindent which generates a $\mathtt{sorted}(A, B, Smaller')$ and a $\mathtt{sorted}(A, C,
 Greater')$ facts. In the continuation, there is only one rule that accepts
 \code{sorted} and \code{waitpivot} facts:
 
-\begin{Verbatim}[fontsize=\codesize]
+\begin{Code}
 waitpivot(A, Pivot, NodeSmaller, NodeGreater),
 sorted(A, NodeSmaller, Smaller),
 sorted(A, NodeGreater, Greater)
    -o up(A, Smaller ++ [Pivot | Greater]).
-\end{Verbatim}
+\end{Code}
 
 \noindent returning $\mathtt{up}(A, Smaller' ++ [Pivot | Greater'])$.  We know that
 $Smaller' ++ [Pivot | Greater']$ is sorted since $Small'$ contains the sorted

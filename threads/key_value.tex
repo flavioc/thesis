@@ -38,7 +38,7 @@ Note that it is quite easy to extend the cache mechanism to use an LRU type
 approach in order to limit the size of the cache.
 
 \begin{figure}[ht]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=*\{\}]
+\begin{LineCode}[commandchars=*\{\}]
 type left(node, node).*hfill// Predicate declaration
 type right(node, node).
 type linear value(node, int Key, string Value).
@@ -77,7 +77,7 @@ value(A, Key, Value),
 RKey > Key
    -o value(A, Key, Value),
       replace(B, RKey, RValue).
-\end{Verbatim}
+\end{LineCode}
 \mycap{LM program for performing lookups in a BST extended to use a thread cache.}
 \label{code:threads:btree_lookup_cache}
 \end{figure}

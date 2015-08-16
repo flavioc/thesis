@@ -38,7 +38,7 @@ deriving \code{start-tree(T)}.  The remaining phases of the algorithm are
 explained next.
 
 \begin{figure}[!htb]
-\begin{Verbatim}[numbers=left,commandchars=*\{\},fontsize=\codesize]
+\begin{LineCode}[commandchars=*\{\}]
 type list node tree.
 
 type linear partitioning(thread, int).*hfill// Number of nodes to receive.
@@ -83,7 +83,7 @@ second-phase(T, [A]), running(T, A) *hfill{} // Second phase
    -o running(T, A), update(A), remove-priority(A), start-tree(T).*label{line:threads:splash_second_update1}
 second-phase(T, [A, B | Next]), running(T, A)
    -o running(T, A), update(A), schedule-next(B), second-phase(T, [B | Next]).*label{line:threads:splash_second_update2}
-\end{Verbatim}
+\end{LineCode}
 
    \mycap{LM code for the Splash Belief Propagation program.}
   \label{code:threads:sbp}

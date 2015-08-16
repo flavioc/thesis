@@ -15,7 +15,7 @@ Multiple \code{add-priority} facts will increase the priority of a node so that
 nodes with multiple large deltas will have higher priority.
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\[\]]
+\begin{LineCode}[commandchars=\\\[\]]
 new-heat(A, New, Old),
 fabs(New - Old) > epsilon
    -o {B | !edge(A, B) -o
@@ -26,7 +26,7 @@ new-heat(A, New, Old)
 fabs(New - Old) <= epsilon
    -o {B | !edge(A, B) -o
          new-neighbor-heat(B, A, New)}.
-\end{Verbatim}
+\end{LineCode}
   \mycap{Coordination code for the Heat Transfer program.}
   \label{code:coord:ht}
 \end{figure}
@@ -78,7 +78,7 @@ while the old version reaches a 16-fold speedup. However, this comes at the
 price of reduced accuracy in the computed heat values.
 
 \begin{figure}[h!]
-\begin{Verbatim}[numbers=left,fontsize=\codesize,commandchars=\\\[\]]
+\begin{LineCode}[commandchars=\\\[\]]
 new-heat(A, New, Old),
 fabs(New - Old) > epsilon
    -o {B | !edge(A, B) -o
@@ -91,7 +91,7 @@ fabs(New - Old) <= epsilon,
    -o {B, T | !edge(A, B), \underline[thread-id(B, T)] -o\label[line:coord:ht_better_comp1]
          new-neighbor-heat(B, A, New), \underline[thread-id(B, T)]},\label[line:coord:ht_better_comp2]
       \underline[thread-id(A, T)].
-\end{Verbatim}
+\end{LineCode}
 
   \mycap{To improve locality, we add an extra constraint to the second rule to
      avoid sending small $\delta$ values if the target node is in another thread.}

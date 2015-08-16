@@ -7,7 +7,7 @@ program uses a global program directive to order priorities in ascending order
 presented in Appendix~\ref{appendix:proofs:sssp}.
 
 \begin{figure}[ht]
-\begin{Verbatim}[numbers=left,commandchars=\\\{\},fontsize=\codesize]
+\begin{LineCode}[commandchars=\\\{\}]
 type edge(node, node, int).\hfill// Predicate declaration
 type linear shortest(node, int, list int).
 type linear relax(node, int, list int).
@@ -25,7 +25,7 @@ shortest(A, D1, P1), D1 <= D2, relax(A, D2, P2)\hfill// Rule 2: longer path\labe
 
 shortest(A, +00, []).\hfill// Initial facts
 relax(@1, 0, [@1]).
-\end{Verbatim}
+\end{LineCode}
    \mycap{Shortest Path Program taking advantage of the \code{set-priority}
    coordination fact.}
    \label{code:shortest_path_program_coord}
