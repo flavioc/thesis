@@ -182,7 +182,7 @@ higher priority rule.
   $CompiledProps.push(Prop)$\;
   $Iterator \longleftarrow Code.InsertIteration(Prop)$\;
   $FactIterators.push(Iterator)$\;
-  \tcc{Select constraints that are covered by CompiledFacts.}
+  \tcp{Select constraints that are covered by CompiledFacts.}
   $NextConstraints \longleftarrow RemoveConstraints(Constraints, CompiledProps)$\;
   $Code.InsertConstraints(NextConstraints)$\;
  }
@@ -196,7 +196,7 @@ higher priority rule.
        $Code.InsertRemove(Iterator)$\;
     }
  }
- \tcc{Enforce rule priorities.}
+ \tcp{Enforce rule priorities.}
  \uIf{$FactsDerivedUsedBefore(Rules, R1)$}{
     $Code.InsertReturn()$\;
  }

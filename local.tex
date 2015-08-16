@@ -1,13 +1,22 @@
 
-This chapter describes the sequential components of the LM's implementation,
-including the database data structures, rule scheduling and compilation
-algorithms. First, we give a brief overview of the LM's implementation,
-including its compiler and virtual machine. Next, we present the node data
-structure, including a detailed description of the data structures used to
-efficiently manipulate logical facts. We also describe how rules are scheduled
-locally from newly derived facts stored in the database.  Finally, we give a
-description of the compilation algorithm that turns logical rules into efficient
-compiled code.
+In the previous chapter, we presented different programs that showcased the
+declarative core of the LM language. In this chapter, we focus on the
+implementation of LM by describing how local computation is achieved, with a
+focus on compilation and rule execution.  Next, in
+Chapter~\ref{chapter:implementation}, we describe the multithreaded
+implementation that allows LM programs to run on multicore architectures. The
+coordination aspects of LM, that we introduce later in this thesis along with
+the implementation details, are discussed in depth in
+Chapters~\ref{chapter:coordination} and~\ref{chapter:threads}.
+
+This chapter is organized as follows. We start a brief overview of the LM's
+implementation, including its compiler and virtual machine. Next, we present the
+node data structure, including a detailed description of the data structures
+used to efficiently manipulate logical facts.  We also describe how rules are
+scheduled locally from newly derived facts stored in the database.  Finally, we
+give a description of the compilation algorithm that turns logical rules into
+efficient compiled code.
+
 
 \section{Implementation Overview}
 \input{implementation/overview}

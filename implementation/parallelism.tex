@@ -73,20 +73,20 @@ executing, transitioning to the \textbf{terminated} state.
          $process\_node(node)$\;
       }
       \Else{
-         \tcc{Attempt to steal some nodes.}
+         \tcp{Attempt to steal some nodes.}
          \If{$\bang TH.steal\_nodes()$}{
             $TH.become\_idle()$\;
             \While{$len(TH.work\_queue) == 0$}{
-               \tcc{Try to terminate}
+               \tcp{Try to terminate}
                \If{$TH.synchronize\_termination()$}{
                   \textbf{terminate}\;
                }
                \If{$TH.steal\_nodes()$}{
-                  \tcc{Thread is still in the stealing state}
+                  \tcp{Thread is still in the stealing state}
                   break\;
                }
             }
-            \tcc{There's new nodes in the queue.}
+            \tcp{There's new nodes in the queue.}
             $TH.become\_active()$\;
          }
       }
@@ -161,14 +161,14 @@ point, the target thread is ensured to be active and with a new node to process.
    \KwData{Node N}
    $N.state\_lock.lock()$\;
    $N.db\_lock.lock()$\;
-   \tcc{Add facts from the Incoming Fact Buffer into the database}
+   \tcp{Add facts from the Incoming Fact Buffer into the database}
    $N.DB.merge(N.incoming\_fact\_buffer)$\;
    $N.state\_lock.unlock()$\;
 
    $N.rule\_engine.run\_rules()$\;
    $N.db\_lock.unlock()$\;
 
-   \tcc{Check if node N is done for now}
+   \tcp{Check if node N is done for now}
 
    $N.state\_lock.lock()$\;
    \If{$N.rule\_engine.has\_candidate\_rules()$ or \\

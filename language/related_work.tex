@@ -1,35 +1,35 @@
 \subsection{Graph-Based Programming Models}
 
-Many programming systems model programs as graphs where computation is
-performed. Some good examples are the Dryad, Pregel, GraphLab, Ligra, Grace,
-Galois and SociaLite systems.
+Many programming systems have designed for writing graph-based programs.  Some
+good examples are the Dryad, Pregel, GraphLab, Ligra, Grace, Galois and
+SociaLite systems.
 
 The Dryad system~\cite{Isard:2007:DDD:1272996.1273005} combines computational
 vertices with communication channels (edges) to form a data-flow graph. The
 program is scheduled to run on multiple processors or cores and data is
 partitioned during runtime. Routines that run on computational vertices are
 sequential, with no synchronization. Dryad is better suited for a wider range of
-problem domains than LM, however Dryad is not a language but a framework where
-languages such as LM could be built upon.
+problem domains than LM, however Dryad is not a language but a framework upon
+which languages such as LM could be built.
 
 The Pregel system~\cite{Malewicz:2010:PSL:1807167.1807184} is also graph based,
-although programs have a more strict structure. They must be represented as
-a sequence of iterations where each iteration is composed of computation and
-message passing. Pregel is specially suited to work on big graphs and to
+although programs have a more strict structure. They must be represented as a
+sequence of iterations where each iteration is composed of computation and
+message passing. Pregel is especially suited for large graphs since it aims to
 scale to large architectures. LM does not impose iteration restrictions on
-programs, however it is not as suited for big graphs as Pregel.
+programs, however it is not as well suited for large graphs as Pregel.
 
 GraphLab~\cite{GraphLab2010} is a C++ framework for developing parallel machine
 learning algorithms. While Pregel uses message passing, GraphLab allows nodes to
 have read/write access to different scopes through different concurrent access
 models in order to balance performance and data consistency. While some programs
-only need to access the local node's data, others may need to update edge
+only require access to the local node's data, others may need to update edge
 information. Each consistency model will provide different guarantees that are
 better adapted to some algorithms. GraphLab also provides different schedulers
-that dictate the order in which node's are computed. The downside of GraphLab is
-that GraphLab has a steep learning curve and programs must be written in
-C++. LM programs tend to be smaller and easier to reason about since they are
-written at a higher abstraction level.
+that dictate the order in which nodes are computed. The downside of GraphLab is
+that GraphLab has a steep learning curve and programs must be written in C++,
+requiring a lot of boilerplate code. LM programs tend to be smaller and easier to
+reason about since they are written at a higher abstraction level.
 
 Ligra~\cite{Shun:2013:LLG:2517327.2442530} is a lightweight framework for large
 scale graph processing on a single multicore machine. Ligra exploits the fact
@@ -47,57 +47,57 @@ Grace~\cite{wang:asynchronous} is another graph-based framework for multicore
 machines. Unlike Ligra, Grace programs are implemented from the point of view of
 a vertex. Each vertex and edge can be customized with different data depending
 on the target application. By default, programs are executed iteratively: for
-each iteration the vertex program reads incoming messages located in the edges,
-performs computation and sends messages to the outbound edges. Since iterative
-programs require synchronization after each iteration, Grace allows the user to
-relax these constraints and implement customizable execution policies by
-implementing code for describing which vertices are allowed to run and in which
-order. The order is dictated by assigning a \emph{scheduling priority value}.
+each iteration the vertex program reads incoming edge messages, performs
+computation and sends messages to the outbound edges. Since iterative programs
+require synchronization after each iteration, Grace allows the user to relax
+these constraints and implement customizable execution policies by implementing
+code for describing which vertices are allowed to run and in which order. The
+order is dictated by assigning a \emph{scheduling priority value}.
 
 Galois~\cite{Pingali:2011:TPA:1993316.1993501} is a parallel programming model
 with irregular applications based on graphs, trees and sets. A Galois parallel
 algorithm is viewed as a parallel application of an \emph{operator} over an
 irregular data structure which generate \emph{activities} on the data structure.
-Such operator may, for instance, be applied on the node of the graph in order to
+Such operator may, for instance, be applied to the node of the graph in order to
 change its data or change the structure of its neighborhood, allowing for data
-structure changes. In Galois, we consider \emph{active elements}, which are
-nodes of the graph where computation needs to be performed, the
-\emph{neighborhood} containing the nodes of the graph required to perform an
-operator, and \emph{ordering} which dictates the order in which operators are
-applied. From the point of view of the programmer, the active elements are
-represented in a work-list, while operators can be implemented on top of
-iterators of the work-list. Galois supports speculative execution by allowing
-operator rollback when an operator requires the use of a node that is held by
-another operator.
+structure changes. In Galois, \emph{active elements} are nodes of the graph
+where computation needs to be performed. Each operator performed on an active
+element needs to acquire the \emph{neighborhood}, which are the nodes connected
+to the active element that are involved in the operator's computation.
+Furthermore, operators are selected for execution according to some specific
+\emph{ordering}. From the point of view of the programmer, the active elements
+are represented in a work-list, while operators can be implemented on top of
+work-list's iterators. Galois supports speculative execution by allowing
+operator rollback when an operator requires a node that is held by another
+operator.
 
 Ligra, Grace and Galois are not programming language but frameworks built on top
 of other programming languages such as C and Java. Naturally, programs written
-in these frameworks need to take into account about several implementation
-details such as CAS instructions, work-lists, and scheduling order. LM programs
-are slightly more abstract since reasoning is performed around logical rules and
-logical facts which are much closer to the problem domain of graph-based
+in these frameworks need to take into account several implementation details
+such as \emph{compare-and-set} instructions, work-lists, and scheduling order.
+LM programs are more abstract since reasoning is performed around logical rules
+and logical facts which are much closer to the problem domain of graph-based
 programs.
 
 SociaLite~\cite{Seo:2013:DSD:2556549.2556572} is a Datalog-based language for
 writing algorithms for social-network analysis. SociaLite takes Datalog programs
-and compiles them to run on distributed architectures. The language places some
+and compiles them to efficient distributed Java code. The language places some
 restrictions on rules in order to make distribution possible, however, the
-programmer is free to tell the system how to shard database's facts. Like LM, these
-restrictions deal with the first argument of each fact, however, the first
-argument is not related to the problem at hand but is instead related to fact
-distribution, allowing for programmers to optimize message sending across
+programmer is free to tell the system how to shard database's facts. Like LM,
+these restrictions deal with the first argument of each fact, however, the first
+argument is not related to a graph abstraction but is instead related to fact
+distribution, allowing programmers to optimize how messages are sent between
 machines.
 
 \subsection{Languages for sensor networks}
 
-Sensor nets are another interesting domain for programming languages that deal
-with graph-like networks.  Programming languages such as
-Hood~\cite{Whitehouse:2004:HNA:990064.990079},
+Many programming languages have been designed to help developers write programs
+that run on sensor networks, which can also be represented as graphs.
+Programming languages such as Hood~\cite{Whitehouse:2004:HNA:990064.990079},
 Tinydb~\cite{Madden:2005:TAQ:1061318.1061322} or
-Regiment~\cite{Newton:2007:RMS:1236360.1236422} have been proposed for this
-particular domain, providing support for data collection and aggregation over
-the network.  These systems assume that the network remains static and nodes
-stay in place.
+Regiment~\cite{Newton:2007:RMS:1236360.1236422} have been proposed, providing
+support for data collection and aggregation over the network. These systems
+assume that the network remains static and nodes stay in place.
 
 Other languages such as Pleiades~\cite{Kothari:2007:REP:1250734.1250757},
 LDP~\cite{4543691} or Proto~\cite{Beal:2006:IEE:1137236.1137354} go beyond
@@ -129,11 +129,11 @@ formulation of CHR.
 
 Graph Transformation Systems (GTS)~\cite{Ehrig:2004vn}, commonly used to model
 distributed systems, perform rewriting of graphs through a set of graph
-productions. GTS also introduce concepts of concurrency, where it may be
+productions. GTS also introduces concepts of concurrency, where it may be
 possible to apply several transformations at the same time. In principle, it
-should be possible to model LM programs as a graph transformation: we directly
+should be possible to model LM programs as graph transformations: we directly
 map the LM graph of nodes to GTS's initial graph and consider logical facts as
 nodes that are connected to LM's nodes. Each LM rule is then a graph production
-that manipulates the node's neighbors (the database) or sends new facts to
-other nodes. On the other hand, it is also possible to embed GTS inside
+that manipulates the node's neighbors (the database) or sends new facts to other
+nodes. On the other hand, it is also possible to embed GTS inside
 CHR~\cite{Raiser:2011:AGT:1972935.1972938}.

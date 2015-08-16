@@ -1,12 +1,11 @@
 The main characteristic of LM rules is that they are constrained by the first
-argument\footnote{In the implementation, the first argument of each fact is not
-stored.}. Rule derivation uses only facts from the same node, therefore there is
-no need to synchronize with other nodes to derive rules. However, when nodes
+argument. Rule derivation uses only facts from the same node, therefore there
+is no need to synchronize with other nodes to derive rules. However, when nodes
 derive non-local facts (owned by other nodes), then the implementation must
 synchronize and \emph{send} the facts to the target node. From the point of view
-of the receiving node, these are called \emph{incoming facts}. Note that this is related
-to the parallel aspects of the virtual machine and more details are given in the
-next chapter.
+of the receiving node, these are called \emph{incoming facts}. Note that this is
+related to the parallel aspects of the virtual machine and more details are
+given in the next chapter.
 
 During the lifetime of a program, each node goes through different states as
 specified by the state machine. Figure~\ref{fig:local:node_states} presents the
@@ -58,11 +57,10 @@ following attributes:
 The database of facts must be implemented efficiently because during matching of
 rules we need to restrict the facts using \emph{join constraints}, which fix
 arguments of predicates to instantiated values. A database fact is made up of 2
-pointers (\code{prev} and \code{next}) and a variable number of arguments.  Each
-fact argument is large enough to contain a value of any of the available LM
-types. Each predicate of the program is stored in a different data structure in
-order to make it easier to lookup facts by predicate. Predicate facts are stored
-in one of the four data structures:
+pointers (\code{prev} and \code{next}) and a variable number of arguments. The
+first (node) argument of each fact is not stored in memory since facts are
+already indexed by node. Additionally, facts are indexed by predicate and use
+one of the following data structures:
 
 \begin{itemize}
 
@@ -72,17 +70,17 @@ in one of the four data structures:
    trie.
 
 \item \emph{Array Data Structures} are used to store persistent facts that are
-   used in the LHS of rules without matching (no join constraints) and exist
-   only as initial facts. Facts stored in this data structure do not have the
-   \code{prev} and \code{next} pointers because they are already chained by
-   being part of a contiguous memory area. The compiler performs static analysis
-   of the program's rule in order to choose between trie and array data
-   structures for a particular persistent predicate.
+   used in the LHS of rules that do not require matching (e.g., no join
+   constraints) and exist only as initial facts. Facts stored in this data
+   structure do not have the \code{prev} and \code{next} pointers because they
+   are already chained by being part of a contiguous memory area. The compiler
+   performs static analysis of the program's rules in order to choose between
+   trie and array data structures for a particular persistent predicate.
 
 \item \emph{Doubly Linked List Data Structures} are used to store linear facts.
-   We use a double linked list because it is a efficient way to add and
-   remove facts. The \code{prev} and \code{next} pointers are used to chain
-   the facts of the linked list.
+   We use a double linked list because adding and removing facts are efficient
+   operations.  The \code{prev} and \code{next} pointers are used to chain the
+   facts of the linked list.
 
 \item \emph{Hash Tree Data Structures} are used to improve lookup when linked
    lists are too long and when we need to do search filtered by a fixed
@@ -98,18 +96,19 @@ in one of the four data structures:
 \end{itemize}
 
 Figure~\ref{fig:implementation:hash_table} shows an example for a hash table
-data structure for a \code{p(int, int)} predicate with 5 linear facts indexed by
-the second argument. Note that for each bucket, facts are indexed by the second
-argument into either a list or another hash table.
+data structure for a \code{p(node, int, int)} predicate with 5 linear facts
+indexed by the third argument. Note that for each bucket, facts are indexed by
+either a list or another hash table, recursively.
 
 \begin{figure}[ht]
    \centering
    \includegraphics[width=0.6\textwidth]{figures/implementation/hash_table.pdf}
 
-   \mycap{Hash tree data structure for a \code{p(int, int)} predicate
-   containing the following facts: \code{p(0, 20)}, \code{p(1, 20)}, \code{p(1,
-   3)}, \code{p(2, 13)}, and \code{p(2, 43)}. Facts are indexed by computing
-   $arg_2\mod{}10$ where $arg_2$ is the second argument of the fact.}
+   \mycap{Hash tree data structure for a \code{p(node, int, int)} predicate
+   containing the following facts: \code{p(@1, 0, 20)}, \code{p(@1, 1, 20)},
+   \code{p(@1, 1, 3)}, \code{p(@1, 2, 13)}, and \code{p(@1, 2, 43)}. Facts are
+   indexed by computing $arg_2\mod{}10$ where $arg_2$ is the third argument of
+   the fact. The node argument is not stored.}
 
    \label{fig:implementation:hash_table}
 \end{figure}
@@ -118,29 +117,34 @@ argument into either a list or another hash table.
 
 \subsection{Indexing}\label{sec:implementation:indexing}
 
-To improve fact lookup, the VM employs a fully dynamic mechanism to
-decide which argument may be optimal to index.  The algorithm is
-executed along with normal computation and empirically tries to
-assess the argument of each predicate that more equally spreads the
-database across the values of the argument. 
+During rule derivation, facts to be searched and filtered to match the rule
+constraints. One of the most common constraints is to ensure that some arguments
+of facts are equal to an arbitrary value. In order to avoid iterating over all
+the facts in such cases, the VM employs a dynamic mechanism that decides,
+heuristically, which argument may be optimal to index. When a predicate is
+indexed, it will use a hash tree data structure instead of doubly linked list for
+faster lookup. The indexing algorithm is executed along with normal computation
+and empirically tries to assess the argument of each predicate that more equally
+spreads the database across the values of the argument. 
 
-The indexing algorithm is performed in three main steps. First, it gathers
+The indexing algorithm is performed in three main steps and executes only in one
+thread of the VM, along with normal computation. First, the algorithm gathers
 lookup statistics by keeping a counter for each predicate's argument. Every time
 a fact search is performed where arguments are fixed to a value, the counter of
 such arguments is incremented. This phase is performed during rule execution for
-100 nodes or 1\% of the nodes of the graph, if the graph has more than 100000
-nodes.
+the first 100 nodes (or 1\% of the nodes of the graph, when there are more than
+100000 nodes) that are executed by the thread running the indexing algorithm.
 
 The second step of the algorithm selects the candidate arguments of each
-predicate. If a predicate was not searched with any fixed arguments, then it
-will be not indexed as there are no candidates. If only one argument was fixed,
-then such argument is the only available candidate argument and thus immediately
-becomes the indexing argument. Otherwise, the top 2 arguments are selected for
-the third phase, where \emph{entropy statistics} are collected dynamically.
+predicate. If a search for a predicate required no fixed arguments, then the
+predicate will be not indexed. If only one argument was fixed, then that
+argument immediately becomes the indexing argument. Otherwise, the top 2
+arguments are selected for the third phase, where \emph{entropy statistics} are
+collected dynamically.
 
 During the third phase, each candidate argument has an entropy score. Before a
-node is executed, the facts of the target predicate are used in the following
-formula applied for the two arguments:
+node transitions to the \textbf{running} state, the facts of the predicate are
+used in the following formula applied for the two arguments:
 
 \[
 Entropy(F, A) = - \sum_{v \in values(F, A)} \frac{count(F, A = v)}{total(F)} \log_2 \frac{count(F, A = v)}{total(F)}
@@ -154,20 +158,23 @@ value is a good metric because it tells us how much information is needed to
 describe an argument. If more information is needed, then that must be the best
 argument to index.
 
-For each arguments, the $Entropy(A, F)$ value is then multiplied by the number
-of times it has been used for lookup. The argument with the best score is
-selected and then a global variable called \code{indexing\_epoch} is updated to
-\textbf{completed}. In order to convert the node's linked lists into hash
-tables, each node checks the global \code{indexing\_epoch} variable and rebuilds
-its database when the variable is set to \textbf{completed}.
+For each argument, the $Entropy(A, F)$ value is then multiplied by the number of
+times it has been used for lookup. The argument with the best score is selected
+and then a global variable called \code{indexing\_epoch} is updated to
+\textbf{completed}. When nodes are executed and the global
+\code{indexing\_epoch} variable has changed to \textbf{completed}, the node data
+structures are rebuilt by transforming doubly linked lists into hash tree data
+structures. Note that the transformation is only done if the linked list has a
+large number of facts (at least eight).
 
-The VM also dynamically resizes the hash table if necessary. When the hash table
-becomes too dense, it is doubled in size. When it becomes too sparse, it is
-reduced in half or simply transformed back into a doubly linked list. This is
-done once in a while, before a node executes.
+The VM dynamically augments hash trees if necessary. When a hash tree bucket
+has too many elements, a child hash tree node is created.  On the other hand, if
+the number of elements in the hash node gets too small, then the hash node is
+removed and replaced with a doubly linked list.
 
-We have seen good results with this scheme. The overhead of dynamic
-indexing is negligible since programs run almost as fast as if the indices have
-been added from the start. However, the programmer can still index predicates
-statically, if needed, using the directive \code{index pred/arg}, where
-\code{pred} is the argument name and \code{arg} is the argument number to index.
+We have seen good results with this scheme. The overhead of dynamic indexing is
+negligible since the whole algorithm is performed only once.  The programmer can
+also add indexes statically, if needed, using the directive \code{index
+pred/arg}, where \code{pred} is the argument name and \code{arg} is the argument
+number to index.
+

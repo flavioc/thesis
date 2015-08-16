@@ -41,22 +41,22 @@ programs that only deal with thread facts.
         \underline{$TH.process\_node(node, TH.thread\_node)$}\;
       }
       \Else{
-        \tcc{The thread's node may have candidate rules using incoming thread facts}
+        \tcp{The thread's node may have candidate rules using incoming thread facts}
         \underline{$TH.process\_node(nil, TH.thread\_node)$}\;
-        \tcc{Attempt to steal some nodes.}
+        \tcp{Attempt to steal some nodes.}
          \If{$\bang TH.steal\_nodes()$}{
             $TH.become\_idle()$\;
             \While{$len(TH.work\_queue) == 0$}{
-               \tcc{Try to terminate}
+               \tcp{Try to terminate}
                \If{$TH.synchronize\_termination()$}{
                   \textbf{terminate}\;
                }
                \If{$TH.steal\_nodes()$}{
-                  \tcc{Thread is still in the stealing state}
+                  \tcp{Thread is still in the stealing state}
                   break\;
                }
             }
-            \tcc{There's new nodes in the queue.}
+            \tcp{There's new nodes in the queue.}
             $TH.become\_active()$\;
          }
       }

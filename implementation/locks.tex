@@ -18,18 +18,18 @@ are used in order to implement different operations:
 \begin{algorithm}[H]
    \KwData{Target Node N, Fact F}
    \eIf{$N.db\_lock.try\_lock()$}{
-      \tcc{New Fact (1)}
+      \tcp{New Fact (1)}
       $N.DB.add\_fact(F)$\;
       $N.rule\_engine.new\_fact(F)$\;
       $N.db\_lock.unlock()$\;
-      \tcc{Still need to check if node is active}
+      \tcp{Still need to check if node is active}
       $N.state\_lock.lock()$\;
    }{
-      \tcc{New Fact (2)}
+      \tcp{New Fact (2)}
       $N.state\_lock.lock()$\;
       $N.FactBuffer.add\_fact(F)$\;
    }
-   \tcc{Activate node}
+   \tcp{Activate node}
    $TTH \longleftarrow N.Owner$\;
    \If{$N.state == inactive$}{
       $TTH.work\_queue.lock()$\;
@@ -68,7 +68,7 @@ are used in order to implement different operations:
    \For{$node \; in \; nodes$}{
       $node.state\_lock.lock()$\;
       \If{$node.state != stealing$}{
-         \tcc{Node was put back into the queue, therefore we give up}
+         \tcp{Node was put back into the queue, therefore we give up}
          $node.state\_lock.unlock()$\;
          continue \\
       }
