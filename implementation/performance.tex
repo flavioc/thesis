@@ -1,16 +1,12 @@
 To understand the absolute performance of LM programs, we compared their
-execution time using a single thread against hand-written sequential C++
-programs. All C++ programs were compiled with the same compilation flags used
-for LM for fairness. Arguably, compiled C/C++ programs are a good standard for
-understanding the baseline performance of new language, since compiled C/C++
-programs tend to come up on top on several popular programming language
-benchmarks~\cite{language_benchmarks}. Furthermore, a sequential C++ program is
-also a better baseline since it does not include any synchronization or
-communication code. In order to make our comparison more interesting, we also
-provide comparisons against the Python language and other relevant systems.
-Python is a \emph{scripting} programming language that is much slower than
-compiled C/C++ programs and thus can be seen as a good upper-bound in terms of
-performance.
+execution time using a multithreaded capable virtual machine running on a single
+thread against hand-written sequential C++ programs. All C++ programs were
+compiled with the same compilation flags used for LM for fairness. Arguably,
+compiled C/C++ programs are a good standard for comparing the performance of new
+programming languages since they tend to offer the best performance on several
+popular benchmarks~\cite{language_benchmarks}.  Python is a \emph{scripting}
+programming language that is much slower than compiled C/C++ programs and thus
+can be seen as a good lower-bound in terms of performance.
 
 The goal of the evaluation is to understand the effectiveness of our compilation
 strategy and the effectiveness of our dynamic indexing algorithms, including the
@@ -22,8 +18,9 @@ programs in our experiments\footnote{All programs available on
    \item Belief Propagation: a machine learning algorithm to denoise images. Program is
       presented in Section~\ref{sec:coordination:bp}.
 
-   \item Heat Transfer: an asynchronous program that performs transfer of heat
-      between nodes. Program is presented in Section~\ref{section:coord:ht}.
+   \item Heat Transfer: an asynchronous program that solves the heat transfer
+      equation using an implicit method for transfering heat between nodes.
+      Program is presented in Section~\ref{section:coord:ht}.
 
    \item Multiple Single Shortest Distance (MSSD): a program that computes the
       shortest distance from a subset of nodes of the graph to all the nodes in
@@ -44,21 +41,22 @@ programs in our experiments\footnote{All programs available on
 
 Table~\ref{table:implementation:absolute} presents the comparison between LM and
 sequential C++ programs. Comparisons to other systems are shown under the
-\textbf{Other} column. Since we also want to assess the VM's scalability, we use
-different dataset sizes for each program.
+\textbf{Other} column, which presents the speedup ratio of the C++ program over
+the target system (numbers greater than 1 indicate C++ is faster). Note that the
+systems used are executed with a single thread. Since we also want to assess the
+VM's scalability, we use different dataset sizes for each program.
 
 \begin{table}[ht]
    \begin{center}
       \input{experiments/absolute/runtime}
    \end{center}
 
-   \mycap{Experimental results comparing different programs against
-      hand-written versions in C++. For the C++ programs, we show the execution
-      time in seconds (\textbf{C++ Time (s)}). For the other approaches, we show
-      the overhead ratio compared with the corresponding C++ program. The
-      overhead numbers (\textbf{lower is better}) are computed by dividing the
-   execution time of the approach on that column by the execution time of the
-similar hand-written C++ program.}
+   \mycap{Experimental results comparing different programs against hand-written
+      versions in C++. For the C++ programs, we show the execution time in
+      seconds (\textbf{C++ Time (s)}). In columns \textbf{LM} and
+      \textbf{Other}, we show the speedup ratio of C++ by dividing the run time
+   of the target system by the run time of the C++ program.  Numbers greater
+than 1 mean that the C++ program is faster.}
 
    \label{table:implementation:absolute}
 \end{table}
@@ -72,8 +70,8 @@ slightly slower, which is also a point in LM's favor.
 
 The Heat Transfer program behaves somewhat like Belief Propagation but LM is
 almost an order of magnitude slower than the C++ version. We think this is
-because the heat transfer computation is small which tends to exacerbate
-slower and repeated fact derivations from and to different nodes in the graph.
+because the heat transfer computation is small which tends to show the overhead
+of the VM.
 
 For the MSSD program, we used seven different datasets:
 
@@ -104,15 +102,15 @@ For the MSSD program, we used seven different datasets:
 
 \end{itemize}
 
-The C++'s MSSD version applies the Dijkstra algorithm for each node we want to
+The C++ MSSD version applies the Dijkstra algorithm for each node we want to
 compute the shortest distance from. While the Dijkstra algorithm has a better
-complexity than the algorithm used in LM, LM's algorithm is able to
-process distances from multiple sources at the same time. Our experiments show
-that the C++ program effectively beats LM's version by a large margin, but that
-gap is reduced when using more larger graphs such as EU Email. The Python
-version also uses the Dijkstra algorithm and is one order of magnitude slower
-than the C++ version and usually slower than LM. We also wrote the MSSD program
-in the Ligra system~\cite{Shun:2013:LLG:2517327.2442530}\footnote{Available at
+complexity than the algorithm used in LM, LM's algorithm is able to process
+distances from multiple sources at the same time. Our experiments show that the
+C++ program effectively beats LM's version by a large margin, but that gap is
+reduced when using larger graphs such as EU Email. The Python version also uses
+the Dijkstra algorithm and is one order of magnitude slower than the C++ version
+and usually slower than LM. We also wrote the MSSD program using the Ligra
+system~\cite{Shun:2013:LLG:2517327.2442530}\footnote{Available at
    \url{http://github.com/flavioc/ligra}.}, an efficient and scalable framework
    for writing graph-based programs. Our experiments show that Ligra is, on
    average, three times as fast as our C++ program, which means that LM is
@@ -146,22 +144,22 @@ should not be the sole focus of a parallel/distributed system such as LM. This
 is even more important in declarative languages which are known to suffer from
 performance issues when compared to programming languages such as C++.
 
-\subsection{Memory usage}
+\subsection{Memory Usage}
 
 To complete our comparison against the C++ programs, we have measured and
 compared the average memory used by both systems.
 Table~\ref{table:implementation:mem} presents the memory statistics for LM
-programs while Table~\ref{table:implementation:cmem} presents statistics for the
-C++ programs.
+programs while Table~\ref{table:implementation:cmem} presents statistics of the
+C++ programs and a comparison to LM's memory requirements.
 
-In the Belief Propagation program, LM has a much higher resource usage than the
-corresponding C++ version. This is because the nodes in the LM's program keep a
+In the Belief Propagation program, LM uses 2 to 3 times more memory than the
+corresponding C++ version. This is because the nodes in the LM program keep a
 copy of the belief values of neighbor nodes, while the C++ program uses shared
-memory and the stack to read and compute the neighbors belief values.
-Interestingly, this issue does not happen in the Heat Transfer program, where
-heat values are integers and are shared between nodes, reducing the need to keep
-facts with unique lists around. Notably, the C++ memory usage for Heat Transfer
-is not much smaller than LM's.
+memory and the stack to read and compute the neighbors belief values. The LM
+version of Heat Transfer has a slightly larger gap when compared to C++, since
+heat values are represented as integers while the belief values in Belief
+Propagation are represented as arrays, which is a more compact representation
+when compared to the memory required to store linear facts.
 
 \begin{table}[ht]
    \begin{center}
@@ -170,8 +168,8 @@ is not much smaller than LM's.
 
    \mycap{Memory statistics for LM programs. The meaning of each column is as
       follows: column \textbf{Average} represents the average memory use of the
-      program; \textbf{Final} represents the memory usage after the program
-      completes; \textbf{Malloc} represents the number of \code{malloc}
+      program over time; \textbf{Final} represents the memory usage after the
+      program completes; \textbf{Malloc} represents the number of \code{malloc}
       operations requested to the operating system by the VM's memory allocator;
       \textbf{\# Facts} represents the number of facts in the database after the
       program completes; \textbf{Each} is the result of dividing \textbf{Final}
@@ -205,78 +203,59 @@ also includes those freed nodes. Note that the memory usage of the C++ program
 is much smaller because it uses function calls to represent the tree structure
 of the MiniMax algorithm.
 
-The MSSD program shows that LM's VM requires at most one order of magnitude more
-memory than the corresponding C++ program. The ratio is larger when the graph
-and computed distances are smaller and this is due to the extra data structures
-required by the VM (i.e., the node data structure). In terms of average memory
-per fact, we see that the MSSD requires on average 100B, where a big part of it
-are the hash table data structures used for indexing. For the
+The MSSD program shows that the LM VM requires about 2 to 5 times more memory
+than the corresponding C++ program. The ratio is larger when the graph and
+computed distances are smaller and this is due to the extra data structures
+required by the VM (i.e., the node data structure). For the Live Journal and
+Orkut datasets, LM's memory usage is about the same or smaller than the C++
+program. We think this is because the VM uses hash tree data structures, which
+use less memory than the hash table data structures in the C++ program. In terms
+of average memory per fact, we see that the MSSD requires on average 100B, where
+a big part of it are the hash table data structures used for indexing. For the
 Orkut dataset, where 100 million facts are derived, the average memory per fact
 is exactly 30B, which is about the 32B required to store a particular linear
 fact for representing one shortest distance.
 
-Finally, for the N-Queens program, the results show why there are scalability
+For the N-Queens program, the results show why there are scalability
 issues when using a larger $N$ since the memory usage increases significantly.
 On the positive side, the average memory usage per fact remains the same for all
 data sets. In respect to the C++ program, it is expected that it should consume
 almost no memory because it uses the stack to compute the solutions.
 
+We conclude that the LM VM has high memory requirements due to the relatively
+large size of the node data structures (including the rule engine and indexing
+data structures). The high memory usage tends to degrade the performance of
+programs when compared to more efficient languages and systems.
+
 \subsection{Dynamic Indexing}
 
-We now evaluate the impact of our dynamic indexing algorithm and related data
-structures. For this, we have rerun the previous experiments without indexing
-and compared the results against the version with indexing enabled.
+In the previous experiments, we used the full functionality of the virtual
+machine, including dynamic indexing and indexing data structures. We now
+evaluate the impact of the dynamic indexing algorithm by running the previous
+experiments without dynamic indexing.
 Table~\ref{table:implementation:compare_absolute} shows the comparison between
-the versions with and without indexing.
-Column \textbf{Run Time} shows that the MSSD program benefits from
-indexing because the version without indexing is around 2 to 100 times slower than
-the version with indexing enabled. Since MSSD computes the shortest distance to
-multiple nodes, its rules require searching for the shortest distance facts of
-arbitrary nodes. All the other programs do not require significant indexing but
-also do not display any significant slowdown from using dynamic indexing. In
-terms of memory usage, the version with indexing uses slightly more memory,
-especially for the MSSD program, requiring, on average, 50\% more memory due to
-the existence of hash tables used for supporting indexing.
+the versions with and without indexing.  Column \textbf{Run Time} shows that the
+MSSD program benefits from indexing because the version without indexing is
+around 2 to 100 times slower than the version with indexing enabled. Since MSSD
+computes the shortest distance to multiple nodes, its rules require searching
+for the shortest distance facts of arbitrary nodes. All the other programs do
+not require significant indexing but also do not display any significant
+slowdown from using dynamic indexing. In terms of memory usage, the version with
+indexing uses slightly more memory, especially for the MSSD program, requiring,
+on average, 50\% more memory due to the existence of hash tables used to support
+indexing.
 
 \begin{table}[ht]
    \begin{center}
       \input{experiments/absolute/compare-no-indexing}
    \end{center}
 
-   \mycap{Measuring the impact of dynamic indexing and related data
-      structures. Column \textbf{Run Time} shows the slow down ratio of the
-      unoptimized version (numbers greater than 1 show indexing improvements).
-      Column \textbf{Average Memory} is the result of dividing the average
-   memory of the optimized version by the unoptimized version (large numbers
-indicate that more memory is needed when using indexing mechanisms).}
+   \mycap{Measuring the impact of dynamic indexing and related data structures.
+      Column \textbf{Run Time} shows the slow down ratio of the unoptimized
+      version (numbers greater than 1 show indexing improvements).  Column
+      \textbf{Average Memory} is the result of dividing the average memory of
+   the optimized version by the unoptimized version (large numbers indicate that
+more memory is needed when using indexing data structures).}
 
    \label{table:implementation:compare_absolute}
 \end{table}
-
-\iffalse
-\subsubsection{Array data structures}
-
-Another important implementation detail is the use of array data structures for
-storing persistent facts that are not derived by rule derivation but only exist
-as initial facts. These cases are detected by the compiler and allow the VM to
-improve memory locality and reduce memory usage by packing persistent facts in a
-contiguous memory area.
-
-\begin{table}[ht]
-   \begin{center}
-      \input{experiments/absolute/compare-no-arrays}
-   \end{center}
-
-   \mycap{Measuring the impact of using array data structures for persistent
-      facts. Column \textbf{Run Time} shows the speedups obtained by using
-      arrays. Column \textbf{Average Memory} is the result of dividing the
-      average memory of the programs using arrays by the version without them
-      (e.g., numbers show memory usage reduction when using array data
-   structures).}
-
-   \label{table:implementation:compare_arrays}
-\end{table}
-
-I think we should remove this stuff XXX
-\fi
-

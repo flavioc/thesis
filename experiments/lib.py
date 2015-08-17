@@ -559,7 +559,7 @@ class experiment(object):
       stdspeedup, = ax2.plot(self.x_axis(), self.base_speedup_data(),
             label='Standard Allocator Speedup', linestyle='--', marker='+', color='r')
       otherspeedup, = ax2.plot(self.x_axis(), other_exp.base_speedup_data(),
-            label='Other Allocator Speedup', linestyle='--', marker='o', color='g')
+            label='Other Allocator Speedup', linestyle='--', marker='v', color='g')
       ax.legend([stdtime, stdspeedup, othertime, otherspeedup],
             [stdname + ' Run Time', stdname + ' Speedup', othername + ' Run Time', othername + ' Speedup'],
             loc=2, fontsize=LEGEND_SIZE, fancybox=True, framealpha=FRAME_ALPHA, markerscale=2)
@@ -567,6 +567,8 @@ class experiment(object):
       self.set_ticks()
       setup_lines(ax, cmap)
       setup_lines(ax2, cmap)
+      otherspeedup.set_markersize(20)
+      othertime.set_markersize(20)
 
       name = prefix + self.create_filename()
       plt.savefig(name)
@@ -617,7 +619,7 @@ class experiment(object):
          cpp, = ax.plot(self.x_axis(), [cexp.get_time(1)] * len(self.x_axis()),
            label='Linear', linestyle='-', color=cmap(0.2))
          plots.append(cpp)
-         names.append("C++")
+         names.append("C++ Time")
 
       ax.legend(plots, names, loc=2, fontsize=LEGEND_SIZE, fancybox=True, framealpha=FRAME_ALPHA, markerscale=2)
 
@@ -743,7 +745,7 @@ class experiment(object):
       labels = ["Regular", name_coord, "Regular(1)/Regular(t)", "Regular(1)/" + name_coord + "(t)"]
       if cexp:
         lines.append(ctime)
-        labels.append("C++")
+        labels.append("C++ Time")
 
       ax.legend(lines, labels, loc=2, fontsize=LEGEND_SIZE, fancybox=True, framealpha=FRAME_ALPHA, markerscale=2)
       self.set_ticks()
@@ -887,7 +889,7 @@ class experiment(object):
       labels = ["Regular", name_coord, "Regular(1)/Regular(t)", "Regular(1)/" + name_coord + "(t)"]
       if cexp:
         lines.append(ctime)
-        labels.append("C++")
+        labels.append("C++ Time")
       for (name, plot) in otherplots:
          lines.append(plot)
          labels.append(name)

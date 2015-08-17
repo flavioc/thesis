@@ -88,7 +88,7 @@ experiments/mem/mem.tex: experiments/lib.py experiments/mem/table.py \
 				  experiments/mem/mem.csv > experiments/mem/mem.tex
 
 experiments/mem/c-mem.tex: experiments/lib.py experiments/mem/c-table.py \
-	experiments/mem/c-mem.csv
+	experiments/mem/c-mem.csv experiments/mem/mem.csv
 	$(RE) experiments/mem/c-table.py \
 					experiments/mem/c-mem.csv \
 					experiments/mem/mem.csv > experiments/mem/c-mem.tex

@@ -96,14 +96,14 @@ The first major observation from the comparison is that the threaded allocator
 has better sequential performance than the fact allocator for most programs.
 This is probably the result of better locality for the threaded allocator
 because it does not need to create pages for each node and instead uses the
-thread pages to maintain all facts, reducing cache line misses.  Having better
-running time makes the threaded allocator have slightly less scalability, but
-its run time is still better or similar when using lots of threads (see GGC for
-an example).
+thread pages to maintain all facts, reducing cache line misses. Overall, the
+performance of the threaded allocator is better or similar than the fact
+allocator, for both single and multithreaded threaded execution (see GGC for a
+clear example).
 
 The second observation is in the N-Queens program, where the threaded allocator
-beats the fact allocator by a long margin in terms of scalability and
-performance. Note that the N-Queens program allocates plenty of lists and those
+beats the fact allocator by a high margin in terms of scalability and
+performance. Note that the N-Queens program allocates many of lists and those
 lists are not allocated on a per node basis but on a thread basis, therefore the
 extra work required to maintain each fact allocator is not offset by the
 increased locality because the threads need to traverse lists to find valid
