@@ -1,23 +1,24 @@
-The rule engine decides which rules may need to be executed while taking into
-account rule priorities. The rule engine is composed of 3 data structures:
+The rule engine decides which rules may need to be executed while respecting the
+rule priority semantics presented in Section~\ref{sec:language:semantics}. The
+rule engine is composed of 3 data structures:
 
 \begin{itemize}
 
-   \item \emph{Rule Queue} is a bitmap representing the rules scheduled to run.
-      When the bit $i$ in the \emph{Rule Queue} is set, it means that the rule
-      $i$ is scheduled to run. A rule to be made to run depends on fact
-      availability (we have all the facts required to run a rule $i$). Rules are
-      executed by order by fetching the least significant bit of the bitmap,
-      unsetting that bit and then executing the corresponding rule. This
-      operation is accomplished by using the \emph{bit scan forward (bsf)}
+   \item \emph{Rule Queue} is a bitmap representing the rules currently
+      scheduled to run. When bit $i$ in the \emph{Rule Queue} is set, it
+      means that rule $i$ is scheduled to be run. A rule $i$ is set to run
+      when all the facts that satisfy the rule's LHS are available.
+      Rules are executed by fetching the least significant bit of
+      the bitmap, unsetting that bit and then executing the corresponding rule.
+      This operation is accomplished by using the \emph{bit scan forward (bsf)}
       assembly instruction available on x86/x86-64 machines;
 
-   \item \emph{Rule Counter} is a counter of the number of predicates that exist
-      in the database and that are needed by the rule. For example, a rule
-      \code{a, e(1) -o b} needs predicates \code{a} and \code{e} and the
-      rule counter is thus at the most 2 (where the rule can be executed). The
-      \emph{Rule Queue} bitmap is updated when the rule counter
-      increments/decrements to/from the maximum possible value;
+   \item \emph{Rule Counter} counts the number of predicates that exist in the
+      database and that are needed by a rule. For instance, the rule \code{a,
+      e(1) -o b} needs predicates \code{a} and \code{e}, which means that when
+      the count in the rule counter goes up to two, then the rule is scheduled
+      to run. Likewise, if the counter is decremented to one then the rule is
+      removed from the \emph{Rule Queue}.
 
    \item \emph{Predicate Bitmap} is a bitmap representing the existence of facts
       for a given predicate in the database. When a predicate becomes available
@@ -55,11 +56,12 @@ e(0).
 
 To better understand how our rule engine works,
 Fig.~\ref{fig:implementation:rule_engine} shows an example program and the
-corresponding rule engine data structures. Since we have facts for predicates
-\code{a} and \code{e}, the \code{Rule Counter} starts with rules 1, 2 and 4 with
-2, 1, and 1 predicate counts. Since these rules have the required counter to be
-applied, the \emph{Rule Queue} bitmap starts with the same three rules
-(Fig.~\ref{fig:implementation:rule_engine}(a)). In order to pick rules for
+corresponding rule engine data structures. When the program starts, the facts
+for predicates \code{a} and \code{e} exist, therefore the \emph{Rule Counter}
+starts with rules 1, 2 and 4 where the values are 2, 1, and 1, respectively.
+Since these rules have the required counter to be applied, the \emph{Rule Queue}
+bitmap starts with the same three rules
+(Fig.~\ref{fig:implementation:rule_engine}(a)).  In order to pick rules for
 execution, we take the rule corresponding to the least significant bit from the
 \emph{Rule Queue} bitmap, initially the first rule \code{a, e(1) -o b}.
 However, since we don't have fact \code{e(1)}, this rule fails and its bit in
@@ -78,18 +80,18 @@ number (we have all predicates).  Figure~\ref{fig:implementation:rule_engine}(b)
 shows the rule engine data structures at that point.  In the continuation, the
 rule engine will schedule the fourth and fifth rules to run.
 
-Note that every node in the program has the same set of data structures
+Note that every node in the program requires the set of data structures
 presented in Fig.~\ref{fig:implementation:rule_engine}. We use 64 bit integers
-to implement the 2 bitmaps and an array of 16 bits integers for the \code{Rule
+to implement the 2 bitmaps and an array of 16 bits integers for the \emph{Rule
 Counter}.
 
 For persistent facts, we do a small optimization to reduce the number of
-derivations and, for that, we divide the program rules into two sets:
-\emph{persistent rules} and \emph{non persistent rules}. Persistent rules are
-rules where only persistent facts are involved. We compile such rules
-incrementally, i.e., we attempt to fire all rules when a new persistent fact is
-derived. This is called the \emph{pipelined semi-naive} evaluation and it
-originated in the P2 system~\cite{Loo-condie-garofalakis-p2}. This evaluation
-method avoids excessive re-derivations of the same fact. The order of derivation
-does not matter for those rules, since only persistent facts are used.
+derivations. We divide the program rules into two sets: \emph{persistent rules}
+and \emph{non persistent rules}. Persistent rules are rules where only
+persistent facts are involved. We compile such rules incrementally, i.e., we
+attempt to fire all rules when a new persistent fact is derived. This is called
+the \emph{pipelined semi-naive} evaluation and it originated in the P2
+system~\cite{Loo-condie-garofalakis-p2}. This evaluation method avoids excessive
+re-derivations of the same fact. The order of derivation does not matter for
+those rules, since only persistent facts are used.
 

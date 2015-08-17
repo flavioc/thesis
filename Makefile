@@ -90,7 +90,8 @@ experiments/mem/mem.tex: experiments/lib.py experiments/mem/table.py \
 experiments/mem/c-mem.tex: experiments/lib.py experiments/mem/c-table.py \
 	experiments/mem/c-mem.csv
 	$(RE) experiments/mem/c-table.py \
-					experiments/mem/c-mem.csv > experiments/mem/c-mem.tex
+					experiments/mem/c-mem.csv \
+					experiments/mem/mem.csv > experiments/mem/c-mem.tex
 
 experiments/absolute/compare-no-indexing.tex: experiments/lib.py experiments/absolute/compare.py \
 	experiments/mem/no-indexing-mem.csv experiments/absolute/runtime.csv \

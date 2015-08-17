@@ -1,8 +1,10 @@
 This chapter describes the multicore aspects of LM's virtual machine and
-provides a detailed experimental evaluation. First, we describe how local node
-computation and parallelism are integrated, with a focus on locking and memory
-allocation, and then we evaluate the performance, memory usage and scalability
-of our implementation.
+provides a detailed experimental evaluation of the performance and scalability
+of the system. First, we describe how local node computation and parallelism are
+integrated, with a focus on locking and memory allocation, and then we evaluate
+the performance, memory usage and scalability of our implementation. The
+mechanisms related to coordination and their implementation will be described in
+Chapter~\ref{chapter:coordination}.
 
 \section{Parallelism}\label{sec:implementation:parallelism}
 \input{implementation/parallelism}
@@ -23,10 +25,10 @@ Nodes are also subject to garbage collection. If the database of a node becomes
 empty and there are no references to the node from other logical facts, then the
 node is deleted from the program. We keep around a small number of freed nodes
 that can be reused immediately if another node is created. We avoid garbage
-collection schemes based on tracing since objects are created and discarded in
+collection schemes based on tracing since objects are created and discarded at
 specific points of the virtual machine. A reference counting mechanism is thus
 more appropriate than a parallel tracing garbage collector which would entail
-pausing the execution of the program to garbage collect all the unused objects.
+pausing the execution of the program to garbage collect the unused objects.
 
 \section{Memory Allocation}\label{section:implementation:allocation}
 \input{implementation/allocation}

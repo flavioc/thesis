@@ -1,9 +1,10 @@
 Previously, we presented the LM syntax and usage through the presentation of
 three program examples. We now delve more deeply into LM by presenting the
-underlying abstract syntax of the language in Table~\ref{tbl:language:ast}. A LM
-program $Prog$ consists of a list of derivation rules $\Sigma$ and a database
-$D$. A database fact $l(\hat{t})$ is an association between a predicate $l$ and
-a list of literals $\hat{t}$. Literals $t$ can be either a number
+underlying abstract syntax of the language in Table~\ref{tbl:language:ast}.
+
+A LM program $Prog$ consists of a list of derivation rules $\Sigma$ and a
+database $D$. A database fact $l(\hat{t})$ is an association between a predicate
+$l$ and a list of literals $\hat{t}$. Literals $t$ can be either a number
 $\m{number}(N)$, a node $\m{node}(N)$, a list $\m{list}(\hat{t})$, among other
 literals such as strings, arrays, booleans, etc.
 
@@ -87,7 +88,8 @@ which are only used in the RHS, however it is still possible for the programmer
 to define RHS's variables explicitly using an equality constraint of the form $x
 = e$ (represented by $C$ in the syntax).
 
-Consider again the two rules in the graph visit program shown in
+In order to understand how LM rules are translated into the abstract syntax,
+consider again the two rules in the graph visit program shown in
 Fig.~\ref{code:language:visit}:
 
 \nopagebreak
@@ -103,8 +105,8 @@ visited(A)
    -o visited(A).
 \end{Code}
 
-To translate the rules to the abstract syntax, we have to de-sugar the code and
-introduce the variable \code{A}, that is not explicitly quantified, as follows:
+First, we have to de-sugar the code and introduce the variable \code{A}, that is
+not explicitly quantified, as follows:
 
 \nopagebreak
 
@@ -242,3 +244,9 @@ neighbor values \code{Val/float(T)}. LM provides several aggregate operations, i
 numbers), \code{count} (count combinations) and \code{collect} (collect items
 into a list).
 
+\subsection{Directives}
+
+LM also supports a small set of extra-logical directives that are not
+represented by the abstract syntax but may be used by the programmer to change
+the compilation and runtime behavior of the program. The full list is presented
+in Appendix~\ref{appendix:directives}

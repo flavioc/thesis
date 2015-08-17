@@ -4,15 +4,16 @@ are used in order to implement different operations:
 
 \begin{itemize}
 
-   \item \textbf{New Facts}: We use the node's \emph{State Lock} and then attempt
-      to lock the \emph{DB Lock}. If the \emph{Db Lock} cannot be used, then the
-      new facts are added to the \emph{Incoming Fact Buffer}, otherwise the node database
-      structures are updated with new facts. If the target node is not currently
-      in any work queue, we lock the destination work queue and then add the
-      node and change the state of the node to \textbf{active}. Finally, if the
-      target thread that owns the target node is \textbf{idle}, we activate it
-      by updating its state flag to \textbf{active}. The complete pseudo-code
-      for this operation is shown in Fig.~\ref{alg:multicore:new_fact}.
+   \item \textbf{Deriving New Facts}: We use the node's \emph{State Lock} and
+      then attempt to lock the \emph{DB Lock}. If the \emph{Db Lock} cannot be
+      used, then the new facts are added to the \emph{Incoming Fact Buffer},
+      otherwise the node database structures are updated with new facts. If the
+      target node is not currently in any work queue, we lock the destination
+      work queue and then add the node and change the state of the node to
+      \textbf{active}. Finally, if the target thread that owns the target node
+      is \textbf{idle}, we activate it by updating its state flag to
+      \textbf{active}. The complete pseudo-code for this operation is shown in
+      Fig.~\ref{alg:multicore:new_fact}.
 
 \begin{figure}
 \begin{algorithm}[H]
@@ -49,15 +50,15 @@ are used in order to implement different operations:
 
    \item \textbf{Node Stealing}: For node stealing, we acquire the lock of the
       target thread's queue and then copy the stolen node pointers to a
-      temporary buffer. For each node, we use the \emph{State Lock} to update its
-      \emph{Owner} attribute and then add it to the thread's work queue.
+      temporary buffer. For each node, we use the \emph{State Lock} to update
+      its \emph{Owner} attribute and then add it to the thread's work queue.
       Figure~\ref{alg:multicore:steal_nodes} presents the pseudo-code for this
       synchronization mechanism. Note that when using $pop\_half(stealing)$, the
       \emph{Work Queue} will (unsafely) change the state of the nodes to
-      \textbf{stealing}. When adding the new functionality presented in
-      Chapter~\ref{chapter:coordination}, the node stealing loop in the
-      pseudo-code must have an extra check for cases when the node's owner
-      is updated using coordination facts.
+      \textbf{stealing}. When adding coordination to the language as presented
+      in Chapter~\ref{chapter:coordination}, the node stealing loop in the
+      pseudo-code must have an extra check for cases when the node's owner is
+      updated using coordination facts.
 
 \begin{figure}
 \begin{algorithm}[H]
@@ -104,6 +105,7 @@ spin-lock implementation that uses a FIFO queue to implement spin-lock operation
 
 In order to manipulate the \emph{State} flag of each thread (see
 Section~\ref{sec:implementation:parallelism}) we do not use locks but instead
-manipulate the state flag using lock-free \emph{compare-and-swap} operations to
-implement a state machine.
+manipulate the state flag using lock-free \emph{compare-and-set} operations to
+implement the thread state machine as specified in
+Fig.~\ref{fig:implementation:thread_states}.
 

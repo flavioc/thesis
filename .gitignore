@@ -25,3 +25,5 @@ tags
 *.fls
 thesis.fdb_latexmk
 *.pyc
+diff.fdb_latexmk
+tmp.git-latexdiff*

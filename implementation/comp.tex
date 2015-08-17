@@ -20,7 +20,7 @@ colored(A, P)
    -o colored(A, P).
 \end{Code}
 
-The fact constraints include the facts required to trigger the rule, namely
+The fact constraint include the facts required to trigger the rule, namely
 \code{visit(A, P)} and \code{colored(A, P)}, and the join constraints include
 the implicit constraint that the second argument of \code{visit} must be equal
 to the second argument of \code{colored} because the variable \code{P} is used
@@ -35,14 +35,12 @@ P1 <> P2
 
 The data structures presented in Section~\ref{sec:data_structures} support
 iteration over facts and for linear facts, they also support deletion. Iteration
-is provided through \emph{iterators}. For linked lists, the iterator is simply
-the fact that can be iterated by following the \code{next} pointers. For hash
-tables, it is possible to iterate through the whole table or iterate through a
-single bucket. For tries, while iteration goes through every fact, the operation
-can be customized with a matching specification in order to prune search. A
-matching specification includes argument assignments, such as, argument $i = V$,
-where $V$ is a concrete value.  To illustrate how rules are compiled, consider
-again the rule:
+is provided through \emph{iterators}. For linked lists, the iterator points to
+the linear fact in the list and uses the \code{next} field to traverse the list.
+For hash tables, it is possible to iterate through the whole table or iterate
+through a single bucket. For tries, while iteration goes through every fact, the
+operation can be customized with join constraints in order to prune search. To
+illustrate how rules are compiled, consider again the rule:
 
 \begin{Code}
 visit(A, P),
@@ -62,15 +60,15 @@ while(visit is valid)
    while(colored is valid)
    {
       if(visit.get_int(1) == colored.get_int(1)) { // Equal arguments?
+         // New fact is derived.
          new_colored <- create_fact("colored") // New fact for predicate colored.
          new_colored.set_int(1, visit.get_int(1)) // Set arguments.
 
-         // New fact is derived.
          colored_list.add(new_colored) // Add new fact to the linked list.
 
-         // Deleting facts.
-         colored <- colored_list.erase_and_next(colored)
-         visit <- visit_list.erase_and_next(visit)
+         // Deleting used up facts.
+         colored <- colored_list.delete_and_next(colored)
+         visit <- visit_list.delete_and_next(visit)
          goto next
       }
       colored <- colored.next()
@@ -81,28 +79,29 @@ next:
 }
 \end{LineCode}
 
-The compilation algorithm iterates through the atomic propositions in rule's LHS
-and creates nested loops to try all the possible combinations of facts.  For
+The compilation algorithm iterates through the atomic propositions of the rule's
+LHS and creates nested loops to try all the possible combinations of facts.  For
 this rule, all the pairs of facts \code{colored} and \code{visit} must be
-matched until the implicit constraint is true. First, the \code{visit} linked
+searched until the implicit constraint is true. First, the \code{visit} linked
 list is iterated over by first retrieving the head fact and then using the
 \code{next} pointer of each fact. Inside this outer loop, a nested \code{while}
 loop is created for predicate \code{colored}. This inner loop includes a check
 for the constraint.
 
 If the constraint expression is true then the rule matches and a new
-\code{colored} fact is derived and two used linear facts are consumed by erasing
-them from the linked lists. After the rule is derived, the \code{visit} and
-\code{colored} facts are deleted from the linked list and the pointers adjusted
-to the next elements of each list. Afterwards, the \code{goto next} statement is
-used to jump to the outer loop, which will use the new fact pointers. This
-forces the procedure to try all the combinations of the rule from the database.
-Furthermore, we must jump to the first linear loop because we cannot use the
-next fact from the deepest loop since we may have constraints between the first
-linear loop and the deepest loop that were validated using deleted facts.
+\code{colored} fact is derived and two used linear facts are consumed by
+deleting them from the linked lists. After the rule is derived, the \code{visit}
+and \code{colored} facts are deleted from the linked list and the pointers
+adjusted to the next elements of each list. Afterwards, the \code{goto next}
+statement is used to jump to the outer loop, which will use the new fact
+pointers. This forces the procedure to try all the combinations of the rule from
+the database.  Furthermore, we must jump to the first linear loop because we
+cannot use the next fact from the deepest loop since we may have constraints
+between the first linear loop and the deepest loop that were validated using
+deleted facts.
 
-If the implicit constraint had failed, another \code{colored} fact would have been
-used by assigning \code{colored} to \code{colored.next()}.  Likewise, if the initial
+If the implicit constraint failed, another \code{colored} fact would be checked
+by assigning \code{colored} to \code{colored.next()}.  Likewise, if the initial
 \code{visit} fact fails for all \code{colored} facts, then the next
 \code{visit} fact in the list is tried by following the \code{next} pointer.
 
@@ -153,8 +152,8 @@ while(colored is valid)
          colored_list.add(new_colored) // Add new fact to the linked list.
 
          // Deleting facts.
-         colored_list.erase_and_next(colored)
-         visit_list.erase_and_next(visit)
+         colored_list.delete_and_next(colored)
+         visit_list.delete_and_next(visit)
          $textbf#return&
       }
       visit <- visit.next()
@@ -163,7 +162,8 @@ while(colored is valid)
 }
 \end{LineCode}
 
-This enforces the priority semantics of the language. When a rule derives facts
+This enforces the priority semantics of the language described in
+Section~\ref{sec:language:semantics}. When a rule derives facts
 that were used as input to a higher priority rule, the initial rule is only
 derived once because the newly derived facts may trigger the derivation of a
 higher priority rule.
@@ -219,14 +219,15 @@ early.  Therefore, our compiler introduces constraints as soon as all the
 variables in the constraint are all included in the already compiled atomic
 propositions. The order in which fact propositions are selected for compilation
 does not interfere with the correctness of the compiled code, thus our compiler
-selects the atomic proposition ($RemoveBestProposition$) by their potential to
-activate constraints, therefore avoiding undesirable database lookups. If two
-atomic propositions have the same number of new constraints, then the compiler
-always picks the persistent proposition since persistent facts are not deleted.
+selects the atomic proposition ($RemoveBestProposition$) that needs the highest
+number of join constraints, in order to prune search and avoid undesirable
+database lookups. If two atomic propositions have the same number of new
+constraints, then the compiler always picks the persistent proposition since
+persistent facts are not deleted.
 
-Derivation of new facts belonging to the local node implies adding the new fact
-to the local node data structure. Facts that belong to other nodes are sent
-using an appropriate runtime API.
+Derivation of new facts belonging to the local node requires only that the new
+facts are added to the local node data structure. Facts that belong to other
+nodes are sent using an appropriate runtime API.
 
 \subsection{Persistence Checking}
 
@@ -246,7 +247,7 @@ while(colored is valid)
    {
       if(visit.get_int(1) == colored.get_int(1)) { // Equal arguments?
          // Delete visit.
-         visit <- visit_list.erase_and_next(visit) // Get next visit fact.
+         visit <- visit_list.delete_and_next(visit) // Get next visit fact.
          goto next$label#line:implementation:goto&
       }
       visit <- visit.next()
@@ -263,7 +264,7 @@ program, each node has one \code{colored} fact and this compiled code simply
 filters out the \code{visit} facts with the same color. Please note that the
 \code{colored} facts are now iterated in the outer loop in order to make the
 \code{goto} statement jump to the inner loop. This is now possible because the
-\code{colored} next is not deleted during rule derivation.
+\code{colored} fact is not deleted during rule derivation.
 
 \subsection{Updating Facts}
 
@@ -297,7 +298,7 @@ while(new_neighbor_pagerank is valid)
          // Update fact argument.
          neighbor_pagerank.set_float(2, new_neighbor_pagerank.get_float(2))
          new_neighbor_pagerank <- new_neighbor_pagerank_list.
-                  erase_and_next(new_neighbor_pagerank)
+                  delete_and_next(new_neighbor_pagerank)
          goto next
       }
       neighbor_pagerank <- neighbor_pagerank.next()
@@ -315,8 +316,8 @@ return since the act of updating a fact is equivalent to deriving a new one.
 
 \subsection{Enforcing Linearity}
 
-We have already introduced the \code{goto} statement as a way to avoid reusing
-consumed linear facts. However, this is not enough in order to enforce
+We have already introduced the \code{goto} statement as a mechanism to avoid
+reusing deleted linear facts. However, this is not enough in order to enforce
 linearity of facts. Consider the following inference rule:
 
 \begin{Code}
@@ -326,12 +327,12 @@ add(A, N2)
 \end{Code}
 
 Using the standard compilation algorithm, two nested loops are created, one for
-each \code{add} fact. However, notice that there is an implicit constraint when
-creating the iterator for \code{add(A, N2)} since this fact cannot be the same
-as the first one. That would invalidate linearity since a single linear fact
-would be used to prove two linear facts. This is easily solved by adding a
-constraint in the inner loop by checking if the second fact is the same as the
-first one.
+each \code{add} fact. However, notice that there is an implicit constraint (the
+two \code{add} linear facts must be different) when creating the iterator for
+\code{add(A, N2)} since this fact cannot be the same as the first one. That
+would invalidate linearity since a single linear fact would be used to prove two
+linear facts. This is easily solved by adding a constraint in the inner loop by
+checking if the second fact is the same as the first one.
 
 \begin{LineCode}
 add_list <- linked_list("add")
@@ -344,7 +345,7 @@ while(add1 is valid)
       if(add1 != add2)
       {
          add1.set_int(1, add1.get_int(1) + add2.get_int(1))
-         add2 <- add_list.erase_and_next(add2)
+         add2 <- add_list.delete_and_next(add2)
          goto next
       }
       add2 <- add2.next()
@@ -424,8 +425,8 @@ while(visit is valid)
       new_colored <- create_fact("colored")
       new_colored.set_int(1, visit.get_int(1))
       colored_list.add(new_colored)
-      visit <- visit_list.erase_and_next(visit)
-      uncolored <- uncolored_list.erase_and_next(uncolored)
+      visit <- visit_list.delete_and_next(visit)
+      uncolored <- uncolored_list.delete_and_next(uncolored)
       goto next
    }
    uncolored <- uncolored.next()
@@ -449,8 +450,8 @@ compiler to detect conflicts between predicates is the following:
 
 If the result of the formula is not empty, then the compiler disables
 optimizations for the conflicting predicates and derives the corresponding facts
-into the fact buffer that are then added back into the database. As an example,
-consider the following rule:
+into a temporary data structure before being added into the database data
+structures. As an example, consider the following rule:
 
 \begin{Code}
 update(A),
@@ -471,7 +472,7 @@ show these kinds of conflicts and thus can be fully optimized.
 
 Aggregates are similar to comprehensions. They are also sub-rules but a value is
 accumulated for each combination of the sub-rule. After all the combinations are
-inferred, a final RHS term is derived with the accumulated value. Consider the
+derived, a final RHS term is derived with the accumulated value. Consider the
 following rule that computes a PageRank value by aggregating all neighbors
 PageRank values:
 
@@ -505,7 +506,7 @@ while(pagerank is valid)
       }
       // RHS of the aggregate
       pagerank.set_float(1, damping / P + (1.0 - damping) * V)
-      update <- update_list.erase_and_next(update)
+      update <- update_list.delete_and_next(update)
       goto next
    }
    pagerank <- pagerank.next()

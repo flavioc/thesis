@@ -13,3 +13,7 @@ belief-propagation-300 c 102149 102208
 belief-propagation-400 c 185689 185768
 new-heat-transfer-80 c 2376 2376
 new-heat-transfer-120 c 5544 5544
+8queens-11 c 1 528
+8queens-12 c 1 2104
+8queens-13 c 1 17332
+8queens-14 c 1 77792
