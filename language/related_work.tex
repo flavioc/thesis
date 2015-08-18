@@ -89,11 +89,12 @@ argument is not related to a graph abstraction but is instead related to fact
 distribution, allowing programmers to optimize how messages are sent between
 machines.
 
-\subsection{Languages for sensor networks}
+\subsection{Sensor Network Programming Languages}
 
 Many programming languages have been designed to help developers write programs
-that run on sensor networks, which can also be represented as graphs.
-Programming languages such as Hood~\cite{Whitehouse:2004:HNA:990064.990079},
+that run on sensor networks, which are networks that can be represented as
+graphs.  Programming languages such as
+Hood~\cite{Whitehouse:2004:HNA:990064.990079},
 Tinydb~\cite{Madden:2005:TAQ:1061318.1061322} or
 Regiment~\cite{Newton:2007:RMS:1236360.1236422} have been proposed, providing
 support for data collection and aggregation over the network. These systems
@@ -110,6 +111,14 @@ variably-sized groups of nodes. It is based on the tick model, generating
 a new set of condition matchers throughout the ensemble on each tick.
 Like Pleiades and LDP, Proto also compiles global programs into locally
 executed code.
+
+Finally, the original Meld~\cite{ashley-rollman-iclp09} is also a language
+designed for dynamic networks, namely, ensembles of robots. As we have seen
+before, Meld is a logic programming language where programs are sets of logical
+rules that infer over the state of the ensemble. Meld supports action facts and
+sensing facts, which allow the robots to act on the world or sense the world,
+respectively. Like Pleiades programs, Meld programs are also written from the
+point of the view of the whole ensemble.
 
 \subsection{Constraint Handling Rules}
 
