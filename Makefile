@@ -17,7 +17,8 @@ FIGURES := $(wildcard figures/btree/btree_trace*.pdf) \
 	$(wildcard figures/implementation/*.pdf) \
 	$(wildcard figures/compiler/*.pdf) \
 	$(wildcard experiments/scalability/*.png) \
-	$(wildcard experiments/threads/*.png)
+	$(wildcard experiments/threads/*.png) \
+	experiments/scalability/overview.png
 
 all: thesis.pdf
 
@@ -223,6 +224,12 @@ experiments/coordination/ligra-scale.csv: experiments/coordination/ligra.csv \
 	experiments/coordination/ligra.py
 	python experiments/coordination/ligra.py experiments/coordination/ligra.csv > \
 		experiments/coordination/ligra-scale.csv
+
+experiments/scalability/overview.png: experiments/scalability/runtime.csv \
+	experiments/lib.py experiments/scalability/mean.py
+	$(RE) experiments/scalability/mean.py \
+		experiments/scalability/runtime.csv \
+		experiments/scalability/overview.png
 	
 clean:
 	rm -f thesis.pdf *.bbl *.blg *.log *.lot \

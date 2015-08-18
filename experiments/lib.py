@@ -217,6 +217,9 @@ class experiment_set(object):
       s = {name:True for (name, dataset) in self.experiments.keys()}
       return sorted(s.keys(), key=name2title)
 
+   def get_all(self):
+      return [self.experiments[k] for k in self.experiments.keys()]
+
    def experiment_datasets_for(self, name):
       l = [dataset for (name2, dataset) in self.experiments.keys() if name == name2]
       l = sorted(l, key=sort_string)
@@ -331,9 +334,12 @@ class experiment(object):
       return times
 
    def base_speedup_data(self, base=None):
+      return [self.get_speedup(th, base) for th in sorted(self.times) if th <= max_threads]
+
+   def get_speedup(self, th, base = None):
       if not base:
          base = self.times[1]
-      return [float(base)/float(self.times[th]) for th in sorted(self.times) if th <= max_threads]
+      return float(base)/float(self.times[th])
 
    def speedup_data(self, base=None):
       return [None] + self.base_speedup_data(base)
@@ -564,7 +570,7 @@ class experiment(object):
             [stdname + ' Run Time', stdname + ' Speedup', othername + ' Run Time', othername + ' Speedup'],
             loc=2, fontsize=LEGEND_SIZE, fancybox=True, framealpha=FRAME_ALPHA, markerscale=2)
 
-      self.set_ticks()
+      set_ticks()
       setup_lines(ax, cmap)
       setup_lines(ax2, cmap)
       otherspeedup.set_markersize(20)
@@ -572,11 +578,6 @@ class experiment(object):
 
       name = prefix + self.create_filename()
       plt.savefig(name)
-
-   def set_ticks(self):
-      x = np.arange(0, 33, 4.0)
-      x[0] = 1
-      plt.xticks(x)
 
    def create_scale(self, cexp, prefix):
       fig = plt.figure()
@@ -607,7 +608,7 @@ class experiment(object):
       [t.set_color('red') for t in ax.yaxis.get_ticklabels()]
       [t.set_color('green') for t in ax2.yaxis.get_ticklabels()]
 
-      self.set_ticks()
+      set_ticks()
 
       ptime, = ax.plot(self.x_axis(), self.time_data(),
          label='Execution Time (ms)', linestyle='--', marker='+', color='r')
@@ -664,7 +665,7 @@ class experiment(object):
          label=system_name + ' Improvement', linestyle='--', marker='+', color=cmap(0.6))
       ax.legend([lm, other], ["CLM", system_name], loc=2, fontsize=20, markerscale=2)
 
-      self.set_ticks()
+      set_ticks()
       setup_lines(ax, cmap)
 
       name = prefix + "improve_" + self.name + ".png"
@@ -690,7 +691,7 @@ class experiment(object):
       ax.set_xlim([0, max_value_threads])
       ax.set_ylim([0, max(self.max_speedup(), system.max_speedup())])
 
-      self.set_ticks()
+      set_ticks()
       cmap = plt.get_cmap('gray')
 
       lm, = ax.plot(self.x_axis(), self.speedup_data(),
@@ -748,7 +749,7 @@ class experiment(object):
         labels.append("C++ Time")
 
       ax.legend(lines, labels, loc=2, fontsize=LEGEND_SIZE, fancybox=True, framealpha=FRAME_ALPHA, markerscale=2)
-      self.set_ticks()
+      set_ticks()
 
       setup_lines(ax, cmap)
       setup_lines(ax2, cmap)
@@ -784,7 +785,7 @@ class experiment(object):
 
       ax.legend(lines, labels, loc=2, fontsize=LEGEND_SIZE, fancybox=True, framealpha=FRAME_ALPHA, markerscale=2)
 
-      self.set_ticks()
+      set_ticks()
       setup_lines(ax, cmap)
 
       name = prefix + self.create_filename()
@@ -825,7 +826,7 @@ class experiment(object):
 
       ax.legend(lines, labels, loc=2, fontsize=LEGEND_SIZE, fancybox=True, framealpha=FRAME_ALPHA, markerscale=2)
 
-      self.set_ticks()
+      set_ticks()
       setup_lines(ax, cmap)
       setup_lines(ax2, cmap)
 
@@ -896,7 +897,7 @@ class experiment(object):
 
       ax.legend(lines, labels, loc=2, fontsize=LEGEND_SIZE, fancybox=True, framealpha=FRAME_ALPHA, markerscale=2)
 
-      self.set_ticks()
+      set_ticks()
       setup_lines(ax, cmap)
       setup_lines(ax2, cmap)
 
@@ -921,6 +922,11 @@ class experiment(object):
       self.facts_derived = {}
       self.facts_deleted = {}
       self.facts_sent = {}
+
+def set_ticks():
+   x = np.arange(0, 33, 4.0)
+   x[0] = 1
+   plt.xticks(x)
 
 def setup_lines(ax, cmap):
    lines = ax.lines
@@ -1067,3 +1073,43 @@ def readable_mem(num):
    return readable_number(num, 'K', 'B', 1024)
 
 def readable_decimal(num): return readable_number(num, '', '', 1000)
+
+def compute_harmonic_mean(threads, ls):
+   total = sum(exp.get_time(1) for exp in ls)
+   divisor = 0.0
+   for exp in ls:
+      speedup = exp.get_speedup(threads)
+      divisor = divisor + float(exp.get_time(1))/speedup
+   return float(total)/divisor
+
+def harmonic_plot(ls, output):
+   fig = plt.figure()
+   ax = fig.add_subplot(111)
+
+   names = ('Scalability')
+   formats = ('f4')
+   titlefontsize = 22
+   ylabelfontsize = 20
+   ax.yaxis.tick_right()
+   ax.yaxis.set_label_position("right")
+   ax.set_title("Overall Scalability", fontsize=titlefontsize)
+   ax.set_ylabel('Speedup', fontsize=ylabelfontsize)
+
+   set_ticks()
+
+   # compute harmonic data
+   threads = ls[0].get_threads()
+   harmonic_data = [compute_harmonic_mean(th, ls) for th in threads]
+   ax.set_ylim([0, max(harmonic_data) + 2.0])
+   ax.set_xlabel('Threads', fontsize=ylabelfontsize)
+   ax.set_xlim([1, max(threads)])
+   cmap = plt.get_cmap('gray')
+
+   pspeedup, = ax.plot(ls[0].x_axis(), harmonic_data,
+      label='Speedup', linestyle='--', marker='o', color='g')
+   ax.legend([pspeedup], ["Speedup"], loc=2, fontsize=LEGEND_SIZE, fancybox=True, framealpha=FRAME_ALPHA, markerscale=2)
+
+   setup_lines(ax, cmap)
+
+   plt.savefig(output)
+

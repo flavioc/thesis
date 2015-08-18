@@ -287,8 +287,6 @@ shortest-usairports500 th26 166 -> 166
 shortest-usairports500 th28 179 -> 179
 shortest-usairports500 th30 141 -> 141
 shortest-usairports500 th32 158 -> 158
-
-
 shortest-orkut th1 470246 -> 470246
 shortest-orkut th2 278576 -> 278576
 shortest-orkut th4 189016 -> 189016
@@ -306,7 +304,6 @@ shortest-orkut th26 50823 -> 50823
 shortest-orkut th28 49991 -> 49991
 shortest-orkut th30 46699 -> 46699
 shortest-orkut th32 44597 -> 44597
-
 shortest-livejournal th1 972560 -> 972560
 shortest-livejournal th2 593921 -> 593921
 shortest-livejournal th4 361668 -> 361668

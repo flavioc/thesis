@@ -1,5 +1,6 @@
 In this section, we analyze the scalability of several LM programs using up to
-32 threads. We also compare the run times against the run time of the
+32 threads. Note that we are studying declarative LM programs that do not make
+use of coordination. We also compare the run times against the run time of the
 hand-written C++ programs when such run times are available. We used the
 programs of the previous section with a few additions:
 
@@ -22,15 +23,32 @@ implement the corresponding C++ program.
 
 We executed all the programs using 17 configurations. The base configuration
 uses 1 thread and the other 16 configurations use an even numbers of threads for
-a maximum of 32 threads. In the plots presented next, the $x$ axis represents
-the number of threads used, the left $y$ axis represents the run time (in
-milliseconds) for that particular configuration and uses a logarithmic scale and
-the right axis $y$ represents the speedup computed as $T_1/T_i$, where $T_i$
-represents the run time of the program using $i$ threads.  In some plots, there
-is also an horizontal black line that represents the run time of the C++ program
-and is used to understand how many threads are needed in order for an LM program
-to run faster than the C++ program. Note that all run times are the average of
-three runs.
+a maximum of 32 threads. Figure~\ref{fig:evaluation:overview} presents the
+overall scalability computed as the weighted harmonic mean of all the benchmarks
+presented in this section. The weight used in the harmonic mean formula is the
+run time of each program when executed with one thread. The experimental results
+show that, on average, our benchmarks have a 15-fold speedup when using 32
+threads.
+
+\begin{figure}[]
+        \centering
+        \includegraphics[width=\plotsize\textwidth]{experiments/scalability/overview.png}
+        \mycap{Overall scalability for the benchmarks presented in this section.
+        The average speedup is the weighted harmonic mean using the single threaded
+     run time as the weight of each benchmark.}
+        \label{fig:evaluation:overview}
+\end{figure}
+
+
+We now analyze each program separately. For the plots presented next, the $x$
+axis represents the number of threads used, the left $y$ axis represents the run
+time (in milliseconds) for that particular configuration and uses a logarithmic
+scale and the right axis $y$ represents the speedup computed as $T_1/T_i$, where
+$T_i$ represents the run time of the program using $i$ threads.  In some plots,
+there is also an horizontal black line that represents the run time of the C++
+program and is used to understand how many threads are needed in order for an LM
+program to run faster than the C++ program. Note that all run times are the
+average of three runs.
 
 The scalability results for the Belief Propagation program are presented in
 Fig.~\ref{fig:implementation:scale_bp}. This program has the best scalability
