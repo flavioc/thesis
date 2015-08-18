@@ -6,48 +6,46 @@ is a \emph{substructural logic} (lacks weakening and contraction) developed by
 Girard~\cite{Girard95logic:its} that extends persistent logic with linear
 propositions which can be understood as ephemeral resources that can be used
 only once to prove other propositions.  Due to the resource interpretation of
-the logic, linear logic presents a good basis for programming languages with a
-structured way to manage state~\cite{Miller85anoverview}. Beyond programming
-languages, linear logic has also been used for game
-semantics~\cite{lafont1991games,blass1992game}, concurrent
-programming~\cite{lopez2005monadic,mazurak2010lolliproc,perez-2012}, knowledge
-representation~\cite{bos2011survey}, or narrative
+the logic, linear logic presents a good basis for implementing a structured way
+of managing state in programming languages~\cite{Miller85anoverview}. Linear
+logic has also been used in game semantics~\cite{lafont1991games,blass1992game},
+concurrent programming~\cite{lopez2005monadic,mazurak2010lolliproc,perez-2012},
+knowledge representation~\cite{bos2011survey}, or narrative
 generation~\cite{chris-int7,martens2013linear}.
 
 In the context of the Curry-Howard correspondence~\cite{howard:tfatnoc}, linear
 logic has been applied in programming languages as a mechanism to implement
-\emph{linear types}. Linear types are types that force objects to be used
+\emph{linear types}. Linear types force objects to be used
 exactly once. Surprisingly, such types add mutable state to functional languages
 because they enforce a linear view of state, allowing the language to naturally
 support concurrency, input/output and data structure's updates.  Arguably, the
 most popular language that features uniqueness types is the Clean programming
-language~\cite{JFP:1349748}.  Monads~\cite{Wadler:1997:DI:262009.262011}, made
+language~\cite{JFP:1349748}. Monads~\cite{Wadler:1997:DI:262009.262011}, made
 popular with the Haskell programming language, are another interesting way to
-add state to functional languages. While monads tend to be more powerful than
-linear types, they also ensure equational reasoning in the presence of mutable
-data structures and I/O effects.
+add state to functional languages. Monads tend to be more powerful than linear
+types as they also ensure equational reasoning in the presence of mutable data
+structures and I/O effects.
 
 Linear logic programming is a different approach than either monads or linear
 types.  While the latter are mechanisms that enhance functional programming with
-state, the former uses state as a foundation, since the program's database is
-both the state and the program, because it drives the computation forward
-through rule application.
+state, the former uses state as a foundation, since computation is driven
+forward through the manipulation of state.
 
-Traditional forward-chaining logic programming languages like
-Datalog only use persistent logic, however many ad-hoc
-extensions~\cite{Liu98extendingdatalog,Ludascher95alogical} have been devised
-in to support state updates, but most are extra-logical which makes it harder
-to reason about programs. LM uses linear logic as its foundation, therefore
-state updates are natural to the language.
+Traditional forward-chaining logic programming languages like Datalog only use
+persistent logic, however many ad-hoc
+extensions~\cite{Liu98extendingdatalog,Ludascher95alogical} have been devised to
+support state updates, but most are extra-logical which makes the programs
+harder to reason about. LM uses linear logic as its foundation, therefore state
+updates are natural to the language.
 
-In linear logic, truth is treated as a resource that is consumed once used. For
-instance, in the graph visit program in Fig.~\ref{code:language:visit}, the
-\texttt{unvisited(A)} and \texttt{visit(A)} linear facts are consumed in order
-to prove \texttt{visit(A)}. If those facts were persistent, then the rule would
-make no sense, because the node would be \texttt{visited} and \texttt{unvisited}
-at the same time!
+In linear logic, truth is treated as a resource that is consumed once it is
+used. For instance, in the graph visit program in
+Fig.~\ref{code:language:visit}, the \texttt{unvisited(A)} and \texttt{visit(A)}
+linear facts are consumed in order to prove \texttt{visit(A)}. If those facts
+were persistent, then the rule would make no sense, because the node would be
+\texttt{visited} and \texttt{unvisited} at the same time.
 
-\subsection{Sequent Calculus}
+\subsection{Sequent Calculus}\label{sec:logic:fragment}
 
 \input{logic/sequent_calculus}
 
@@ -78,9 +76,9 @@ at the same time!
 \label{table:linear}
 \end{table*}
 
-The connections between LM and the sequent calculus fragment presented in the
+The connection between LM and the sequent calculus fragment is presented in the
 Table~\ref{table:linear}. In the table, we show how each connective is
-translated to LM's abstract syntax and then to LM programs. In order to
+translated into LM's abstract syntax and then into LM programs. In order to
 understand how LM rules are related to the sequent calculus, consider the first
 rule of the graph visit program shown in Fig~\ref{code:language:visit}:
 
@@ -143,9 +141,9 @@ The persistent term for $\texttt{agg}$ is defined as follows:
 The argument $S$ of $\defsz{agg}$ accumulates the PageRank values of the
 neighborhood by consuming $\texttt{neighbor-pagerank}$ and re-deriving a new
 $\defsz{agg}$ with $S + V$. Once the aggregate is complete, we simply select
-$\texttt{sum-ranks}(A, S)$ instead. As an side, note how the constraint are
-translated to a persistent term of the form $\bang V = Val/\texttt{float}(T)$
+$\texttt{sum-ranks}(A, S)$ instead. As an aside, note how the constraint are
+translated into a persistent term of the form $\bang V = Val/\texttt{float}(T)$
 since it does not require any fact to be proven true. This recursive mechanism
-is inspired in Baelde's work on \emph{fix points}~\cite{BaeldeM07,Baelde:2012}, which allow
+is inspired in Baelde's work on \emph{fix points}~\cite{BaeldeM07,Baelde:2012}, which allows
 the introduction of recursive definitions into a consistent fragment of linear
 logic.

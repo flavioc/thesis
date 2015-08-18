@@ -1,7 +1,7 @@
 Now that we have presented the coordination facts for LM,
 Fig.~\ref{code:shortest_path_program_coord} shows an example of their usage by
-extending the SSSP program presented before. The coordinated version of the SSSP
-program uses a global program directive to order priorities in ascending order
+extending the SSSP program presented before. The coordinated version of SSSP
+uses a global program directive to order priorities in ascending order
 (line~\ref{line:coord:sssp_asc}) and the coordination fact \code{set-priority}
 (line~\ref{line:coord:sssp_set}). The proof of correctness for this program is
 presented in Appendix~\ref{appendix:proofs:sssp}.
@@ -122,7 +122,7 @@ the distance from a single source node separately.  Note that the run time
 
 Overall, there is a clear improvement in almost every dataset used. The datasets
 that see the best run time reductions are Twitter, Orkut and LiveJournal, which
-are the datasets where the distance is calculated for less nodes. When
+are the datasets where the distance is calculated for fewer nodes. When
 calculating the distance from multiple sources, the \code{set-priority} fact is
 less effective because, although it selects the node with the shortest distance
 to some source node, other distance computations (from other source nodes) are
@@ -149,7 +149,7 @@ prioritize the computation of the shortest distance to only a single node.
                 \includegraphics[width=\textwidth]{experiments/coordination/cmp-shortest-twitter.png}
                 \label{fig:coordination:coord_sssp_twitter}
                 \mycap{Graph with 81306 nodes and 1768149 edges. The shortest
-                   distance is calculuated for 40 nodes.}
+                   distance is calculated for 40 nodes.}
         \end{subfigure}
         ~
         \begin{subfigure}[b]{\plotsize\textwidth}
@@ -203,7 +203,7 @@ Ligra, therefore it is hard to make a scalability comparison for those datasets.
 
 In Section~\ref{section:coordination:coord_instrs}, we described the coalescing
 optimization where priority action facts are coalesced into single operations.
-The MSSD program computes shortest distances to multiple nodes and thus it can
+The MSSD program computes the shortest distances to multiple nodes and thus it can
 take advantage of this optimization. Consider a MSSD program that is computing
 the shortest distances from node \code{@1} and \code{@2}. If a node \code{@3}
 needs to propagate the shortest distance $d_1$ to another node \code{@4}

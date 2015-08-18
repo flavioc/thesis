@@ -162,7 +162,7 @@ configurations: \textbf{Top}, where top rows are prioritized; and
 \textbf{Bottom}, where squares closer to the bottom are computed first. We also
 decided to optionally pin nodes to threads, as mentioned earlier, to see if
 memory locality affects the multi-threaded performance of the program. These
-configurations are refered as \textbf{Static}.
+configurations are referred as \textbf{Static}.
 
 The complete results are shown in
 Fig.~\ref{fig:coordination:results_queens-13} (for the 13-Queens problem) and
@@ -189,7 +189,7 @@ number of threads. For an example, observe
 Fig.~\ref{fig:coordination:coord_14queensbottomstatic} where using 14 threads
 takes almost the same run time as the regular version when using 32 threads.  In
 this case, each thread is assigned a single column of the chess board and is
-able to process only the states for that particular column. This behaviour was
+able to process only the states for that particular column. This behavior was
 investigated in the Valgrind's CacheGrind tool, which showed that this
 particular combination has the smallest number of cache misses. This indicates
 that it is helpful to match the problem to the number of available CPU's in the

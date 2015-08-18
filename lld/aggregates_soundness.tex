@@ -1,6 +1,6 @@
 
-Proving that deriving an aggregate in LLD is sound in relation to HLD is built
-from 4 results: (1) proving that matching the aggregate's LHS is sound in
+The proof that deriving an aggregate in LLD is sound in relation to HLD is built
+from four results: (1) proving that matching the aggregate's LHS is sound in
 relation to HLD; (2) proving that updating the continuation stacks makes them
 suitable for use in the next aggregate applications; (3) proving that deriving
 the aggregate's RHS is sound in relation to HLD; (4) proving that we can
@@ -41,7 +41,7 @@ well-formed in relation to $T$ then either:
 \end{itemize}
 \end{lemma}
 
-Proving this particular lemma follows the same strategy used for
+We prove this particular lemma by reapplying the strategy used in
 Lemma~\ref{thm:body_match}\footnote{We have omitted the $\Psi$ context for
 brevity.}. Next, we need to prove that, when matching succeeds, the
 continuation stack is corrected for the next application of the aggregate.  Note

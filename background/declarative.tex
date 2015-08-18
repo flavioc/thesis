@@ -19,7 +19,7 @@ Functional programming languages are considered declarative programming
 languages and are based on the \emph{lambda calculus}, a model for function
 application and abstraction.
 
-In pure functional programming languages, the side-effect free nature of
+In pure functional programming languages, the side effect free nature of
 computation allows multiple expressions to evaluate safely in
 parallel~\cite{Loidl:2003}. This so called \emph{implicit parallelism} has been
 implemented in languages such as Id~\cite{Nikhil93anoverview} and
@@ -200,9 +200,9 @@ change in the starting facts. If an axiom is no longer true, everything derived
 from that axiom is retracted. Likewise, when a fact becomes true, the database
 is immediately updated to take the new logical fact into account. To take
 advantage of these state management facilities, Meld supports \emph{sensing} and
-\emph{action} facts. Sensing facts are facts derived from the state of the world
-(e.g., temperature, new neighbor node) and action facts are facts that have an
-effect on the world (e.g., move), changing the underlying sensing facts.
+\emph{action} facts. Sensing facts are derived from the state of the world
+(e.g., temperature, new neighbor node) and action facts have an
+effect on the world (e.g., movement), changing the underlying sensing facts.
 
 Meld was inspired by the P2 system~\cite{Loo-condie-garofalakis-p2}, which
 includes a logic programming language called NDlog~\cite{Loo:EECS-2006-177} for

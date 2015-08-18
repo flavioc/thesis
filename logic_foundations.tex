@@ -9,17 +9,18 @@ and aggregates makes the low level dynamic semantics not complete, since these
 are features are not represented directly by the underlying linear logic system.
 This is the same approach used in Prolog, which includes useful features such as
 the \emph{cut operator} and a depth-first search strategy that make the language
-sound but not complete.
+sound but not complete. Note that the semantics presented in this chapter do not
+take into account coordination or thread-based facts.
 
 \section{Linear Logic}
 \input{logic/linear_logic}
 
 \section{High Level Dynamic Semantics}
 
-\input{hld}
+\input{logic/hld}
 
 \section{Low Level Dynamic Semantics}
-\input{lld}
+\input{logic/lld}
 \section{Soundness Proof}
 \input{lld/soundness}
 \section{Related Work}

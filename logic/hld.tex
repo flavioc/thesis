@@ -1,14 +1,14 @@
 
-In this section, we present the high level dynamic~(HLD) semantics of LM.  HLD
-formalizes the mechanism of matching rules and deriving new facts.  HLD
+In this section, we present the high level dynamic~(HLD) semantics of LM. HLD
+formalizes the mechanism of matching rules and deriving new facts. HLD
 semantics present a simplified overview of the dynamics of the language that are
-closer to the sequent calculus (Section~\ref{sec:fragment}) presented before
-than the implementation principles of our virtual machine. The low level
+closer to the sequent calculus (presented in Section~\ref{sec:logic:fragment})
+than the implementation principles of the virtual machine. The low level
 dynamic~(LLD) semantics are much closer to a real implementation and
 represent the operational semantics of the language. Both the HLD and LLD
 semantics model local computation at the node level.
 
-Note that both HLD and LLD do not model the use of variable bindings when
+Note that neither HLD nor LLD model the use of variable bindings when
 matching facts from the database. The formalization of bindings tends to
 complicate the formal system and it is not necessary for a good understanding of
 the system. Therefore, when we write an atomic proposition as $p$, we assume a
@@ -25,20 +25,19 @@ context but in a separate context $\Phi$. The persistent terms associated with
 each comprehension and aggregate are put in the $\Pi$ dictionary that maps the
 unique name of the comprehension/aggregate to the persistent term.
 
-The main idea of the dynamic semantics is to ignore the right side of the
-sequent calculus and use \emph{chaining} and \emph{inversion} on the $\Delta$
-and $\Gamma$ contexts so that we only have atomic facts (e.g., the database of
-facts). To apply rules we use
-\emph{focusing}~\cite{Andreoli92logicprogramming} on one of the derivation rules
-in $\Phi$. Note that in the focusing process we assume that all the atoms
-(facts) are positive thus the chaining proceeds in a \emph{forward chaining}
-fashion.
+	The main idea of the dynamic semantics is to ignore the right side of the
+	sequent calculus and then use \emph{focusing}~\cite{Andreoli92logicprogramming} on the implications in $\Phi$ so that we only have atomic facts (e.g., the database of
+	facts). Focusing is a proof search mechanism that prunes the proof search by constructing proofs using two alternating phases called
+	\emph{chaining} and \emph{inversion}.
+	During inversion, propositions are decomposed into smaller propositions using \emph{invertible rules} (which are sequent rules where the premises of the rule are derivable whenever the conclusion is derivable). In chaining,
+	a proposition is in focus and \emph{non-invertible rules} are applied to that proposition.
+	Propositions have either negative or positive \emph{polarity}, if either the right rule of a given connective is invertible or not, respectively. Atomic propositions can be either negative or positive. For our case, we make them positive so that the succedent of the sequent is ignored and chaining proceeds by focusing on implications (rules) $A \lolli B \in \Phi$ where the antecedents $A$ must be already in $\Delta$.
 
 \subsection{Step}\label{sec:step_hld}
 
 Operationally, LM proceeds in \emph{steps}. A step happens at some node $i$ and
 proceeds by picking one rule to apply, matching the rule's LHS against the
-database, removing all those facts from the database and then deriving all the
+database, removing all those facts and then deriving all the
 constructs in the rule's RHS. We assume the existence of $n$ nodes in the
 program and that $\Gamma$ and $\Delta$ are split into $\Gamma_1, \dotsc,
 \Gamma_n$ and $\Delta_1, \dotsc, \Delta_n$ respectively. After each step, the
@@ -68,7 +67,7 @@ there is no concept of rule priority, therefore a rule is picked
 non-deterministically.
 
 The judgment $\az{\Psi}{\Gamma}{\Delta}{\Pi}{A \lolli B}{\outsem}$ applies one
-derivation rule. First, it \emph{guesses} the correct term values to the
+derivation rule. First, it non-deterministically chooses the correct term values to the
 $\forall$ variables and then splits the $\Delta$ context into $\Delta_1$ and
 $\Delta_2$, namely the multi-set of linear facts consumed to match the rule's
 LHS ($\Delta_1$) and the remaining linear facts ($\Delta_2$). The $\Psi$ context

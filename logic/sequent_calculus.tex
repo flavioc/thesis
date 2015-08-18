@@ -5,14 +5,20 @@ $\Psi; \seqx{\Gamma}{\Delta}{C}$ and can be read as "assuming persistent
 resources $\Gamma$ and linear resources $\Delta$ then $C$ is true".  More
 specifically, $\Psi$ is the typing context which contains unique variables,
 $\Gamma$ is a multi-set of persistent resources, $\Delta$ is a multi-set of
-linear resources while $C$ is the proposition we want to prove.
+linear resources while $C$ is the proposition we want to prove. The sequent can
+also be decomposed into a \emph{succedent} ($C$) and the \emph{antecedents}
+(contexts that appear before $\seq$).
 
-We first have the \emph{simultaneous conjunction} $A \otimes B$ that packages
+We now present the connectives and their associated rules for the linear logic fragment.
+First, we have the \emph{simultaneous conjunction} $A \otimes B$ that packages
 linear resources together. In the right rule, $A \otimes B$ is true if both $A$
 and $B$ are true, and, in the left rule, it is possible to split $A \otimes B$
 apart.
 
 \input{appendix/fragment_otimes}
+
+Note that the inference rules above can be decomposed into premises (the
+sequents above the separator line) and conclusion (the sequent below the line).
 
 Next, we have the \emph{additive conjunction} $A \with B$ that allows us to
 select between $A$ or $B$. In the right rule we must prove $A$ and $B$ using
@@ -43,10 +49,10 @@ does not need any resource to be proven.
 \input{appendix/fragment_one}
 
 Next, we introduce the \emph{quantification} connectives, namely \emph{universal
-quantification} $\forall_{n:\tau}. A$ and \emph{existencial quantification}
-$\exists_{n:\tau}. A$. These connectives use the typing context $\Psi$ because
-they can introduce and read term variables from the context. The right and left duals of
-those two connectives are dual.
+quantification} $\forall_{n:\tau}. A$ and \emph{existential quantification}
+$\exists_{n:\tau}. A$ ($n:\tau$ means that $n$ has type $\tau$).
+These connectives use the typing context $\Psi$ to introduce and read term variables.
+The right and left rules of those two connectives are dual.
 
 \input{appendix/fragment_quant}
 

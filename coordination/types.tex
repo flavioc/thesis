@@ -23,7 +23,7 @@ This allows scheduling and partition decisions to be made based on the state of
 the program and on the state of the underlying machine.  In this fashion, we
 keep the language declarative because we reason logically about the state of
 execution, without the need to introduce extra-logical operators into the
-language that would introduce significant issues when proving properties about
+language that would generate significant issues when proving properties about
 the programs.
 
 Both scheduling and partitioning facts can be further classified into two kinds
@@ -43,7 +43,7 @@ which nodes are evaluated in the runtime system and to make partitioning
 decisions (assign nodes to threads). It is possible to give hints to the virtual
 machine in order to prioritize the computation of some nodes.
 
-With sensing facts and action facts, we can write \emph{meta-rules} that will
+With sensing and action facts, we can write \emph{meta-rules} that will
 sense the state of the runtime system and then apply decisions in order to
 improve execution speed or change partitioning information. In most situations,
 this set of rules can be added to the program without modifying the meaning of

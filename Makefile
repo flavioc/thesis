@@ -60,7 +60,7 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex ack.tex \
 		hld/step.tex hld/derivation-agg.tex lld/step.tex lld/match-p.tex \
 		lld/match-bang-p.tex lld/der-comp.tex \
 		lld/der-agg.tex lld/comp-fix.tex \
-		lld.tex hld.tex logic/sequent_calculus.tex \
+		logic/lld.tex logic/hld.tex logic/sequent_calculus.tex \
 		logic/linear_logic.tex local.tex \
 		implementation/rule_engine.tex \
 		$(wildcard hld/*.tex) \
