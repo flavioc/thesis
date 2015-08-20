@@ -43,7 +43,7 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex ack.tex \
 		background/coordination.tex \
 		coordination/types.tex coordination/rationale.tex \
 		coordination/coord_sssp.tex coordination/programs.tex \
-		coordination/minimax.tex coordination/queens.tex \
+		coordination/minimax.tex coordination/queens.tex coordination/global.tex \
 		coordination/bp.tex coordination/related_work.tex \
 		language.tex logic_foundations.tex threads/summary.tex \
 		threads/key_value.tex \

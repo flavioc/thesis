@@ -1,8 +1,8 @@
 
 In order to allow different scheduling strategies, we introduce the concept of
 \emph{node priority} by assigning a priority value to every node in the program
-and by introducing coordination facts that manipulate such priority values.  By
-definition, nodes have no priority and can be picked in any order. In our
+and by introducing coordination facts that manipulate the priority values.  By
+default, nodes have the same priority value and thus can be picked in any order. In our
 implementation, we use a FIFO approach because older nodes tend to have a higher
 number of unexamined facts, from which they can derive subsequent new facts.
 
@@ -49,30 +49,26 @@ scheduling decisions of the system:
 
 \end{itemize}
 
-LM also provides two sensing facts \code{priority(node A, float P)} and
-\code{default-priority(node A, float P)}, which consult, respectively, the
-temporary priority or default priority \code{P} of node \code{A}.  Sensing facts
-can only be used in the LHS of rules and are exempt from the constraint that
-forces every fact used in the body to have the same first argument. Also note
-that when sensing facts are used to prove new facts, they are re-derived
-automatically. All coordination facts are linear and thus consumed when used in
-the LHS of a rule.  The system creates the necessary code to re-derive them
-without programmer interaction. Likewise, \code{set-priority} and
-\code{set-default-priority} update the value of \code{priority} facts by
-retracting and re-asserting them but this is done implicitly by the runtime
-system.
+LM also provides two sensing facts:
 
-The priorities assigned to nodes follow a per-thread ordering, therefore a
-thread will always pick the highest priority node on its sub-graph but not
-necessarily the highest priority node of the whole graph.
+\begin{itemize}
+	\item \code{priority(node A, float P)}: Represents the priority of node \code{A}. Value \code{P} is equal to the temporary priority or equal to the default priority if \code{A} has no temporary priority assigned to it.
+	\item \code{default-priority(node A, float P)}: Value \code{P} represents the default priority of node \code{A}.
+\end{itemize}
+
+Sensing facts can only be used in the LHS of rules and are exempt from the constraint that
+forces every fact used in the body to have the same first argument. Note
+that when sensing facts are used to prove new facts, they must be re-derived so that the coordination model remains consistent.
+Furthermore, when the programmer uses action facts such as \code{set-priority} and
+\code{set-default-priority}, the runtime system implicitly updates and re-derives the associated sensing facts, without any programmer interaction.
+
+The priorities assigned to nodes follow a partial ordering since each thread selects the highest priority node from its sub-graph and not from the whole graph.
 Figure~\ref{fig:coordination:priorities} shows an example of a graph being
 processed by two threads, \code{T0} and \code{T1}. The order for \code{T0} will
 be \code{@0}, \code{@1}, \code{@3}, \code{@2} and for thread \code{T1} it will
-be \code{@4}, \code{@6}, \code{@5}. Priorities can also be seen as hints because
-they do not provide a global ordering but only a per-thread ordering.
-
+be \code{@4}, \code{@6}, \code{@5}.
 Note that priorities of nodes can be set from any node in the graph, even if those nodes
-live on different threads. Of course, this implies communication between
+live on different threads. Of course, this requires communication between
 threads.
 
 \begin{figure}

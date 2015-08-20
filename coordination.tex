@@ -1,15 +1,12 @@
-In Chapter~\ref{chapter:implementation}, we saw that the set of nodes of an LM
-program is represented as a graph data structure $G = (V, E)$ with nodes $V$ and
-edges $E$ where $T$ threads perform work. Our implementation also allows threads
+In Chapter~\ref{chapter:implementation}, we saw that an LM program operates on a graph data structure $G = (V, E)$ with nodes $V$ and edges $E$. Concurrent computation is performed non-deterministically by a set of execution threads $T$ that work on subsets of $G$.
+Our implementation allows threads
 to steal nodes from other threads in order to improve load balancing.  However,
-there are many scheduling details that are left undefined. How should a thread
+there are many scheduling details that are left for our implementation to decide and which the programmer has no control over. How should a thread
 schedule the computation of its sub-graph? Is node stealing beneficial to all
-programs? What is the best sub-graph partitioning for a given LM program?  To
-answer these questions, we introduce \emph{coordination facts}, a coordination
+programs? What is the best sub-graph partitioning for a given LM program?  In order to allow custom node scheduling and partitioning, we introduce \emph{coordination facts}, a
 mechanism that is indistinguishable from regular computation and that allows the
-programmer to specify custom scheduling and node partitioning policies. This is
-an important first step in allowing the programmer to coordinate and improve
-declarative programs.
+programmer to control how the runtime system executes programs. This is
+an important first step in allowing the programmer to declaratively control execution. In Chapter~\ref{chapter:threads}, we further extend the language with thread-based facts to allow reasoning over the state of the execution threads.
 
 \section{Motivation}\label{section:coord:rationale}
 

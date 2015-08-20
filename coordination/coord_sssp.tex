@@ -1,5 +1,5 @@
-Now that we have presented the coordination facts for LM,
-Fig.~\ref{code:shortest_path_program_coord} shows an example of their usage by
+Now that we have presented the coordination facts for LM, we present
+an example of their usage in Fig.~\ref{code:shortest_path_program_coord} by
 extending the SSSP program presented before. The coordinated version of SSSP
 uses a global program directive to order priorities in ascending order
 (line~\ref{line:coord:sssp_asc}) and the coordination fact \code{set-priority}
@@ -35,7 +35,7 @@ Figure~\ref{fig:coordination:new_sssp} presents the 4 steps of computation for
 the new SSSP program when executed with 1 thread. In every step, a new shortest
 path is computed at a different node, starting from the shorter paths up to the
 longer paths. This is exactly the same behavior as the Dijkstra's
-algorithm~\cite{Dijkstra}.  For multiple threads, the scheduling is not
+algorithm~\cite{Dijkstra}.  For multiple threads, the scheduling may not be
 optimal since threads pick the node with the shortest distance from their subset
 of nodes. However, we have increased parallelism (no global synchronization)
 and threads are still able to locally avoid unnecessary work.
@@ -92,10 +92,10 @@ coordination.
       \input{experiments/coordination/sssp-stats}
    \end{center}
 
-   \mycap{Fact statistics for the MSSD program when using 1 thread. For each
+   \mycap{Fact statistics for the MSSD program when run on 1 thread. For each
       dataset, we gathered the number of facts derived, number of facts deleted,
       number of facts sent to other nodes and total number of facts in the
-      database when the program terminates.}
+      database when the program terminates. Columns \textbf{\# Derived}, \textbf{\# Sent} and \textbf{\# Deleted} show the number of facts for the regular version (first column) and then the ratio of facts for the coordinated version over the regular version. Percentage values less than 100\% mean that the coordinated version produces fewer facts.}
 
    \label{table:coordination:sssp_stats}
 \end{table}

@@ -1,19 +1,40 @@
-In order to support priorities and node partitioning, we extended the work queue
-of each thread, as presented in Fig.~\ref{fig:implementation:vm_overview}, to
-include two new pairs of queues: two doubly linked lists known as the
-\emph{standard queue} and two min/max heaps known as the \emph{priority queue}.
-The standard queue contains nodes without priorities and supports push into
+In order to support priorities and node partitioning, we transformed the singly linked list work queue
+of each thread, as presented in Fig.~\ref{fig:implementation:vm_overview}, into
+two pairs of queues: two \emph{standard queues} implemented as doubly linked lists
+and two \emph{priority queues} implemented as min/max heaps.
+These four queues are decomposed into the \emph{static queue} and
+the \emph{dynamic queue}, where each queue has a standard and a priority queue.
+The static queue contains nodes that cannot be stolen and the \emph{dynamic queue}
+contains nodes which can be stolen by other threads.
+
+The standard queue contains nodes without priorities (i.e., nodes with base priorities) and supports push into
 tail, remove node from the head, remove arbitrary node, and remove first half of
-nodes.  The priority queue contains nodes with priorities and is implemented as
+nodes.  The priority queue orders contains nodes with priorities (ordered by the \code{priority} sensing fact) and is implemented as
 a binary heap array.  It supports the following operations: push into the heap,
 remove the \emph{min} node, remove an arbitrary node, remove half of the nodes
 (vertical split), and priority update.  Operations for removing half of the
 queue are implemented in order to support node stealing, while operations to
 remove arbitrary nodes or update priority allows threads to change the priority
-of nodes.  Table~\ref{fig:implementation:table_queue} shows the complexity of
+of nodes. In the regular queue, the first $n/2$ elements
+are removed from the front of the list and, in the priority queue, the binary
+heap is split vertically for improved distribution of priorities.
+
+Figure~\ref{fig:implementation:work_queue} presents an overview of the dynamic queue
+and how the remove half operations are implemented in the sub-queues in
+order to support node stealing. Note that the static queue is not represented but it also includes the same two sub-queues.
+Table~\ref{fig:implementation:table_queue} shows the complexity of
 queue operations and compares the standard queue against the priority queue.
 Except for the remove half operation, priority queue operations are more
 expensive.
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.95\textwidth]{figures/implementation/work_queue.pdf}
+	\mycap{Thread's work queue and its interaction with other threads: the dynamic queue contains nodes that can be
+		stolen while the static queue contains nodes that cannot be stolen. Both
+		queues are implemented with one standard queue and one priority queue.}
+	\label{fig:implementation:work_queue}
+\end{figure}
 
 \begin{table}[h]
    \begin{tabular}{| c | c | c |}
@@ -31,27 +52,10 @@ expensive.
    \label{fig:implementation:table_queue}
 \end{table}
 
-\begin{figure*}[t]
-\centering
-\includegraphics[width=0.95\textwidth]{figures/implementation/work_queue.pdf}
-\mycap{Thread's work queue and its interaction with other threads: the dynamic queue contains nodes that can be
-   stolen while the static queue contains nodes that cannot be stolen. Both
-   queues are implemented with one standard queue and one priority queue.}
-\label{fig:implementation:work_queue}
-\end{figure*}
-
 The \texttt{next} and \texttt{prev} pointers of the standard queue are part of
 the node structure in order to save space. These pointers are also used in the
-priority queue but for storing the current priority and the index in the binary
-heap array. Both the standard and priority queue are implemented as a pair of
-queues. This first queue of each pair is a \emph{static queue} which contains
-nodes that cannot be stolen and the second queue is the \emph{dynamic queue}
-which contains nodes which can be stolen by other threads.
-Figure~\ref{fig:implementation:work_queue} presents an overview of the two pairs
-of queues and how the remove half operations are implemented in both queues in
-order to support node stealing.  In the regular queue, the first $n/2$ elements
-are removed from the front of the list and, in the priority queue, the binary
-heap is split vertically for improved distribution of priorities.
+priority queue but for storing the current priority and the node's index in the binary
+heap array. 
 
 Remember that to minimize inter-thread communication, node priorities are
 implemented at the thread level, i.e., when a thread picks the highest priority
@@ -95,10 +99,9 @@ underlying data structures such as the node data structure or the thread's
 queues.
 
 When a thread $T_1$ performs coordination operations to a node owned by a thread
-$T_2$, it needs to synchronize with $T_2$ and for that the \emph{State Lock} in
-the target node needs to be acquired. Optionally, we may need to also lock the
-queues of the thread $T_2$ if the priority is being updated or the queues of
-thread $T_1$, if the node is moving to thread $T_1$. Note that both the standard
+$T_2$, it needs to synchronize with $T_2$ and, for that, the \emph{State Lock} in
+the target node needs to be acquired. Optionally, we may need to also acquire the
+locks of $T_2$'s queues if the priority is being updated. Note that both the standard
 queue and priority queue have separate locks in order to allow concurrent
 manipulation of the two data structures.
 

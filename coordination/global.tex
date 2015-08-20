@@ -15,9 +15,8 @@
       is \code{asc} and represents the smallest priority value possible.
 
    \item \texttt{priority @initial P}: Informs the runtime system that all nodes
-   must start with temporary priority \code{P}. Alternatively, the programmer can define an
-      \texttt{set-priority(A, P)} fact. The default is value is the one defined
-      as the \emph{base priority}.
-
+   must start with temporary priority \code{P}. Alternatively, the programmer can define a
+      \texttt{set-priority(A, P)} fact. By default, the initial priority value is equal to $+\infty$ (for \code{desc}) or $0$ (for \code{asc}).
+      
 \end{itemize}
 

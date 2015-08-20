@@ -4,11 +4,10 @@ facts revolve around thread placement.  In terms of action facts, we have the
 following:
 
 \begin{itemize}
-   \item \code{set-thread(node A, thread T)}: Moves node \code{A} to thread
-      \code{T} and forces \code{A} to be in \code{T} indefinitely.
-
+   \item \code{set-thread(node A, thread T)}: Places node \code{A} in thread \code{T} until the program terminates or a \code{set-moving(A)} fact is derived.
+      
    \item \code{set-affinity(node A, node B)}: Places node \code{B} in the thread
-      of node \code{A} and forces \code{B} to be in the thread indefinitely.
+      of node \code{A} until the program terminates or a \code{set-moving(B)} fact is derived.
 
    \item \code{set-moving(node A)}: Allows node \code{A} to move freely
    between threads.

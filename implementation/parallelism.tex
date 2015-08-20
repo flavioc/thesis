@@ -9,7 +9,7 @@ on a simple work stealing algorithm.
 While our VM uses shared memory for thread communication, each thread has a
 logical space that contains its subgraph, i.e., the nodes owned by the thread,
 and a \emph{Work Queue}, which contains \textbf{active} nodes, i.e., nodes that
-have new facts to process. The work queue is implemented as a linked list and
+have new facts to process. The work queue is implemented as a singly linked list and
 is embedded in the node data structures. Initially, the work queue is filled
 with the nodes in the thread's subgraph in order to derive the initial facts. A
 thread may go through different states during its lifetime. The state is kept

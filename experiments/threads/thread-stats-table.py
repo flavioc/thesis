@@ -40,9 +40,12 @@ for name in regs.experiment_names():
 
       for th in sorted(threads):
          print " & " + str(th) + " & ",
-         print readable_decimal(reg.get_facts_derived(th)) + " & " + readable_decimal(coord.get_facts_derived(th)) + " & ",
-         print readable_decimal(reg.get_facts_deleted(th)) + " & " + readable_decimal(coord.get_facts_deleted(th)) + " & ",
-         print readable_decimal(reg.get_num_facts(th)) + " & " + readable_decimal(coord.get_num_facts(th)),
+         print readable_decimal(reg.get_facts_derived(th)), "&",
+         print readable_percentage((float(coord.get_facts_derived(th)) / float(reg.get_facts_derived(th))) * 100), "&",
+         print readable_decimal(reg.get_facts_deleted(th)), "&",
+         print readable_percentage((float(coord.get_facts_deleted(th)) / float(reg.get_facts_deleted(th))) * 100), "&",
+         print readable_decimal(reg.get_num_facts(th)), "&",
+         print readable_decimal(coord.get_num_facts(th)),
          print "\\\\"
       print "\t\\hline"
 

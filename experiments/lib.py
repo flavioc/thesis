@@ -1066,6 +1066,8 @@ def readable_number(num, start, extension, div, rest = 0):
       if rest > 0:
          while rest > 10:
             rest = rest / 10
+         if rest == 0:
+            return str(num) + start + extension
          return str(num) + "." + str(rest) + start + extension
       return str(num) + start + extension
 
@@ -1073,6 +1075,10 @@ def readable_mem(num):
    return readable_number(num, 'K', 'B', 1024)
 
 def readable_decimal(num): return readable_number(num, '', '', 1000)
+def readable_percentage(num, floats=0):
+   if floats == 0:
+      return readable_decimal(int(num)) + "\%"
+   return readable_decimal(float(("%" + str(floats) + ".f") % num)) + "\%"
 
 def compute_harmonic_mean(threads, ls):
    total = sum(exp.get_time(1) for exp in ls)

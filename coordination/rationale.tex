@@ -3,8 +3,8 @@ Path~(SSSP) program, a concise program that, as we will see, can take advantage
 of custom scheduling policies to improve its performance.
 Figure~\ref{code:shortest_path_program} and Figure~\ref{code:coord:sssp_init}
 shows a possible implementation in LM, and Fig.~\ref{fig:shortest_path_program}
-shows its graphical representation. Note that in
-Section~\ref{section:implementation:performance}, we have already presented the
+shows an instance of the program on a particular dataset. Note that in
+Section~\ref{section:implementation:performance}, we presented the
 MSSD program which is essentially the SSSP program modified to compute multiple
 shortest distances.
 
@@ -83,7 +83,7 @@ shortest(@4, 3, [@1, @3, @2, @4]).
    \end{subfigure}
 \end{center}
 
-\mycap{Graphical representation of the SSSP program: (a) represents the
+\mycap{Graphical representation of an example dataset for the SSSP program: (a) represents the
    program's state after propagating the initial distance at node \code{@1}, followed by (b)
    where the first rule is applied in node \code{@2}, and (c) represents the
    final state of the program, where all the shortest paths have been computed.}
@@ -113,13 +113,13 @@ in the SSSP program. For instance, after applying rule 1 in
 Fig.~\ref{fig:shortest_path_program}~(a), it is possible to either apply rules
 in either node \code{@2} or node \code{@3}.  This decision depends largely on
 implementation factors such as node partitioning and number of threads in the
-system. Still, it is easy to prove that no matter the scheduling used, the final
-result, as presented in Fig.~\ref{fig:shortest_path_program}~(c), is achieved.
+system. Still, it is easy to prove that, independent of the particular scheduling used, the final
+result presented in Fig.~\ref{fig:shortest_path_program}~(c) is always achieved.
 
 The SSSP program is concise and declarative but its performance depends on the
 order in which nodes are executed. If nodes with greater distances are
 prioritized over other nodes, the program will generate more \code{relax} facts
-since it will take longer to reach the shortest distances. From
+and it will take longer to reach the shortest distances. From
 Fig.~\ref{fig:shortest_path_program}, it is clear that the best scheduling is
 the following: \code{@1}, \code{@3}, \code{@2} and then \code{@4}, where only 4
 \code{relax} facts are generated. If we had decided to process nodes in order
@@ -127,6 +127,6 @@ the following: \code{@1}, \code{@3}, \code{@2} and then \code{@4}, where only 4
 \code{relax} facts would have been generated.  The optimal solution for SSSP is
 to schedule the node with the shortest distance, which is essentially the
 Dijkstra shortest path algorithm~\cite{Dijkstra}. Note how it is possible to
-change the nature of the algorithm by simply changing the order of node
+change the complexity of the algorithm by simply changing the order of node
 computation, but still retain the same declarative nature of the program.
 
