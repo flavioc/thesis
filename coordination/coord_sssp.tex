@@ -126,9 +126,11 @@ are the datasets where the distance is calculated for fewer nodes. When
 calculating the distance from multiple sources, the \code{set-priority} fact is
 less effective because, although it selects the node with the shortest distance
 to some source node, other distance computations (from other source nodes) are
-also propagated to neighbor nodes, which may not be optimal. To solve this
-particular issue, another kind of priority would have to be devised in order to
-prioritize the computation of the shortest distance to only a single node.
+also propagated to neighbor nodes, which may not be optimal. However, this
+shows the beauty of our coordination model since a solution could potentially be implemented by adding new coordination facts
+and then changing the underlying machinery to support the new model, without making changes to the semantics of the language.
+Furthermore, the shortest distance algorithm would still remain declarative and correct
+due to the invariants that are always held when applying the program's rules.
 
 \begin{figure}[]
         \centering
