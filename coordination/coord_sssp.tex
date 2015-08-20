@@ -106,10 +106,10 @@ program. We use the datasets already described in
 Section~\ref{section:implementation:performance}.  In each plot we present the
 following lines: \textbf{Regular}, which represents the run time of the regular
 version; \textbf{Coordinated}, which represents the run time of the coordinated
-version; \textbf{Regular(1)/Regular(t)}, which represents the speedup of the
-regular version using the single threaded regular version as the baseline;
-\textbf{Regular(1)/Coordinated(t)}, which represents the speedup of the
-coordinated version against the run time of the regular version using 1 thread
+version; \textbf{Coordinated(1)/Regular(t)}, which represents the speedup of the
+regular version using the single threaded coordinated version as the baseline;
+\textbf{Coordinated(1)/Coordinated(t)}, which represents the speedup of the
+coordinated version against the run time of the coordination version using 1 thread
 as the baseline; \textbf{C++}, which represents the run time of the MSSD C++
 program already presented in Section~\ref{section:implementation:performance};
 \textbf{Ligra}, which represents the run time of the MSSD program written in the
@@ -126,9 +126,10 @@ are the datasets where the distance is calculated for fewer nodes. When
 calculating the distance from multiple sources, the \code{set-priority} fact is
 less effective because, although it selects the node with the shortest distance
 to some source node, other distance computations (from other source nodes) are
-also propagated to neighbor nodes, which may not be optimal. However, this
-shows the beauty of our coordination model since a solution could potentially be implemented by adding new coordination facts
-and then changing the underlying machinery to support the new model, without making changes to the semantics of the language.
+also propagated to neighbor nodes, which is not be optimal. However,
+a potential solution to this problem is to add new coordination facts
+and then change the underlying coordination machinery to support fact-based priorities (instead of node based).
+This shows the beauty of our coordination model since this would not require changes to the semantics of the language.
 Furthermore, the shortest distance algorithm would still remain declarative and correct
 due to the invariants that are always held when applying the program's rules.
 
@@ -220,7 +221,7 @@ support from the VM and then we ran the same experiments where priority updates
 are done immediately. The results are presented in
 Fig.~\ref{fig:coordination:results_sssp_unbuffered}. From the results, we can
 see that some datasets, such as EU Email and US Power Grid, maintain their
-overall scalability, especially the speedup (\textbf{Regular(1)/Coordinated(t)})
+overall scalability, especially the speedup (\textbf{Coordinated(1)/Coordinated(t)})
 for 32 threads (\textbf{t = 32}). For the OCLinks and Twitter datasets, there is
 some performance degradation since their overall scalability drops without the
 optimization. However, the Live Journal dataset improves its performance and

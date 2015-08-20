@@ -38,6 +38,6 @@ for name in regular_threaded.experiment_names():
             name_used = sys.argv[6]
          else:
             name_used = None
-         regular_exp.coordination_compare(coord_exp, c_exp, prefix, name_used, None, {"Ligra": ligra_exp})
+         regular_exp.coordination_compare(coord_exp, c_exp, prefix, name_used, None, {"Ligra Time": ligra_exp})
 
 sys.exit(0)

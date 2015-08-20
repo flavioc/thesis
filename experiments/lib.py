@@ -874,9 +874,9 @@ class experiment(object):
          label='Regular Run Time', linestyle='-', marker='+', color='r')
       coordtime, = ax.plot(coord_exp.x_axis(), coord_exp.time_data(),
          label=name_coord + ' Run Time', linestyle='-', marker='o', color='g')
-      regspeedup, = ax2.plot(self.x_axis(), self.base_speedup_data(), label="Regular Speedup", linestyle='--', color='r', marker='+')
-      coordspeedup, = ax2.plot(coord_exp.x_axis(), coord_exp.base_speedup_data(self.get_time(1)),
-            label=name_coord + ' Speedup', linestyle='--', marker='o', color='g')
+      regspeedup, = ax2.plot(self.x_axis(), self.base_speedup_data(coord_exp.get_time(1)), label="Regular Speedup", linestyle='--', color='r', marker='+')
+      coordspeedup, = ax2.plot(coord_exp.x_axis(), coord_exp.base_speedup_data(coord_exp.get_time(1)),
+            label=name_coord + ' Speedup', linestyle='--', marker='^', color='g')
       if cexp:
          ctime, = ax.plot(self.x_axis(), [cexp.get_time(1)] * len(self.x_axis()),
            label='Linear', linestyle='-', color=cmap(0.2))
@@ -887,10 +887,10 @@ class experiment(object):
          otherplots.append((other_name, plot))
 
       lines = [(regtime), coordtime, regspeedup, coordspeedup]
-      labels = ["Regular", name_coord, "Regular(1)/Regular(t)", "Regular(1)/" + name_coord + "(t)"]
+      labels = ["Regular", name_coord, name_coord + "(1)/Regular(t)", name_coord + "(1)/" + name_coord + "(t)"]
       if cexp:
         lines.append(ctime)
-        labels.append("C++ Time")
+        labels.append("C++")
       for (name, plot) in otherplots:
          lines.append(plot)
          labels.append(name)
