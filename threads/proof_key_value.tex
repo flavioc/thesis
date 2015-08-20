@@ -37,11 +37,11 @@ In the inductive case, we must analyze each rule separately.
      that the cache item is unique. For that, we know that this rule uses the
      same \code{replace} and a \code{value} facts of rule 1, therefore, if there
      was already a cache item in the database, rule 1 would run before rule 2
-     since rule 1 has higher priority. Rule 1 deals with cases where there is
-     already a \code{cache} item, while rule 2 adds a new item if it does not
-     exist.
+     since rule 1 has a higher priority. In a nutshell, rule 1 deals with cases
+     where there is already a \code{cache} item, while rule 2 adds a new item if
+     it does not exist.
 
-   \item Rule 3: the \code{cache}$(T, TargetNode, RKey)$ is kept in the
+   \item Rule 3: the \code{cache}$(T, TargetNode, RKey)$ fact is kept in the
       database.
 
    \item Rules 4 and 5: they do not derive or consume any cache related facts.
