@@ -735,7 +735,7 @@ class experiment(object):
       coordtime, = ax.plot(coord_exp.x_axis(), coord_exp.time_data(),
          label=name_coord + ' Run Time', linestyle='--', marker='o', color='g')
       coordspeedup, = ax2.plot(coord_exp.x_axis(), coord_exp.base_speedup_data(self.get_time(1)),
-            label=name_coord + ' Speedup', linestyle='--', marker='+', color='g')
+            label=name_coord + ' Speedup', linestyle='--', marker='^', color='g')
       regspeedup, = ax2.plot(self.x_axis(), self.base_speedup_data(),
             label='Regular Speedup', linestyle='--', marker='+', color='r')
       if cexp:
