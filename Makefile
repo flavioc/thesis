@@ -37,7 +37,7 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex ack.tex \
 		implementation/fact-allocator.tex implementation/scale.tex \
 		coordination/partitioning.tex coordination/scheduling.tex \
 		coordination/ht.tex language/bipartite.tex \
-		language/semantics.tex \
+		language/semantics.tex threads/proof_key_value.tex \
 		coordination/proof_sssp.tex coordination/proof_queens.tex \
 		coordination/proof_minimax.tex \
 		background/coordination.tex \

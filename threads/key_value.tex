@@ -34,8 +34,9 @@ rules that handle the following cases:
 
 \end{enumerate}
 
-Note that it is quite easy to extend the cache mechanism to use an LRU type
-approach in order to limit the size of the cache.
+In Appendix~\ref{appendix:proofs:bst} we prove several properties about the
+extended BST program. Also note that it is quite easy to extend the cache
+mechanism to use an LRU type approach in order to limit the size of the cache.
 
 \begin{figure}[ht]
 \begin{LineCode}[commandchars=*\{\}]
@@ -77,6 +78,8 @@ value(A, Key, Value),
 RKey > Key
    -o value(A, Key, Value),
       replace(B, RKey, RValue).
+
+cache-size(T, 0).*hfill// Initial cache size of each thread
 \end{LineCode}
 \mycap{LM program for performing lookups in a BST extended to use a thread cache.}
 \label{code:threads:btree_lookup_cache}

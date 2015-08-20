@@ -1,0 +1,80 @@
+In this section, we prove several properties of the Binary Search Tree~(BST) as
+presented in Fig.~\ref{code:threads:btree_lookup_cache}. First, we assume that
+the initial facts of the program represent a valid binary search tree,
+therefore, for every node with a given key $k$, the left branch contains keys
+that are lesser or equal than $k$, and the right branch contains keys that are
+greater than $k$.
+
+\begin{invariant}[Immutable keys]
+Every node has a \code{value}$(A, Key, Value)$ fact and the $Key$ never changes.
+\end{invariant}
+\begin{proof}
+By induction. In the base case, every node has a \code{value} initial fact. In the
+inductive case, each rule that uses a \code{value} fact also re-derives it and
+the $Key$ argument never changes.
+\end{proof}
+
+\begin{invariant}[Thread state]\label{appendix:proof:key_value_invariant}
+Every thread $T$ in the program has a \code{cache-size}$(T, Total)$ fact that
+represents the number of valid cache items in the form of \code{cache}$(T, Node, Key)$
+facts. Furthermore, there are no two \code{cache}$(T, Node_1, Key_1)$ and
+\code{cache}$(T, Node_2, Key_2)$ facts where $Node_1 = Node_2$.
+\end{invariant}
+\begin{proof}
+By induction on each rule application.
+
+In the base case, all threads start with a \code{cache-size}$(T, 0)$ fact and no
+\code{cache}$(T, Node, Key)$ facts.
+ 
+In the inductive case, we must analyze each rule separately.
+
+\begin{itemize}
+
+  \item Rule 1: the \code{cache}$(T, A, Key)$ fact is kept in the database.
+
+  \item Rule 2: this rule adds a new valid \code{cache}$(T, A, Key)$ fact and
+     correctly increments the \code{cache-size} counter. However, we must ensure
+     that the cache item is unique. For that, we know that this rule uses the
+     same \code{replace} and a \code{value} facts of rule 1, therefore, if there
+     was already a cache item in the database, rule 1 would run before rule 2
+     since rule 1 has higher priority. Rule 1 deals with cases where there is
+     already a \code{cache} item, while rule 2 adds a new item if it does not
+     exist.
+
+   \item Rule 3: the \code{cache}$(T, TargetNode, RKey)$ is kept in the
+      database.
+
+   \item Rules 4 and 5: they do not derive or consume any cache related facts.
+
+\end{itemize}
+\end{proof}
+
+\begin{theorem}[Valid replace]
+Assume a valid BST and a set of threads with a valid cache. Given a
+\code{replace}$(A, RKey, RValue)$ fact at node $A$, the node $N$ with key $RKey$
+will replace its \code{value}$(N, RKey, Value)$ fact to \code{value}$(N, RKey,
+RValue)$.
+\end{theorem}
+\begin{proof}
+
+First consider that node $A$ makes up a BST and then use induction on the size
+of that smaller BST.
+
+In the base case, where $A = N$, rule 1 and 2 will apply. Rule 1 is applied if
+the executing thread has node $N$ already in the cache. Rule 2 applies when the
+executing thread does not have the node $N$ in the cache.
+
+In the inductive case, there are two sub-cases:
+
+\begin{itemize}
+   \item The executing thread has a valid \code{cache} item for key $RKey$ (from
+      Variant~\ref{appendix:proof:key_value_invariant}),
+      therefore rule 3 is applied and a \code{replace} fact is derived at node
+      $N$.
+
+   \item Without a valid \code{cache} item, rules 4 or 5 are applied. Rule 4
+      applies if the key is in the left branch and rule 5 applies if the key is
+      in the right branch. Use the induction hypothesis on the selected branch.
+
+\end{itemize}
+\end{proof}
