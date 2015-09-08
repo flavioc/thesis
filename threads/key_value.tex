@@ -50,7 +50,7 @@ type linear cache-size(thread, int).
 replace(A, Key, RValue),*hfill*label{line:threads:kv_rule1_start}// Rule 1: key exists and is also in the cache
 value(A, Key, Value),
 *underline{cache(T, A, Key)}
-   -o value(A, Key, RValue).
+   -o value(A, Key, RValue),
       *underline{cache(T, A, Key)}.*label{line:threads:kv_rule1_end}
 
 replace(A, Key, RValue),*label{line:threads:kv_rule2_start}*hfill// Rule 2: key exists and is not in the cache

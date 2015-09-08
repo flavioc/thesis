@@ -31,19 +31,21 @@ In the context of the Claytronics project~\cite{goldstein-computer05},
 Ashley-Rollman et al.~\cite{ashley-rollman-iclp09,
 ashley-rollman-derosa-iros07wksp} created Meld, a logic programming language
 suited to program massively distributed systems made of modular robots with a
-dynamic topology. Meld programs can derive actions that are used to make the
-robots act on the outside world. The distribution of computation is done by
+dynamic topology. Meld programs can derive actions that are used by the
+robots to act on the outside world. The distribution of computation is done by
 first partitioning the program state across the robots and then by making the
 computation local to the robot. Because Meld programs are sets of logical
-clauses, they are more amenable to proofs.
+clauses, they are more amenable to proofs than programs written using
+lower-level programming abstractions.
 
 In this thesis, we present Linear Meld (LM), a new language for parallel
-programming over graph data structures that extends the original Meld with
-linear logic and coordination. Linear logic gives the language a structured way
-to manage state, allowing the programmer to assert and retract logical facts.
-While the original Meld sees a running program as an ensemble of robots, LM sees
-the program as a graph of node data structures, where each node performs
-computation independently and is able to communicate with other nodes.
+programming over graph data structures that extends the original Meld
+programming language with linear logic and coordination. Linear logic gives the
+language a structured way to manage state, allowing the programmer to assert and
+retract logical facts.  While the original Meld sees a running program as an
+ensemble of robots, LM sees the program as a graph of node data structures,
+where each node performs computation independently of other nodes and is able to
+communicate with its neighborhood of nodes.
 
 LM introduces a new mechanism, called coordination, that is semantically
 equivalent to regular computation and allows the programmer to reason about

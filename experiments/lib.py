@@ -847,7 +847,7 @@ class experiment(object):
       titlefontsize = 22
       ylabelfontsize = 20
       if name_coord:
-         ax.set_title(self.name + " (" + name_coord + " " + self.dataset + ")", fontsize=titlefontsize)
+         ax.set_title(name2title(self.name) + " (" + name_coord + " " + self.dataset + ")", fontsize=titlefontsize)
       else:
          ax.set_title(self.title, fontsize=titlefontsize)
       if not name_coord:

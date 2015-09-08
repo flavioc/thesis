@@ -1,13 +1,15 @@
 
 We propose a new linear logic programming language, called Linear Meld~(LM),
-designed to write declarative parallel graph based programs for multicore
-architectures.  LM is a novel programming language that makes coordination a
-first-class programming construct and semantically equivalent to computation.
-Coordination allows the programmer to write declarative code that reasons about
-the underlying parallel architecture in order to improve the run time and
-scalability of programs. Since LM is based on logical foundations, programs are
-amenable to reasoning, even in the presence of coordination. We will support our
-thesis through seven major contributions:
+designed to write \textbf{declarative parallel graph based programs} for
+multicore architectures. LM is a novel programming language that makes
+\textbf{coordination} a first-class programming construct that is
+\textbf{semantically equivalent to computation}. Coordination allows the
+programmer to write declarative code that reasons about the underlying parallel
+architecture in order to improve the run time and scalability of programs. Since
+LM is based on logical foundations, programs are amenable to reasoning, even in
+the presence of coordination.
+
+We support our thesis through seven major contributions:
 
 \begin{description}
    
@@ -27,14 +29,14 @@ thesis through seven major contributions:
    computation and partitions data and is semantically equivalent to standard
    computation facts. We used the concept of action facts and sensing facts to
    coordinate the execution of programs. We can increase the priority of certain
-   nodes during runtime according to the state of the computation and to the
-   state of the runtime in order to make better scheduling decisions so that
-   programs can be more scalable and run faster.
+   nodes according to the state of the computation and to the state of the
+   runtime in order to make better scheduling decisions so that programs can be
+   more scalable and run faster.
 
    \item[Thread-Based Facts]
 
    While LM can be classified as a programming language with implicit
-   parallelism, it introduces thread facts to support some form of explicit
+   parallelism, it introduces thread facts to support some form of declarative explicit
    parallelism. Thread facts allow the programmer to reason about the state of
    the underlying parallel architecture, namely the execution thread, by
    managing facts about each thread. Thread facts can be used along with regular
@@ -46,9 +48,10 @@ thesis through seven major contributions:
    
    \item[Provability]
    
-   We leveraged the logical foundations of LM to show how to prove correctness
+   We leveraged the logical foundations of LM to show how to prove the correctness
    of programs. We also show that coordination facts do not change those
-   correctness proofs but only improve run time, scalability or memory usage.
+   correctness proofs but only improve run time, scalability or memory usage. We
+   also show how to reason with thread-based facts.
 
 \item[Efficient Runtime and Compilation]
 
@@ -58,7 +61,7 @@ thesis through seven major contributions:
    structures. We have achieved a sequential performance that is less than one
    order of magnitude slower than hand-written sequential C++ programs and is
    competitive with some more mature frameworks such as
-   GraphLab~\cite{GraphLab2010}.
+   GraphLab~\cite{GraphLab2010} or Ligra~\cite{Shun:2013:LLG:2517327.2442530}.
 
 \item[Multicore Parallelism]
    
