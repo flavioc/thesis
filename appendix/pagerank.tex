@@ -26,9 +26,9 @@ PageRanks; and \code{update} re-computes the PageRank value from the neighbor's
 PageRank values. Rules in
 lines~\ref{line:language:apagerank_update1}-\ref{line:language:apagerank_update2}
 update the \code{neighbor-pagerank} values, while rule in
-lines~\ref{line:language:apagerank_new1}-\ref{line:language:apagerank_new2}
+lines~\ref{line:language:apagerank_new11}-\ref{line:language:apagerank_new12}
 asynchronously updates the current PageRank value. Finally, the third rule in
-lines~\ref{line:language:apagerank_new1}-\ref{line:language:apagerank_new2}
+lines~\ref{line:language:apagerank_new21}-\ref{line:language:apagerank_new22}
 informs the neighbor nodes about the newly computed PageRank value by deriving
 multiple \code{new-neighbor-pagerank} facts. Note that in this rule, we use the
 function \code{fabs} that computes the absolute value of a floating point
@@ -54,20 +54,20 @@ neighbor-pagerank(A, B, Old, OldIteration),
 Iteration <= OldIteration
    -o neighbor-pagerank(A, B, Old, OldIteration).\label#line:language:apagerank_update2&
 
-sum-ranks(A, Acc),\label#line:language:apagerank_new1&\hfill// Rule 3: propagate new pagerank
+sum-ranks(A, Acc),\label#line:language:apagerank_new11&\hfill// Rule 3: propagate new pagerank
 NewRank = damping/float(pages) + (1.0 - damping) * Acc,
 pagerank(A, OldRank, Iteration)
       -o pagerank(A, NewRank, Iteration + 1),
          {B, W, Delta | !outbound(A, B, W), Delta = fabs(NewRank -
                OldRank) * W -o new-neighbor-pagerank(B, A, NewRank, Iteration + 1),
-               if Delta > bound then update(B) end}.\label#line:language:apagerank_new2&
+               if Delta > bound then update(B) end}.\label#line:language:apagerank_new12&
 
 update(A), update(A) -o update(A).\hfill// Rule 4: prune update facts
 
-update(A),\label#line:language:apagerank_new1&\hfill// Rule 5: start update process
+update(A),\label#line:language:apagerank_new21&\hfill// Rule 5: start update process
 !numInbound(A, T)
    -o [sum => V; B, Val, Iter | neighbor-pagerank(A, B, Val, Iter),
-         V = Val/float(T) -o neighbor-pagerank(A, B, Val, Iter) -> sum-ranks(A, V)].\label#line:language:apagerank_new2&
+         V = Val/float(T) -o neighbor-pagerank(A, B, Val, Iter) -> sum-ranks(A, V)].\label#line:language:apagerank_new22&
 
 pagerank(A, 1.0 / float(pages), 0).\hfill// Initial facts
 update(A).
