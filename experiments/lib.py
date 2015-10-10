@@ -837,6 +837,73 @@ class experiment(object):
       ax.set_yscale('log', basey=10)
       ax.yaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter('%d'))
 
+   def coordination_compare_with_base(self, coord_exp, cexp, prefix, name_coord = None, other_systems={}, base_time=None, base_name=None):
+      fig = plt.figure()
+      ax = fig.add_subplot(111)
+      ax2 = ax.twinx()
+
+      names = ('Scalability')
+      formats = ('f4')
+      titlefontsize = 22
+      ylabelfontsize = 20
+      ax.set_title(self.title, fontsize=titlefontsize)
+      if not name_coord:
+         name_coord = "Coordinated"
+
+      ax.yaxis.tick_left()
+      ax.yaxis.set_label_position("left")
+      ax.set_ylabel('Execution Time (ms)', fontsize=ylabelfontsize)
+      ax.set_xlabel('Threads', fontsize=ylabelfontsize)
+      ax2.set_ylabel('Speedup', fontsize=ylabelfontsize)
+      self.set_log_scale(ax)
+      ax.set_xlim([1, self.max_threads()])
+      min_time = min(self.min_time(), coord_exp.min_time())
+      for other_name, other_exp in other_systems.iteritems():
+         min_time = min(min_time, other_exp.min_time())
+      max_time = max(self.max_time(), coord_exp.max_time()) * 100
+
+      ax.set_ylim([min_time, max_time])
+      cmap = plt.get_cmap('gray')
+      if not base_time:
+         base_time = coord_exp.get_time(1)
+      if not base_name:
+         base_name = "Coordinated"
+
+      regtime, = ax.plot(self.x_axis(), self.time_data(),
+         label='Regular Run Time', linestyle='-', marker='+', color='r')
+      coordtime, = ax.plot(coord_exp.x_axis(), coord_exp.time_data(),
+         label=name_coord + ' Run Time', linestyle='-', marker='o', color='g')
+      regspeedup, = ax2.plot(self.x_axis(), self.base_speedup_data(base_time), label="Regular Speedup", linestyle='--', color='r', marker='+')
+      coordspeedup, = ax2.plot(coord_exp.x_axis(), coord_exp.base_speedup_data(base_time),
+            label=name_coord + ' Speedup', linestyle='--', marker='^', color='g')
+      if cexp:
+         ctime, = ax.plot(self.x_axis(), [cexp.get_time(1)] * len(self.x_axis()),
+           label='Linear', linestyle='-', color=cmap(0.2))
+      otherplots = []
+      for other_name, other_exp in other_systems.iteritems():
+         plot, = ax.plot(other_exp.x_axis(), other_exp.time_data(),
+               label = other_name + ' Run Time', linestyle='-', marker='s', color='blue')
+         otherplots.append((other_name, plot))
+
+      lines = [(regtime), coordtime, regspeedup, coordspeedup]
+      labels = ["Regular", name_coord, base_name + "(1)/Regular(t)", base_name + "(1)/" + name_coord + "(t)"]
+      if cexp:
+        lines.append(ctime)
+        labels.append("C++")
+      for (name, plot) in otherplots:
+         lines.append(plot)
+         labels.append(name)
+
+      ax.legend(lines, labels, loc=2, fontsize=LEGEND_SIZE, fancybox=True, framealpha=FRAME_ALPHA, markerscale=2)
+
+      set_ticks()
+      setup_lines(ax, cmap)
+      setup_lines(ax2, cmap)
+
+      name = prefix + self.create_filename()
+      plt.gcf().subplots_adjust(left=0.2)
+      plt.savefig(name)
+
    def coordination_compare(self, coord_exp, cexp, prefix, name_coord = None, max_speedup = None, other_systems={}):
       fig = plt.figure()
       ax = fig.add_subplot(111)

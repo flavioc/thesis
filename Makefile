@@ -151,10 +151,12 @@ coord:
 		experiments/absolute/runtime.csv \
 		experiments/coordination/ligra-scale.csv \
 		experiments/coordination/cmp-
-	$(RE) experiments/coordination/compare.py \
+	$(RE) experiments/coordination/compare-sssp-unbuffered.py \
 		experiments/scalability/runtime.csv \
 		experiments/coordination/sssp-coord-unbuffered.csv \
 		experiments/absolute/runtime.csv \
+		experiments/coordination/ligra-scale.csv \
+		experiments/coordination/sssp-coord.csv \
 		experiments/coordination/unbuffered-
 	$(RE) experiments/coordination/compare.py \
 		experiments/scalability/runtime.csv \

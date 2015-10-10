@@ -219,19 +219,14 @@ coordination operation in order to reduce queue operations and overall locking.
 In order to observe the effects of the coalescing optimization, we disabled its
 support from the VM and then we ran the same experiments where priority updates
 are done immediately. The results are presented in
-Fig.~\ref{fig:coordination:results_sssp_unbuffered}. From the results, we can
-see that some datasets, such as EU Email and US Power Grid, maintain their
-overall scalability, especially the speedup (\textbf{Coordinated(1)/Coordinated(t)})
-for 32 threads (\textbf{t = 32}). For the OCLinks and Twitter datasets, there is
+Fig.~\ref{fig:coordination:results_sssp_unbuffered} and are represented using
+the \textbf{UnOptimized} label. From the results, we can see that some datasets,
+such as EU Email and US Power Grid, maintain their overall scalability,
+especially the speedup (\textbf{Coordinated(1)/Coordinated(t)}) for 32 threads
+(\textbf{t = 32}). For the OCLinks, Twitter and Live Journal datasets, there is
 some performance degradation since their overall scalability drops without the
-optimization. However, the Live Journal dataset improves its performance and
-scalability when the optimization is disabled, since we only compute the
-shortest distance for 2 nodes, therefore the opportunities for optimization are
-fewer and supporting it ends up slowing the program. Interestingly, the same
-does not happen for the Orkut dataset because the number of edges is much higher
-and disabling the optimization makes the program perform slightly worse.  For
-all the other datasets, we compute the shortest distance from an appreciable
-number of nodes and the coalescing optimization is worth its cost.
+optimization. This shows that coordination coalescing is an effective
+optimization for improving the run time of coordinated programs.
 
 \input{coordination/sssp_unbuffered}
 
