@@ -62,7 +62,7 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex ack.tex \
 		lld/der-agg.tex lld/comp-fix.tex \
 		logic/lld.tex logic/hld.tex logic/sequent_calculus.tex \
 		logic/linear_logic.tex local.tex \
-		implementation/rule_engine.tex \
+		implementation/rule_engine.tex implementation/no-refs.tex \
 		$(wildcard hld/*.tex) \
 		$(wildcard lld/*.tex) \
 		$(EXPERIMENT_FILES) \

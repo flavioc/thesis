@@ -563,7 +563,7 @@ class experiment(object):
       othertime, = ax.plot(self.x_axis(), other_exp.time_data(),
          label='Other Allocator Run Time', linestyle='-', marker='o', color='g')
       stdspeedup, = ax2.plot(self.x_axis(), self.base_speedup_data(),
-            label='Standard Allocator Speedup', linestyle='--', marker='+', color='r')
+            label='Standard Allocator Speedup', linestyle='--', marker='*', color='r')
       otherspeedup, = ax2.plot(self.x_axis(), other_exp.base_speedup_data(),
             label='Other Allocator Speedup', linestyle='--', marker='v', color='g')
       ax.legend([stdtime, stdspeedup, othertime, otherspeedup],
@@ -737,7 +737,7 @@ class experiment(object):
       coordspeedup, = ax2.plot(coord_exp.x_axis(), coord_exp.base_speedup_data(self.get_time(1)),
             label=name_coord + ' Speedup', linestyle='--', marker='^', color='g')
       regspeedup, = ax2.plot(self.x_axis(), self.base_speedup_data(),
-            label='Regular Speedup', linestyle='--', marker='+', color='r')
+            label='Regular Speedup', linestyle='--', marker='*', color='r')
       if cexp:
          ctime, = ax.plot(self.x_axis(), [cexp.get_time(1)] * len(self.x_axis()),
            label='Linear', linestyle='-', color=cmap(0.2))
@@ -778,7 +778,7 @@ class experiment(object):
 
       lmratio, = ax.plot(self.x_axis(), sbp.get_improvement(self), label='LM', linestyle='-', marker='+', color='r')
       glfiforatio, = ax.plot(self.x_axis(), glsbp.get_improvement(glfifo), label='GraphLab fifo', linestyle='--', marker='o', color='g')
-      glmultiratio, = ax.plot(self.x_axis(), glsbp.get_improvement(glmulti), label='GraphLab multiqueue', linestyle='--', marker='x', color='g')
+      glmultiratio, = ax.plot(self.x_axis(), glsbp.get_improvement(glmulti), label='GraphLab multiqueue', linestyle='--', marker='*', color='g')
 
       lines = [lmratio, glfiforatio, glmultiratio]
       labels = ["LM", "GraphLab fifo", "Graphlab multiqueue"]
@@ -815,7 +815,7 @@ class experiment(object):
       regtime, = ax.plot(self.x_axis(), self.time_data(),
          label='LM Run Time', linestyle='-', marker='+', color='r')
       regspeedup, = ax2.plot(self.x_axis(), self.base_speedup_data(),
-            label='LM Speedup', linestyle='--', marker='+', color='r')
+            label='LM Speedup', linestyle='--', marker='*', color='r')
       gltime, = ax.plot(glexp.x_axis(), glexp.time_data(),
          label='GraphLab Run Time', linestyle='--', marker='o', color='g')
       glspeedup, = ax2.plot(glexp.x_axis(), glexp.base_speedup_data(glexp.get_time(1)),
@@ -873,7 +873,7 @@ class experiment(object):
          label='Regular Run Time', linestyle='-', marker='+', color='r')
       coordtime, = ax.plot(coord_exp.x_axis(), coord_exp.time_data(),
          label=name_coord + ' Run Time', linestyle='-', marker='o', color='g')
-      regspeedup, = ax2.plot(self.x_axis(), self.base_speedup_data(base_time), label="Regular Speedup", linestyle='--', color='r', marker='+')
+      regspeedup, = ax2.plot(self.x_axis(), self.base_speedup_data(base_time), label="Regular Speedup", linestyle='--', color='r', marker='*')
       coordspeedup, = ax2.plot(coord_exp.x_axis(), coord_exp.base_speedup_data(base_time),
             label=name_coord + ' Speedup', linestyle='--', marker='^', color='g')
       if cexp:
@@ -941,7 +941,7 @@ class experiment(object):
          label='Regular Run Time', linestyle='-', marker='+', color='r')
       coordtime, = ax.plot(coord_exp.x_axis(), coord_exp.time_data(),
          label=name_coord + ' Run Time', linestyle='-', marker='o', color='g')
-      regspeedup, = ax2.plot(self.x_axis(), self.base_speedup_data(coord_exp.get_time(1)), label="Regular Speedup", linestyle='--', color='r', marker='+')
+      regspeedup, = ax2.plot(self.x_axis(), self.base_speedup_data(coord_exp.get_time(1)), label="Regular Speedup", linestyle='--', color='r', marker='*')
       coordspeedup, = ax2.plot(coord_exp.x_axis(), coord_exp.base_speedup_data(coord_exp.get_time(1)),
             label=name_coord + ' Speedup', linestyle='--', marker='^', color='g')
       if cexp:
@@ -997,7 +997,7 @@ def set_ticks():
 
 def setup_lines(ax, cmap):
    lines = ax.lines
-   markersize = 16
+   markersize = 18
    markerspace = 1
    c = cmap(0.5)
 
