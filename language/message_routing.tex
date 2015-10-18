@@ -52,9 +52,9 @@ The first rule
 (lines~\ref{line:language:message_first1}-\ref{line:language:message_first2})
 grabs the head node \code{B} in the route list (third argument of \code{message}
 using the syntax \code{[B | L]} to represent the head and tail of a list) and
-ensures that a communication edge exists (through \code{edge(A,~B)}). If so, we
-increase the number of processed messages by consuming \code{processed(A,~N)}
-and then deriving \code{processed(A,~N~+~1)}, and by deriving a new message to
+ensures that a communication edge exists (through \code{edge(A,~B)}). If so,
+the number of processed messages is increased by consuming \code{processed(A,~N)}
+and deriving \code{processed(A,~N~+~1)}, along with a new message to
 the head node \code{B}.  When the route list is empty, the message has reached
 its destination and thus it is simply consumed (second rule in lines
 \ref{line:language:message_second1}-\ref{line:language:message_second2}).
@@ -124,7 +124,7 @@ where it will be consumed (Fig.~\ref{fig:message_trace}(d)).
 
 The attentive reader will wonder how much concurrency is available in this
 particular routing implementation. For a single message, there is no concurrency
-because the message follows a pre-determined path and it travels from node to
+because the message follows a pre-determined path as it travels from node to
 node. However, concurrency arises when the program needs to route multiple
 messages. The amount of concurrency is then dependent on the messages routing
 lists being non-overlapping. If messages travel in different paths, then there

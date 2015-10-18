@@ -135,10 +135,10 @@ For the initial facts, they are translated as rules where the LHS is $\one$:
 
 \subsection{Selectors}\label{section:language:selector}
 
-When a rule's LHS is instantiated using facts from the database, facts are
-picked non-deterministically. While our system uses an implementation dependent
-order for efficiency reasons, sometimes it is important to sort facts by one of
-the arguments. The abstract syntax for this construct is
+During rule derivation, the facts to be used in the LHS of the rule are picked
+non-deterministically. While our system uses an implementation dependent order
+for efficiency reasons, sometimes it is important to sort facts by one of the
+arguments. The abstract syntax for this construct is
 $\selector{S}{y}{LHS}{RHS}$, where $S$ is the selector operation and $y$ is the
 variable in $LHS$ that represents the value to be sorted according to $S$. An
 example using concrete syntax is as follows:
@@ -175,14 +175,14 @@ added to node \code{A}.
 
 \subsection{Comprehensions}
 
-Sometimes, when consuming a linear fact, we might want to generate several new
-facts depending on the contents of the database. To solve this particular need,
+When consuming a linear fact we might want to generate several new
+facts depending on the contents of the database. To solve this particular end,
 we use comprehensions, which are sub-rules that are applied with all possible
 combinations of facts from the database. In a comprehension
 $\comprehension{\widehat{x}}{SLHS}{SRHS}$, $\widehat{x}$ is a list of variables
-in the scope of $SLHS$ and $SRHS$ being $SLHS$ the comprehension's left-hand
-side and $SRHS$ the comprehension's right-hand side. $SLHS$ is used to generate
-all possible combinations for $SRHS$, according to the list of variables
+in the scope of $SLHS$ and $SRHS$, where $SLHS$ is the comprehension's left-hand
+side and $SRHS$ is the comprehension's right-hand side. $SLHS$ is used to generate
+all possible combinations for $SRHS$ according to the list of variables
 $\hat{x}$ and to the facts in the database. We have already seen an example of a
 comprehension in the graph visit program (Fig.~\ref{code:language:visit}
 line~\ref{line:language:visit_comprehension}):
@@ -236,17 +236,16 @@ update(A),
 
 The rule aggregates the values \code{V} by iterating over
 \code{neighbor-pagerank(A, B, Val, Iter)} (the $SLHS$) and by re-deriving the
-fact \code{neighbor-pagerank(A, B, Val, Iter)} (the $SHRS_1$). Once all
-values are inspected, the atomic proposition \code{sum-ranks(A, V)} present in
-$SRHS_2$ is derived once with \code{V} representing the sum of all the
-neighbor values \code{Val/float(T)}. LM provides several aggregate operations, including the
-\code{min} (minimum value), \code{max} (maximum value), \code{sum} (add all
-numbers), \code{count} (count combinations) and \code{collect} (collect items
-into a list).
+fact \code{neighbor-pagerank(A, B, Val, Iter)} (the $SHRS_1$). Once all values
+are inspected, the atomic proposition \code{sum-ranks(A, V)} present in $SRHS_2$
+is derived once with \code{V} representing the sum of all the neighbor values
+\code{Val/float(T)}. LM provides several aggregate operations, including the
+\code{min} (minimum value), \code{max} (maximum value), \code{sum}, \code{count}
+(count combinations) and \code{collect} (collect items into a list).
 
 \subsection{Directives}
 
 LM also supports a small set of extra-logical directives that are not
 represented by the abstract syntax but may be used by the programmer to change
 the compilation and runtime behavior of the program. The full list is presented
-in Appendix~\ref{appendix:directives}
+in Appendix~\ref{appendix:directives}.

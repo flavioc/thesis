@@ -66,16 +66,16 @@ variables in \code{expression} must be typed and \code{X} is assigned the value
 of \code{expression} during run time.  Any variable used in the RHS of the rule
 must be defined in the LHS, because otherwise derived facts would not be
 \emph{grounded}, that is, some arguments would be undefined or uncomputable.
-For comprehensions and aggregates, type checking is identical, however, the LHS
+For comprehensions (and aggregates), type checking is identical, however, the LHS
 of each construct must declare explicitly the variables in scope.
 
 Another important component of type checking is \emph{locality checking}. The
 first argument of each atomic proposition in the LHS must use the same variable
 in order to enforce locality and allow concurrency. This \emph{home variable} is
-always typed as a \emph{node} and represents a node in the program's graph. In
-the rule's RHS, other home variables are allowed, as long as they have been
-defined in the LHS. For comprehensions and aggregates, the LHS must use the
-same home argument as the rule's LHS.
+always typed as a \emph{node} and represents a node in the graph. In the rule's
+RHS, other home variables are allowed, as long as they have been defined in the
+LHS. For comprehensions, the LHS must use the same home argument as the rule's
+LHS.
 
 \section{Operational Semantics}\label{sec:language:semantics}
 \input{language/semantics}

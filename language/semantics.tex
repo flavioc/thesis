@@ -1,9 +1,9 @@
 
-Nodes are selected to computation non-deterministically (i.e., any node can be
+Nodes are selected for computation non-deterministically (i.e., any node can be
 picked to run). This means that the programmer cannot expect that facts coming
 from different nodes will be considered as a whole since the process is
 non-deterministic. The operational semantics promises that rule derivations are
-performed atomically, therefore if a rule derives many facts belonging to a node
+performed atomically, therefore, if a rule derives many facts belonging to a node
 then that node will receive them all at once. Under these restrictions,
 computation can then be parallelized by processing nodes concurrently.
 

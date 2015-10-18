@@ -14,7 +14,7 @@ programming abstractions such as \emph{message passing} (e.g.,
 MPI~\cite{gabriel04-open-mpi}) and \emph{shared memory} (e.g.,
 Pthreads~\cite{Butenhof:1997:PPT:263953} or
 OpenMP~\cite{Chapman-2007-UOP-1370966}). While such abstractions give a lot of
-control to the programmer and provide excellent performance, program APIs are
+control to the programmer and provide excellent performance, these APIs are
 hard to use and debug, which makes it difficult to prove that a program is
 correct, for instance. On the opposite end, we have many declarative programming
 models~\cite{Blelloch:1996:PPA:227234.227246} that can exploit some form of
@@ -59,13 +59,13 @@ imperative parallel programming. In turn, this makes LM a novel declarative
 language that allows the programmer to optionally control how execution and data
 is managed by the execution system.
 
-Our goal with LM is to efficiently execute provably correct declarative
+Our main goal with LM is to efficiently execute provably correct declarative
 graph-based programs on multicore machines. To show this, we wrote many
-graph-based algorithms, proved program correctness and developed a compiler and
-runtime system where we have seen good experimental results when executing these
-programs. Finally, we have also used coordination in some of these programs and
-we were able to see interesting improvements in terms of run time, memory usage
-and scalability.
+graph-based algorithms, proved program correctness for some programs and
+developed a compiler and runtime system where we have seen good experimental
+results. Finally, we have also used coordination in some programs and we were
+able to see interesting improvements in terms of run time, memory usage and
+scalability.
 
 \section{Thesis Statement}
 

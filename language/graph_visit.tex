@@ -55,17 +55,6 @@ visit(@1).
   \label{code:language:visit_initial}
 \end{figure}
 
-Fig.~\ref{fig:exec_trace} shows a possible execution trace for the visit
-program. After applying the first rule at node \code{@1} we get the database in
-Fig~\ref{fig:exec_trace}~(b).  Note that node \code{@1} is now visited and nodes
-\code{@2} and \code{@4} now have a \code{visit} fact. At this point, we could
-either apply rule 1 at node \code{@2} or at node \code{@4}.  For this specific
-trace, we apply the rule at node \code{@2}, resulting in
-Fig.~\ref{fig:exec_trace}~(c). Node \code{@4} now has two \code{visit} facts,
-thus we can apply rule 1 followed by rule 2, therefore consuming both
-\code{visit} facts and deriving \code{visited}. In addition, we can also apply
-rule 1 at node \code{@3} to reach the state of Fig.~\ref{fig:exec_trace}~(d).
-
 \begin{figure}[h]
         \centering
         \begin{subfigure}[b]{0.45\textwidth}
@@ -99,6 +88,17 @@ rule 1 at node \code{@3} to reach the state of Fig.~\ref{fig:exec_trace}~(d).
            program. Note that the \code{edge} facts were omitted for simplicity.}
         \label{fig:exec_trace}
 \end{figure}
+
+Fig.~\ref{fig:exec_trace} shows a possible execution trace for the visit
+program. After applying the first rule at node \code{@1} we get the database in
+Fig~\ref{fig:exec_trace}~(b).  Note that node \code{@1} is now visited and nodes
+\code{@2} and \code{@4} now have a \code{visit} fact. At this point, we could
+either apply rule 1 at node \code{@2} or at node \code{@4}.  For this specific
+trace, we apply the rule at node \code{@2}, resulting in
+Fig.~\ref{fig:exec_trace}~(c). Node \code{@4} now has two \code{visit} facts,
+thus we can apply rule 1 followed by rule 2, therefore consuming both
+\code{visit} facts and deriving \code{visited}. In addition, we can also apply
+rule 1 at node \code{@3} to reach the state of Fig.~\ref{fig:exec_trace}~(d).
 
 The graph visit has the potential to have plenty of concurrency. Once the visit
 starts from the initial node, it expands to other nodes, allowing several nodes

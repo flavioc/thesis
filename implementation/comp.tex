@@ -8,7 +8,7 @@ instead of C++ code.
 
 \subsection{Ordinary Rules}\label{sec:compile}
 
-After an inference rule is compiled, it must respect the \emph{fact constraints}
+After a rule is compiled, it must respect the \emph{fact constraints}
 (facts must exist in the database) and the \emph{join constraints} that can be
 represented by variable constraints and/or boolean expressions. For instance,
 consider the second rule of the bipartiteness checking program presented in
@@ -289,7 +289,8 @@ new_neighbor_pagerank <- new_neighbor_pagerank.head()
 while(new_neighbor_pagerank is valid)
 {
    // Hash table for neighbor-pagerank is indexed by the second argument,
-   // therefore we search for the bucket using the second argument of new-neighbor-pagerank.
+   // therefore we search for the bucket using the second argument
+   // of new-neighbor-pagerank.
    neighbor_pagerank <- neighbor_pagerank_table.lookup(new_neighbor_pagerank.get_node(1))
    while(neighbor_pagerank is valid)
    {

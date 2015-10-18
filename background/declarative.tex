@@ -1,17 +1,17 @@
 Declarative programming languages are considered to be high-level programming
 languages, because they allow the programmer to concentrate more on what the
-problem is, rather than telling the computer the steps it needs to solve the
-problem. Declarative programming has been hailed as a solution to 
-parallel programming, since the problem of implementing the details of
-parallelism is moved from the programmer to the compiler and runtime
-environment. The programmer writes code without having to deal with parallel
-programming constructs and the compiler automatically parallelizes the program
-in order to take advantage of multiple threads of execution. Unfortunately, this
-comes at a cost of low programmer control over how computation is performed,
-which may not be optimal under every circumstance. However, declarative
-programming remains attractive because formal reasoning is performed at a higher
-level and does not have to deal with low level parallel programming constructs
-such as locks or message passing.
+problem is, rather than telling the computer the steps it needs to do to solve
+the problem. Declarative programming has been hailed as a solution to parallel
+programming, since the problem of implementing the details of parallelism is
+moved from the programmer to the compiler and runtime environment. The
+programmer writes code without having to deal with parallel programming
+constructs and the compiler automatically parallelizes the program in order to
+take advantage of multiple threads of execution. Unfortunately, this comes at a
+cost of low programmer control over how computation is performed, which may not
+be optimal under every circumstance. However, declarative programming remains
+attractive because formal reasoning is performed at a higher level and does not
+have to deal with low level parallel programming constructs such as locks or
+message passing.
 
 \subsection{Functional Programming}
 
@@ -202,7 +202,7 @@ is immediately updated to take the new logical fact into account. To take
 advantage of these state management facilities, Meld supports \emph{sensing} and
 \emph{action} facts. Sensing facts are derived from the state of the world
 (e.g., temperature, new neighbor node) and action facts have an
-effect on the world (e.g., movement), changing the underlying sensing facts.
+effect on the world (e.g., movement, light emission).
 
 Meld was inspired by the P2 system~\cite{Loo-condie-garofalakis-p2}, which
 includes a logic programming language called NDlog~\cite{Loo:EECS-2006-177} for
