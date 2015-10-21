@@ -57,7 +57,7 @@ the node structure in order to save space. These pointers are also used in the
 priority queue but for storing the current priority and the node's index in the binary
 heap array. 
 
-Remember that to minimize inter-thread communication, node priorities are
+Note that, in order to minimize inter-thread communication, node priorities are
 implemented at the thread level, i.e., when a thread picks the highest priority
 node from the priority queue, it picks the highest priority node from its
 subgraph of nodes and not the highest priority node from the whole graph.

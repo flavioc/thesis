@@ -44,6 +44,13 @@ lines~\ref{line:coord:queens_ldiag1}-\ref{line:coord:queens_ldiag2}) and if
 there is no queen on $S$'s right diagonal (rules in
 lines~\ref{line:coord:queens_rdiag1}-\ref{line:coord:queens_rdiag2}).
 
+\begin{figure}[ht!]
+\includegraphics[width=0.4\textwidth]{figures/coordination/nqueens.pdf}
+\mycap{Propagation of states using the \code{send-down} fact.}
+\label{coordination:fig:nqueens}
+\end{figure}
+
+
 \begin{figure}[h!]
 \begin{LineCode}[fontsize=\scriptsize,commandchars=\*\#\&]
 type list int state.*hfill// Type declaration
@@ -116,6 +123,7 @@ Fig.~\ref{coordination:fig:nqueens}.
 The full proof of correctness for
 the N-Queens program is presented in Appendix~\ref{appendix:proofs:nqueens}.
 
+
 \begin{figure}[h!]
 \begin{LineCode}[commandchars=\*\#\&]
 final-state(@57, [0, 4, 7, 5, 2, 6, 1, 3]).*hfill// States at square (7, 0)
@@ -144,12 +152,6 @@ and the \code{size} of the board and then returns the thread for node \code{A}.
 Our experiments show that, on a shared memory system, it does not matter much if
 we start with a bad placement since node stealing overcomes those issues by load
 balancing dynamically.
-
-\begin{figure}[ht!]
-\includegraphics[width=0.4\textwidth]{figures/coordination/nqueens.pdf}
-\mycap{Propagation of states using the \code{send-down} fact.}
-\label{coordination:fig:nqueens}
-\end{figure}
 
 However, the N-Queens program incrementally builds and shares lists representing
 valid board states that are transmitted from top to bottom. In order to improve

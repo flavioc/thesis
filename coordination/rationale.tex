@@ -1,12 +1,12 @@
 To motivate the need for coordination, we use the Single Source Shortest
-Path~(SSSP) program, a concise program that, as we will see, can take advantage
-of custom scheduling policies to improve its performance.
+Path~(SSSP) program, a concise program that can take advantage of custom
+scheduling policies to improve its performance.
 Figure~\ref{code:shortest_path_program} and Figure~\ref{code:coord:sssp_init}
-shows a possible implementation in LM, and Fig.~\ref{fig:shortest_path_program}
+show a possible implementation in LM, and Fig.~\ref{fig:shortest_path_program}
 shows an instance of the program on a particular dataset. Note that in
-Section~\ref{section:implementation:performance}, we presented the
-MSSD program which is essentially the SSSP program modified to compute multiple
-shortest distances.
+Section~\ref{section:implementation:performance}, we presented the MSSD program
+which is essentially the SSSP program modified to compute multiple shortest
+distances.
 
 The SSSP program starts with the declaration of the predicates~
 (lines~\ref{line:coord:sssp_pred1}-\ref{line:coord:sssp_pred2}). As usual, the
@@ -100,9 +100,9 @@ propagate new paths to the neighbors (comprehension at
 line~\ref{line:coord:sssp_first2}). The comprehension iterates over the edges of
 node \code{A} and derives a new \code{relax} fact for each node \code{B} with
 the distance \code{D2 + W}, where \code{W} is the weight of the edge. For
-example, in Fig.~\ref{fig:shortest_path_program}~(a) we apply rule 1 in node
+example, in Fig.~\ref{fig:shortest_path_program}(a) we apply rule 1 in node
 \code{@1} and two new \code{relax} facts are derived at node \code{@2} and
-\code{@3}.  Fig.~\ref{fig:shortest_path_program}~(b) is the result after
+\code{@3}.  Fig.~\ref{fig:shortest_path_program}(b) is the result after
 applying the same rule but at node \code{@2}.
 
 The second rule of the program
@@ -110,11 +110,11 @@ The second rule of the program
 \code{relax} fact that has a longer distance than the current shortest distance
 stored in \code{shortest}. There are many opportunities for custom scheduling
 in the SSSP program. For instance, after applying rule 1 in
-Fig.~\ref{fig:shortest_path_program}~(a), it is possible to either apply rules
+Fig.~\ref{fig:shortest_path_program}(a), it is possible to either apply rules
 in either node \code{@2} or node \code{@3}.  This decision depends largely on
 implementation factors such as node partitioning and number of threads in the
 system. Still, it is easy to prove that, independent of the particular scheduling used, the final
-result presented in Fig.~\ref{fig:shortest_path_program}~(c) is always achieved.
+result presented in Fig.~\ref{fig:shortest_path_program}(c) is always achieved.
 
 The SSSP program is concise and declarative but its performance depends on the
 order in which nodes are executed. If nodes with greater distances are

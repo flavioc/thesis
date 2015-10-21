@@ -15,7 +15,7 @@ except:
    sys.exit(1)
 
 print "\\begin{tabular}{c | c || c | c | c || c c} \\hline"
-print "\t\\textbf{Program} & \\textbf{Size} & \\textbf{Average} & \\textbf{Final} & \\textbf{\# Malloc} & \\textbf{\\# Facts} & \\textbf{Each} \\\\ \\hline \\hline"
+print "\t\\textbf{Program} & \\textbf{Size} & \\textbf{Average} & \\textbf{Final} & \\textbf{\\# Facts} & \\textbf{Each} \\\\ \\hline \\hline"
 
 for name in threaded.experiment_names():
    datasets = threaded.experiment_datasets_for(name)
@@ -32,7 +32,7 @@ for name in threaded.experiment_names():
       if first: first = False
       else: print "\t\t",
 
-      print " & " + dataset2title(dataset, name) + " & " + readable_mem(lmexp.get_total_memory_average(1)) + " & " + readable_mem(lmexp.get_memory_in_use(1)) + " & " + str(lmexp.get_num_mallocs(1)) + " & " + readable_decimal(lmexp.get_num_facts(1)) + " & " + ("%.2f" % (float(lmexp.get_memory_in_use(1))/float(lmexp.get_num_facts(1)))) + "KB",
+      print " & " + dataset2title(dataset, name) + " & " + readable_mem(lmexp.get_total_memory_average(1)) + " & " + readable_mem(lmexp.get_memory_in_use(1)) + " & " + readable_decimal(lmexp.get_num_facts(1)) + " & " + ("%.2f" % (float(lmexp.get_memory_in_use(1))/float(lmexp.get_num_facts(1)))) + "KB",
 
       print "\\\\"
    print "\t\\hline"

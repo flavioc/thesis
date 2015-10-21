@@ -30,7 +30,7 @@ are aware of the existence of threads. Furthermore, the availability of both
 thread and coordination facts allows and is convenient for implementing more
 sophisticated scheduling parallel algorithms.
 
-We now enumerate in more detail the main contributions of this thesis:
+We now highlight in more detail the main contributions of this dissertation:
 
 \begin{description}
    \item[Structured State]
@@ -55,12 +55,12 @@ knowledge, LM is the fastest linear logic based programming language available.
 We showed how LM semantics are specified in order to allow concurrent
 programs. We demonstrated how the language is based upon the sequent calculus of
 linear logic and we specified a low level abstract machine that closely
-resembles the real implementation. We have also proved the soundness of the
+resembles the real implementation. We also proved the soundness of the
 abstract machine.
 
 \item[Coordination]
 
-We have presented new coordination features that improve the expressive
+We presented new coordination features that improve the expressive
 power of the language by making coordination a first class programming construct
 that is semantically equivalent to regular computation. In turn, this allows the
 programmer to specify how declarative programs are scheduled by the runtime
@@ -78,18 +78,16 @@ conversely, action facts may affect which regular facts are derived.
 
 The coordination facts do not affect the correctness of programs and are well
 integrated into proofs since they do not change how rules are scheduled but how
-nodes are scheduled during execution. As long as the correctness proof does not
-take into account node scheduling, then the proof will work even in the presence
-of coordination facts.
+nodes are scheduled during execution.
 
 \item[Explicit Parallelism]
 
-We have also introduced the concept of thread facts, which enable LM programs to
+We also introduced the concept of thread facts, which enable LM programs to
 exploit the underlying architecture by making it possible to reason about the
 state of threads. Thread facts allow the programmer to escape the default
 implicit parallelism of LM and allows the implementation of structured
-scheduling algorithms that communicate directly with the underlying runtime
-system. To the best of our knowledge, this is the first time that such paradigm
+scheduling algorithms which require explicit communication between threads.
+To the best of our knowledge, this is the first time that such paradigm
 is available in a logic programming language and we are not aware of competing
 systems that allow the programmer to reason directly about thread state in a
 structured fashion.
@@ -107,9 +105,8 @@ parallelism.
 In our experiments, we noted that the memory layout of applications, especially
 the memory allocator, tends to have a significant effect on the overall
 performance. In modern architectures, good memory locality is as important as
-having efficient algorithms and in LM this is no different. Due to the use and
-storage of logical facts, the memory allocator is crucial for performance and
-scalability reasons. We have experimented with two allocators to analyze how
+having efficient algorithms and in LM this is no different.
+We experimented with two allocators to analyze how
 performance and scalability may be affected by using different strategies. It is
 our belief that it is important to focus on faster sequential execution at the
 expense of scalability in order to make declarative parallel languages more
@@ -130,7 +127,8 @@ LM is still not competitive enough to replace efficient parallel frameworks such
 as Ligra. LM is a programming language on its own right and thus requires more
 engineering effort to be competitive with frameworks implemented in languages
 such as C or C++. Better compilation and runtime systems will be required in
-order to reduce the overhead even further.
+order to reduce the overhead even further, especially as it relates to memory
+usage.
 
 Aggressive code analysis should be employed to prove invariants about predicates
 and introduce more specialized data structures for storing logical facts. The
