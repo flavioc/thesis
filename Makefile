@@ -140,7 +140,7 @@ experiments/threads/key-value-stats.tex: experiments/lib.py experiments/threads/
 
 plots: scale allocator coord thread
 
-scale:
+scale: experiments/lib.py
 	$(RE) experiments/scalability/plot.py \
 		experiments/scalability/runtime.csv \
 		experiments/absolute/runtime.csv experiments/scalability/

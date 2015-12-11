@@ -354,10 +354,10 @@ class experiment(object):
       if not base:
          base = self.times[1]
       m = max(float(base)/float(x) for th, x in self.times.iteritems() if th <= max_threads)
-      if m <= 16:
-         return math.ceil(m) + 1
+      if m <= 32:
+         return 32
       else:
-         return math.ceil(m) + 2
+         return math.ceil(m) + 1
 
    def max_time(self):
       m = max(x for th, x in self.times.iteritems() if th <= max_threads)
@@ -555,7 +555,7 @@ class experiment(object):
       self.set_log_scale(ax)
       ax.set_xlim([1, self.max_threads()])
       ax.set_ylim([min(self.min_time(), other_exp.min_time())*5, max(self.max_time(), other_exp.max_time()) * 1.25])
-      ax2.set_ylim([0, max(self.max_speedup(), other_exp.max_speedup()) * 1.25])
+      set_ticks_axis(ax2, max(self.max_speedup(), other_exp.max_speedup()))
       cmap = plt.get_cmap('gray')
 
       stdtime, = ax.plot(self.x_axis(), self.time_data(),
@@ -599,6 +599,7 @@ class experiment(object):
       ax.set_xlabel('Threads', fontsize=ylabelfontsize)
       ax.set_xlim([1, self.max_threads()])
       ax.set_ylim([self.min_time(), self.max_time()])
+      set_ticks_axis(ax2, self.max_speedup())
       cmap = plt.get_cmap('gray')
 
       ax.spines['left'].set_color('red')
@@ -726,6 +727,7 @@ class experiment(object):
       ax.set_ylabel('Execution Time (ms)', fontsize=ylabelfontsize)
       ax.set_xlabel('Threads', fontsize=ylabelfontsize)
       ax2.set_ylabel('Speedup', fontsize=ylabelfontsize)
+      set_ticks_axis(ax2, max(self.max_speedup(), coord_exp.max_speedup(self.get_time(1))))
       ax.set_xlim([1, self.max_threads()])
       ax.set_ylim([min(self.min_time(), coord_exp.min_time()), max(self.max_time(), coord_exp.max_time())])
       cmap = plt.get_cmap('gray')
@@ -808,6 +810,7 @@ class experiment(object):
       ax.set_ylabel('Execution Time (ms)', fontsize=ylabelfontsize)
       ax.set_xlabel('Threads', fontsize=ylabelfontsize)
       ax2.set_ylabel('Speedup', fontsize=ylabelfontsize)
+      set_ticks_axis(ax2, max(self.max_speedup(), glexp.max_speedup()))
       ax.set_xlim([1, self.max_threads()])
       ax.set_ylim([min(self.min_time(), glexp.min_time())*2, max(self.max_time(), glexp.max_time())])
       cmap = plt.get_cmap('gray')
@@ -861,6 +864,7 @@ class experiment(object):
       for other_name, other_exp in other_systems.iteritems():
          min_time = min(min_time, other_exp.min_time())
       max_time = max(self.max_time(), coord_exp.max_time()) * 100
+      set_ticks_axis(ax2, max(self.max_speedup(base_time), coord_exp.max_speedup(base_time)))
 
       ax.set_ylim([min_time, max_time])
       cmap = plt.get_cmap('gray')
@@ -934,7 +938,9 @@ class experiment(object):
 
       ax.set_ylim([min_time, max_time])
       if max_speedup:
-         ax2.set_ylim([0, max_speedup])
+         set_ticks_axis(ax2, max_speedup)
+      else:
+         set_ticks_axis(ax2, max(coord_exp.max_speedup(), self.max_speedup(coord_exp.get_time(1))))
       cmap = plt.get_cmap('gray')
 
       regtime, = ax.plot(self.x_axis(), self.time_data(),
@@ -994,6 +1000,15 @@ def set_ticks():
    x = np.arange(0, 33, 4.0)
    x[0] = 1
    plt.xticks(x)
+
+def set_ticks_axis(axis, speedup):
+   if speedup > 32:
+      step = int(speedup/8)
+   else:
+      step = 4.0
+   x = np.arange(0, speedup + 1, step)
+   axis.set_ylim([0, speedup])
+   axis.set_yticks(x)
 
 def setup_lines(ax, cmap):
    lines = ax.lines
@@ -1176,6 +1191,7 @@ def harmonic_plot(ls, output):
    ax.set_ylim([0, max(harmonic_data) + 2.0])
    ax.set_xlabel('Threads', fontsize=ylabelfontsize)
    ax.set_xlim([1, max(threads)])
+   set_ticks_axis(ax, 32)
    cmap = plt.get_cmap('gray')
 
    pspeedup, = ax.plot(ls[0].x_axis(), harmonic_data,
