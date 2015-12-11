@@ -10,9 +10,9 @@ can be seen as a good lower-bound in terms of performance.
 
 The goal of the evaluation is to understand the effectiveness of our compilation
 strategy and the effectiveness of our dynamic indexing algorithms, including the
-data structures (hash tables) used to index logical facts. We used the following
+data structures (hash trees) used to index logical facts. We used the following
 programs in our experiments\footnote{All programs available on
-   \url{http://github.com/flavioc/misc}.}:
+   \url{http://github.com/flavioc/meld/benchs/progs}.}:
 
 \begin{itemize}
    \item Belief Propagation: a machine learning algorithm to denoise images. Program is
@@ -176,11 +176,10 @@ when compared to the memory required to store linear facts.
    \mycap{Memory statistics for LM programs. The meaning of each column is as
       follows: column \textbf{Average} represents the average memory use of the
       program over time; \textbf{Final} represents the memory usage after the
-      program completes; \textbf{Malloc} represents the number of \code{malloc}
-      operations requested to the operating system by the VM's memory allocator;
-      \textbf{\# Facts} represents the number of facts in the database after the
-      program completes; \textbf{Each} is the result of dividing \textbf{Final}
-      by \textbf{\#~Facts} and represents the average memory required per fact.}
+      program completes; \textbf{\# Facts} represents the number of facts in the
+      database after the program completes; \textbf{Each} is the result of
+      dividing \textbf{Final} by \textbf{\#~Facts} and represents the average
+   memory required per fact.}
 
    \label{table:implementation:mem}
 \end{table}
@@ -249,7 +248,7 @@ for the shortest distance facts of arbitrary nodes. All the other programs do
 not require significant indexing but also do not display any significant
 slowdown from using dynamic indexing. In terms of memory usage, the version with
 indexing uses slightly more memory, especially for the MSSD program, requiring,
-on average, 50\% more memory due to the existence of hash tables used to support
+on average, 50\% more memory due to the existence of hash trees used to support
 indexing.
 
 \begin{table}[ht]

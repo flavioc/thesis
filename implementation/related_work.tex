@@ -1,4 +1,4 @@
-\paragraph{Virtual Machines}
+\subsection{Virtual Machines}
 
 Virtual machines are a popular technique for implementing interpreters for high
 level programming languages. Due to the increased availability of parallel
@@ -27,7 +27,9 @@ however more general models such as the Andorra
 model~\cite{Haridi:1990:KAP:87961.87964} were developed which allows both AND
 and OR-parallelism.
 
-\paragraph{Datalog Execution} The Datalog language is a forwards-chaining logic
+\subsection{Datalog Execution}
+
+The Datalog language is a forwards-chaining logic
 programming and therefore requires different evaluation strategies than those
 used by Prolog, which is a backwards-chaining logic programming language.
 Arguably, the most well-known strategy for Datalog programs with recursive rules
@@ -61,12 +63,13 @@ uses linear facts, it follows a \emph{don't care} or \emph{committed choice}
 non-determinism, which may result in different results depending on the order of
 computations.
 
-\paragraph{CHR implementations} Many basic optimizations used in the LM compiler
-such as join optimizations and the use of different data structures for indexing
-facts were inspired in work done on CHR~\cite{DBLP:journals/corr/cs-PL-0408025}.
-Wuille et al.~\cite{42866} have described a CHR to C compiler that follows some
-of the ideas presented in this chapter and De Koninck et al.~\cite{chrp} showed
-how to compile CHR programs with dynamic priorities into Prolog. The novelty of
-our work focuses on supporting a combination of comprehensions, aggregates and
-rule priorities.
+\subsection{CHR implementations}
+
+Many basic optimizations used in the LM compiler such as join optimizations and
+the use of different data structures for indexing facts were inspired in work
+done on CHR~\cite{DBLP:journals/corr/cs-PL-0408025}.  Wuille et al.~\cite{42866}
+have described a CHR to C compiler that follows some of the ideas presented in
+this chapter and De Koninck et al.~\cite{chrp} showed how to compile CHR
+programs with dynamic priorities into Prolog. The novelty of our work focuses on
+supporting a combination of comprehensions, aggregates and rule priorities.
 
