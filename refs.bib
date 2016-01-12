@@ -11,14 +11,14 @@
 
 @incollection{Ehrig:2004vn,
 	Author = {Ehrig, Hartmut and Padberg, Julia},
-	Booktitle = {Lectures on Concurrency and Petri Nets},
+	Booktitle = {Lectures on Concurrency and {P}etri Nets},
 	Date-Modified = {2014-03-31 16:03:05 +0000},
 	Editor = {Desel, J{\"o}rg and Reisig, Wolfgang and Rozenberg, Grzegorz},
 	Isbn = {978-3-540-22261-3},
 	Pages = {496-536},
 	Publisher = {Springer Berlin Heidelberg},
 	Series = {Lecture Notes in Computer Science},
-	Title = {Graph Grammars and Petri Net Transformations},
+	Title = {Graph Grammars and {P}etri Net Transformations},
 	Volume = {3098},
 	Year = {2004}}
 
@@ -33,12 +33,12 @@
 	Pages = {25--36},
 	Publisher = {ACM},
 	Series = {PPDP '07},
-	Title = {User-definable Rule Priorities for CHR},
+	Title = {User-definable Rule Priorities for {CHR}},
 	Year = {2007}}
 
 @misc{Koninck07chrrp:,
 	Author = {Leslie De Koninck and Tom Schrijvers and Bart Demoen},
-	Title = {CHR rp: Constraint Handling Rules with Rule Priorities},
+	Title = {{CHR} rp: Constraint Handling Rules with Rule Priorities},
 	Year = {2007}}
 
 @incollection{Betz:2005kx,
@@ -54,16 +54,13 @@
 	Year = {2005}}
 
 @techreport{Alvaro:EECS-2009-173,
-	Abstract = {Recent research has explored using Datalog-based languages to express a distributed system as a set of logical invariants. Two properties of distributed systems proved difficult to model in Datalog. First, the state of any such system evolves with its execution. Second, deductions in these systems may be arbitrarily delayed, dropped, or reordered by the unreliable network links they must traverse. Previous efforts addressed the former by extending Datalog to include updates, key constraints, persistence and events, and the latter by assuming ordered and reliable delivery while ignoring delay. These details have a semantics outside Datalog, which increases the complexity of the language or its interpretation, and forces programmers to think operationally. We argue that the missing component from these previous languages is a notion of time.
-
-In this paper we present Dedalus, a foundation language for programming and reasoning about distributed systems. Dedalus reduces to a subset of Datalog with negation, aggregate functions, successor and choice, and admits an explicit representation of time into the logic language. We show that Dedalus provides a declarative foundation for the two signature features of distributed systems: mutable state, and asynchronous processing and communication. Given these two features, we address three important properties of programs in a domain-specific manner: a notion of safety appropriate to non-terminating computations, stratified monotonic reasoning with negation over time, and efficient evaluation over time via a simple execution strategy. We also provide conservative syntactic checks for our temporal notions of safety and stratification. Our experience implementing full-featured systems in variants of Datalog suggests that Dedalus is well-suited to the specification of rich distributed services and protocols, and provides both cleaner semantics and richer tests of correctness.},
 	Author = {Alvaro, Peter and Marczak, William and Conway, Neil and Hellerstein, Joseph M. and Maier, David and Sears, Russell C},
 	Date-Added = {2014-03-31 14:46:43 +0000},
 	Date-Modified = {2014-03-31 14:46:43 +0000},
 	Institution = {EECS Department, University of California, Berkeley},
 	Month = {Dec},
 	Number = {UCB/EECS-2009-173},
-	Title = {Dedalus: Datalog in Time and Space},
+	Title = {Dedalus: {D}atalog in Time and Space},
 	Url = {http://www.eecs.berkeley.edu/Pubs/TechRpts/2009/EECS-2009-173.html},
 	Year = {2009}}
 
@@ -88,14 +85,14 @@ In this paper we present Dedalus, a foundation language for programming and reas
 	Author = {Iliano Cervesato and Frank Pfenning and David Walker and Kevin Watkins},
 	Date-Added = {2014-03-31 01:26:16 +0000},
 	Date-Modified = {2014-03-31 01:26:16 +0000},
-	Title = {A Concurrent Logical Framework II: Examples and Applications},
+	Title = {A Concurrent Logical Framework {II}: Examples and Applications},
 	Year = {2002}}
 
 @techreport{Watkins03aconcurrent,
 	Author = {Kevin Watkins and Iliano Cervesato and Frank Pfenning and David Walker},
 	Date-Added = {2014-03-31 01:25:51 +0000},
 	Date-Modified = {2014-03-31 01:25:51 +0000},
-	Title = {A concurrent logical framework I: Judgments and properties},
+	Title = {A concurrent logical framework {I}: Judgments and properties},
 	Year = {2003}}
 
 @incollection{Watkins:2004uq,
@@ -157,7 +154,6 @@ In this paper we present Dedalus, a foundation language for programming and reas
 	Year = {2001}}
 
 @phdthesis{raiser_phdthesis10,
-	Abstract = { Constraint Handling Rules (CHR) is a rule- and logic-based formalism and has established itself as an active research topic. In contrast to other rule-based approaches, CHR is both, a theoretical formalism related to first-order and linear-logic, and a practical rule-based programming language. Other rule- and logic-based approaches have been successfully embedded in CHR. For this reason, it is considered a candidate for a lingua-franca of such approaches. We investigate CHR{\^A}´s suitability for this purpose exemplarily, by considering an embedding of graph transformation systems (GTSs) in CHR, which helps us in identifying points of improvements for strengthening the lingua-franca argument further. In particular, we present a novel formulation of the operational semantics of CHR, which is founded on an equivalence relation over CHR states. It justifies the perspective on CHR as a rule-based rewriting system of equivalence classes, which abstracts over infinitely many possible syntactic variations of a CHR state. Overall, this equivalence-based operational semantics provides a powerful formal analysis tool for CHR, which can significantly reduce proof complexity. The lingua-franca argument implies a potential for cross-fertilization of research. Hence, we revisit program analysis methods available in the CHR literature. Our extended methods apply an invariant to make implicit assumptions explicitly available during analysis, hence, effectively eliminating irrelevant states. The resulting methods are applicable to strictly larger classes of CHR programs and provide more promising approaches towards analyzing more complex programs. Finally, we compare program analysis methods in GTSs and CHR. We find that the adapted CHR confluence test, when applied to a GTS embedded in CHR, corresponds to a sufficient criterion for confluence of the GTS. Similarly, we introduce program equivalence for GTSs with a sufficient criterion based on the CHR program equivalence test. },
 	Address = {Germany},
 	Author = {Frank Raiser},
 	Date-Added = {2014-03-30 17:45:10 +0000},
@@ -173,7 +169,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
 @article{Raiser:2011:AGT:1972935.1972938,
 	Acmid = {1972938},
 	Address = {New York, NY, USA},
-	Author = {Raiser, Frank and Fr\"{U}hwirth, Thom},
+	Author = {Raiser, Frank and Fr{\"u}hwirth, Thom},
 	Date-Added = {2014-03-30 17:44:39 +0000},
 	Date-Modified = {2014-03-30 17:44:39 +0000},
 	Issn = {1471-0684},
@@ -191,7 +187,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
 
 @article{Betz:2013:LBA:2422085.2422086,
 	Address = {New York, NY, USA},
-	Author = {Betz, Hariolf and Fr\"{u}hwirth, Thom},
+	Author = {Betz, Hariolf and Fr{\"u}hwirth, Thom},
 	Date-Added = {2014-03-30 17:43:15 +0000},
 	Date-Modified = {2014-03-30 17:44:09 +0000},
 	Issue_Date = {February 2013},
@@ -217,7 +213,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
 
 @inproceedings{Loo-condie-garofalakis-p2,
 	Author = {Boon T. Loo and Tyson Condie and Minos Garofalakis and David E. Gay and Joseph M. Hellerstein},
-	Booktitle = {International Conference on Management of Data (SIGMOD)},
+	Booktitle = {International Conference on Management of Data},
 	Date-Added = {2014-03-27 18:49:00 +0000},
 	Date-Modified = {2014-03-27 18:49:00 +0000},
 	Masid = {10150566},
@@ -235,7 +231,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
 
 @inproceedings{gabriel04-open-mpi,
 	Author = {Edgar Gabriel and Graham E. Fagg and George Bosilca and Thara Angskun and Jack J. Dongarra and Jeffrey M. Squyres and Vishal Sahay and Prabhanjan Kambadur and Brian Barrett and Andrew Lumsdaine and Ralph H. Castain and David J. Daniel and Richard L. Graham and Timothy S. Woodall},
-	Booktitle = {European PVM/MPI Users' Group Meeting},
+	Booktitle = {European {PVM}/{MPI} Users' Group Meeting},
 	Date-Added = {2014-03-27 18:49:00 +0000},
 	Date-Modified = {2014-03-27 18:49:00 +0000},
 	Optaddress = {Budapest, Hungary},
@@ -260,7 +256,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
 	Number = {3},
 	Optmonth = {June},
 	Pages = {189--214},
-	Title = {{Or-parallel Execution of Prolog on a Multi-Sequential Machine}},
+	Title = {Or-parallel Execution of {P}rolog on a Multi-Sequential Machine},
 	Volume = {15},
 	Year = {1986}}
 
@@ -272,7 +268,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
 	Optaddress = {Washington, DC, USA},
 	Optpublisher = {The MIT Press},
 	Pages = {717--731},
-	Title = {{Exploiting Dependent And-parallelism in Prolog: The Dynamic Dependent And-Parallel Scheme (DDAS)}},
+	Title = {Exploiting Dependent And-parallelism in {P}rolog: The Dynamic Dependent And-Parallel Scheme (DDAS)},
 	Year = {1992}}
 
 @article{Blelloch:1996:PPA:227234.227246,
@@ -305,7 +301,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
 	Date-Added = {2014-03-27 18:49:00 +0000},
 	Date-Modified = {2014-03-27 18:49:00 +0000},
 	Institution = {Digital Equipment Corporation, Cambridge Research Laboratory},
-	Title = {An Overview of the Parallel Language Id (a foundation for p{H}, a parallel dialect of Haskell)},
+	Title = {An Overview of the Parallel Language {I}d (a foundation for p{H}, a parallel dialect of {H}askell)},
 	Year = {1993}}
 
 @article{Dean:2008:MSD:1327452.1327492,
@@ -477,7 +473,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
 @inproceedings{Malewicz:2010:PSL:1807167.1807184,
 	Acmid = {1807184},
 	Author = {Grzegorz Malewicz and Matthew H. Austern and Aart J. C. Bik and James C. Dehnert and Ilan Horn and Naty Leiser and Grzegorz Czajkowski},
-	Booktitle = {International Conference on Management of Data (SIGMOD)},
+	Booktitle = {International Conference on Management of Data},
 	Date-Added = {2014-03-27 18:49:00 +0000},
 	Date-Modified = {2014-03-27 18:49:00 +0000},
 	Keywords = {distributed computing, graph algorigthms},
@@ -509,13 +505,13 @@ In this paper we present Dedalus, a foundation language for programming and reas
 	Date-Modified = {2014-03-27 18:49:00 +0000},
 	Optpublisher = {Springer Berlin Heidelberg},
 	Pages = {752--763},
-	Title = {Extending Datalog with Declarative Updates},
+	Title = {Extending {D}atalog with Declarative Updates},
 	Volume = {1873},
 	Year = {1998}}
 
 @inproceedings{Ludascher95alogical,
 	Author = {Bertram Lud{\"a}scher and Ulrich Hamann and Georg Lausen},
-	Booktitle = {International Conference on Management of Data (SIGMOD)},
+	Booktitle = {International Conference on Management of Data},
 	Date-Added = {2014-03-27 18:49:00 +0000},
 	Date-Modified = {2014-03-27 18:49:00 +0000},
 	Title = {A Logical Framework for Active Rules},
@@ -623,7 +619,6 @@ In this paper we present Dedalus, a foundation language for programming and reas
 	Date-Added = {2014-03-27 18:49:00 +0000},
 	Date-Modified = {2014-03-27 18:49:00 +0000},
 	Language = {English},
-	Opteditor = {Manfred Broy},
 	Optpublisher = {Springer Berlin Heidelberg},
 	Optseries = {NATO ASI Series},
 	Pages = {397--445},
@@ -639,7 +634,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
 	Optlocation = {Nice, France},
 	Optseries = {DAMP '07},
 	Pages = {10--18},
-	Title = {Data Parallel Haskell: a status report},
+	Title = {Data Parallel {H}askell: a status report},
 	Year = {2007}}
 
 @book{Butenhof:1997:PPT:263953,
@@ -700,11 +695,10 @@ In this paper we present Dedalus, a foundation language for programming and reas
 	Number = {4},
 	Numpages = {131},
 	Optaddress = {New York, NY, USA},
-	Optkeywords = {Automatic parallelization, constraint programming, logic programming, parallelism, prolog},
 	Optmonth = jul,
 	Optpublisher = {ACM},
 	Pages = {472--602},
-	Title = {Parallel Execution of Prolog Programs: {A} Survey},
+	Title = {Parallel Execution of {P}rolog Programs: {A} Survey},
 	Volume = {23},
 	Year = {2001}}
 
@@ -756,7 +750,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
 	Month = sep,
 	Number = {3},
 	Optissn = {0360-0300},
-	Optkeywords = {Haskell, functional programming, monad},
+	Optkeywords = {{H}askell, functional programming, monad},
 	Optnumpages = {24},
 	Optpublisher = {ACM},
 	Pages = {240--263},
@@ -764,16 +758,12 @@ In this paper we present Dedalus, a foundation language for programming and reas
 	Volume = {29},
 	Year = {1997}}
 
-@inbook{howard:tfatnoc,
+@inproceedings{howard:tfatnoc,
 	Address = {Boston, MA},
+	Title = {The formulae-as-types notion of construction},
 	Author = {William A. Howard},
-	Booktitle = {To H. B. Curry: essays on combinatory logic, lambda calculus and formalism},
-	Date-Added = {2014-03-27 18:49:00 +0000},
-	Date-Modified = {2014-03-27 18:49:00 +0000},
-	Opteditor = {Seldin, J. P. and Hindley, J. R.},
-	Optpublisher = {Academic Press},
+   Booktitle = {ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages},
 	Pages = {480--490},
-	Title = {{The formulae-as-types notion of construction}},
 	Year = {1980}}
 
 @inproceedings{Papadopoulos98coordinationmodels,
@@ -807,7 +797,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
 	Optpublisher = {ACM},
 	Optseries = {HOPL-II},
 	Pages = {37--52},
-	Title = {The Birth of Prolog},
+	Title = {The Birth of {P}rolog},
 	Year = {1993}}
 
 @article{journals/jsyml/Horn51,
@@ -836,7 +826,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
 
 @inproceedings{ashley-rollman-iclp09,
 	Author = {Michael P. Ashley-Rollman and Peter Lee and Seth C. Goldstein and Padmanabhan Pillai and Jason D. Campbell},
-	Booktitle = {International Conference on Logic Programming (ICLP)},
+	Booktitle = {International Conference on Logic Programming},
 	Date-Added = {2014-03-27 18:46:06 +0000},
 	Date-Modified = {2014-03-27 18:46:06 +0000},
 	Optkeywords = {Distributed Systems, Meld, Programming Languages},
@@ -868,7 +858,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
 
 @inproceedings{Hellerstein:2010:DRE:1807085.1807087,
 	Author = {Joseph M. Hellerstein},
-	Booktitle = {Proceedings of the twenty-ninth ACM SIGMOD-SIGACT-SIGART symposium on Principles of database systems of data},
+	Booktitle = {ACM SIGMOD-SIGACT-SIGART symposium on Principles of database systems of data},
 	Date-Added = {2014-03-27 18:46:06 +0000},
 	Date-Modified = {2014-03-27 18:46:06 +0000},
 	Optaddress = {New York, NY, USA},
@@ -878,7 +868,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
 	Optpublisher = {ACM},
 	Pages = {1--2},
 	Series = {PODS '10},
-	Title = {Datalog redux: experience and conjecture},
+	Title = {{D}atalog redux: experience and conjecture},
 	Year = {2010}}
 
 @incollection{Bancilhon:1986:NER:8789.8804,
@@ -951,7 +941,6 @@ In this paper we present Dedalus, a foundation language for programming and reas
 	Date-Modified = {2014-03-27 18:46:06 +0000},
 	Interhash = {15a1c9cddadef854afe21ec56a73a502},
 	Intrahash = {3f0eff8b2bcc015496052fbb373dafaa},
-	Opteditor = {Peter Gr{\"u}nwald and Peter Spirtes},
 	Optkeywords = {dblp},
 	Optpublisher = {AUAI Press},
 	Pages = {340--349},
@@ -967,7 +956,6 @@ In this paper we present Dedalus, a foundation language for programming and reas
 	Journal = {SIGCSE Bulletin},
 	Number = {4},
 	Optaddress = {New York, NY, USA},
-	Optkeywords = {MPI, backtracking, parallel processing},
 	Optmonth = nov,
 	Optnumpages = {4},
 	Optpublisher = {ACM},
@@ -1234,7 +1222,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
    journal={Mathematische Zeitschrift},
    volume={39},
    number={1},
-   title={Untersuchungen über das logische Schließen. I},
+   title={Untersuchungen {\"u}ber das logische Schlie{\ss}en. {I}},
    publisher={Springer-Verlag},
    author={Gentzen, Gerhard},
    pages={176-210},
@@ -1242,7 +1230,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
 }
 
 @ARTICLE{Andreoli92logicprogramming,
-   author = {Jean-marc Andreoli},
+   author = {{Jean-Marc} Andreoli},
    title = {Logic Programming with Focusing Proofs in Linear Logic},
    journal = {Journal of Logic and Computation},
    year = {1992},
@@ -1323,7 +1311,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
 }
 
 @inproceedings{mazurak2010lolliproc,
-  title={Lolliproc: to concurrency from classical linear logic via curry-howard and control},
+  title={Lolliproc: to concurrency from classical linear logic via {C}urry-{H}oward and control},
   author={Mazurak, Karl and Zdancewic, Steve},
   booktitle={ACM Sigplan Notices},
   volume={45},
@@ -1338,10 +1326,9 @@ In this paper we present Dedalus, a foundation language for programming and reas
    booktitle={Programming Languages and Systems},
    volume={7211},
    series={Lecture Notes in Computer Science},
-   editor={Seidl, Helmut},
    title={Linear Logical Relations for Session-Based Concurrency},
    publisher={Springer Berlin Heidelberg},
-   author={Pérez, JorgeA. and Caires, Luís and Pfenning, Frank and Toninho, Bernardo},
+   author={P{\'e}rez, Jorge A. and Caires, Lu{\'\i}s and Pfenning, Frank and Toninho, Bernardo},
    pages={539-558},
    language={English}
 }
@@ -1372,7 +1359,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
 	Date-Modified = {2014-05-12 13:16:44 +0000},
 	Journal = {Concurrency: Practice and Experience},
 	Pages = {315--339},
-	Title = {PVM: A Framework for Parallel Distributed Computing},
+	Title = {{PVM}: A Framework for Parallel Distributed Computing},
 	Volume = {2},
 	Year = {1990}}
 
@@ -1458,7 +1445,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
 	Isbn = {0-262-61056-6},
 	Pages = {1590-1605},
 	Publisher = {MIT Press},
-	Title = {Scheduling OR-Parallelism: An Argonne Perspective.},
+	Title = {Scheduling {OR}-Parallelism: An {A}rgonne Perspective.},
 	Year = 1988}
 
 @inproceedings{Ali88,
@@ -1467,7 +1454,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
 	Editor = {Kowalski, Robert A. and Bowen, Kenneth A.},
 	Pages = {1531-1545},
 	Publisher = {MIT Press},
-	Title = {OR-Parallel Execution of Prolog on BC-Machine.},
+	Title = {{OR}-Parallel Execution of {P}rolog on {BC}-Machine.},
 	Year = 1988}
 
 @article{Ali:1990fk,
@@ -1476,7 +1463,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
 	Number = {6},
 	Pages = {445-475},
 	Publisher = {Kluwer Academic Publishers-Plenum Publishers},
-	Title = {Full prolog and scheduling or-parallelism in muse},
+	Title = {Full {P}rolog and scheduling or-parallelism in muse},
 	Volume = {19},
 	Year = {1990}}
 
@@ -1489,14 +1476,13 @@ In this paper we present Dedalus, a foundation language for programming and reas
 	Numpages = {17},
 	Pages = {243--259},
 	Publisher = {Springer-Verlag New York, Inc.},
-	Title = {Or-parallel Execution Models of Prolog},
+	Title = {Or-parallel Execution Models of {P}rolog},
 	Year = {1987}}
 
 @incollection{Haridi:1990:KAP:87961.87964,
    author = {Haridi, Seif and Janson, Sverker},
-   chapter = {Kernel Andorra Prolog and Its Computation Model},
-   title = {Logic Programming},
-   editor = {Warren, David H.D. and Szeredi, Peter},
+   title = {Kernel Andorra {P}rolog and Its Computation Model},
+   booktitle = {Logic Programming},
    year = {1990},
    isbn = {0-262-73090-1},
    pages = {31--46},
@@ -1520,7 +1506,6 @@ In this paper we present Dedalus, a foundation language for programming and reas
    booktitle={Functional and Logic Programming},
    volume={4989},
    series={LNCS},
-   OPTeditor={Garrigue, Jacques and Hermenegildo, ManuelV.},
    title={Optimizing Compilation of {CHR} with Rule Priorities},
    OPTpublisher={Springer Berlin Heidelberg},
    author={De Koninck, Leslie and Stuckey, PeterJ. and Duck, GregoryJ.},
@@ -1534,10 +1519,9 @@ In this paper we present Dedalus, a foundation language for programming and reas
    booktitle={Constraint Programming: Basics and Trends},
    volume={910},
    series={LNCS},
-   OPTeditor={Podelski, Andreas},
    title={Constraint handling rules},
    publisher={Springer},
-   author={Frühwirth, Thom},
+   author={Fr{\"u}hwirth, Thom},
    pages={90-107},
    language={English}
 }
@@ -1590,11 +1574,9 @@ In this paper we present Dedalus, a foundation language for programming and reas
    booktitle={Automata, Languages and Programming},
    volume={5126},
    series={Lecture Notes in Computer Science},
-   editor={Aceto, Luca and Damgård, Ivan and Goldberg, LeslieAnn and
-      Halldórsson, MagnúsM. and Ingólfsdóttir, Anna and Walukiewicz, Igor},
    title={Linear Logical Algorithms},
    publisher={Springer Berlin Heidelberg},
-   author={Simmons, RobertJ. and Pfenning, Frank},
+   author={Simmons, Robert J. and Pfenning, Frank},
    pages={336-347},
    language={English}
 }
@@ -1603,7 +1585,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
    Author = {F. Cruz and R. Rocha and S. Goldstein and F. Pfenning},
    Date-Added = {2014-05-17 23:22:14 +0000},
    Date-Modified = {2014-05-17 23:22:14 +0000},
-   Journal = {Journal of Theory and Practice of Logic Programming, 30th International Conference on Logic Programming (ICLP 2014), Special Issue},
+   Journal = {Journal of Theory and Practice of Logic Programming, 30th International Conference on Logic Programming, Special Issue},
    Month = {July},
    Pages = {493-507},
    Title = {{A Linear Logic Programming Language for Concurrent Programming over Graph Structures}},
@@ -1613,9 +1595,8 @@ In this paper we present Dedalus, a foundation language for programming and reas
    author = {Olston, Christopher and Reed, Benjamin and Srivastava, Utkarsh and
       Kumar, Ravi and Tomkins, Andrew},
    title = {Pig Latin: A Not-so-foreign Language for Data Processing},
-   booktitle = {Proceedings of the 2008 ACM SIGMOD International Conference
+   booktitle = {ACM SIGMOD International Conference
       on Management of Data},
-   series = {SIGMOD '08},
    year = {2008},
    location = {Vancouver, Canada},
    pages = {1099--1110},
@@ -1625,47 +1606,21 @@ In this paper we present Dedalus, a foundation language for programming and reas
 } 
 
 @techreport{AICPub641:1983,
-	Abstract = {This report describes an abstract Prolog instruction set suitable for
-     software, firmware, or hardware implementation. The instruction set is abstract
-     in that certain details of its encoding and implementation are left open, so
-     that it may be realized in a number of different forms. The forms that are
-     contemplated are: 
-
- em Translation into a compact bytecode, with emulators
-     written in C (for maximum portability), Progol (a macrolanguage generating
-     machine code, for efficient software implementations as an alternative to direct
-     compilation on machines such as the VAX), and VAX-730 microcode. em Compilation
-     into the standard instructions of machines such as the VAX or DECsystem-10/20.
-     em Hardware (or firmware) emulation of the instruction set on a specially designed
-     Prolog processor. 
- The abstract machine described herein (``new Prolog
-     Engine'') is a major revision of the ``old Prolog Engine''
-     described in a previous document. The new model overcomes certain difficulties
-     in the old model, which are discussed in a later section. The new model can
-     be considered to be a modification of the old model, where the stack contains
-     compiler-defined goals called environments instead of user-defined goals. The
-     environments correspond to some number of goals forming the tail of a clause.
-     The old model was developed having primarily in mind a VAX-730 microcode implementation.
-     The new model has, in addition, been influenced by hardware implementation
-     considerations, but should remain equally amenable to software or firmware
-     implementation on machines such as the VAX.},
 	Address = {333 Ravenswood Ave., Menlo Park, CA 94025},
 	Author = {Warren, David H. D.},
 	Date-Added = {2014-05-12 02:13:31 +0000},
 	Date-Modified = {2014-05-12 02:13:31 +0000},
 	Institution = {AI Center, SRI International},
-	Keywords = {Prolog},
 	Month = {Oct},
 	Number = {309},
-	Title = {An Abstract Prolog Instruction Set},
+	Title = {An Abstract {P}rolog Instruction Set},
 	Year = {1983}}
 
 @inproceedings{Ganguly:1990:FPP:93597.98724,
    author = {Ganguly, Sumit and Silberschatz, Avi and Tsur, Shalom},
-   title = {A Framework for the Parallel Processing of Datalog Queries},
-   booktitle = {Proceedings of the 1990 ACM SIGMOD International
+   title = {A Framework for the Parallel Processing of {D}atalog Queries},
+   booktitle = {ACM SIGMOD International
       Conference on Management of Data},
-   series = {SIGMOD '90},
    year = {1990},
    location = {Atlantic City, New Jersey, USA},
    pages = {143--152},
@@ -1676,7 +1631,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
 
 @article{Seo:2013:DSD:2556549.2556572,
  author = {Seo, Jiwon and Park, Jongsoo and Shin, Jaeho and Lam, Monica S.},
- title = {Distributed Socialite: A Datalog-based Language for Large-scale Graph Analysis},
+ title = {Distributed Socialite: A {D}atalog-based Language for Large-scale Graph Analysis},
  journal = {Proc. VLDB Endow.},
  issue_date = {September 2013},
  volume = {6},
@@ -1691,9 +1646,8 @@ In this paper we present Dedalus, a foundation language for programming and reas
 
 @inproceedings{Seib:1991:PDP:113413.113435,
  author = {Seib, J\"{u}rgen and Lausen, Georg},
- title = {Parallelizing Datalog Programs by Generalized Pivoting},
- booktitle = {Proceedings of the Tenth ACM SIGACT-SIGMOD-SIGART Symposium on Principles of Database Systems},
- series = {PODS '91},
+ title = {Parallelizing {D}atalog Programs by Generalized Pivoting},
+ booktitle = {Tenth ACM SIGACT-SIGMOD-SIGART Symposium on Principles of Database Systems},
  year = {1991},
  isbn = {0-89791-430-9},
  location = {Denver, Colorado, USA},
@@ -1723,7 +1677,7 @@ In this paper we present Dedalus, a foundation language for programming and reas
    author={Zhang, W. and Ke Wang and Siu-Cheung Chau}, 
    booktitle={Parallel and Distributed Information Systems, 1991., Proceedings
       of the First International Conference on}, 
-   title={Data partition: a practical parallel evaluation of datalog programs}, 
+   title={Data partition: a practical parallel evaluation of {D}atalog programs}, 
    year={1991}, 
    month={Dec}, 
    pages={98-105},}
@@ -1735,14 +1689,14 @@ booktitle    = {Advanced Functional Programming Summer School 2008},
 month        = {May},
 publisher    = {Springer Verlag},
 series       = {Lecture Notes in Computer Science},
-title        = {A Tutorial on Parallel and Concurrent Programming in Haskell},
+title        = {A Tutorial on Parallel and Concurrent Programming in {H}askell},
 year         = {2009},
 }
 
 @inproceedings{Marlow:2010,
  author = {Marlow, Simon and Maier, Patrick and Loidl, Hans-Wolfgang and Aswad, Mustafa K. and Trinder, Phil},
- title = {Seq No More: Better Strategies for Parallel Haskell},
- booktitle = {Proceedings of the Third ACM Haskell Symposium on Haskell},
+ title = {Seq No More: Better Strategies for {P}arallel {H}askell},
+ booktitle = {Proceedings of the Third ACM {H}askell Symposium on {H}askell},
  series = {Haskell '10},
  year = {2010},
  isbn = {978-1-4503-0252-4},
@@ -1831,9 +1785,8 @@ year         = {2009},
 
 @incollection{Dijkstra:2002,
    author = {Dijkstra, Edsger W.},
-   chapter = {Cooperating Sequential Processes},
-   title = {The Origin of Concurrent Programming},
-   editor = {Hansen, Per Brinch},
+   title = {Cooperating Sequential Processes},
+   booktitle = {The Origin of Concurrent Programming},
    year = {2002},
    pages = {65--138},
    numpages = {74},
@@ -1844,7 +1797,7 @@ year         = {2009},
 @article{Hoare:1974,
  author = {Hoare, C. A. R.},
  title = {Monitors: An Operating System Structuring Concept},
- journal = {Commun. ACM},
+ journal = {Communications of the ACM},
  issue_date = {Oct. 1974},
  volume = {17},
  number = {10},
@@ -1876,7 +1829,7 @@ year         = {2009},
 
 @techreport{Forum:1994,
    author = {Forum, Message P},
-   title = {MPI: A Message-Passing Interface Standard},
+   title = {{MPI}: A Message-Passing Interface Standard},
    year = {1994},
    publisher = {University of Tennessee},
    address = {Knoxville, TN, USA},
@@ -1900,7 +1853,7 @@ year         = {2009},
 @article{Hoare:1969,
  author = {Hoare, C. A. R.},
  title = {An Axiomatic Basis for Computer Programming},
- journal = {Commun. ACM},
+ journal = {Communications of the ACM},
  issue_date = {Oct. 1969},
  volume = {12},
  number = {10},
@@ -1962,7 +1915,7 @@ year         = {2009},
     pages = {409--10},
     posted-at = {2007-08-21 13:45:44},
     priority = {2},
-    title = {{Collective dynamics of'small-world'networks.}},
+    title = {{Collective dynamics of 'small-world' networks.}},
     volume = {393},
     year = {1998}
 }
@@ -2071,7 +2024,6 @@ year         = {2009},
    booktitle={Advanced Functional Programming},
    volume={925},
    series={Lecture Notes in Computer Science},
-   editor={Jeuring, Johan and Meijer, Erik},
    title={Monads for functional programming},
    OPTurl={http://dx.doi.org/10.1007/3-540-59451-5_2},
    publisher={Springer Berlin Heidelberg},
@@ -2081,14 +2033,12 @@ year         = {2009},
 
 @InProceedings{peytonjones:2008,
   author =  {Simon Peyton Jones and Roman Leshchinskiy and Gabriele Keller and Manuel M T Chakravarty},
-  title =   {{Harnessing the Multicores: Nested Data Parallelism in Haskell}},
+  title =   {Harnessing the Multicores: Nested Data Parallelism in {H}askell},
   booktitle =  {IARCS Annual Conference on Foundations of Software Technology and Theoretical Computer Science},
   pages =   {383--414},
   series =  {Leibniz International Proceedings in Informatics (LIPIcs)},
   year = {2008},
   volume =  {2},
-  editor =  {Ramesh Hariharan and Madhavan Mukund and V Vinay},
-  publisher =  {Schloss Dagstuhl--Leibniz-Zentrum fuer Informatik},
   address = {Dagstuhl, Germany},
 }
 

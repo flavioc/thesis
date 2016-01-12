@@ -236,4 +236,4 @@ experiments/scalability/overview.png: experiments/scalability/runtime.csv \
 clean:
 	rm -f thesis.pdf *.bbl *.blg *.log *.lot \
 		*.brf *.lof *.toc *.out \
-		*.aux *.log
+		*.aux *.log *.fls *.loe *.fdb_latexmk
