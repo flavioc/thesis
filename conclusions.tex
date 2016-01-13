@@ -15,12 +15,11 @@ the node level. Since LM is based on linear logic, facts used in rules may be
 retracted, making it possible for the programmer to declaratively manage
 structured state.
 
-We introduced coordination facts in LM to show that it is possible for the
-programmer to change how programs are scheduled in order to improve program run
-time and scalability. This is possible due to the existence of linear facts,
-which make it possible for different scheduling decisions to have an effect on
-program computation. Without them, a logic program would always compute the same
-result.
+We introduced coordination facts in LM to allow the programmer to fine-tune and
+optimize their declarative programs. This is possible due to the existence of
+linear facts, which make it possible for different scheduling decisions to have
+an effect on program computation. Without them, a logic program would always
+compute the same result.
 
 We also introduced explicit parallelism in LM by adding support for thread
 facts. Thread facts are facts stored at the thread level and allow the

@@ -7,11 +7,11 @@ proof of correctness.
 
    $\mathtt{relax}(A, D, P)$ represents a valid distance $D$ and a valid path
    $P$ from node $\mathtt{@1}$ to node $A$. If the shortest distance to
-\code{@1} is $D'$, then $D >= D'$.
+\code{@1} is $D'$, then $D \geq D'$.
 
 $\mathtt{shortest}(A, D, P)$ represents a valid distance $D$ and a valid
 path $P$ from node \code{@1} to node $A$. If the shortest
-distance to \code{@1} is $D'$, then $D >= D'$. The \code{shortest} fact may
+distance to \code{@1} is $D'$, then $D \geq D'$. The \code{shortest} fact may
 also represent an invalid distance if $D = \infty$, where $P = []$.
 
 \end{invariant}
@@ -36,10 +36,10 @@ distance and propagate it. By the second rule, longer distances are ignored.
 
 \begin{theorem}[Correctness]
 
-   Assume a graph $G = (V, E)$ where $w(a, b) >= 0$ and $(a, b) \in E$ (positive
+   Assume a graph $G = (V, E)$ where $w(a, b) \geq 0$ and $(a, b) \in E$ (positive
    weights). Consider that there is a set of nodes $S \in V$ where the shortest
    distance has been computed and a set $U \in V$ where the shortest distance
-   has not been computed yet. Sets are $S$ and $U$ are disjunct. At any given
+   has not been computed yet. Sets are $S$ and $U$ are disjoint. At any given
    point, $\Sigma$ is the sum of all current distances. For the
    distance $\infty$ we assign the value $\Sigma' + 1$, where $\Sigma'$ is the
    largest shortest distance of any node reachable from \code{@1}. Every rule

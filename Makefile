@@ -51,6 +51,7 @@ thesis.pdf: thesis.tex packages.tex	thesis-cover.tex ack.tex \
 		background/declarative.tex background/provability.tex \
 		refs.bib thread.tex conclusions.tex \
 		appendix.tex appendix/vm.tex threads/modeling.tex \
+		appendix/directives.tex \
 		statement.tex abstract.tex background.tex \
 		threads/graph_reachability.tex threads/implementation.tex \
 		threads/key_value.tex implementation/allocation.tex \

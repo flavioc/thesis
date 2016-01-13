@@ -24,8 +24,9 @@ inferring a rule, each iteration instruction iterates over a predicate in the
 body of the rule in order to derive all combinations of facts that match the
 rule.
 
-\paragraph{Match Object} Every instruction points to a \code{match} object that
-filters the facts from the database. The object maps argument indexes to value
+\paragraph{Match Specification} Every instruction points to a \code{match}
+specification that
+filters facts from the database. The specification maps argument indexes to value
 templates. Value templates include the values described
 in~\ref{appendix:vm:values} and the following variable templates:
 

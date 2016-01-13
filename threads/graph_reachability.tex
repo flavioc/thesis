@@ -6,7 +6,8 @@ of performing a breadth or depth-first search on graph $G$. However, this
 solution is sequential and does not have much concurrency.  An alternative
 solution to the problem is to recursively propagate the search to all neighbors
 and aggregate the results in the node where the search started.  The code for
-this later solution is shown in Fig.~\ref{code:threads:reach_simple}.
+this later solution is shown in Fig.~\ref{code:threads:reach_simple}, where
+nodes are searched by analyzing their unique \code{value} facts.
 
 \begin{figure}[h]
 \begin{LineCode}[commandchars=*\#\&]
@@ -40,7 +41,7 @@ do-search(A, Id, Node, ToReach),*hfill// Rule 4: node found and propagate search
 
 do-search(A, Id, Node, ToReach),*hfill// Rule 5: node not found and propagate search
 !value(A, Val), ~ Val in ToReach*hfill// Not the node we are looking for.
-   -o {B | !edge(A, B) -o do-search(B, ID, Node, ToReach)},*label#line:threads:reach_propagate2&
+   -o {B | !edge(A, B) -o do-search(B, Id, Node, ToReach)},*label#line:threads:reach_propagate2&
       visited(A, Id).*label#line:threads:reach_visit_visited2&
 \end{LineCode}
 
@@ -49,8 +50,8 @@ do-search(A, Id, Node, ToReach),*hfill// Rule 5: node not found and propagate se
 \end{figure}
 
 Each distinct reachability search is represented by a number (\code{Id}) and a
-\code{search} axiom. Associated to each search \code{Id} is a list of nodes to
-reach.  The predicate \code{visited} marks nodes that have already
+\code{search} initial fact. Associated to each search \code{Id} is a list of
+nodes to reach. The predicate \code{visited} marks nodes that have already
 participated in search, while predicate \code{do-search} is used to propagate a
 specific search. The first rule
 (lines~\ref{line:threads:reach_lookup1}-\ref{line:threads:reach_lookup2}) starts
@@ -61,11 +62,11 @@ node. The third rule
 visiting the same node twice in the presence of a \code{visited} fact.  This
 visited fact is derived in the next two rules
 (lines~\ref{line:threads:reach_visit_visited1}
-and~\ref{line:threads:reach_visit_visited2}).  If the node where the search is
-being performed is in the set of nodes we want to reach (\code{ToReach}) then we
-remove the node value from the list and propagate the search to the neighbor
-nodes (line~\ref{line:threads:reach_propagate}).  Otherwise, the search is
-propagated but no value is removed from \code{ToReach}.
+and~\ref{line:threads:reach_visit_visited2}).  If the node has a \code{value} in
+the reachability set (\code{ToReach}) then we remove the node value from the
+list and propagate the search to the neighbor nodes
+(line~\ref{line:threads:reach_propagate}).  Otherwise, the search is propagated
+but no value is removed from \code{ToReach}.
 
 As an example, consider Fig.~\ref{fig:threads:reach_example}, which shows 2
 reachability checks on a graph with 10 nodes. For instance, the search with

@@ -168,15 +168,15 @@ allowing the immediate assignment of consumers to generators.
 Figure~\ref{fig:threads:powergrid} shows how the configuration presented
 previously is adjusted to take into account the number of available threads.
 
-The LM code using thread facts shown in Fig.~\ref{code:threads:powergridt}. It uses
-4 thread predicates: \code{thread-connected-to} and
+The LM code using thread facts shown in Fig.~\ref{code:threads:powergridt}. It
+uses four thread predicates: predicates \code{thread-connected-to} and
 \code{thread-connected-to-list} assign consumers to the generators owned by the
 thread; \code{thread-capacity} stores the capacity of each generator assigned to
-the thread; and \code{thread-total-capacity} provides a capacity overview of all
-the generators owned by the thread.  The program starts with the rule in
-lines~\ref{line:threads:pgt_start1}-\ref{line:threads:pgt_start2} by moving
-generators to their corresponding threads using \code{set-thread}. Once the
-generator is executing on the proper thread, the rule in
+the thread; and predicate \code{thread-total-capacity} provides a capacity
+overview of all the generators owned by the thread.  The program starts with the
+rule in lines~\ref{line:threads:pgt_start1}-\ref{line:threads:pgt_start2} by
+moving generators to their corresponding threads using \code{set-thread}. Once
+the generator is executing on the proper thread, the rule in
 lines~\ref{line:threads:pgt_moved1}-\ref{line:threads:pgt_moved2} is derived
 with the \code{just-moved} coordination fact and the state of the thread is
 initialized. Consumers connect with the thread's generators with the rule in

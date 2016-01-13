@@ -131,7 +131,7 @@ the source node has large changes in its belief value.
 
 \begin{figure}[h!]
 \begin{LineCode}[commandchars=\\\{\}]
-update-messages(A, NewBelief),*hfill// Rule 4: compute belief to be sent to a neighbor node
+update-messages(A, NewBelief),\hfill// Rule 4: compute belief to be sent to a neighbor node
    -o \{B, OldIn, OldOut, Cavity, Convolved, OutMessage, Residual |
          !edge(A, B),
          neighbor-belief(A, B, OldIn),
