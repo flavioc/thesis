@@ -157,7 +157,13 @@ To complete our comparison against the C++ programs, we have measured and
 compared the average memory used by both systems.
 Table~\ref{table:implementation:mem} presents the memory statistics for LM
 programs while Table~\ref{table:implementation:cmem} presents statistics of the
-C++ programs and a comparison to LM's memory requirements.
+C++ programs and a comparison to LM's memory requirements. In this thesis, the
+memory usage is measured by the memory occupied by all the live objects in the
+virtual machine. The \textbf{Final} column shows the total memory usage after
+the program finishes firing the last rule and the \textbf{Average} column
+indicates the average memory usage of the program throughout its
+lifetime~\footnote{The \textbf{Average} values were computed by taking memory
+usage measurements every 100 milliseconds, from which an average was computed.}.
 
 In the Belief Propagation program, LM uses 2 to 3 times more memory than the
 corresponding C++ version. This is because the nodes in the LM program keep a

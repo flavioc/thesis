@@ -5,7 +5,6 @@ hand-written C++ programs when such run times are available. We used the
 programs of the previous section with a few additions:
 
 \begin{itemize}
-
       \item PageRank: an asynchronous version of the PageRank program without
          synchronization between iterations. Every time a node sends a new
          PageRank value to its neighbors and the change is significant, then the
@@ -26,9 +25,10 @@ uses 1 thread and the other 16 configurations use an even numbers of threads for
 a maximum of 32 threads. Figure~\ref{fig:evaluation:overview} presents the
 overall scalability computed as the weighted harmonic mean of all the benchmarks
 presented in this section. The weight used in the harmonic mean formula is the
-run time of each program when executed with one thread. The experimental results
-show that, on average, our benchmarks have a 15-fold speedup when using 32
-threads.
+run time of each program when executed with one thread. The one threaded version
+executes with all the synchronization mechanisms enabled, just like the
+multi-threaded executions. The experimental results show that, on average, our
+benchmarks have a 15-fold speedup when using 32 threads.
 
 \begin{figure}[]
         \centering
