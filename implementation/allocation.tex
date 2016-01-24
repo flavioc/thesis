@@ -60,10 +60,10 @@ may deallocate an object that is part of another thread's chunk. This is not an
 issue since chunks are not garbage collected from the system, therefore both
 allocation and deallocation require no synchronization between threads.
 
-Our threaded allocator does not attempt to place facts of the same node physically
-together. When deriving rules, this may become an issue since the thread may
-need to read multiple chunks which were allocated by different threads,
-increasing the number of cache line misses. In
+Our threaded allocator does not attempt to place facts of the same node
+physically together. When firing rules, this may become an issue since the
+thread may need to read multiple chunks which were allocated by different
+threads, increasing the number of cache line misses. In
 Section~\ref{section:implementation:alternative_allocator}, we explore an
 alternative allocator design and compare it against the allocator presented in
 this section.

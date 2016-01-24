@@ -176,7 +176,8 @@ node to process.
    \If{$N.rule\_engine.has\_candidate\_rules()$ or \\
       \hspace{2cm} $N.incoming\_fact\_buffer.has\_facts()$}{
       $N.state\_lock.unlock()$\;
-      goto beginning\;
+      \tcp{Start from the beginning}
+      goto start\_of\_procedure\;
    }
    $N.state \longleftarrow inactive$\;
    $N.state\_lock.unlock()$\;

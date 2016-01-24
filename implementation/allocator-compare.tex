@@ -7,7 +7,7 @@ Figure~\ref{fig:implementation:malloc_results} presents several programs
 comparing \code{malloc} with the threaded allocator. The programs Belief
 Propagation, MiniMax, and N-Queens have poor scalability when using the
 \code{malloc} operator due to high thread contention when calling \code{malloc}
-since those programs need to allocate many small objects. The PageRank programs
+since those programs need to allocate many small objects. The PageRank program
 shows good scalability with \code{malloc} but it is only because the
 configuration with 1 thread runs slowly when compared to the other
 configurations. For all the remaining programs, there is less overall

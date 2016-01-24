@@ -1,10 +1,10 @@
 In the Heat Transfer~(HT) algorithm, we have a graph where heat values are
-exchanged between nodes. The program stops when, for every node $i$, the new heat values $H_i$
-differ only a small $\epsilon$ from the old values $H_{i-1}$, where $\delta =
-|H_i - H_{i-1}| \le \epsilon$. The algorithm works asynchronously, i.e., heat
-values are updated using information as it arrives from neighboring nodes. This
-increases concurrency since nodes do not need to synchronize between
-iterations.
+exchanged between nodes. The program stops when, for every node $i$, the new
+heat values $H_i$ differ only a small $\epsilon$ from the old values $H_{i-1}$,
+where $\delta = |H_i - H_{i-1}| \le \epsilon$. The algorithm works
+asynchronously, i.e., heat values are updated using information as it arrives
+from neighboring nodes. This increases concurrency since nodes do not need to
+synchronize between iterations.
 
 Figure~\ref{code:coord:ht} shows the HT rules that send new heat values to
 neighbor nodes. In the first rule we added an \code{add-priority} action fact to
@@ -33,13 +33,13 @@ fabs(New - Old) <= epsilon
 
 Fig.~\ref{fig:coordination:results_ht} presents the scalability results for the
 regular and coordinated version. The dataset used in the experiments was already
-used in Section~\ref{section:implementation:performance}, which is a square
-grid with an inner square with high heat nodes. Comparing the coordinated
-version with the regular version, with 1 thread there is a 50\% reduction in run
-time, while for 32 threads there is, on average, a 15\% reduction. The
-increasing number of threads makes selecting the higher priority nodes less
-likely since each thread is only able to select the higher priority node from
-its own (ever decreasing) subgraph.
+used in Section~\ref{section:implementation:performance}, which is a square grid
+with an inner square with high heat nodes. Comparing the coordinated version
+with the regular version, with 1 thread there is a 50\% reduction in run time,
+while for 32 threads there is, on average, a 15\% reduction. The increasing
+number of threads makes selecting the higher priority nodes less likely since
+each thread is only able to select the higher priority node from its own (ever
+decreasing) subgraph.
 
 \begin{figure}[]
         \centering
@@ -67,7 +67,13 @@ $\delta$ values if the target node is in another thread
 thread \code{T} of the node \code{A} and match the \code{thread-id} of each
 neighbor \code{B} against \code{T}. The comprehension in
 lines~\ref{line:coord:ht_better_comp1}-\ref{line:coord:ht_better_comp2} only
-generates \code{new-neighbor-heat} facts if \code{B} is in the same thread.
+generates \code{new-neighbor-heat} facts if \code{B} is in the same thread. Note
+that in this version, the heat values computed by the program will have
+increased errors since they are computed with less accurate information.
+However, it is possible to write more complicated rules where nodes could
+accumulate incoming heat values and then compute and propagate new heat values
+when appropriate. This would also increase locality but without increasing the
+statistical error.
 
 The results for the improved version are presented in
 Fig.~\ref{fig:coordination:results_ht_new}. There is a clear improvement when

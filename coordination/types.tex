@@ -46,4 +46,8 @@ machine in order to prioritize the computation of some nodes.
 With sensing and action facts, we can write rules that sense the state of the
 runtime system and then apply decisions in order to improve execution speed or
 change partitioning information. In most situations, this set of rules can be
-added to the program without modifying the meaning of the original rules.
+added to the program without modifying the meaning of the original rules. When
+using sensing facts in rules, the meaning of the programs will change and the
+programmer needs to be aware of the semantics of coordination and how the
+virtual machine transitions from one state to another using built-in linear
+logic rules (see Section~\ref{sec:modelling} for a detailed discussion).

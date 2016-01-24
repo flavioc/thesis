@@ -102,8 +102,10 @@ deleted facts.
 
 If the implicit constraint failed, another \code{colored} fact would be checked
 by assigning \code{colored} to \code{colored.next()}.  Likewise, if the initial
-\code{visit} fact fails for all \code{colored} facts, then the next
-\code{visit} fact in the list is tried by following the \code{next} pointer.
+\code{visit} fact fails for all \code{colored} facts, then the next \code{visit}
+fact in the list is tried by following the \code{next} pointer.  Note that, for
+this particular example, we ignore some obvious optimizations such as avoiding
+the deletion and then re-derivation of \code{colored} facts.
 
 In order to understand how rule priorities affect compilation, consider a
 slightly different bipartiteness checking program where the second and third
@@ -163,10 +165,9 @@ while(colored is valid)
 \end{LineCode}
 
 This enforces the priority semantics of the language described in
-Section~\ref{sec:language:semantics}. When a rule derives facts
-that were used as input to a higher priority rule, the initial rule is only
-derived once because the newly derived facts may trigger the derivation of a
-higher priority rule.
+Section~\ref{sec:language:semantics}. When a rule derives facts that were used
+as input to a higher priority rule, the initial rule is only fired once because
+the newly derived facts may trigger the application of a higher priority rule.
     
 \begin{figure}
 \begin{algorithm}[H]

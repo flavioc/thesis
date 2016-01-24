@@ -5,7 +5,7 @@ are used in order to implement different operations:
 \begin{itemize}
 
    \item \textbf{Deriving New Facts}: We use the node's \emph{State Lock} and
-      then attempt to lock the \emph{DB Lock}. If the \emph{Db Lock} cannot be
+      then attempt to lock the \emph{DB Lock}. If the \emph{DB Lock} cannot be
       used, then the new facts are added to the \emph{Incoming Fact Buffer},
       otherwise the node database structures are updated with new facts. If the
       target node is not currently in any work queue, we lock the destination
@@ -79,7 +79,8 @@ are used in order to implement different operations:
    }
    $TH.work\_queue.push(nodes)$\;
 \end{algorithm}
-\mycap{Synchronization code for sending a fact to another node.}
+\mycap{Synchronization code for node stealing (source thread steals nodes from
+target thread).}
  \label{alg:multicore:steal_nodes}
 \end{figure}
 

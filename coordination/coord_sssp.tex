@@ -126,7 +126,7 @@ are the datasets where the distance is calculated for fewer nodes. When
 calculating the distance from multiple sources, the \code{set-priority} fact is
 less effective because, although it selects the node with the shortest distance
 to some source node, other distance computations (from other source nodes) are
-also propagated to neighbor nodes, which is not be optimal. However,
+also propagated to neighbor nodes, which may not be optimal. However,
 a potential solution to this problem is to add new coordination facts
 and then change the underlying coordination machinery to support fact-based priorities (instead of node based).
 This shows the beauty of our coordination model since this would not require changes to the semantics of the language.

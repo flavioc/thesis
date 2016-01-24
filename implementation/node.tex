@@ -1,6 +1,6 @@
 The main characteristic of LM rules is that they are constrained by the first
 argument. Rule derivation uses only facts from the same node, therefore there
-is no need to synchronize with other nodes to derive rules. However, when nodes
+is no need to synchronize with other nodes to derive facts. However, when nodes
 derive non-local facts (owned by other nodes), then the implementation must
 synchronize and \emph{send} the facts to the target node. From the point of view
 of the receiving node, these are called \emph{incoming facts}. Note that this is
@@ -10,7 +10,7 @@ given in the next chapter.
 During the lifetime of a program, each node goes through different states as
 specified by the state machine. Figure~\ref{fig:local:node_states} presents the
 state machine with the valid state transitions.  In the \textbf{running} state,
-the node is deriving rules. In the \textbf{inactive} state, the node has no new
+the node is applying rules. In the \textbf{inactive} state, the node has no new
 facts to be considered and all candidate rules have been tried. In the
 \textbf{active} state, the node has new facts to be considered but is waiting to
 be executed by a thread. Finally, in the \textbf{stealing} state, the node is
@@ -31,8 +31,8 @@ following attributes:
    \item \emph{State Lock}: a lock that protects the following node attributes:
       \emph{State}, \emph{Owner} and \emph{Incoming Fact Buffer}.
    \item \emph{DB Lock}: a lock that protects \emph{Linear DB},
-      \emph{Persistent DB} and \emph{Rule Engine}. The lock is held when the node is deriving rules or
-      when incoming facts from other nodes need to be added to the database data
+      \emph{Persistent DB} and \emph{Rule Engine}. The lock is held when the
+      node is applying rules or when incoming facts from other nodes need to be added to the database data
       structures.
    \item \emph{Rule Engine}: a data structure that detects which rules are
       candidates and should be derived. The data structure is fully explained
@@ -41,7 +41,7 @@ following attributes:
       node.
    \item \emph{Incoming Fact Buffer}: a data structure that holds incoming facts that
       could not be added to the database data structures since the node is
-      currently deriving rules.
+      currently applying rules.
    \item \emph{Linear DB}: the database of linear facts as a set of
       structures for storing linear facts for each linear predicate.
    \item \emph{Persistent DB}: the database of persistent facts.
@@ -78,7 +78,7 @@ one of the following data structures:
    trie and array data structures for a particular persistent predicate.
 
 \item \emph{Doubly Linked List Data Structures} are used to store linear facts.
-   We use a double linked list because adding and removing facts are efficient
+   We use a doubly linked list because adding and removing facts are efficient
    operations.  The \code{prev} and \code{next} pointers are used to chain the
    facts of the linked list.
 
@@ -115,7 +115,7 @@ either a list or another hash table, recursively.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Indexing}\label{sec:implementation:indexing}
+\subsection{Indexing Engine}\label{sec:implementation:indexing}
 
 During rule derivation, facts to be searched and filtered to match the rule
 constraints. One of the most common constraints is to ensure that some arguments
