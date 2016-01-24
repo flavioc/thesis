@@ -1,13 +1,24 @@
 
-We propose a new linear logic programming language, called Linear Meld~(LM),
-designed to write \textbf{declarative parallel graph based programs} for
-multicore architectures. LM is a novel programming language that makes
-\textbf{coordination} a first-class programming construct that is
-\textbf{semantically equivalent to computation}. Coordination allows the
-programmer to write declarative code that reasons about the underlying parallel
-architecture in order to improve the run time and scalability of programs. Since
-LM is based on logical foundations, programs are amenable to reasoning, even in
-the presence of coordination.
+In this thesis, we describe a new linear logic programming language, called
+Linear Meld~(LM), designed to write \textbf{declarative parallel graph based
+programs} for multicore architectures. Our goal with LM is to prove the
+following thesis:
+
+\begin{quote}
+Linear logic with coordination provides a high level language for expressing
+parallel graph-based programs that are both easy to reason about and implement
+efficiently. Furthermore, modeling programs as graphs allows the runtime system
+to solve the granularity problem by grouping nodes into sub-graphs that are
+processed independently.
+\end{quote}
+
+
+LM is a novel programming language that makes \textbf{coordination} a
+first-class programming construct that is \textbf{semantically equivalent to
+computation}. Coordination allows the programmer to write declarative code that
+reasons about the underlying parallel architecture in order to improve the run
+time and scalability of programs. Since LM is based on logical foundations,
+programs are amenable to reasoning, even in the presence of coordination.
 
 We support our thesis through seven major contributions:
 
@@ -35,11 +46,11 @@ We support our thesis through seven major contributions:
    \item[Thread-Based Facts]
 
    While LM can be classified as a programming language with implicit
-   parallelism, it introduces thread facts to support some form of declarative explicit
-   parallelism. Thread facts allow the programmer to reason about the state of
-   the underlying parallel architecture, namely the execution thread, by
-   managing facts about each thread. Thread facts can be used along with regular
-   facts belonging to nodes and coordination facts, allowing for the
+   parallelism, it introduces thread facts to support some form of declarative
+   explicit parallelism. Thread facts allow the programmer to reason about the
+   state of the underlying parallel architecture, namely the execution thread,
+   by managing facts about each thread. Thread facts can be used along with
+   regular facts belonging to nodes and coordination facts, allowing for the
    implementation of customized parallel scheduling algorithms. We show how some
    programs take advantage of this facility to create optimal scheduling
    algorithms that are not possible in the limited context of implicit
@@ -47,11 +58,11 @@ We support our thesis through seven major contributions:
    
    \item[Provability]
    
-   We leveraged the logical foundations of LM to show how to prove the correctness
-   of programs. We also show that coordination does not change those
+   We leveraged the logical foundations of LM to show how to prove the
+   correctness of programs. We also show that coordination does not change those
    correctness proofs but only improves run time, scalability or memory usage.
 
-\item[Efficient Runtime and Compilation]
+   \item[Efficient Runtime and Compilation]
 
    We have implemented a runtime system with support for efficient data
    structures for handling linear facts and a compiler that is designed to
@@ -61,18 +72,20 @@ We support our thesis through seven major contributions:
    competitive with some more mature frameworks such as
    GraphLab~\cite{GraphLab2010} or Ligra~\cite{Shun:2013:LLG:2517327.2442530}.
 
-\item[Multicore Parallelism]
+   \item[Multicore Parallelism]
    
    The logical facts of the program are partitioned across the graph of the
    nodes. Since the logical rules only make use of facts from a single node,
    computation can be performed locally, independently of other nodes of the
    graph. We view applications as a communicating graph data structure where
    each processing unit performs work on a different subset of the graph, thus
-   enabling concurrency. This is an advantage of LM since we can run programs on
-   many different types of distributed systems as long as the underlying runtime
-   system uses the appropriate communication facilities.
+   enabling concurrency. This allows LM to solve the granularity problem by
+   allowing computation to be grouped into sub-graphs that can be processed by
+   different processing cores. Even if there is poor work imbalance between
+   cores, it is possible to easily move nodes between cores to achieve better
+   load balancing and scheduling.
 
-\item[Experimental Results]
+   \item[Experimental Results]
 
    We have implemented a compiler and a virtual machine prototype from scratch
    that executes on multicore machines.  We have implemented programs such as
@@ -81,5 +94,5 @@ We support our thesis through seven major contributions:
    life, quick-sort, neural network training, among others. Our experiments
    performed on a machine with 32 cores shows that our implementation provides
    good scalability with up to 32 threads of execution.
-   
+      
 \end{description}

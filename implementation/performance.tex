@@ -1,17 +1,18 @@
 To understand the absolute performance of LM programs, we compared their
 execution time using a multithreaded capable virtual machine running on a single
-thread against hand-written sequential C++ programs. All C++ programs were
-compiled with the same compilation flags used for LM for fairness. Arguably,
-compiled C/C++ programs are a good standard for comparing the performance of new
-programming languages since they tend to offer the best performance on several
-popular benchmarks~\cite{language_benchmarks}.  Python is a \emph{scripting}
-programming language that is much slower than compiled C/C++ programs and thus
-can be seen as a good lower-bound in terms of performance.
+thread against hand-written sequential C++ programs\footnote{All C++ programs
+   available at \url{http://github.com/flavioc/misc}.}. All C++ programs were
+   compiled with the same compilation flags used for LM for fairness. Arguably,
+   compiled C/C++ programs are a good standard for comparing the performance of
+   new programming languages since they tend to offer the best performance on
+   several popular benchmarks~\cite{language_benchmarks}.  Python is a
+   \emph{scripting} programming language that is much slower than compiled C/C++
+   programs and thus can be seen as a good lower-bound in terms of performance.
 
 The goal of the evaluation is to understand the effectiveness of our compilation
 strategy and the effectiveness of our dynamic indexing algorithms, including the
 data structures (hash trees) used to index logical facts. We used the following
-programs in our experiments\footnote{All programs available on
+programs in our experiments\footnote{All LM programs available at
    \url{http://github.com/flavioc/meld/benchs/progs}.}:
 
 \begin{itemize}

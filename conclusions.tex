@@ -9,17 +9,26 @@ linear logic programming language to exploit parallelism in a declarative,
 efficient and scalable way. For this, we designed and implemented LM, a
 programming language suitable for writing concurrent algorithms over graph
 data-structures. LM programs are composed of a set of inference rules that apply
-over a database of logical facts. Concurrency is achieved by partitioning the
-database across a graph data structures and forcing rule derivation to happen at
-the node level. Since LM is based on linear logic, facts used in rules may be
-retracted, making it possible for the programmer to declaratively manage
-structured state.
+over a database of logical facts.  Since LM is based on linear logic, facts used
+in rules may be retracted, making it possible for the programmer to
+declaratively manage structured state.
+
+Concurrency is achieved by partitioning the database across a graph data
+structures and forcing rule derivation to happen at the node level. The use of
+graphs allows LM to easily solve the task granularity problem that is common in
+implicitly parallel languages such as LM. By localizing computation to nodes, it
+is possible to group nodes together as sub-graphs that can be processed
+independently. Even if certain sub-graph partitioning proves to have a poor task
+balance, nodes of sub-graphs can be easily moved into other sub-graphs,
+allowing for easy load balance between processing cores.
 
 We introduced coordination facts in LM to allow the programmer to fine-tune and
 optimize their declarative programs. This is possible due to the existence of
 linear facts, which make it possible for different scheduling decisions to have
 an effect on program computation. Without them, a logic program would always
-compute the same result.
+compute the same result. Coordination facts are also another way to combat the
+granularity problem since they allow the programmer to control how nodes are
+grouped together.
 
 We also introduced explicit parallelism in LM by adding support for thread
 facts. Thread facts are facts stored at the thread level and allow the
@@ -110,6 +119,46 @@ performance and scalability may be affected by using different strategies. It is
 our belief that it is important to focus on faster sequential execution at the
 expense of scalability in order to make declarative parallel languages more
 competitive with sequential programs written in languages such as C++.
+
+\end{description}
+
+\section{Drawbacks of LM}
+
+While LM provides answers to several known problems in implicitly parallel
+languages, it suffers from several disadvantages:
+
+\begin{description}
+
+   \item[Graph Of Nodes] Even though graph data structures are flexible and can
+      be used to model many interesting problems, they are not always the best
+      abstraction. Using graphs as an abstraction for concurrency requires
+      some problems to be adapted to run on graphs in non intuitive
+      ways. For instance, in the N-Queens problem in
+      Section~\ref{section:coord:nqueens}, we had to map the chess board
+      into a grid of nodes and then parallelize the program by considering each
+      square as a unit that builds solutions to the problem. In general, the
+      graph model of LM is suitable for irregular algorithms but not as suitable
+      for regular algorithms such as numerical algorithms or algorithms that
+      don't use graphs as their main data structure.
+
+   \item[Thread Reasoning] Sensing facts and thread-based facts come with a cost
+      when used to creating complex scheduling algorithms since when reasoning
+      with coordinated programs requires that the programmer understands the
+      semantics of the underlying virtual machine. However, we think it will be
+      impossible to avoid this unless the runtime system performs all the
+      optimizations, leaving no control to the programmer since optimization
+      always requires some knowledge about the underlying hardware and software.
+      In LM, the programmer pays a lower cost because the semantics of
+      coordination have a high level of abstraction.
+
+   \item[Modularity] Program composition is still an unsolved problem in linear
+      logic programming since it is hard to compose programs that manipulate the
+      same state. Martens~\cite{chris-thesis} introduces the concept of staged
+      logic programming which allows sets of logical rules to be grouped into
+      stages. Each stage is computed separately and up-to quiescence, allowing
+      stages to have precedence over others. However, it still remains to be
+      studied how separate rules can be grouped together without introducing
+      ordering constraints.
 
 \end{description}
 

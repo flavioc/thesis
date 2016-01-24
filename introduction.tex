@@ -14,18 +14,27 @@ programming abstractions such as \emph{message passing} (e.g.,
 MPI~\cite{gabriel04-open-mpi}) and \emph{shared memory} (e.g.,
 Pthreads~\cite{Butenhof:1997:PPT:263953} or
 OpenMP~\cite{Chapman-2007-UOP-1370966}). While such abstractions give a lot of
-control to the programmer and provide excellent performance, these APIs are
-hard to use and debug, which makes it difficult to prove that a program is
-correct, for instance. On the opposite end, we have many declarative programming
+control to the programmer and provide excellent performance, these APIs are hard
+to use and debug, which makes it difficult to prove that a program is correct,
+for instance. On the opposite end, we have many declarative programming
 models~\cite{Blelloch:1996:PPA:227234.227246} that can exploit some form of
-implicit parallelism.  While those declarative paradigms tend to make programs
-easier to reason about, they offer little or no control to the programmer over
-how parallel execution is scheduled or how data is laid out, making it hard to
-improve efficiency. This introduces performance issues because even if the
-runtime system is able to reasonably parallelize the program using a general
-algorithm, there is a lack of specific information about the program that a
-compiler cannot easily deduce. Such information could make execution better in
-terms of run time, memory usage, or scalability.
+implicit parallelism. Implicit parallelism allows the runtime system to
+automatically exploit parallelism by deciding which tasks to run in parallel.
+However, it is not always obvious which tasks to run in parallel and which tasks
+to run sequentially. This important issue, known as the \emph{granularity
+problem}, needs to be handled well because creating too many parallel tasks will
+make the program run very slowly since there is a significant overhead for
+creating parallel tasks. It is then fundamental that there is a good mapping
+between tasks and available processors.  Another different, but related problem,
+is that declarative programming paradigms offer little to no control to the
+programmer over how parallel execution is scheduled or how data is laid out,
+making it hard to improve efficiency. Even if the runtime system reasonably
+solves the granularity problem, there is a lack of specific information about
+the program that a compiler cannot easily deduce. Furthermore, the program's
+data layout is also critical for performance since poor data locality will
+degrade performance even if the task granularity is optimal.  If the programmer
+could provide such information, then execution would improve in terms of run
+time, memory usage, or scalability.
 
 In the context of the Claytronics project~\cite{goldstein-computer05},
 Ashley-Rollman et al.~\cite{ashley-rollman-iclp09,
@@ -45,7 +54,9 @@ language a structured way to manage state, allowing the programmer to assert and
 retract logical facts.  While the original Meld sees a running program as an
 ensemble of robots, LM sees the program as a graph of node data structures,
 where each node performs computation independently of other nodes and is able to
-communicate with its neighborhood of nodes.
+communicate with its neighborhood of nodes. Using the graph as the main program
+abstraction, LM also solves the granularity program by allowing nodes to be
+grouped into tasks that can be ran in a single thread of control.
 
 LM introduces a new mechanism, called coordination, that is semantically
 equivalent to regular computation and allows the programmer to reason about
