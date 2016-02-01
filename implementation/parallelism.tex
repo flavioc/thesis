@@ -6,11 +6,17 @@ threads can steal nodes of other threads to keep themselves busy. The load
 balancing aspect of the system is performed by our work scheduler that is based
 on a simple work stealing algorithm.
 
-While our VM uses shared memory for thread communication, each thread has a
-logical space that contains its subgraph, i.e., the nodes owned by the thread,
-and a \emph{Work Queue}, which contains \textbf{active} nodes, i.e., nodes that
-have new facts to process. The work queue is implemented as a singly linked list and
-is embedded in the node data structures. Initially, the work queue is filled
+Since LM uses an asynchronous and graph-based model of computation where nodes
+of the graph can compute independently of other nodes, the granularity problem,
+common in other declarative languages, can be solved by dynamically grouping
+nodes of the graph into subgraphs that are processed by a single executing
+thread. This avoids the creation of too many threads of control and allows the
+dynamic assignment of nodes to threads through the use of work stealing.
+
+In our VM, each VM's thread uses a \emph{Work Queue} that contains
+\textbf{active} nodes, i.e., nodes that have new facts to process and are part
+of the thread's subgraph. The work queue is implemented as a singly linked list
+and is embedded in the node data structures. Initially, the work queue is filled
 with the nodes in the thread's subgraph in order to derive the initial facts. A
 thread may go through different states during its lifetime. The state is kept
 track in the \emph{State} flag which may have one of the following values:

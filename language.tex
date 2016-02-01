@@ -14,7 +14,7 @@ they are consumed and thus deleted from the database. The program stops when we
 reach \emph{quiescence}, that is, when we can no longer obtain new facts through
 rule derivation.
 
-LM sees the database of facts as a graph data structure where each node contains
+LM views the database of facts as a graph data structure where each node contains
 facts belonging to that node. The database of facts can also be seen as a
 collection of node objects and each node contains several attributes represented
 as facts that describe the node. Derivation rules are restricted so that they
@@ -22,8 +22,12 @@ are only allowed to manipulate facts belonging to the same node. This
 restriction allows nodes of the graph to compute independently of other nodes
 since they can only perform computation with their current attributes.
 Communication between nodes arises when a rule derives a fact that belongs to
-another node. These design decisions allow LM to be concurrent but also make LM
-easier to implement.
+another node. These design decisions allow LM to be concurrent and to also avoid
+bthe granularity problem that is usually present in declarative languages. Since
+computation is performed locally at each node of the graph, it is possible to
+group nodes into computation units that can processed independently by the same
+processing thread, which allows the implementation to easily control the
+granularity of the program.
 
 \section{A Taste Of LM}
 
