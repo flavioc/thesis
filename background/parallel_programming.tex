@@ -1,24 +1,3 @@
-\begin{comment}
-Parallelism has been traditionally classified into two classes: \emph{data
-parallelism} and \emph{task parallelism}. In data parallelism, the data is
-partitioned among the processing units and each unit performs the same
-computation on their piece of data. In task parallelism, the program is split
-into different tasks that are then assigned to processing units. If the data or
-tasks are well-defined, relatively independent and regular (i.e., they take the
-same amount of time to be completed) then parallelization can be trivial.
-However, issues arise when it is hard to partition the tasks or the tasks that
-need to be completed are not static but are dynamically generated during
-execution. To complicate matters even further, some tasks may depend on other
-tasks being completed in order to be started. In such situations, the programmer
-is required to implement a \emph{scheduler} that efficiently assigns tasks to
-processing units and is able to \emph{balance} the load among those units. A
-scheduler may use a \emph{centralized strategy} where there is a \emph{master}
-processing unit that makes work distribution decisions or the scheduler uses a
-\emph{distributed strategy} where each processing unit is able to perform
-\emph{work stealing} or \emph{work sharing}~\cite{Blumofe:1999} on other units
-to improve load balance.
-\end{comment}
-
 A popular paradigm for implementing parallelism is \emph{explicit parallel
 programming}, where parallelism must be explicitly defined and all the
 mechanisms for coordinating parallel execution must be specified by the
@@ -55,7 +34,7 @@ Since explicit parallel programming is hard to get right due to the
 non-deterministic nature of parallel execution, other, less explicit, parallel
 programming models were devised in order to aliviate some of the problems
 inherent to the model. One such problem is the \emph{fork/join} model which has
-made popular with the Cilk~\cite{Bluemofe:1995:CEM:209936.209958} programming
+made popular with the Cilk~\cite{Blumofe:1995:CEM:209936.209958} programming
 language. In Cilk, the programmer writes C programs that can spawn parallel
 tasks and then explicitly join (or wait) until the spawned tasks are complete.
 An advantage of Cilk over more pure explicit parallel programming is that the

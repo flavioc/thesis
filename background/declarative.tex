@@ -1,17 +1,17 @@
-Declarative programming languages are considered to be high-level programming
-languages, because they allow the programmer to concentrate more on what the
-problem is, rather than telling the computer the steps it needs to do to solve
-the problem. Declarative programming has been hailed as a solution to parallel
-programming, since the problem of implementing the details of parallelism is
-moved from the programmer to the compiler and runtime environment. The
-programmer writes code without having to deal with parallel programming
-constructs and the compiler automatically parallelizes the program in order to
-take advantage of multiple threads of execution. Unfortunately, this comes at a
-cost of low programmer control over how computation is performed, which may not
-be optimal under every circumstance. However, declarative programming remains
-attractive because formal reasoning is performed at a higher level and does not
-have to deal with low level parallel programming constructs such as locks or
-message passing.
+Another form of parallel programming is implicit parallel programming, a style
+of programming commonly present in declarative programming languages.  The
+declarative style of programming allows the programmer to concentrate more on
+what the problem is, rather than telling the computer the steps it needs to do
+to solve the problem. In turn, this gives freedom to the language implementation
+to work out the details of parallelism, solving many of the issues that arise
+when writing explicit parallel programs. The programmer writes code without
+having to deal with parallel programming constructs and the compiler
+automatically parallelizes the program in order to take advantage of multiple
+threads of execution. Unfortunately, this comes at a cost of low programmer
+control over how computation is performed, which may not be optimal under every
+circumstance. However, declarative programming remains attractive because formal
+reasoning is performed at a higher level and does not have to deal with low
+level parallel programming constructs such as locks or message passing.
 
 \subsection{Functional Programming}
 
@@ -21,26 +21,17 @@ application and abstraction.
 
 In pure functional programming languages, the side effect free nature of
 computation allows multiple expressions to evaluate safely in
-parallel~\cite{Loidl:2003}. This so called \emph{implicit parallelism} has been
-implemented in languages such as Id~\cite{Nikhil93anoverview} and
-SISAL~\cite{gaudiot2001sisal} with relative success. However, this kind of
-parallelism still remains elusive in the functional programming community since
-practical functional programs have, in general, a high number of fine-grained
-parallel tasks, which makes it harder for a compiler to schedule computations
-efficiently~\cite{haskell_tutorial}.  Alternative approaches such as
-\emph{semi-explicit parallelism}~\cite{Marlow:2010}, \emph{data
+parallel~\cite{Loidl:2003}. This has been realized in in languages such as
+Id~\cite{Nikhil93anoverview} and SISAL~\cite{gaudiot2001sisal} with relative
+success. However, this kind of parallelism still remains elusive in the
+functional programming community since practical functional programs have, in
+general, a high number of fine-grained parallel tasks, which makes it harder for
+a compiler to schedule computations efficiently~\cite{haskell_tutorial}.
+Alternative approaches such as \emph{data
 parallelism}~\cite{Blelloch:1996:PPA:227234.227246,Chakravarty07dataparallel,peytonjones:2008},
-and \emph{explicit parallelism}~\cite{harris2005composable} have shown to be
-more effective in practice.
-
-In semi-explicit parallelism, the programmer uses an API to tell the runtime
-system which computations should be carried out in parallel, thus avoiding the
-fine-grain granularity problem. These kinds of annotations for coarse-grained
-parallel computations, called \emph{sparked computations}~\cite{Marlow:2010},
-have been made available in the Haskell programming language and express the
-possibility of performing speculative computations which are going to be needed
-in the future. In a sense, sparked computations can be seen as \emph{lazy
-futures}~\cite{Baker:1977}.
+\emph{semi-explicit parallelism}~\cite{Marlow:2010,Fluet:2010}, and
+\emph{explicit parallelism}~\cite{harris2005composable} have shown to be more
+effective in practice.
 
 Data parallelism attempts to partition data among a set of processing units and
 then apply the same operation on the data. The simplest form of data parallelism
@@ -55,35 +46,24 @@ modern languages such as Haskell~\cite{Chakravarty07dataparallel}. The main
 advantage of this approach is that it remains true to the original goal of
 implicit parallelism.
 
-\subsection{Granularity Problem}
-
-\subsection{Data-Centric Languages}
-
-Recently, there has been increasing interest in declarative data-centric
-languages. MapReduce~\cite{Dean:2008:MSD:1327452.1327492}, for instance, is a
-popular data-centric programming model that is optimized for large clusters. The
-scheduling and data sharing model is simple: in the \emph{map phase}, data
-is transformed at each node and the result reduced to a final result in the
-\emph{reduce phase}. In order to facilitate the writing of programs over large
-datasets, SQL-like languages such as
-PigLatin~\cite{Olston:2008:PLN:1376616.1376726} have been developed. PigLatin
-builds on top of MapReduce and allows the programmer to write complex data-flow
-graphs, raising the abstraction and ease of programmability of MapReduce
-programs. An alternative to PigLatin/MapReduce is
-Dryad~\cite{Isard:2007:DDD:1272996.1273005} that allows programmers to design
-arbitrary computation patterns using DAG abstractions. It combines computational
-vertices with communication channels (edges) that are automatically scheduled to
-run on multiple computers/cores.
-
-LM, the language presented in this thesis, also follows the data-centric
-approach since it is designed for writing programs over graph data structures.
-In Section~\ref{section:language:related}, we discuss data-centric languages in
-more detail and present some other programming systems for data-centric parallel
-computation and how they compare to LM.
+In semi-explicit parallelism, the programmer uses an API to tell the runtime
+system which computations should be carried out in parallel, thus avoiding the
+fine-grain granularity problem. An example of such API are the so-called called
+\emph{sparked computations}~\cite{Marlow:2010}, which have been made available
+in the Haskell programming language and express the possibility of performing
+speculative computations which are going to be needed in the future. In a sense,
+sparked computations can be seen as \emph{lazy futures}~\cite{Baker:1977}. This
+type of construct was also realized in the Manticore language~\cite{Fluet:2010},
+which introduces the \texttt{pval} binding form for creating potential parallel
+computations. Interestingly, Manticore also combines support for parallel arrays
+in the style of NESL and explicit parallelism in the form of a \texttt{spawn}
+keyword that allows the programmer to create threads that communicate using
+message passing.
 
 \subsection{Logic Programming}
 
-Another example of declarative programming is logic programming.
+Another example of declarative programming that is suitable for implicit
+parallel programming is logic programming.
 Logic programming is usually based on classical logics, such as the
 \emph{predicate and propositional calculus}, or in non-classical logics such as
 \emph{constructive} or \emph{intuitionistic} logic, where the goal is to
@@ -189,7 +169,7 @@ machines~\cite{183073,Loo-condie-garofalakis-p2}, where rules are restricted in
 order to facilitate fact partitioning and communication. The LM language
 presented in this thesis follows this latter approach.
 
-\subsection{Origins of LM}
+\subsubsection{Origins of LM}
 
 LM is a direct descendant of Meld by Ashley-Rollman et
 al.~\cite{ashley-rollman-iclp09,ashley-rollman-derosa-iros07wksp}, a logic
@@ -211,3 +191,63 @@ includes a logic programming language called NDlog~\cite{Loo:EECS-2006-177} for
 writing network algorithms declaratively. Many ideas about state management were
 already present in NDlog.  NDlog is essentially a Datalog based language with a
 few extensions for declarative networking.
+\subsection{Data-Centric Languages}
+
+Recently, there has been increasing interest in declarative data-centric
+languages. MapReduce~\cite{Dean:2008:MSD:1327452.1327492}, for instance, is a
+popular data-centric programming model that is optimized for large clusters. The
+scheduling and data sharing model is simple: in the \emph{map phase}, data
+is transformed at each node and the result reduced to a final result in the
+\emph{reduce phase}. In order to facilitate the writing of programs over large
+datasets, SQL-like languages such as
+PigLatin~\cite{Olston:2008:PLN:1376616.1376726} have been developed. PigLatin
+builds on top of MapReduce and allows the programmer to write complex data-flow
+graphs, raising the abstraction and ease of programmability of MapReduce
+programs. An alternative to PigLatin/MapReduce is
+Dryad~\cite{Isard:2007:DDD:1272996.1273005} that allows programmers to design
+arbitrary computation patterns using DAG abstractions. It combines computational
+vertices with communication channels (edges) that are automatically scheduled to
+run on multiple computers/cores.
+
+LM, the language presented in this thesis, also follows the data-centric
+approach since it is designed for writing programs over graph data structures.
+In Section~\ref{section:language:related}, we discuss data-centric languages in
+more detail and present some other programming systems for data-centric parallel
+computation and how they compare to LM.
+
+\subsection{Granularity Problem}
+
+In order for implicit parallelism to be effective in practice, its
+implementation must know which computations should be done in parallel and which
+computations are better performed sequentially due to the overhead of task
+synchronization. This is commonly known as the \emph{granularity problem} and it
+is a crucial issue for good parallel performance. If the implementation uses
+coarse grained tasks, then this may lead to poor load balancing and thus poor
+scalability since the tasks take too long. On the other hand, if fine grained
+tasks are used, then scalability will suffer due to the overhead of
+synchronization.
+
+In functional programming, every expression can potentially be computed in
+parallel. If such parallelism was explored eagerly, this would rapidly lead to
+an enormous overhead due to the amount of fine grained parallelism.  The same
+problem arises in logic programming~\cite{logprog_granularity} where multiple
+subgoals can be proven in parallel at each point in the program, generating
+large proof trees. It is then fundamental that declarative programming languages
+target the right level of granularity in order to achieve good scalability and
+performance.
+
+Several solutions have been proposed and implemented to tackle this granularity
+problem. As seen in the previous sections, some languages provide explicit
+keywords that allow the programmer to give hints about which parts of the
+program can be parallelized. A more general solution has been devised by Acar et
+al.~\cite{Acar:2011} with the Parallel Algorithm Scheduling Library~(PASL), a
+library that attempts to provide a general solution to task scheduling and
+granularity control by providing a combination of user-provided asymptotic cost
+functions and execution time profiling. PASL comes with a novel work stealing
+algorithm~\cite{acar-chargueraud-rainey-13-sched} based on private deques that
+further reduces the overhead of task creation and task sharing. LM also solves
+the granularity problem but by modeling the application as a graph of nodes
+where nodes can compute independently of other nodes, allowing for nodes, which
+represent tasks, to be grouped together into subgraphs to provide the right
+level of granularity.
+
