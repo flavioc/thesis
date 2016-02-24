@@ -228,7 +228,7 @@ tasks are used, then scalability will suffer due to the overhead of
 synchronization.
 
 In functional programming, every expression can potentially be computed in
-parallel. If such parallelism was explored eagerly, this would rapidly lead to
+parallel. If such parallelism is explored eagerly, it will rapidly lead to
 an enormous overhead due to the amount of fine grained parallelism.  The same
 problem arises in logic programming~\cite{logprog_granularity} where multiple
 subgoals can be proven in parallel at each point in the program, generating

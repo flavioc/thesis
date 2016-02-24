@@ -14,13 +14,13 @@ in rules may be retracted, making it possible for the programmer to
 declaratively manage structured state.
 
 Concurrency is achieved by partitioning the database across a graph data
-structures and forcing rule derivation to happen at the node level. The use of
-graphs allows LM to easily solve the task granularity problem that is common in
-implicitly parallel languages such as LM. By localizing computation to nodes, it
-is possible to group nodes together as sub-graphs that can be processed
+structure and then forcing rule derivation to happen at the node level. The use
+of graphs allows LM to solve the task granularity problem that is common in
+implicitly parallel languages. By localizing computation to nodes, it is
+possible to group nodes together as sub-graphs that can be processed
 independently. Even if certain sub-graph partitioning proves to have a poor task
-balance, nodes of sub-graphs can be easily moved into other sub-graphs,
-allowing for easy load balance between processing cores.
+balance, nodes of sub-graphs can be moved into other sub-graphs, allowing for
+easy load balance between processing cores.
 
 We introduced coordination facts in LM to allow the programmer to fine-tune and
 optimize their declarative programs. This is possible due to the existence of
@@ -155,10 +155,10 @@ languages, it suffers from several disadvantages:
       logic programming since it is hard to compose programs that manipulate the
       same state. Martens~\cite{chris-thesis} introduces the concept of staged
       logic programming which allows sets of logical rules to be grouped into
-      stages. Each stage is computed separately and up-to quiescence, allowing
+      stages. Each stage is computed separately and up to quiescence, allowing
       stages to have precedence over others. However, it still remains to be
       studied how separate rules can be grouped together without introducing
-      ordering constraints.
+      conflicts.
 
 \end{description}
 
