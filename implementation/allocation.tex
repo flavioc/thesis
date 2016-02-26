@@ -3,10 +3,10 @@ Memory allocation in the VM is extremely important because there is a need to
 repeatedly allocate and deallocate logical facts. Logical facts tend to be small
 memory objects since they are composed of two pointers (16 B) plus a variable
 number of arguments (8 B each), which may lead to fragmentation if allocation is
-not done carefully.  Moreover, since the VM is multithreaded, allocation also
+not done carefully.  Moreover, since the VM is multi threaded, allocation also
 needs to be scalable, therefore using the standard \code{malloc} facility
 provided by the POSIX standard is not preferred since each operating system uses
-a different implementation that may or may not scale well in multithreaded
+a different implementation that may or may not scale well in multi threaded
 environments.
 
 \begin{figure}[ht]

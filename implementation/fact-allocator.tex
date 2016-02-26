@@ -95,7 +95,7 @@ This is probably the result of better locality for the threaded allocator
 because it does not need to create pages for each node and instead uses the
 thread pages to maintain all facts, reducing cache line misses. Overall, the
 performance of the threaded allocator is better or similar than the node-local
-allocator, for both single and multithreaded threaded execution (see GGC for a
+allocator, for both single and multi threaded threaded execution (see GGC for a
 clear example).
 
 The second observation is in the N-Queens program, where the threaded allocator

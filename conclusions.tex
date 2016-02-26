@@ -55,7 +55,7 @@ especially when adding support for parallel execution. In this thesis, we have
 shown a compilation strategy and memory layout organization for LM programs,
 which allows programs to run less than one order of magnitude slower than
 hand-written C++ programs. We also described how the LM runtime supports
-multicore execution by partitioning the graph among threads. To the best of our
+multi core execution by partitioning the graph among threads. To the best of our
 knowledge, LM is the fastest linear logic based programming language available.
 
 \item[Semantics and Abstract Machine]
@@ -102,7 +102,7 @@ structured fashion.
 
 \item[Experimentation]
 
-We compared LM sequential and multithreaded execution to hand-written sequential
+We compared LM sequential and multi threaded execution to hand-written sequential
 C++ programs and against frameworks such as GraphLab and Ligra. We showed how
 well the LM runtime is able to scale using different programs and datasets. We
 measured the run time, scalability and memory usage effects of using
@@ -232,6 +232,6 @@ Furthermore, the addition of coordination facts and thread facts help the
 programmer exploit the underlying parallel architecture in order to create
 better programs that take advantage of those architectures without radically
 changing the underlying parallel algorithm.  Finally, the good performance of
-the LM system allows programs to run reasonably fast when executed on multicore
+the LM system allows programs to run reasonably fast when executed on multi core
 systems.
 

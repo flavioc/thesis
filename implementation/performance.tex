@@ -1,5 +1,5 @@
 To understand the absolute performance of LM programs, we compared their
-execution time using a multithreaded capable virtual machine running on a single
+execution time using a multi threaded capable virtual machine running on a single
 thread against hand-written sequential C++ programs\footnote{All C++ programs
    available at \url{http://github.com/flavioc/misc}.}. All C++ programs were
    compiled with the same compilation flags used for LM for fairness. Arguably,
@@ -16,11 +16,11 @@ programs in our experiments\footnote{All LM programs available at
    \url{http://github.com/flavioc/meld/benchs/progs}.}:
 
 \begin{itemize}
-   \item Belief Propagation: a machine learning algorithm to denoise images. Program is
+   \item Belief Propagation: a machine learning algorithm to de-noise images. Program is
       presented in Section~\ref{sec:coordination:bp}.
 
    \item Heat Transfer: an asynchronous program that solves the heat transfer
-      equation using an implicit method for transfering heat between nodes.
+      equation using an implicit method for transferring heat between nodes.
       Program is presented in Section~\ref{section:coord:ht}.
 
    \item Multiple Single Shortest Distance (MSSD): a program that computes the

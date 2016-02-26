@@ -32,7 +32,7 @@ requiring a lot of boilerplate code. LM programs tend to be smaller and easier t
 reason about since they are written at a higher abstraction level.
 
 Ligra~\cite{Shun:2013:LLG:2517327.2442530} is a lightweight framework for large
-scale graph processing on a single multicore machine. Ligra exploits the fact
+scale graph processing on a single multi core machine. Ligra exploits the fact
 that most huge graph datasets available today can be made to fit in the main
 memory of commodity servers. Ligra is a simple framework that exposes two main
 interfaces: \texttt{EdgeMap} and \texttt{VertexMap}. The former applies a
@@ -43,7 +43,7 @@ be executed in parallel. The framework allows the use of
 \emph{Compare-and-Swap}~(CAS) instructions when implementing functions in order
 to avoid race conditions.
 
-Grace~\cite{wang:asynchronous} is another graph-based framework for multicore
+Grace~\cite{wang:asynchronous} is another graph-based framework for multi core
 machines. Unlike Ligra, Grace programs are implemented from the point of view of
 a vertex. Each vertex and edge can be customized with different data depending
 on the target application. By default, programs are executed iteratively: for

@@ -23,7 +23,7 @@ restriction allows nodes of the graph to compute independently of other nodes
 since they can only perform computation with their current attributes.
 Communication between nodes arises when a rule derives a fact that belongs to
 another node. These design decisions allow LM to be concurrent and to also avoid
-bthe granularity problem that is usually present in declarative languages. Since
+the granularity problem that is usually present in declarative languages. Since
 computation is performed locally at each node of the graph, it is possible to
 group nodes into computation units that can processed independently by the same
 processing thread, which allows the implementation to easily control the

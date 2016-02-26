@@ -11,8 +11,8 @@ major components of the system, namely, the compiler and virtual machine.
      transforms a LM program into a C++ file, \code{file.cpp}, with compiled
      rules, and into a data file with the graph structure and initial facts,
      \code{file.data}. The virtual machine which includes code for managing
-  multithreaded execution and the database of facts is then linked with both
-  files to create a standalone executable that can be run in parallel.}
+  multi threaded execution and the database of facts is then linked with both
+  files to create a stand alone executable that can be run in parallel.}
 
   \label{fig:implementation:overview}
 \end{figure}
@@ -20,7 +20,7 @@ major components of the system, namely, the compiler and virtual machine.
 The virtual machine contains supporting data structures for managing the
 database of facts and to schedule the execution of rules. The parallel engine
 described in Chapter~\ref{chapter:implementation} is also a major part of the
-virtual machine and is responsible for managing multithreaded execution by
+virtual machine and is responsible for managing multi threaded execution by
 launching threads, managing communication and scheduling concurrent execution.
 
 The compiler transforms LM files into C++ code that uses the virtual machine
@@ -34,7 +34,7 @@ the program is executed.
 
 To complete the compilation process, we use a C++ compiler to compile the
 virtual machine files and \code{file.cpp} into object files that are then linked
-along with \code{file.data}. At the end, we have a standalone executable that
+along with \code{file.data}. At the end, we have a stand alone executable that
 allows the user to input the number of threads to use, program arguments,
 facilities to measure run time and also database printing facilities.
 

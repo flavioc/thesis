@@ -4,7 +4,7 @@ advantage of increasing processing power through parallelism. However, parallel
 programming is difficult, usually because programs are written in imperative and
 stateful programming languages that make use of low level synchronization
 primitives such as locks, mutexes and barriers. This tends to make the task of
-managing multithreaded execution complicated and error-prone, resulting in race
+managing multi threaded execution complicated and error-prone, resulting in race
 hazards and deadlocks. In the future, \emph{many-core} processors will make this
 task even more daunting.
 
@@ -71,7 +71,7 @@ language that allows the programmer to optionally control how execution and data
 is managed by the execution system.
 
 Our main goal with LM is to efficiently execute provably correct declarative
-graph-based programs on multicore machines. To show this, we wrote many
+graph-based programs on multi core machines. To show this, we wrote many
 graph-based algorithms, proved program correctness for some programs and
 developed a compiler and runtime system where we have seen good experimental
 results. Finally, we have also used coordination in some programs and we were
