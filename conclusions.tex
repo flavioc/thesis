@@ -141,15 +141,17 @@ languages, it suffers from several disadvantages:
       for regular algorithms such as numerical algorithms or algorithms that
       don't use graphs as their main data structure.
 
-   \item[Thread Reasoning] Sensing facts and thread-based facts come with a cost
-      when used to creating complex scheduling algorithms since when reasoning
+   \item[Thread Reasoning] Coordination facts and thread-based facts come with a
+      cost when used to create complex scheduling algorithms because reasoning
       with coordinated programs requires that the programmer understands the
       semantics of the underlying virtual machine. However, we think it will be
-      impossible to avoid this unless the runtime system performs all the
+      impossible to avoid this issue unless the runtime system performs all the
       optimizations, leaving no control to the programmer since optimization
       always requires some knowledge about the underlying hardware and software.
       In LM, the programmer pays a lower cost because the semantics of
-      coordination have a high level of abstraction.
+      coordination provide a higher level of abstraction. Lastly, it remains to
+      be shown if LM provides the right kind of abstraction for writing such
+      programs.
 
    \item[Modularity] Program composition is still an unsolved problem in linear
       logic programming since it is hard to compose programs that manipulate the
