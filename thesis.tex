@@ -60,14 +60,15 @@
 \AtBeginEnvironment{invariant}{\parindent0pt}
 
 % Provides a draft mark at the top of the document. 
-\draftstamp{\today}{}
 \thispagestyle{empty}
 
 \begin{document}
 
 \include{thesis-cover}
 \thispagestyle{empty}
-\clearpage
+{\vspace*{\fill} {\bf Keywords:} Programming Languages, Parallel Programming,
+Coordination, Linear Logic, Logic Programming, Implementation}
+\cleardoublepage
 
 \frontmatter
 \begin{abstract}
